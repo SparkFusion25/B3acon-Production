@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { 
   Home,
   ShoppingCart,
+  Package,
   FolderOpen,
   BarChart3,
   CreditCard,
@@ -26,6 +27,7 @@ const ClientSidebar: React.FC<ClientSidebarProps> = ({ activeModule, onModuleCha
   const menuItems = [
     { id: 'overview', label: 'Dashboard', icon: Home, gradient: 'from-signal-blue to-beacon-orange' },
     { id: 'services', label: 'My Services', icon: ShoppingCart, gradient: 'from-signal-blue to-blue-600' },
+    { id: 'purchase', label: 'Purchase Services', icon: Package, gradient: 'from-beacon-orange to-pink-500' },
     { id: 'projects', label: 'Projects', icon: FolderOpen, gradient: 'from-beacon-orange to-orange-600' },
     { id: 'reports', label: 'Reports', icon: BarChart3, gradient: 'from-signal-blue to-purple-600' },
     { id: 'billing', label: 'Billing', icon: CreditCard, gradient: 'from-beacon-orange to-red-500' },

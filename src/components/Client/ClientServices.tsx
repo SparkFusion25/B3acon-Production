@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Plus, ShoppingCart, Check, Star, ArrowRight, Zap, Target, BarChart3, MessageCircle, Search, Palette } from 'lucide-react';
+import { Plus, ShoppingCart, Check, Star, ArrowRight, Zap, Target, BarChart3, MessageCircle, Search, Palette, CreditCard } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { stripePromise, stripeHelpers } from '../../lib/stripe';
 
 const ClientServices: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('current');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const currentServices = [
     {
@@ -104,6 +106,35 @@ const ClientServices: React.FC = () => {
       type: 'monthly'
     }
   ];
+
+  const handlePurchaseService = async (service: any) => {
+    try {
+      setIsProcessing(true);
+      
+      // Create a checkout session
+      const { sessionId, url } = await stripeHelpers.createCheckoutSession(
+        `price_${service.id}`, // This would be your actual Stripe price ID
+        `${window.location.origin}/services/success`,
+        `${window.location.origin}/services/cancel`
+      );
+      
+      // Redirect to Stripe Checkout
+      const stripe = await stripePromise;
+      if (stripe) {
+        const { error } = await stripe.redirectToCheckout({ sessionId });
+        if (error) {
+          console.error('Error redirecting to checkout:', error);
+        }
+      } else {
+        // Fallback if Stripe isn't loaded
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('Error purchasing service:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const getPerformanceColor = (score: number) => {
     if (score >= 90) return 'text-green-600';
@@ -258,9 +289,17 @@ const ClientServices: React.FC = () => {
 
             <p className="text-sm text-gray-600 mb-4">{addon.description}</p>
 
-            <button className="w-full py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2">
+            <button 
+              onClick={() => handlePurchaseService(addon)}
+              disabled={isProcessing}
+              className="w-full py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              onClick={() => handlePurchaseService(service)}
+              disabled={isProcessing}
+              className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Plus className="w-4 h-4" />
-              <span>Add to Plan</span>
+              <span>{isProcessing ? 'Processing...' : 'Add to Plan'}</span>
             </button>
           </div>
         ))}
@@ -271,7 +310,8 @@ const ClientServices: React.FC = () => {
   const tabs = [
     { id: 'current', label: 'Current Services', count: currentServices.length },
     { id: 'available', label: 'Available Services', count: availableServices.length },
-    { id: 'addons', label: 'Add-Ons', count: addOns.length }
+    { id: 'addons', label: 'Add-Ons', count: addOns.length },
+    { id: 'purchase', label: 'Purchase History', icon: CreditCard, count: 0 }
   ];
 
   return (
@@ -332,6 +372,24 @@ const ClientServices: React.FC = () => {
         {activeTab === 'current' && renderCurrentServices()}
         {activeTab === 'available' && renderAvailableServices()}
         {activeTab === 'addons' && renderAddOns()}
+        {activeTab === 'purchase' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900">Purchase History</h3>
+              <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+                <CreditCard className="w-4 h-4" />
+                <span>Manage Billing</span>
+              </button>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+              <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h4 className="text-lg font-medium text-gray-900 mb-2">Purchase History</h4>
+              <p className="text-gray-600 mb-4">View your recent purchases and subscription changes.</p>
+              <p className="text-sm text-gray-500">No recent purchases found.</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
