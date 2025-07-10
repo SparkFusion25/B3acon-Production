@@ -289,11 +289,7 @@ const ClientServices: React.FC = () => {
 
             <p className="text-sm text-gray-600 mb-4">{addon.description}</p>
 
-            <button 
-              onClick={() => handlePurchaseService(addon)}
-              disabled={isProcessing}
-              className="w-full py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center space-x-2">
               <Plus className="w-4 h-4" />
               <span>{isProcessing ? 'Processing...' : 'Add to Plan'}</span>
             </button>
