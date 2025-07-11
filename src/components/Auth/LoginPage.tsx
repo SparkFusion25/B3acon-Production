@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Zap, Mail, Lock, Users, Building, Github, Facebook } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -35,6 +36,9 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-jet-black via-slate-gray to-jet-black flex items-center justify-center p-4">
+      <Link to="/" className="absolute top-4 left-4 text-white hover:text-gray-300 transition-colors">
+        ← Back to Home
+      </Link>
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-3 mb-4">
@@ -186,8 +190,16 @@ const LoginPage: React.FC = () => {
           <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
             <p className="text-xs text-gray-300 mb-2">Demo Credentials:</p>
             <div className="text-xs text-gray-400 space-y-1">
-              <p><strong>Agency:</strong> sarah@sparkdigital.com / password</p>
-              <p><strong>Client:</strong> john@techcorp.com / password</p>
+              <p className="cursor-pointer hover:text-white transition-colors" onClick={() => {
+                setEmail('sarah@sparkdigital.com');
+                setPassword('password');
+                setLoginType('agency');
+              }}><strong>Agency:</strong> sarah@sparkdigital.com / password</p>
+              <p className="cursor-pointer hover:text-white transition-colors" onClick={() => {
+                setEmail('john@techcorp.com');
+                setPassword('password');
+                setLoginType('client');
+              }}><strong>Client:</strong> john@techcorp.com / password</p>
             </div>
           </div>
         </div>

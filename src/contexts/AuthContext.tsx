@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 // Define valid social providers
 type SocialProvider = 'google' | 'facebook' | 'github';
@@ -264,22 +265,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     if (supabase) {
       supabase.auth.signOut();
+      toast.success('Logged out successfully');
     }
     setUser(null);
     setIsAuthenticated(false);
     setCurrentClientId(null);
     localStorage.removeItem('b3acon_user');
     localStorage.removeItem('b3acon_user_type');
+    window.location.href = '/';
   };
 
   const switchToClient = (clientId: string) => {
     setCurrentClientId(clientId);
     setUserType('client');
+    toast.success('Switched to client view');
   };
 
   const switchToAgency = () => {
     setCurrentClientId(null);
     setUserType('agency');
+    toast.success('Switched to agency view');
   };
 
   const value: AuthContextType = {
