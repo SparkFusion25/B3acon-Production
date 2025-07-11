@@ -251,14 +251,7 @@ const ClientServices: React.FC = () => {
 
               <div className="space-y-2 mb-6">
                 {service.features.map((feature, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Check className="w-4 h-4 text-green-500" />
-                    <span className="text-sm text-gray-600">{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center space-x-2">
+              >
                 <Plus className="w-4 h-4" />
                 <span>Add Service</span>
               </button>
