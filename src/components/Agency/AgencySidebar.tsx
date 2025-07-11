@@ -21,6 +21,7 @@ import {
   X
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
 interface AgencySidebarProps {
   activeModule: string;
@@ -30,6 +31,7 @@ interface AgencySidebarProps {
 const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleChange }) => {
   const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   
   console.log('AgencySidebar rendering with activeModule:', activeModule);
 
@@ -64,6 +66,18 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     console.log('Menu item clicked:', itemId);
     onModuleChange(itemId);
     setIsMobileMenuOpen(false); // Close mobile menu after selection
+  };
+
+  const handleSettingsClick = () => {
+    setShowSettingsModal(true);
+    toast.success('Settings panel coming soon');
+  };
+
+  const handleLogout = () => {
+    toast.success('Logging out...');
+    setTimeout(() => {
+      logout();
+    }, 1000);
   };
 
   return (
@@ -140,15 +154,15 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
 
           {/* Settings & Logout */}
           <div className="mt-4 pt-4 border-t border-slate-gray space-y-1">
-            <button className="w-full flex items-center space-x-2 lg:space-x-3 px-3 py-2 lg:py-3 text-gray-300 hover:bg-slate-gray hover:text-white rounded-lg transition-all duration-200">
+            <button 
+              onClick={handleSettingsClick}
+              className="w-full flex items-center space-x-2 lg:space-x-3 px-3 py-2 lg:py-3 text-gray-300 hover:bg-slate-gray hover:text-white rounded-lg transition-all duration-200"
+            >
               <Settings className="w-4 h-4 lg:w-5 lg:h-5" />
               <span className="font-medium text-xs lg:text-sm">Settings</span>
             </button>
             <button 
-              onClick={() => {
-                console.log('Logout clicked');
-                logout();
-              }}
+              onClick={handleLogout}
               className="w-full flex items-center space-x-2 lg:space-x-3 px-3 py-2 lg:py-3 text-gray-300 hover:bg-beacon-orange hover:text-white rounded-lg transition-all duration-200"
             >
               <MessageCircle className="w-4 h-4 lg:w-5 lg:h-5" />
@@ -157,6 +171,70 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
           </div>
         </div>
       </div>
+      
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Settings</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Theme</label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                >
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="system">System</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notifications</label>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="enableNotifications"
+                    className="mr-2"
+                    defaultChecked
+                  />
+                  <label htmlFor="enableNotifications">Enable notifications</label>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Language</label>
+                <select
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                >
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  toast.success('Settings saved');
+                  setShowSettingsModal(false);
+                }}
+                className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

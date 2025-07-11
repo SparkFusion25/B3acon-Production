@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Users, Target, Calendar, Plus, Filter, Search, MoreHorizontal, Edit, Trash2, Phone, Mail, Clock, CheckSquare, MessageSquare } from 'lucide-react';
+import { supabase } from '../../../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 const CRMHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState('pipeline');
@@ -11,6 +13,17 @@ const CRMHub: React.FC = () => {
     phone: '',
     source: '',
     notes: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAddDealModal, setShowAddDealModal] = useState(false);
+  const [newDeal, setNewDeal] = useState({
+    name: '',
+    client_id: '',
+    value: '',
+    stage: 'prospecting',
+    probability: '50',
+    close_date: '',
+    description: ''
   });
 
   const leads = [
@@ -185,6 +198,119 @@ const CRMHub: React.FC = () => {
     return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewContact(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleDealChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewDeal(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAddContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newContact.name || !newContact.email) {
+      toast.error('Name and email are required');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // In a real app, this would add to the leads table
+      const { data, error } = await supabase
+        .from('leads')
+        .insert([{
+          name: newContact.name,
+          email: newContact.email,
+          company: newContact.company,
+          phone: newContact.phone,
+          source: newContact.source,
+          notes: newContact.notes,
+          status: 'new'
+        }])
+        .select();
+      
+      if (error) throw error;
+      
+      toast.success('Contact added successfully');
+      setShowContactForm(false);
+      setNewContact({
+        name: '',
+        email: '',
+        company: '',
+        phone: '',
+        source: '',
+        notes: ''
+      });
+      
+      console.log('New contact added:', data);
+      
+    } catch (error) {
+      console.error('Error adding contact:', error);
+      toast.error('Failed to add contact');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleAddDeal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newDeal.name || !newDeal.client_id || !newDeal.value) {
+      toast.error('Name, client, and value are required');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // In a real app, this would add to the deals table
+      const { data, error } = await supabase
+        .from('deals')
+        .insert([{
+          name: newDeal.name,
+          client_id: newDeal.client_id,
+          value: parseFloat(newDeal.value),
+          stage: newDeal.stage,
+          probability: parseInt(newDeal.probability),
+          close_date: newDeal.close_date,
+          description: newDeal.description
+        }])
+        .select();
+      
+      if (error) throw error;
+      
+      toast.success('Deal added successfully');
+      setShowAddDealModal(false);
+      setNewDeal({
+        name: '',
+        client_id: '',
+        value: '',
+        stage: 'prospecting',
+        probability: '50',
+        close_date: '',
+        description: ''
+      });
+      
+      console.log('New deal added:', data);
+      
+    } catch (error) {
+      console.error('Error adding deal:', error);
+      toast.error('Failed to add deal');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const getStageColor = (stage: string) => {
     const colors = {
       prospecting: 'bg-blue-100 text-blue-800',
@@ -345,7 +471,10 @@ const CRMHub: React.FC = () => {
               className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
             />
           </div>
-          <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={() => setShowAddDealModal(true)}
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add Deal
           </button>
@@ -379,7 +508,10 @@ const CRMHub: React.FC = () => {
                       <div key={deal.id} className="bg-gray-50 rounded-lg p-3 border border-gray-100 cursor-pointer hover:shadow-sm transition-all">
                         <div className="flex items-center justify-between mb-2">
                           <h5 className="font-medium text-gray-900 text-sm">{deal.name}</h5>
-                          <button className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors">
+                          <button 
+                            onClick={() => toast.success(`Deal options for ${deal.name}`)}
+                            className="p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors"
+                          >
                             <MoreHorizontal className="w-4 h-4" />
                           </button>
                         </div>
@@ -392,7 +524,13 @@ const CRMHub: React.FC = () => {
                     ))}
                     
                     <button className="w-full py-2 text-sm text-gray-500 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg border border-dashed border-gray-300 transition-colors">
-                      <Plus className="w-4 h-4 mx-auto" />
+                      <Plus 
+                        onClick={() => {
+                          setNewDeal(prev => ({ ...prev, stage: stage.id }));
+                          setShowAddDealModal(true);
+                        }}
+                        className="w-4 h-4 mx-auto" 
+                      />
                     </button>
                   </div>
                 </div>
@@ -426,7 +564,7 @@ const CRMHub: React.FC = () => {
           </button>
         </div>
       </div>
-
+              <input
       {/* Contact Form */}
       {showContactForm && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -446,7 +584,8 @@ const CRMHub: React.FC = () => {
               <input
                 type="text"
                 value={newContact.name}
-                onChange={(e) => setNewContact({...newContact, name: e.target.value})}
+                name="name"
+                onChange={handleContactChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                 placeholder="Full name"
               />
@@ -457,7 +596,8 @@ const CRMHub: React.FC = () => {
               <input
                 type="email"
                 value={newContact.email}
-                onChange={(e) => setNewContact({...newContact, email: e.target.value})}
+                name="email"
+                onChange={handleContactChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                 placeholder="Email address"
               />
@@ -468,7 +608,8 @@ const CRMHub: React.FC = () => {
               <input
                 type="text"
                 value={newContact.company}
-                onChange={(e) => setNewContact({...newContact, company: e.target.value})}
+                name="company"
+                onChange={handleContactChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                 placeholder="Company name"
               />
@@ -479,7 +620,8 @@ const CRMHub: React.FC = () => {
               <input
                 type="tel"
                 value={newContact.phone}
-                onChange={(e) => setNewContact({...newContact, phone: e.target.value})}
+                name="phone"
+                onChange={handleContactChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                 placeholder="Phone number"
               />
@@ -489,7 +631,8 @@ const CRMHub: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
               <select
                 value={newContact.source}
-                onChange={(e) => setNewContact({...newContact, source: e.target.value})}
+                name="source"
+                onChange={handleContactChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
               >
                 <option value="">Select source</option>
@@ -507,7 +650,8 @@ const CRMHub: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
             <textarea
               value={newContact.notes}
-              onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
+              name="notes"
+              onChange={handleContactChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
               placeholder="Add notes about this contact"
               rows={3}
@@ -522,22 +666,134 @@ const CRMHub: React.FC = () => {
               Cancel
             </button>
             <button
-              onClick={() => {
-                // In a real app, this would save the contact
-                setShowContactForm(false);
-                setNewContact({
-                  name: '',
-                  email: '',
-                  company: '',
-                  phone: '',
-                  source: '',
-                  notes: ''
-                });
-              }}
+              onClick={handleAddContact}
+              disabled={isSubmitting}
               className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
             >
-              Save Contact
+              {isSubmitting ? 'Saving...' : 'Save Contact'}
             </button>
+          </div>
+        </div>
+      )}
+      
+      {/* Add Deal Modal */}
+      {showAddDealModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Deal</h3>
+            
+            <form onSubmit={handleAddDeal}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Deal Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newDeal.name}
+                    onChange={handleDealChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Client *</label>
+                  <select
+                    name="client_id"
+                    value={newDeal.client_id}
+                    onChange={handleDealChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    required
+                  >
+                    <option value="">Select client</option>
+                    {clients.map(client => (
+                      <option key={client.id} value={client.id}>{client.name}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Value *</label>
+                  <input
+                    type="number"
+                    name="value"
+                    value={newDeal.value}
+                    onChange={handleDealChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                  <select
+                    name="stage"
+                    value={newDeal.stage}
+                    onChange={handleDealChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  >
+                    <option value="prospecting">Prospecting</option>
+                    <option value="qualification">Qualification</option>
+                    <option value="proposal">Proposal</option>
+                    <option value="negotiation">Negotiation</option>
+                    <option value="closed_won">Closed Won</option>
+                    <option value="closed_lost">Closed Lost</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Probability (%)</label>
+                  <input
+                    type="number"
+                    name="probability"
+                    value={newDeal.probability}
+                    onChange={handleDealChange}
+                    min="0"
+                    max="100"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Close Date</label>
+                  <input
+                    type="date"
+                    name="close_date"
+                    value={newDeal.close_date}
+                    onChange={handleDealChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea
+                    name="description"
+                    value={newDeal.description}
+                    onChange={handleDealChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    rows={3}
+                  ></textarea>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowAddDealModal(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Adding...' : 'Add Deal'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -579,10 +835,16 @@ const CRMHub: React.FC = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center space-x-2">
-                      <button className="p-1 text-gray-400 hover:text-blue-600 rounded-full hover:bg-gray-100 transition-colors">
+                      <button 
+                        onClick={() => toast.success(`Edit ${lead.name}`)}
+                        className="p-1 text-gray-400 hover:text-blue-600 rounded-full hover:bg-gray-100 transition-colors"
+                      >
                         <Edit className="w-4 h-4" />
                       </button>
-                      <button className="p-1 text-gray-400 hover:text-red-600 rounded-full hover:bg-gray-100 transition-colors">
+                      <button 
+                        onClick={() => toast.success(`Delete ${lead.name}`)}
+                        className="p-1 text-gray-400 hover:text-red-600 rounded-full hover:bg-gray-100 transition-colors"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>

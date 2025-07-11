@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Users, Building, DollarSign, TrendingUp, Search, Plus } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 interface Client {
   id: string;
@@ -24,6 +26,16 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive' | 'pending'>('all');
   const [filterSubscription, setFilterSubscription] = useState<'all' | 'starter' | 'professional' | 'enterprise'>('all');
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
+  const [newClient, setNewClient] = useState({
+    name: '',
+    email: '',
+    website: '',
+    industry: '',
+    subscription_tier: 'professional',
+    status: 'active'
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,6 +62,69 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
       enterprise: 'bg-orange-100 text-orange-800'
     };
     return colors[subscription as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNewClient(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAddClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newClient.name || !newClient.email) {
+      toast.error('Name and email are required');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .insert([{
+          name: newClient.name,
+          email: newClient.email,
+          website: newClient.website,
+          industry: newClient.industry,
+          subscription_tier: newClient.subscription_tier,
+          status: newClient.status,
+          services: []
+        }])
+        .select();
+      
+      if (error) throw error;
+      
+      toast.success('Client added successfully');
+      setShowAddClientModal(false);
+      setNewClient({
+        name: '',
+        email: '',
+        website: '',
+        industry: '',
+        subscription_tier: 'professional',
+        status: 'active'
+      });
+      
+      // Refresh client list or add to local state
+      // This would typically trigger a refetch or update the local state
+      console.log('New client added:', data);
+      
+    } catch (error) {
+      console.error('Error adding client:', error);
+      toast.error('Failed to add client');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleViewClient = (clientId: string) => {
+    console.log('Viewing client details:', clientId);
+    // Navigate to client details page or open modal
+    toast.success('Client details view coming soon');
   };
 
   return (
@@ -156,6 +231,13 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
             <Plus className="w-4 h-4" />
             <span>Add Client</span>
           </button>
+          <button 
+            onClick={() => setShowAddClientModal(true)}
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Client</span>
+          </button>
         </div>
       </div>
 
@@ -214,7 +296,10 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
             
             <div className="flex items-center justify-between pt-4 border-t border-gray-200">
               <span className="text-xs text-gray-500">Last activity: {client.lastActivity}</span>
-              <button className="text-signal-blue hover:text-blue-700 text-sm font-medium">
+              <button 
+                onClick={() => handleViewClient(client.id)}
+                className="text-signal-blue hover:text-blue-700 text-sm font-medium"
+              >
                 View Details
               </button>
             </div>
@@ -227,6 +312,110 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
           <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No clients found</h3>
           <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+        </div>
+      )}
+      
+      {/* Add Client Modal */}
+      {showAddClientModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Client</h3>
+            
+            <form onSubmit={handleAddClient}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Client Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newClient.name}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={newClient.email}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
+                  <input
+                    type="text"
+                    name="website"
+                    value={newClient.website}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+                  <input
+                    type="text"
+                    name="industry"
+                    value={newClient.industry}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Subscription Tier</label>
+                  <select
+                    name="subscription_tier"
+                    value={newClient.subscription_tier}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  >
+                    <option value="starter">Starter</option>
+                    <option value="professional">Professional</option>
+                    <option value="enterprise">Enterprise</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select
+                    name="status"
+                    value={newClient.status}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowAddClientModal(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Adding...' : 'Add Client'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

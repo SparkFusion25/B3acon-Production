@@ -1,7 +1,8 @@
 import React from 'react';
-import { Users, DollarSign, TrendingUp, Target, Calendar, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Users, DollarSign, TrendingUp, Target, Calendar, AlertCircle, CheckCircle, Clock, BarChart3, MessageCircle } from 'lucide-react';
 import type { AgencyOverviewData } from '../../types/agency';
 import { useSupabaseData } from '../../hooks/useSupabaseData';
+import { toast } from 'react-hot-toast';
 
 interface AgencyOverviewProps {
   data: AgencyOverviewData;
@@ -34,6 +35,10 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
     if (loading) return '🔄 Connecting to database...';
     if (error) return `❌ Database error: ${error}`;
     return `✅ Connected! Found ${supabaseData.clients.length} clients, ${supabaseData.leads.length} leads`;
+  };
+
+  const handleQuickAction = (action: string) => {
+    toast.success(`Action triggered: ${action}`);
   };
 
   return (
@@ -228,21 +233,68 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-          <button className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={() => handleQuickAction('Add New Client')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
             <Users className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Add New Client</span>
           </button>
-          <button className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={() => handleQuickAction('Create Project')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
             <Target className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Create Project</span>
           </button>
-          <button className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={() => handleQuickAction('Schedule Meeting')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+          >
             <Calendar className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Schedule Meeting</span>
           </button>
-          <button className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={() => handleQuickAction('Generate Invoice')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
+          >
             <DollarSign className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Generate Invoice</span>
+          </button>
+        </div>
+      </div>
+      
+      {/* Additional Quick Actions */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 mt-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Marketing Actions</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <button 
+            onClick={() => handleQuickAction('View SEO Report')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            <BarChart3 className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+            <span className="font-medium text-sm lg:text-base">View SEO Report</span>
+          </button>
+          <button 
+            onClick={() => handleQuickAction('Schedule Posts')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            <MessageCircle className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+            <span className="font-medium text-sm lg:text-base">Schedule Posts</span>
+          </button>
+          <button 
+            onClick={() => handleQuickAction('Review Campaigns')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            <Target className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+            <span className="font-medium text-sm lg:text-base">Review Campaigns</span>
+          </button>
+          <button 
+            onClick={() => handleQuickAction('Amazon Analytics')}
+            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            <BarChart3 className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+            <span className="font-medium text-sm lg:text-base">Amazon Analytics</span>
           </button>
         </div>
       </div>
