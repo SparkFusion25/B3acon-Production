@@ -225,6 +225,8 @@ const ClientBilling: React.FC = () => {
           onClick={handleUpdatePlan}
           className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
         >
+          Update Plan
+        </button>
       </div>
 
       {/* Current Plan */}
