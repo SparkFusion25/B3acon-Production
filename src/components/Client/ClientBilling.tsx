@@ -1,10 +1,31 @@
 import React, { useState } from 'react';
 import { CreditCard, DollarSign, Download, Calendar, Plus, Check, ArrowRight, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const ClientBilling: React.FC = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('invoices');
+  
+  const handleDownloadInvoices = () => {
+    toast.success('Downloading all invoices');
+  };
+  
+  const handleViewInvoice = (invoiceId: string) => {
+    toast.success(`Viewing invoice ${invoiceId}`);
+  };
+  
+  const handleDownloadInvoice = (invoiceId: string) => {
+    toast.success(`Downloading invoice ${invoiceId}`);
+  };
+  
+  const handleUpdatePlan = () => {
+    toast.success('Updating subscription plan');
+  };
+  
+  const handleAddPaymentMethod = () => {
+    toast.success('Adding new payment method');
+  };
 
   const invoices = [
     {
@@ -132,7 +153,10 @@ const ClientBilling: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Recent Invoices</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+        <button 
+          onClick={handleDownloadInvoices}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+        >
           <Download className="w-4 h-4" />
           <span>Download All</span>
         </button>
@@ -170,10 +194,16 @@ const ClientBilling: React.FC = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center space-x-2">
-                      <button className="text-signal-blue hover:text-blue-700 text-sm font-medium">
+                      <button 
+                        onClick={() => handleViewInvoice(invoice.id)}
+                        className="text-signal-blue hover:text-blue-700 text-sm font-medium"
+                      >
                         View
                       </button>
-                      <button className="text-gray-400 hover:text-gray-600 text-sm font-medium">
+                      <button 
+                        onClick={() => handleDownloadInvoice(invoice.id)}
+                        className="text-gray-400 hover:text-gray-600 text-sm font-medium"
+                      >
                         Download
                       </button>
                     </div>
@@ -191,7 +221,10 @@ const ClientBilling: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Subscription Plans</h3>
-        <p className="text-sm text-gray-600">Choose the plan that fits your needs</p>
+        <button 
+          onClick={handleUpdatePlan}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
       </div>
 
       {/* Current Plan */}
@@ -323,7 +356,10 @@ const ClientBilling: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Payment Methods</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+        <button 
+          onClick={handleAddPaymentMethod}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+        >
           <Plus className="w-4 h-4" />
           <span>Add Payment Method</span>
         </button>

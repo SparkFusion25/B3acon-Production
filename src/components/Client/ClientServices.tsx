@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, ShoppingCart, Check, Star, ArrowRight, Zap, Target, BarChart3, MessageCircle, Search, Palette, CreditCard } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { stripePromise, stripeHelpers } from '../../lib/stripe';
+import { toast } from 'react-hot-toast';
 
 const ClientServices: React.FC = () => {
   const { user } = useAuth();
@@ -110,6 +111,7 @@ const ClientServices: React.FC = () => {
   const handlePurchaseService = async (service: any) => {
     try {
       setIsProcessing(true);
+      toast.success(`Purchasing ${service.name} service`);
       
       // Create a checkout session
       const { sessionId, url } = await stripeHelpers.createCheckoutSession(
@@ -134,6 +136,14 @@ const ClientServices: React.FC = () => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleManageService = (serviceId: number) => {
+    toast.success(`Managing service #${serviceId}`);
+  };
+  
+  const handleManageSubscription = () => {
+    toast.success('Opening subscription management');
   };
 
   const getPerformanceColor = (score: number) => {
@@ -200,8 +210,13 @@ const ClientServices: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                <span className="text-xs text-gray-500">Next billing: {service.nextBilling}</span>
-                <button className="text-signal-blue hover:text-blue-700 text-sm font-medium">
+                <span className="text-xs text-gray-500">
+                  Next billing: {service.nextBilling}
+                </span>
+                <button 
+                  onClick={() => handleManageService(service.id)}
+                  className="text-signal-blue hover:text-blue-700 text-sm font-medium"
+                >
                   Manage
                 </button>
               </div>
@@ -330,10 +345,16 @@ const ClientServices: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center space-x-4 mt-4">
-          <button className="bg-white text-signal-blue px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+          <button 
+            onClick={() => toast.success('Upgrade plan options')}
+            className="bg-white text-signal-blue px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+          >
             Upgrade Plan
           </button>
-          <button className="border border-white text-white px-4 py-2 rounded-lg font-medium hover:bg-white hover:text-signal-blue transition-colors">
+          <button 
+            onClick={() => toast.success('Viewing billing details')}
+            className="border border-white text-white px-4 py-2 rounded-lg font-medium hover:bg-white hover:text-signal-blue transition-colors"
+          >
             View Billing
           </button>
         </div>
@@ -382,8 +403,16 @@ const ClientServices: React.FC = () => {
               <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h4 className="text-lg font-medium text-gray-900 mb-2">Purchase History</h4>
               <p className="text-gray-600 mb-4">View your recent purchases and subscription changes.</p>
-              <p className="text-sm text-gray-500">No recent purchases found.</p>
+            <p className="text-gray-600 mb-4">
+              View your recent purchases and subscription changes.
+            </p>
             </div>
+            <button
+              onClick={handleManageSubscription}
+              className="mt-4 px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+            >
+              Manage Subscription
+            </button>
           </div>
         )}
       </div>

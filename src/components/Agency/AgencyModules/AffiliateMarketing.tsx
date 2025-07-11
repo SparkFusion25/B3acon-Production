@@ -1,9 +1,30 @@
 import React, { useState } from 'react';
 import { Users, Link, DollarSign, TrendingUp, Gift, CreditCard, Eye, Copy, Check } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const AffiliateMarketing: React.FC = () => {
   const [activeTab, setActiveTab] = useState('affiliates');
   const [copied, setCopied] = useState(false);
+  
+  const handleInviteAffiliate = () => {
+    toast.success('Inviting new affiliate partner');
+  };
+  
+  const handleGenerateLink = () => {
+    toast.success('Generating new affiliate link');
+  };
+  
+  const handleProcessPayments = () => {
+    toast.success('Processing affiliate payments');
+  };
+  
+  const handleExportReport = () => {
+    toast.success('Exporting affiliate report');
+  };
+  
+  const handleViewAffiliate = (affiliateId: number) => {
+    toast.success(`Viewing affiliate #${affiliateId} details`);
+  };
 
   const affiliates = [
     {
@@ -133,7 +154,10 @@ const AffiliateMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Affiliate Management</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleInviteAffiliate}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Users className="w-4 h-4 mr-2" />
           Invite Affiliate
         </button>
@@ -240,7 +264,10 @@ const AffiliateMarketing: React.FC = () => {
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center space-x-2">
-                      <button className="p-1 text-gray-400 hover:text-blue-600">
+                      <button 
+                        onClick={() => handleViewAffiliate(affiliate.id)}
+                        className="p-1 text-gray-400 hover:text-blue-600"
+                      >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button 
@@ -264,7 +291,10 @@ const AffiliateMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Referral Tracking</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleGenerateLink}
+          className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Link className="w-4 h-4 mr-2" />
           Generate Link
         </button>
@@ -323,7 +353,10 @@ const AffiliateMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Commission Management</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleProcessPayments}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <CreditCard className="w-4 h-4 mr-2" />
           Process Payments
         </button>
@@ -392,7 +425,10 @@ const AffiliateMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Payment History</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleExportReport}
+          className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <CreditCard className="w-4 h-4 mr-2" />
           Export Report
         </button>

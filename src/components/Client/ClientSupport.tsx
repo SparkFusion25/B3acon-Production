@@ -1,8 +1,43 @@
 import React, { useState } from 'react';
 import { MessageCircle, Phone, Mail, HelpCircle, Send, Paperclip, Clock } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const ClientSupport: React.FC = () => {
   const [message, setMessage] = useState('');
+  
+  const handleStartChat = () => {
+    toast.success('Starting live chat session');
+  };
+  
+  const handleCallSupport = () => {
+    toast.success('Calling support line');
+  };
+  
+  const handleEmailSupport = () => {
+    toast.success('Opening email support');
+  };
+  
+  const handleCreateTicket = () => {
+    toast.success('Creating new support ticket');
+  };
+  
+  const handleViewTicket = (ticketId: string) => {
+    toast.success(`Viewing ticket ${ticketId}`);
+  };
+  
+  const handleReopenTicket = (ticketId: string) => {
+    toast.success(`Reopening ticket ${ticketId}`);
+  };
+  
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      toast.success('Message sent');
+      setMessage('');
+    } else {
+      toast.error('Please enter a message');
+    }
+  };
 
   const supportTickets = [
     {
@@ -96,7 +131,10 @@ const ClientSupport: React.FC = () => {
             <h3 className="font-semibold text-gray-900">Live Chat</h3>
           </div>
           <p className="text-sm text-gray-600 mb-4">Chat with our support team in real-time</p>
-          <button className="w-full py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={handleStartChat}
+            className="w-full py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
             Start Chat
           </button>
           <p className="text-xs text-gray-500 mt-2 text-center">Available Mon-Fri, 9am-6pm EST</p>
@@ -110,7 +148,10 @@ const ClientSupport: React.FC = () => {
             <h3 className="font-semibold text-gray-900">Phone Support</h3>
           </div>
           <p className="text-sm text-gray-600 mb-4">Call our dedicated support line</p>
-          <button className="w-full py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={handleCallSupport}
+            className="w-full py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
             +1 (555) 123-4567
           </button>
           <p className="text-xs text-gray-500 mt-2 text-center">Available Mon-Fri, 9am-6pm EST</p>
@@ -124,7 +165,10 @@ const ClientSupport: React.FC = () => {
             <h3 className="font-semibold text-gray-900">Email Support</h3>
           </div>
           <p className="text-sm text-gray-600 mb-4">Send us an email anytime</p>
-          <button className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={handleEmailSupport}
+            className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+          >
             support@b3acon.com
           </button>
           <p className="text-xs text-gray-500 mt-2 text-center">24-hour response time</p>
@@ -135,7 +179,10 @@ const ClientSupport: React.FC = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Support Tickets</h3>
-          <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+          <button 
+            onClick={handleCreateTicket}
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+          >
             <Plus className="w-4 h-4" />
             <span>New Ticket</span>
           </button>
@@ -163,7 +210,10 @@ const ClientSupport: React.FC = () => {
                     <span>Last update: {ticket.lastUpdate}</span>
                   </p>
                 </div>
-                <button className="text-signal-blue hover:text-blue-700 text-sm font-medium">
+                <button 
+                  onClick={() => ticket.status === 'open' ? handleViewTicket(ticket.id) : handleReopenTicket(ticket.id)}
+                  className="text-signal-blue hover:text-blue-700 text-sm font-medium"
+                >
                   {ticket.status === 'open' ? 'View Details' : 'Reopen'}
                 </button>
               </div>
@@ -188,7 +238,7 @@ const ClientSupport: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
                     <div className="flex-1 relative">
                       <input
                         type="text"
@@ -201,10 +251,13 @@ const ClientSupport: React.FC = () => {
                         <Paperclip className="w-5 h-5" />
                       </button>
                     </div>
-                    <button className="p-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+                    <button 
+                      type="submit"
+                      className="p-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+                    >
                       <Send className="w-5 h-5" />
                     </button>
-                  </div>
+                  </form>
                 </div>
               )}
             </div>

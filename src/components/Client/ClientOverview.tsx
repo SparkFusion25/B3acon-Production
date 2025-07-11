@@ -1,7 +1,24 @@
 import React from 'react';
 import { BarChart3, DollarSign, TrendingUp, Target, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const ClientOverview: React.FC = () => {
+  const handleViewService = (service: string) => {
+    toast.success(`Viewing ${service} service details`);
+  };
+  
+  const handleViewActivity = (activity: string) => {
+    toast.success(`Viewing activity: ${activity}`);
+  };
+  
+  const handleViewTask = (task: string) => {
+    toast.success(`Viewing task: ${task}`);
+  };
+  
+  const handleViewUpdate = (update: string) => {
+    toast.success(`Viewing update: ${update}`);
+  };
+
   return (
     <div className="p-4 lg:p-6">
       {/* Stats Grid */}
@@ -57,7 +74,10 @@ const ClientOverview: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Services</h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+            <div 
+              onClick={() => handleViewService('SEO Optimization')}
+              className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200 cursor-pointer hover:bg-green-100 transition-colors"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-4 h-4 text-white" />
@@ -70,7 +90,10 @@ const ClientOverview: React.FC = () => {
               <span className="text-green-600 font-medium">Active</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div 
+              onClick={() => handleViewService('PPC Campaigns')}
+              className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                   <Target className="w-4 h-4 text-white" />
@@ -83,7 +106,10 @@ const ClientOverview: React.FC = () => {
               <span className="text-blue-600 font-medium">Active</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
+            <div 
+              onClick={() => handleViewService('Social Media')}
+              className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-100 transition-colors"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
                   <BarChart3 className="w-4 h-4 text-white" />
@@ -102,7 +128,10 @@ const ClientOverview: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
           <div className="space-y-4">
-            <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div 
+              onClick={() => handleViewActivity('SEO report')}
+              className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+            >
               <div className="w-8 h-8 bg-signal-blue rounded-full flex items-center justify-center flex-shrink-0">
                 <BarChart3 className="w-4 h-4 text-white" />
               </div>
@@ -113,7 +142,10 @@ const ClientOverview: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div 
+              onClick={() => handleViewActivity('Campaign optimization')}
+              className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+            >
               <div className="w-8 h-8 bg-beacon-orange rounded-full flex items-center justify-center flex-shrink-0">
                 <Calendar className="w-4 h-4 text-white" />
               </div>
@@ -124,7 +156,10 @@ const ClientOverview: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+            <div 
+              onClick={() => handleViewActivity('Social media posts')}
+              className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+            >
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <CheckCircle className="w-4 h-4 text-white" />
               </div>
@@ -144,7 +179,10 @@ const ClientOverview: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Tasks</h3>
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+            <div 
+              onClick={() => handleViewTask('Monthly strategy review')}
+              className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+            >
               <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center">
                 <Clock className="w-3 h-3 text-white" />
               </div>
@@ -154,7 +192,10 @@ const ClientOverview: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+            <div 
+              onClick={() => handleViewTask('Content approval')}
+              className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+            >
               <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
                 <Calendar className="w-3 h-3 text-white" />
               </div>
@@ -164,7 +205,10 @@ const ClientOverview: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg">
+            <div 
+              onClick={() => handleViewTask('Campaign budget review')}
+              className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+            >
               <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center">
                 <Target className="w-3 h-3 text-white" />
               </div>
@@ -180,7 +224,10 @@ const ClientOverview: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Important Updates</h3>
           <div className="space-y-3">
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div 
+              onClick={() => handleViewUpdate('Performance Goal Achieved')}
+              className="p-3 bg-green-50 border border-green-200 rounded-lg cursor-pointer hover:bg-green-100 transition-colors"
+            >
               <div className="flex items-start space-x-2">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
@@ -190,7 +237,10 @@ const ClientOverview: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div 
+              onClick={() => handleViewUpdate('New Feature Available')}
+              className="p-3 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors"
+            >
               <div className="flex items-start space-x-2">
                 <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                 <div>
@@ -200,7 +250,10 @@ const ClientOverview: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div 
+              onClick={() => handleViewUpdate('Invoice Due Soon')}
+              className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors"
+            >
               <div className="flex items-start space-x-2">
                 <Clock className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                 <div>

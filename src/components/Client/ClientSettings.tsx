@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Mail, Phone, Building, Lock, Bell, Globe, Save, Trash2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const ClientSettings: React.FC = () => {
   const { user } = useAuth();
@@ -14,6 +15,26 @@ const ClientSettings: React.FC = () => {
     jobTitle: 'Marketing Director',
     timezone: 'America/New_York'
   });
+
+  const handleSaveProfile = () => {
+    toast.success('Profile information saved');
+  };
+  
+  const handleUpdatePassword = () => {
+    toast.success('Password updated successfully');
+  };
+  
+  const handleEnableTwoFactor = () => {
+    toast.success('Two-factor authentication setup started');
+  };
+  
+  const handleDeleteAccount = () => {
+    toast.error('Account deletion requires confirmation');
+  };
+  
+  const handleSaveNotifications = () => {
+    toast.success('Notification preferences saved');
+  };
 
   const [notificationSettings, setNotificationSettings] = useState({
     emailReports: true,
@@ -43,7 +64,10 @@ const ClientSettings: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Profile Information</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+        <button 
+          onClick={handleSaveProfile}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+        >
           <Save className="w-4 h-4" />
           <span>Save Changes</span>
         </button>
@@ -203,7 +227,10 @@ const ClientSettings: React.FC = () => {
           </div>
         </div>
         
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleUpdatePassword}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
           Update Password
         </button>
       </div>
@@ -212,7 +239,10 @@ const ClientSettings: React.FC = () => {
         <h4 className="font-medium text-gray-900 mb-4">Two-Factor Authentication</h4>
         <p className="text-sm text-gray-600 mb-4">Add an extra layer of security to your account</p>
         
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleEnableTwoFactor}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
           Enable Two-Factor Authentication
         </button>
       </div>
@@ -221,7 +251,10 @@ const ClientSettings: React.FC = () => {
         <h4 className="font-medium text-gray-900 mb-4">Delete Account</h4>
         <p className="text-sm text-gray-600 mb-4">Permanently delete your account and all associated data</p>
         
-        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2">
+        <button 
+          onClick={handleDeleteAccount}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
+        >
           <Trash2 className="w-4 h-4" />
           <span>Delete Account</span>
         </button>
@@ -233,7 +266,10 @@ const ClientSettings: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+        <button 
+          onClick={handleSaveNotifications}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+        >
           <Save className="w-4 h-4" />
           <span>Save Preferences</span>
         </button>

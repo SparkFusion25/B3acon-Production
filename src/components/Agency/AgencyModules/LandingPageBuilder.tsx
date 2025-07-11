@@ -1,9 +1,46 @@
 import React, { useState } from 'react';
 import { Layout, Eye, Settings, BarChart3, Palette, Code, Smartphone, Monitor } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const LandingPageBuilder: React.FC = () => {
   const [activeTab, setActiveTab] = useState('pages');
   const [selectedDevice, setSelectedDevice] = useState('desktop');
+  
+  const handleCreatePage = () => {
+    toast.success('Creating new landing page');
+  };
+  
+  const handleUploadTemplate = () => {
+    toast.success('Uploading new template');
+  };
+  
+  const handleSavePage = () => {
+    toast.success('Saving page changes');
+  };
+  
+  const handleExportReport = () => {
+    toast.success('Exporting analytics report');
+  };
+  
+  const handleEditPage = (pageId: number) => {
+    toast.success(`Editing page #${pageId}`);
+  };
+  
+  const handlePreviewPage = (pageId: number) => {
+    toast.success(`Previewing page #${pageId}`);
+  };
+  
+  const handleViewAnalytics = (pageId: number) => {
+    toast.success(`Viewing analytics for page #${pageId}`);
+  };
+  
+  const handleUseTemplate = (templateId: number) => {
+    toast.success(`Using template #${templateId}`);
+  };
+  
+  const handlePreviewTemplate = (templateId: number) => {
+    toast.success(`Previewing template #${templateId}`);
+  };
 
   const landingPages = [
     {
@@ -124,7 +161,10 @@ const LandingPageBuilder: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Landing Pages</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleCreatePage}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Layout className="w-4 h-4 mr-2" />
           Create Page
         </button>
@@ -231,13 +271,22 @@ const LandingPageBuilder: React.FC = () => {
                 URL: <span className="font-mono text-blue-600">b3acon.com/{page.slug}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <button className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors">
+                <button 
+                  onClick={() => handleEditPage(page.id)}
+                  className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
+                >
                   Edit
                 </button>
-                <button className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors">
+                <button 
+                  onClick={() => handlePreviewPage(page.id)}
+                  className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors"
+                >
                   Preview
                 </button>
-                <button className="px-3 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors">
+                <button 
+                  onClick={() => handleViewAnalytics(page.id)}
+                  className="px-3 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors"
+                >
                   Analytics
                 </button>
               </div>
@@ -252,7 +301,10 @@ const LandingPageBuilder: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Page Templates</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleUploadTemplate}
+          className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Palette className="w-4 h-4 mr-2" />
           Upload Template
         </button>
@@ -291,10 +343,16 @@ const LandingPageBuilder: React.FC = () => {
               </div>
               
               <div className="flex items-center space-x-2">
-                <button className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors">
+                <button 
+                  onClick={() => handleUseTemplate(template.id)}
+                  className="flex-1 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                >
                   Use Template
                 </button>
-                <button className="px-3 py-2 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                <button 
+                  onClick={() => handlePreviewTemplate(template.id)}
+                  className="px-3 py-2 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors"
+                >
                   Preview
                 </button>
               </div>
@@ -311,20 +369,23 @@ const LandingPageBuilder: React.FC = () => {
         <h3 className="text-lg font-semibold text-gray-900">Page Builder</h3>
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
-            <button
+            <button 
               onClick={() => setSelectedDevice('desktop')}
               className={`p-2 rounded ${selectedDevice === 'desktop' ? 'bg-white shadow-sm' : ''}`}
             >
               <Monitor className="w-4 h-4" />
             </button>
-            <button
+            <button 
               onClick={() => setSelectedDevice('mobile')}
               className={`p-2 rounded ${selectedDevice === 'mobile' ? 'bg-white shadow-sm' : ''}`}
             >
               <Smartphone className="w-4 h-4" />
             </button>
           </div>
-          <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all">
+          <button 
+            onClick={handleSavePage}
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
+          >
             Save Page
           </button>
         </div>
@@ -439,7 +500,10 @@ const LandingPageBuilder: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Page Analytics</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleExportReport}
+          className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <BarChart3 className="w-4 h-4 mr-2" />
           Export Report
         </button>

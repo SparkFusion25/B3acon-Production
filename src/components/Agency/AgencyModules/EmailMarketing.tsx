@@ -1,8 +1,33 @@
 import React, { useState } from 'react';
 import { Mail, Users, Send, BarChart3, Zap, Eye, MousePointer } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const EmailMarketing: React.FC = () => {
   const [activeTab, setActiveTab] = useState('campaigns');
+  
+  const handleCreateCampaign = () => {
+    toast.success('Creating new email campaign');
+  };
+  
+  const handleCreateList = () => {
+    toast.success('Creating new email list');
+  };
+  
+  const handleCreateAutomation = () => {
+    toast.success('Creating new email automation');
+  };
+  
+  const handleAddProvider = () => {
+    toast.success('Adding new email provider');
+  };
+  
+  const handleViewReport = (campaignId: number) => {
+    toast.success(`Viewing report for campaign #${campaignId}`);
+  };
+  
+  const handleDuplicateCampaign = (campaignId: number) => {
+    toast.success(`Duplicating campaign #${campaignId}`);
+  };
 
   const campaigns = [
     {
@@ -160,7 +185,10 @@ const EmailMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Email Campaigns</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleCreateCampaign}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Send className="w-4 h-4 mr-2" />
           Create Campaign
         </button>
@@ -267,10 +295,16 @@ const EmailMarketing: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-end space-x-2 mt-4">
-              <button className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors">
+              <button 
+                onClick={() => handleViewReport(campaign.id)}
+                className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors"
+              >
                 View Report
               </button>
-              <button className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors">
+              <button 
+                onClick={() => handleDuplicateCampaign(campaign.id)}
+                className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors"
+              >
                 Duplicate
               </button>
             </div>
@@ -284,7 +318,10 @@ const EmailMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Email Lists</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleCreateList}
+          className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Users className="w-4 h-4 mr-2" />
           Create List
         </button>
@@ -344,7 +381,10 @@ const EmailMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Email Automations</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleCreateAutomation}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Zap className="w-4 h-4 mr-2" />
           Create Automation
         </button>
@@ -416,7 +456,10 @@ const EmailMarketing: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Email Service Providers</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleAddProvider}
+          className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
+        >
           <Mail className="w-4 h-4 mr-2" />
           Add Provider
         </button>
