@@ -228,13 +228,7 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
           </div>
           
           <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
-            <Plus className="w-4 h-4" />
-            <span>Add Client</span>
-          </button>
-          <button 
             onClick={() => setShowAddClientModal(true)}
-            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
-          >
             <Plus className="w-4 h-4" />
             <span>Add Client</span>
           </button>
