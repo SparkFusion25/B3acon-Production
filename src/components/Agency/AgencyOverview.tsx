@@ -3,7 +3,6 @@ import { Users, DollarSign, TrendingUp, Target, Calendar, AlertCircle, CheckCirc
 import type { AgencyOverviewData } from '../../types/agency';
 import { useSupabaseData } from '../../hooks/useSupabaseData';
 import { toast } from 'react-hot-toast';
-import { toast } from 'react-hot-toast';
 
 interface AgencyOverviewProps {
   data: AgencyOverviewData;
@@ -42,9 +41,6 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
     toast.success(`Action triggered: ${action}`);
   };
 
-  const handleQuickAction = (action: string) => {
-    toast.success(`Action triggered: ${action}`);
-  };
 
   return (
     <div className="p-4 lg:p-6">
@@ -242,16 +238,10 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
             onClick={() => handleQuickAction('Add New Client')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
           >
-            onClick={() => handleQuickAction('Add New Client')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
-          >
             <Users className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Add New Client</span>
           </button>
           <button 
-            onClick={() => handleQuickAction('Create Project')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
-          >
             onClick={() => handleQuickAction('Create Project')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
           >
@@ -262,16 +252,10 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
             onClick={() => handleQuickAction('Schedule Meeting')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
           >
-            onClick={() => handleQuickAction('Schedule Meeting')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
-          >
             <Calendar className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Schedule Meeting</span>
           </button>
           <button 
-            onClick={() => handleQuickAction('Generate Invoice')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
-          >
             onClick={() => handleQuickAction('Generate Invoice')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
           >
@@ -289,16 +273,10 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
             onClick={() => handleQuickAction('View SEO Report')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
           >
-            onClick={() => handleQuickAction('View SEO Report')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
-          >
             <BarChart3 className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">View SEO Report</span>
           </button>
           <button 
-            onClick={() => handleQuickAction('Schedule Posts')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
-          >
             onClick={() => handleQuickAction('Schedule Posts')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
           >
@@ -309,16 +287,10 @@ const AgencyOverview: React.FC<AgencyOverviewProps> = ({ data }) => {
             onClick={() => handleQuickAction('Review Campaigns')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
           >
-            onClick={() => handleQuickAction('Review Campaigns')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
-          >
             <Target className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
             <span className="font-medium text-sm lg:text-base">Review Campaigns</span>
           </button>
           <button 
-            onClick={() => handleQuickAction('Amazon Analytics')}
-            className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
-          >
             onClick={() => handleQuickAction('Amazon Analytics')}
             className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 bg-gradient-to-r from-beacon-orange to-red-500 text-white rounded-lg hover:shadow-lg transition-all"
           >
