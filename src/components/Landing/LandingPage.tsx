@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag } from 'lucide-react';
+import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
   return (
