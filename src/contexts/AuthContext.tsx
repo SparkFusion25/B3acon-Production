@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // For demo purposes, fall back to mock users if Supabase auth fails
         const mockUsers = {
           'sarah@sparkdigital.com': {
-            id: '1',
+            id: '550e8400-e29b-41d4-a716-446655440001',
             name: 'Sarah Johnson',
             email: 'sarah@sparkdigital.com',
             role: 'admin' as UserRole,
@@ -133,7 +133,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
           },
           'john@techcorp.com': {
-            id: '2',
+            id: '550e8400-e29b-41d4-a716-446655440002',
             name: 'John Smith',
             email: 'john@techcorp.com',
             role: 'client' as UserRole,
@@ -142,7 +142,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
           },
           'demo@starter.com': {
-            id: '3',
+            id: '550e8400-e29b-41d4-a716-446655440003',
             name: 'Demo Starter',
             email: 'demo@starter.com',
             role: 'client' as UserRole,
@@ -210,7 +210,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // For demo purposes, we'll use mock data since social auth requires proper setup
       const mockSocialUsers = {
         'google': {
-          id: 'google-1',
+          id: '550e8400-e29b-41d4-a716-446655440004',
           name: 'Google User',
           email: 'google@example.com',
           role: type === 'agency' ? 'admin' : 'client' as UserRole,
@@ -219,7 +219,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
         },
         'facebook': {
-          id: 'facebook-1',
+          id: '550e8400-e29b-41d4-a716-446655440005',
           name: 'Facebook User',
           email: 'facebook@example.com',
           role: type === 'agency' ? 'admin' : 'client' as UserRole,
@@ -228,7 +228,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
         },
         'github': {
-          id: 'github-1',
+          id: '550e8400-e29b-41d4-a716-446655440006',
           name: 'GitHub User',
           email: 'github@example.com',
           role: type === 'agency' ? 'admin' : 'client' as UserRole,
