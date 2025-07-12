@@ -1,8 +1,8 @@
 import { serve } from "npm:http/server";
 
 // API key for the SEO service
-const API_KEY = Deno.env.get('SEO_API_KEY') || '';
-const API_BASE_URL = 'https://api.default-application.com/v1';
+const API_KEY = Deno.env.get('SEO_API_KEY') || 'demo_key_for_testing';
+const API_BASE_URL = 'https://api.default-application.com/v1/default-application_10799181';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -92,10 +92,39 @@ serve(async (req) => {
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json',
+        'X-API-ID': 'default-application_10799181',
       },
     });
 
-    const data = await response.json();
+    // Check if the response is successful
+    if (!response.ok) {
+      console.error(`API request failed with status ${response.status}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `API request failed with status ${response.status}`,
+          message: 'The SEO API service returned an error',
+          endpoint: endpoint
+        }),
+        {
+          status: response.status,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      console.error('Error parsing API response:', error);
+      return new Response(
+        JSON.stringify({ error: 'Failed to parse API response' }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     // Return the API response
     return new Response(
@@ -108,7 +137,11 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error processing SEO API request:', error);
     return new Response(
-      JSON.stringify({ error: error.message || 'An error occurred processing your request' }),
+      JSON.stringify({ 
+        error: error.message || 'An error occurred processing your request',
+        apiUrl: API_BASE_URL,
+        apiKeyPresent: !!API_KEY
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
