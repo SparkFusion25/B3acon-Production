@@ -24,11 +24,33 @@ export const useSupabaseData = () => {
 
         // First check if Supabase is configured
         if (!dbHelpers.isConfigured()) {
-          throw new Error('Supabase not configured. Please check environment variables.');
+          console.log('⚠️ Supabase not configured, using mock data');
+          setError('Supabase not configured. Please check environment variables.');
+          setData({
+            clients: mockAgencyData.clients || [],
+            leads: mockAgencyData.leads || [],
+            affiliates: mockAgencyData.affiliates || [],
+            emailCampaigns: mockAgencyData.emailCampaigns || [],
+            landingPages: mockAgencyData.landingPages || []
+          });
+          return;
         }
 
-        // Test connection first
-        await dbHelpers.testConnection();
+        // Test connection first - if this fails, use mock data
+        try {
+          await dbHelpers.testConnection();
+        } catch (connectionError) {
+          console.log('⚠️ Database connection failed, using mock data');
+          setError('Database not accessible. Using demo data. Please complete Supabase setup from SETUP_STAGE_1.md');
+          setData({
+            clients: mockAgencyData.clients || [],
+            leads: mockAgencyData.leads || [],
+            affiliates: mockAgencyData.affiliates || [],
+            emailCampaigns: mockAgencyData.emailCampaigns || [],
+            landingPages: mockAgencyData.landingPages || []
+          });
+          return;
+        }
 
         console.log('🔄 Loading all data tables...');
 
@@ -46,10 +68,7 @@ export const useSupabaseData = () => {
           if (result.status === 'rejected') {
             const error = result.reason;
             const errorMessage = error?.message || '';
-            const errorCode = error?.code || '';
-            return errorMessage === 'TABLE_NOT_EXISTS' || 
-                   errorMessage.includes('does not exist') || 
-                   errorCode === '42P01';
+            return errorMessage === 'TABLE_NOT_EXISTS';
           }
           return false;
         });
@@ -103,13 +122,13 @@ export const useSupabaseData = () => {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMessage);
         
-        // Set empty data on error
+        // Use mock data on error
         setData({
-          clients: [] as any[],
-          leads: [] as any[],
-          affiliates: [] as any[],
-          emailCampaigns: [] as any[],
-          landingPages: [] as any[]
+          clients: mockAgencyData.clients || [],
+          leads: mockAgencyData.leads || [],
+          affiliates: mockAgencyData.affiliates || [],
+          emailCampaigns: mockAgencyData.emailCampaigns || [],
+          landingPages: mockAgencyData.landingPages || []
         });
       } finally {
         setLoading(false);
