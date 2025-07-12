@@ -1,21 +1,102 @@
 import React, { useState } from 'react';
-import { Users, Link, DollarSign, TrendingUp, Gift, CreditCard, Eye, Copy, Check } from 'lucide-react';
+import { Users, Link, DollarSign, TrendingUp, Gift, CreditCard, Eye, Copy, Check, Mail, Send, Plus, Download, ExternalLink } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const AffiliateMarketing: React.FC = () => {
   const [activeTab, setActiveTab] = useState('affiliates');
   const [copied, setCopied] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteForm, setInviteForm] = useState({
+    name: '',
+    email: '',
+    company: '',
+    commission_rate: 10,
+    tier: 'bronze' as 'bronze' | 'silver' | 'gold' | 'platinum'
+  });
+  const [showGenerateLinkModal, setShowGenerateLinkModal] = useState(false);
+  const [linkForm, setLinkForm] = useState({
+    affiliate_id: '',
+    campaign_name: '',
+    original_url: 'https://b3acon.com',
+    expires_at: ''
+  });
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({
+    affiliate_ids: [] as string[],
+    payment_method: 'paypal',
+    payment_date: new Date().toISOString().split('T')[0],
+    notes: ''
+  });
   
-  const handleInviteAffiliate = () => {
-    toast.success('Inviting new affiliate partner');
+  const handleInviteAffiliate = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!inviteForm.name || !inviteForm.email) {
+      toast.error('Name and email are required');
+      return;
+    }
+    
+    // Generate a random referral code
+    const referralCode = `${inviteForm.name.split(' ')[0].toUpperCase()}${Math.floor(Math.random() * 10000)}`;
+    
+    // In a real implementation, we would save the affiliate to the database
+    // and send an invitation email
+    
+    toast.success(`Invitation sent to ${inviteForm.email}`);
+    setShowInviteModal(false);
+    setInviteForm({
+      name: '',
+      email: '',
+      company: '',
+      commission_rate: 10,
+      tier: 'bronze'
+    });
   };
   
-  const handleGenerateLink = () => {
-    toast.success('Generating new affiliate link');
+  const handleGenerateLink = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!linkForm.affiliate_id || !linkForm.campaign_name) {
+      toast.error('Affiliate and campaign name are required');
+      return;
+    }
+    
+    // Generate a tracking URL
+    const trackingUrl = `https://b3acon.com/ref/${linkForm.affiliate_id.toLowerCase()}/${linkForm.campaign_name.replace(/\s+/g, '-').toLowerCase()}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(trackingUrl).then(() => {
+      toast.success('Affiliate link generated and copied to clipboard');
+      setShowGenerateLinkModal(false);
+      setLinkForm({
+        affiliate_id: '',
+        campaign_name: '',
+        original_url: 'https://b3acon.com',
+        expires_at: ''
+      });
+    }).catch(() => {
+      toast.error('Failed to copy link to clipboard');
+    });
   };
   
-  const handleProcessPayments = () => {
-    toast.success('Processing affiliate payments');
+  const handleProcessPayments = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (paymentForm.affiliate_ids.length === 0) {
+      toast.error('Please select at least one affiliate');
+      return;
+    }
+    
+    // In a real implementation, we would process payments through a payment gateway
+    
+    toast.success(`Processing payments for ${paymentForm.affiliate_ids.length} affiliates`);
+    setShowPaymentModal(false);
+    setPaymentForm({
+      affiliate_ids: [],
+      payment_method: 'paypal',
+      payment_date: new Date().toISOString().split('T')[0],
+      notes: ''
+    });
   };
   
   const handleExportReport = () => {
@@ -24,6 +105,20 @@ const AffiliateMarketing: React.FC = () => {
   
   const handleViewAffiliate = (affiliateId: number) => {
     toast.success(`Viewing affiliate #${affiliateId} details`);
+  };
+  
+  const toggleAffiliateSelection = (affiliateId: string) => {
+    if (paymentForm.affiliate_ids.includes(affiliateId)) {
+      setPaymentForm({
+        ...paymentForm,
+        affiliate_ids: paymentForm.affiliate_ids.filter(id => id !== affiliateId)
+      });
+    } else {
+      setPaymentForm({
+        ...paymentForm,
+        affiliate_ids: [...paymentForm.affiliate_ids, affiliateId]
+      });
+    }
   };
 
   const affiliates = [
@@ -155,13 +250,110 @@ const AffiliateMarketing: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Affiliate Management</h3>
         <button 
-          onClick={handleInviteAffiliate}
+          onClick={() => setShowInviteModal(true)}
           className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
         >
           <Users className="w-4 h-4 mr-2" />
           Invite Affiliate
         </button>
       </div>
+      
+      {/* Invite Affiliate Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Invite Affiliate Partner</h4>
+              <button 
+                onClick={() => setShowInviteModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleInviteAffiliate} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={inviteForm.name}
+                  onChange={(e) => setInviteForm({...inviteForm, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={inviteForm.email}
+                  onChange={(e) => setInviteForm({...inviteForm, email: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  placeholder="john@example.com"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Company (Optional)</label>
+                <input
+                  type="text"
+                  value={inviteForm.company}
+                  onChange={(e) => setInviteForm({...inviteForm, company: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  placeholder="Company Name"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Commission Rate (%)</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="50"
+                  value={inviteForm.commission_rate}
+                  onChange={(e) => setInviteForm({...inviteForm, commission_rate: parseInt(e.target.value)})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tier</label>
+                <select
+                  value={inviteForm.tier}
+                  onChange={(e) => setInviteForm({...inviteForm, tier: e.target.value as any})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                >
+                  <option value="bronze">Bronze</option>
+                  <option value="silver">Silver</option>
+                  <option value="gold">Gold</option>
+                  <option value="platinum">Platinum</option>
+                </select>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowInviteModal(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Send Invitation</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Affiliate Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
@@ -292,13 +484,100 @@ const AffiliateMarketing: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Referral Tracking</h3>
         <button 
-          onClick={handleGenerateLink}
+          onClick={() => setShowGenerateLinkModal(true)}
           className="px-4 py-2 bg-gradient-to-r from-beacon-orange to-orange-600 text-white rounded-lg hover:shadow-lg transition-all"
         >
           <Link className="w-4 h-4 mr-2" />
           Generate Link
         </button>
       </div>
+      
+      {/* Generate Link Modal */}
+      {showGenerateLinkModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Generate Affiliate Link</h4>
+              <button 
+                onClick={() => setShowGenerateLinkModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleGenerateLink} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Affiliate</label>
+                <select
+                  value={linkForm.affiliate_id}
+                  onChange={(e) => setLinkForm({...linkForm, affiliate_id: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  required
+                >
+                  <option value="">Select Affiliate</option>
+                  {affiliates.map(affiliate => (
+                    <option key={affiliate.id} value={affiliate.referral_code}>
+                      {affiliate.name} ({affiliate.referral_code})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Name</label>
+                <input
+                  type="text"
+                  value={linkForm.campaign_name}
+                  onChange={(e) => setLinkForm({...linkForm, campaign_name: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  placeholder="Summer2025"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Original URL</label>
+                <input
+                  type="url"
+                  value={linkForm.original_url}
+                  onChange={(e) => setLinkForm({...linkForm, original_url: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  placeholder="https://b3acon.com"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date (Optional)</label>
+                <input
+                  type="date"
+                  value={linkForm.expires_at}
+                  onChange={(e) => setLinkForm({...linkForm, expires_at: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                />
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowGenerateLinkModal(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+                >
+                  <Link className="w-4 h-4" />
+                  <span>Generate Link</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         {referrals.map((referral) => (
@@ -354,13 +633,106 @@ const AffiliateMarketing: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Commission Management</h3>
         <button 
-          onClick={handleProcessPayments}
+          onClick={() => setShowPaymentModal(true)}
           className="px-4 py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
         >
           <CreditCard className="w-4 h-4 mr-2" />
           Process Payments
         </button>
       </div>
+      
+      {/* Process Payments Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Process Affiliate Payments</h4>
+              <button 
+                onClick={() => setShowPaymentModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleProcessPayments} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Select Affiliates</label>
+                <div className="max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-2">
+                  {affiliates.map(affiliate => (
+                    <div key={affiliate.id} className="flex items-center p-2 hover:bg-gray-50 rounded">
+                      <input
+                        type="checkbox"
+                        id={`affiliate-${affiliate.id}`}
+                        checked={paymentForm.affiliate_ids.includes(affiliate.id.toString())}
+                        onChange={() => toggleAffiliateSelection(affiliate.id.toString())}
+                        className="mr-2"
+                      />
+                      <label htmlFor={`affiliate-${affiliate.id}`} className="flex-1 cursor-pointer">
+                        <div className="font-medium text-gray-900">{affiliate.name}</div>
+                        <div className="text-sm text-gray-600">${affiliate.total_earnings.toLocaleString()} earned</div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                <select
+                  value={paymentForm.payment_method}
+                  onChange={(e) => setPaymentForm({...paymentForm, payment_method: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                >
+                  <option value="paypal">PayPal</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="check">Check</option>
+                  <option value="stripe">Stripe</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Date</label>
+                <input
+                  type="date"
+                  value={paymentForm.payment_date}
+                  onChange={(e) => setPaymentForm({...paymentForm, payment_date: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+                <textarea
+                  value={paymentForm.notes}
+                  onChange={(e) => setPaymentForm({...paymentForm, notes: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  rows={3}
+                  placeholder="Additional payment details or notes"
+                ></textarea>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowPaymentModal(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={paymentForm.affiliate_ids.length === 0}
+                  className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 flex items-center space-x-2"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>Process Payments</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4">
         {commissions.map((commission) => (

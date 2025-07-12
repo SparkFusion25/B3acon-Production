@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const ShopifyIntegration: React.FC = () => {
@@ -7,6 +7,16 @@ const ShopifyIntegration: React.FC = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [shopifyUrl, setShopifyUrl] = useState('');
+  const [shopifyApiKey, setShopifyApiKey] = useState('');
+  const [shopifyApiSecret, setShopifyApiSecret] = useState('');
+  const [shopifyAccessToken, setShopifyAccessToken] = useState('');
+  const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
+  const [syncOptions, setSyncOptions] = useState({
+    products: true,
+    customers: true,
+    orders: true,
+    inventory: true
+  });
   
   const handleConnectShopify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,12 +28,69 @@ const ShopifyIntegration: React.FC = () => {
     
     setIsConnecting(true);
     
-    // Simulate API call to connect to Shopify
-    setTimeout(() => {
+    try {
+      // In a real implementation, we would make an API call to connect to Shopify
+      // For now, we'll simulate the connection process
+      
+      // Step 1: Validate the Shopify store URL
+      if (!shopifyUrl.includes('.myshopify.com') && !showAdvancedSettings) {
+        setShowAdvancedSettings(true);
+        setIsConnecting(false);
+        toast.error('Please enter a valid Shopify store URL or use advanced settings');
+        return;
+      }
+      
+      // Step 2: If using advanced settings, validate API credentials
+      if (showAdvancedSettings && (!shopifyApiKey || !shopifyApiSecret)) {
+        setIsConnecting(false);
+        toast.error('API Key and API Secret are required for advanced connection');
+        return;
+      }
+      
+      // Step 3: Simulate API call to connect to Shopify
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Step 4: Set connection status
       setIsConnected(true);
       setIsConnecting(false);
       toast.success('Connected to Shopify store successfully!');
+      
+      // Step 5: Simulate initial data sync
+      toast.success('Starting initial data sync...');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.success('Successfully synced products, customers, and orders');
+    } catch (error) {
+      console.error('Error connecting to Shopify:', error);
+      setIsConnecting(false);
+      toast.error('Failed to connect to Shopify store');
+    }
+  };
+  
+  const handleToggleSyncOption = (option: keyof typeof syncOptions) => {
+    setSyncOptions({
+      ...syncOptions,
+      [option]: !syncOptions[option]
+    });
+  };
+  
+  const handleSyncNow = () => {
+    toast.success('Syncing data from Shopify...');
+    
+    // Simulate sync process
+    setTimeout(() => {
+      toast.success('Sync completed successfully!');
     }, 2000);
+  };
+  
+  const handleDisconnect = () => {
+    if (confirm('Are you sure you want to disconnect your Shopify store? This will stop all data syncing.')) {
+      setIsConnected(false);
+      setShopifyUrl('');
+      setShopifyApiKey('');
+      setShopifyApiSecret('');
+      setShopifyAccessToken('');
+      toast.success('Disconnected from Shopify store');
+    }
   };
 
   const renderOverview = () => (
@@ -31,10 +98,19 @@ const ShopifyIntegration: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Shopify Overview</h3>
         {isConnected && (
-          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium flex items-center">
-            <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-            Connected
-          </span>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleSyncNow}
+              className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors flex items-center space-x-1"
+            >
+              <RefreshCw className="w-3 h-3" />
+              <span>Sync Now</span>
+            </button>
+            <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium flex items-center">
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+              Connected
+            </span>
+          </div>
         )}
       </div>
       
@@ -46,7 +122,7 @@ const ShopifyIntegration: React.FC = () => {
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
               Connect your Shopify store to manage e-commerce marketing campaigns, track performance, and sync products.
             </p>
-            
+
             <form onSubmit={handleConnectShopify} className="max-w-md mx-auto">
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1 text-left">Shopify Store URL</label>
@@ -58,6 +134,83 @@ const ShopifyIntegration: React.FC = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                   required
                 />
+                <p className="text-xs text-gray-500 mt-1">Example: your-store.myshopify.com</p>
+              </div>
+
+              <div className="mb-4">
+                <button
+                  type="button"
+                  onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                  className="text-signal-blue hover:text-blue-700 text-sm font-medium flex items-center"
+                >
+                  {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings
+                  <svg
+                    className={`ml-1 w-4 h-4 transition-transform ${showAdvancedSettings ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+              </div>
+              
+              {showAdvancedSettings && (
+                <div className="space-y-4 mb-4 p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">API Key</label>
+                    <input
+                      type="text"
+                      value={shopifyApiKey}
+                      onChange={(e) => setShopifyApiKey(e.target.value)}
+                      placeholder="Shopify API Key"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">API Secret</label>
+                    <input
+                      type="password"
+                      value={shopifyApiSecret}
+                      onChange={(e) => setShopifyApiSecret(e.target.value)}
+                      placeholder="Shopify API Secret"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 text-left">Access Token (Optional)</label>
+                    <input
+                      type="password"
+                      value={shopifyAccessToken}
+                      onChange={(e) => setShopifyAccessToken(e.target.value)}
+                      placeholder="Shopify Access Token (if available)"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div className="mb-4">
+                <h5 className="text-sm font-medium text-gray-700 mb-2 text-left">Sync Options</h5>
+                <div className="space-y-2">
+                  {Object.entries(syncOptions).map(([key, value]) => (
+                    <div key={key} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={`sync-${key}`}
+                        checked={value}
+                        onChange={() => handleToggleSyncOption(key as keyof typeof syncOptions)}
+                        className="mr-2"
+                      />
+                      <label htmlFor={`sync-${key}`} className="text-sm text-gray-700 capitalize">
+                        Sync {key}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
               
               <button
@@ -150,6 +303,19 @@ const ShopifyIntegration: React.FC = () => {
               <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <RefreshCw className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-gray-900">Auto Sync</h5>
+                    <p className="text-sm text-gray-600">Syncs every 30 minutes</p>
+                  </div>
+                </div>
+                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">Active</span>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                     <Package className="w-4 h-4 text-green-600" />
                   </div>
                   <div>
@@ -185,6 +351,15 @@ const ShopifyIntegration: React.FC = () => {
                 </div>
                 <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">In Progress</span>
               </div>
+            </div>
+            
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={handleDisconnect}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
+              >
+                <span>Disconnect Store</span>
+              </button>
             </div>
           </div>
         </>

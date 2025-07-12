@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Palette, Image, Video, FileText, Upload, Plus, Folder, Grid, List, Search, MoreVertical, Download, Trash2, Share2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { supabase } from '../../../lib/supabase';
 
 const CreativeStudio: React.FC = () => {
   const [activeTab, setActiveTab] = useState('assets');
@@ -12,6 +13,9 @@ const CreativeStudio: React.FC = () => {
     type: 'image',
     tags: [] as string[]
   });
+  const [assets, setAssets] = useState<any[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -24,21 +28,64 @@ const CreativeStudio: React.FC = () => {
     }
   };
   
-  const handleUpload = (e: React.FormEvent) => {
+  const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!uploadForm.file) {
       toast.error('Please select a file to upload');
       return;
     }
     
-    toast.success(`Uploaded ${uploadForm.name} successfully!`);
-    setShowUploadModal(false);
-    setUploadForm({
-      file: null,
-      name: '',
-      type: 'image',
-      tags: []
-    });
+    setIsUploading(true);
+    setUploadProgress(0);
+    
+    try {
+      // Simulate upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 300);
+      
+      // In a real implementation, we would upload the file to storage
+      // For now, we'll simulate the upload process
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      // Create a new asset record
+      const newAsset = {
+        id: Date.now().toString(),
+        name: uploadForm.name,
+        type: uploadForm.type,
+        size: uploadForm.file ? `${(uploadForm.file.size / 1024 / 1024).toFixed(2)} MB` : '0 MB',
+        url: uploadForm.type === 'image' ? URL.createObjectURL(uploadForm.file) : '',
+        tags: uploadForm.tags,
+        created_at: new Date().toISOString()
+      };
+      
+      // Add the new asset to the list
+      setAssets([newAsset, ...assets]);
+      
+      toast.success(`Uploaded ${uploadForm.name} successfully!`);
+      setShowUploadModal(false);
+      setUploadForm({
+        file: null,
+        name: '',
+        type: 'image',
+        tags: []
+      });
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Failed to upload file');
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
   };
   
   const handleTagToggle = (tag: string) => {
@@ -54,6 +101,39 @@ const CreativeStudio: React.FC = () => {
       });
     }
   };
+  
+  const handleDeleteAsset = (assetId: string) => {
+    if (confirm('Are you sure you want to delete this asset?')) {
+      setAssets(assets.filter(asset => asset.id !== assetId));
+      toast.success('Asset deleted successfully');
+    }
+  };
+  
+  const handleShareAsset = (assetName: string) => {
+    // Generate a random share link
+    const shareLink = `https://b3acon.com/share/${Math.random().toString(36).substring(2, 15)}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareLink).then(() => {
+      toast.success(`Share link for ${assetName} copied to clipboard`);
+    }).catch(() => {
+      toast.error('Failed to copy share link');
+    });
+  };
+  
+  // Initialize with some sample assets
+  React.useEffect(() => {
+    const sampleAssets = [
+      { id: '1', name: 'Logo.png', type: 'image', size: '1.2 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop', tags: ['Logo', 'Brand'], created_at: '2024-01-15T10:00:00Z' },
+      { id: '2', name: 'Banner.jpg', type: 'image', size: '2.4 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop', tags: ['Banner', 'Marketing'], created_at: '2024-01-14T10:00:00Z' },
+      { id: '3', name: 'Product_Demo.mp4', type: 'video', size: '8.7 MB', url: '', tags: ['Product', 'Demo'], created_at: '2024-01-13T10:00:00Z' },
+      { id: '4', name: 'Brand_Guidelines.pdf', type: 'document', size: '3.5 MB', url: '', tags: ['Brand', 'Guidelines'], created_at: '2024-01-12T10:00:00Z' },
+      { id: '5', name: 'Team_Photo.jpg', type: 'image', size: '1.8 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop', tags: ['Team', 'Photo'], created_at: '2024-01-11T10:00:00Z' },
+      { id: '6', name: 'Social_Post.png', type: 'image', size: '0.9 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop', tags: ['Social', 'Marketing'], created_at: '2024-01-10T10:00:00Z' }
+    ];
+    
+    setAssets(sampleAssets);
+  }, []);
 
   const renderAssets = () => (
     <div className="space-y-6">
@@ -167,6 +247,21 @@ const CreativeStudio: React.FC = () => {
                 </div>
               </div>
               
+              {isUploading && (
+                <div className="mt-4">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm text-gray-600">Uploading...</span>
+                    <span className="text-sm text-gray-600">{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                    <div 
+                      className="h-2 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-full transition-all duration-300" 
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+              
               <div className="flex justify-end space-x-2 mt-6">
                 <button
                   type="button"
@@ -228,14 +323,7 @@ const CreativeStudio: React.FC = () => {
         
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { id: 1, name: 'Logo.png', type: 'image', size: '1.2 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop' },
-              { id: 2, name: 'Banner.jpg', type: 'image', size: '2.4 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop' },
-              { id: 3, name: 'Product_Demo.mp4', type: 'video', size: '8.7 MB', url: '' },
-              { id: 4, name: 'Brand_Guidelines.pdf', type: 'document', size: '3.5 MB', url: '' },
-              { id: 5, name: 'Team_Photo.jpg', type: 'image', size: '1.8 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop' },
-              { id: 6, name: 'Social_Post.png', type: 'image', size: '0.9 MB', url: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop' }
-            ].map(asset => (
+            {assets.map(asset => (
               <div key={asset.id} className="group relative border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
                 {asset.type === 'image' ? (
                   <div className="aspect-video bg-gray-100">
@@ -257,8 +345,25 @@ const CreativeStudio: React.FC = () => {
                 </div>
                 
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="bg-white rounded-full shadow-md p-1">
-                    <MoreVertical className="w-4 h-4 text-gray-600" />
+                  <div className="bg-white rounded-lg shadow-md p-1 flex items-center space-x-1">
+                    <button 
+                      onClick={() => handleShareAsset(asset.name)}
+                      className="p-1 text-gray-400 hover:text-blue-600 rounded"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => toast.success(`Downloading ${asset.name}`)}
+                      className="p-1 text-gray-400 hover:text-green-600 rounded"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteAsset(asset.id)}
+                      className="p-1 text-gray-400 hover:text-red-600 rounded"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -266,14 +371,7 @@ const CreativeStudio: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-2">
-            {[
-              { id: 1, name: 'Logo.png', type: 'image', size: '1.2 MB', modified: '2 days ago' },
-              { id: 2, name: 'Banner.jpg', type: 'image', size: '2.4 MB', modified: '3 days ago' },
-              { id: 3, name: 'Product_Demo.mp4', type: 'video', size: '8.7 MB', modified: '1 week ago' },
-              { id: 4, name: 'Brand_Guidelines.pdf', type: 'document', size: '3.5 MB', modified: '2 weeks ago' },
-              { id: 5, name: 'Team_Photo.jpg', type: 'image', size: '1.8 MB', modified: '3 weeks ago' },
-              { id: 6, name: 'Social_Post.png', type: 'image', size: '0.9 MB', modified: '1 month ago' }
-            ].map(asset => (
+            {assets.map(asset => (
               <div key={asset.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 <div className="flex items-center space-x-3">
                   {asset.type === 'image' ? (
@@ -285,7 +383,7 @@ const CreativeStudio: React.FC = () => {
                   )}
                   <div>
                     <h4 className="font-medium text-gray-900">{asset.name}</h4>
-                    <p className="text-gray-500 text-xs">{asset.size} • Modified {asset.modified}</p>
+                    <p className="text-gray-500 text-xs">{asset.size} • Modified {new Date(asset.created_at).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -296,13 +394,13 @@ const CreativeStudio: React.FC = () => {
                     <Download className="w-4 h-4" />
                   </button>
                   <button 
-                    onClick={() => toast.success(`Sharing ${asset.name}`)}
+                    onClick={() => handleShareAsset(asset.name)}
                     className="p-1 text-gray-400 hover:text-gray-600"
                   >
                     <Share2 className="w-4 h-4" />
                   </button>
                   <button 
-                    onClick={() => toast.success(`${asset.name} moved to trash`)}
+                    onClick={() => handleDeleteAsset(asset.id)}
                     className="p-1 text-gray-400 hover:text-red-600"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -483,13 +581,23 @@ const CreativeStudio: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center"
                   activeTab === tab.id
                     ? 'border-signal-blue text-signal-blue'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                {isUploading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Uploading...
+                  </>
+                ) : (
+                  'Upload'
+                )}
                 <span>{tab.label}</span>
               </button>
             );

@@ -1,12 +1,43 @@
 import React, { useState } from 'react';
-import { Mail, Users, Send, BarChart3, Zap, Eye, MousePointer } from 'lucide-react';
+import { Mail, Users, Send, BarChart3, Zap, Eye, MousePointer, Copy, Check, Edit, Trash2, Calendar, Clock, Image, Link, Plus, Download } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const EmailMarketing: React.FC = () => {
   const [activeTab, setActiveTab] = useState('campaigns');
+  const [showCreateCampaignModal, setShowCreateCampaignModal] = useState(false);
+  const [campaignForm, setCampaignForm] = useState({
+    name: '',
+    subject: '',
+    preview_text: '',
+    template_id: '',
+    list_ids: [] as string[],
+    scheduled_at: '',
+    campaign_type: 'newsletter' as 'newsletter' | 'promotional' | 'automated' | 'transactional'
+  });
+  const [emailContent, setEmailContent] = useState('');
   
-  const handleCreateCampaign = () => {
-    toast.success('Creating new email campaign');
+  const handleCreateCampaign = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!campaignForm.name || !campaignForm.subject) {
+      toast.error('Campaign name and subject are required');
+      return;
+    }
+    
+    // In a real implementation, we would save the campaign to the database
+    
+    toast.success('Email campaign created successfully!');
+    setShowCreateCampaignModal(false);
+    setCampaignForm({
+      name: '',
+      subject: '',
+      preview_text: '',
+      template_id: '',
+      list_ids: [],
+      scheduled_at: '',
+      campaign_type: 'newsletter'
+    });
+    setEmailContent('');
   };
   
   const handleCreateList = () => {
@@ -24,9 +55,42 @@ const EmailMarketing: React.FC = () => {
   const handleViewReport = (campaignId: number) => {
     toast.success(`Viewing report for campaign #${campaignId}`);
   };
-  
+
   const handleDuplicateCampaign = (campaignId: number) => {
-    toast.success(`Duplicating campaign #${campaignId}`);
+    // Find the campaign to duplicate
+    const campaignToDuplicate = campaigns.find(c => c.id === campaignId);
+    
+    if (campaignToDuplicate) {
+      // Set up the form with the duplicated campaign data
+      setCampaignForm({
+        name: `Copy of ${campaignToDuplicate.name}`,
+        subject: campaignToDuplicate.subject,
+        preview_text: campaignToDuplicate.preview_text || '',
+        template_id: '',
+        list_ids: [],
+        scheduled_at: '',
+        campaign_type: campaignToDuplicate.campaign_type as any
+      });
+      
+      // Open the create campaign modal
+      setShowCreateCampaignModal(true);
+      
+      toast.success(`Duplicating campaign: ${campaignToDuplicate.name}`);
+    }
+  };
+  
+  const handleToggleList = (listId: string) => {
+    if (campaignForm.list_ids.includes(listId)) {
+      setCampaignForm({
+        ...campaignForm,
+        list_ids: campaignForm.list_ids.filter(id => id !== listId)
+      });
+    } else {
+      setCampaignForm({
+        ...campaignForm,
+        list_ids: [...campaignForm.list_ids, listId]
+      });
+    }
   };
 
   const campaigns = [
@@ -186,13 +250,178 @@ const EmailMarketing: React.FC = () => {
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Email Campaigns</h3>
         <button 
-          onClick={handleCreateCampaign}
+          onClick={() => setShowCreateCampaignModal(true)}
           className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
         >
           <Send className="w-4 h-4 mr-2" />
           Create Campaign
         </button>
       </div>
+      
+      {/* Create Campaign Modal */}
+      {showCreateCampaignModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full mx-4 p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-gray-900">Create Email Campaign</h4>
+              <button 
+                onClick={() => setShowCreateCampaignModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+            
+            <form onSubmit={handleCreateCampaign} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Name</label>
+                  <input
+                    type="text"
+                    value={campaignForm.name}
+                    onChange={(e) => setCampaignForm({...campaignForm, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    placeholder="July Newsletter"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Campaign Type</label>
+                  <select
+                    value={campaignForm.campaign_type}
+                    onChange={(e) => setCampaignForm({...campaignForm, campaign_type: e.target.value as any})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  >
+                    <option value="newsletter">Newsletter</option>
+                    <option value="promotional">Promotional</option>
+                    <option value="automated">Automated</option>
+                    <option value="transactional">Transactional</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Subject Line</label>
+                  <input
+                    type="text"
+                    value={campaignForm.subject}
+                    onChange={(e) => setCampaignForm({...campaignForm, subject: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    placeholder="Your July Newsletter is here!"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Preview Text</label>
+                  <input
+                    type="text"
+                    value={campaignForm.preview_text}
+                    onChange={(e) => setCampaignForm({...campaignForm, preview_text: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    placeholder="Check out our latest updates and news..."
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Template</label>
+                  <select
+                    value={campaignForm.template_id}
+                    onChange={(e) => setCampaignForm({...campaignForm, template_id: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  >
+                    <option value="">Select Template</option>
+                    <option value="template-1">Newsletter Template</option>
+                    <option value="template-2">Promotional Email</option>
+                    <option value="template-3">Welcome Email</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Schedule (Optional)</label>
+                  <input
+                    type="datetime-local"
+                    value={campaignForm.scheduled_at}
+                    onChange={(e) => setCampaignForm({...campaignForm, scheduled_at: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Select Lists</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {emailLists.map(list => (
+                    <div key={list.id} className="flex items-center p-2 border border-gray-200 rounded-lg hover:bg-gray-50">
+                      <input
+                        type="checkbox"
+                        id={`list-${list.id}`}
+                        checked={campaignForm.list_ids.includes(list.id.toString())}
+                        onChange={() => handleToggleList(list.id.toString())}
+                        className="mr-2"
+                      />
+                      <label htmlFor={`list-${list.id}`} className="flex-1 cursor-pointer">
+                        <div className="font-medium text-gray-900">{list.name}</div>
+                        <div className="text-xs text-gray-600">{list.subscriber_count.toLocaleString()} subscribers</div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Content</label>
+                <div className="border border-gray-300 rounded-lg overflow-hidden">
+                  <div className="bg-gray-100 p-2 border-b border-gray-300 flex items-center space-x-2">
+                    <button type="button" className="p-1 text-gray-600 hover:text-gray-900 rounded hover:bg-gray-200">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button type="button" className="p-1 text-gray-600 hover:text-gray-900 rounded hover:bg-gray-200">
+                      <Image className="w-4 h-4" />
+                    </button>
+                    <button type="button" className="p-1 text-gray-600 hover:text-gray-900 rounded hover:bg-gray-200">
+                      <Link className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <textarea
+                    value={emailContent}
+                    onChange={(e) => setEmailContent(e.target.value)}
+                    className="w-full px-3 py-2 border-0 focus:ring-0"
+                    rows={10}
+                    placeholder="Enter your email content here..."
+                  ></textarea>
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-2 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateCampaignModal(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+                >
+                  {campaignForm.scheduled_at ? (
+                    <>
+                      <Calendar className="w-4 h-4" />
+                      <span>Schedule Campaign</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Create Campaign</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Campaign Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
@@ -435,14 +664,14 @@ const EmailMarketing: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <span className="text-gray-600">Revenue Generated: </span>
-                <span className="font-medium text-green-600">${automation.stats.revenue_generated.toLocaleString()}</span>
-              </div>
+                >
+                  View Report
               <div className="flex items-center space-x-2">
                 <button className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors">
                   Edit Flow
                 </button>
-                <button className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors">
-                  View Analytics
+                >
+                  Duplicate
                 </button>
               </div>
             </div>
