@@ -57,6 +57,13 @@ const NotificationBell: React.FC = () => {
   const fetchNotifications = async () => {
     if (!user) return;
     
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(user.id)) {
+      console.log('⚠️ Invalid UUID format for user ID, skipping notifications fetch');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -67,6 +74,10 @@ const NotificationBell: React.FC = () => {
         .limit(10);
       
       if (error) {
+        if (error.message?.includes('does not exist')) {
+          console.log('⚠️ Notifications table not found, using empty notifications');
+          return;
+        }
         throw error;
       }
       
