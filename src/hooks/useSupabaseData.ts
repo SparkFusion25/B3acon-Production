@@ -40,6 +40,18 @@ export const useSupabaseData = () => {
           dbHelpers.getLandingPages()
         ]);
 
+        // Check if any requests failed due to missing tables
+        const hasTableErrors = results.some(result => 
+          result.status === 'rejected' && 
+          result.reason?.message?.includes('does not exist')
+        );
+
+        if (hasTableErrors) {
+          console.log('⚠️ Database tables not found, using mock data');
+          setError('Database not fully configured. Using demo data.');
+          return;
+        }
+
         const [clientsResult, leadsResult, affiliatesResult, emailCampaignsResult, landingPagesResult] = results;
 
         setData({
