@@ -664,13 +664,16 @@ const EmailMarketing: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <span className="text-gray-600">Revenue Generated: </span>
-                >
-                  View Report
+                <span className="font-medium text-green-600">${automation.stats.revenue_generated.toLocaleString()}</span>
+              </div>
               <div className="flex items-center space-x-2">
                 <button className="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 transition-colors">
+                  View Report
+                </button>
+                <button className="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 transition-colors">
                   Edit Flow
                 </button>
-                >
+                <button className="px-3 py-1 bg-gray-600 text-white rounded text-xs hover:bg-gray-700 transition-colors">
                   Duplicate
                 </button>
               </div>
