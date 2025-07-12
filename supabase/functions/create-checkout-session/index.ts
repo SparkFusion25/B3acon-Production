@@ -1,5 +1,5 @@
-import { serve } from 'npm:http/server';
-import Stripe from 'npm:stripe@12.18.0';
+import { serve } from "npm:http/server";
+import Stripe from "npm:stripe@12.18.0";
 
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
 const stripe = new Stripe(stripeSecretKey || '', {
@@ -7,9 +7,9 @@ const stripe = new Stripe(stripeSecretKey || '', {
 });
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { BarChart3, TrendingUp, Users, Target, Calendar, Download } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 interface AnalyticsData {
   totalClients: number;
@@ -18,7 +20,50 @@ interface PerformanceAnalyticsProps {
 
 const PerformanceAnalytics = ({ analytics }: PerformanceAnalyticsProps) => {
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
-  const [selectedMetric, setSelectedMetric] = useState('revenue');
+  const [selectedMetric, setSelectedMetric] = useState<string>('revenue');
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportReport = async () => {
+    setIsExporting(true);
+    try {
+      // In a real implementation, we would fetch data from the database and generate a report
+      // For now, we'll simulate a delay and show a success message
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Create a CSV string with some sample data
+      const headers = ['Date', 'Metric', 'Value'];
+      const rows = [
+        ['2025-01-01', 'Revenue', '45000'],
+        ['2025-01-02', 'Revenue', '48000'],
+        ['2025-01-03', 'Revenue', '52000'],
+        ['2025-01-04', 'Revenue', '49000'],
+        ['2025-01-05', 'Revenue', '51000']
+      ];
+      
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+      
+      // Create a blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `analytics_report_${timeRange}_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success('Analytics report exported successfully');
+    } catch (error) {
+      console.error('Error exporting report:', error);
+      toast.error('Failed to export analytics report');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const metrics = [
     {
@@ -105,7 +150,7 @@ const PerformanceAnalytics = ({ analytics }: PerformanceAnalyticsProps) => {
           
           <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
             <Download className="w-4 h-4" />
-            <span>Export Report</span>
+            <span>{isExporting ? 'Exporting...' : 'Export Report'}</span>
           </button>
         </div>
       </div>
@@ -117,7 +162,8 @@ const PerformanceAnalytics = ({ analytics }: PerformanceAnalyticsProps) => {
             key={metric.id}
             className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer transition-all hover:shadow-md ${
               selectedMetric === metric.id ? 'ring-2 ring-signal-blue' : ''
-            }`}
+            onClick={handleExportReport}
+            disabled={isExporting}
             onClick={() => setSelectedMetric(metric.id)}
           >
             <div className="flex items-center justify-between mb-4">

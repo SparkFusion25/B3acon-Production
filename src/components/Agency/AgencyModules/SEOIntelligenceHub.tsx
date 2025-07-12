@@ -8,6 +8,48 @@ const SEOIntelligenceHub: React.FC = () => {
   const [domainUrl, setDomainUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportReport = async () => {
+    setIsExporting(true);
+    try {
+      // In a real implementation, we would fetch data from the database and generate a report
+      // For now, we'll simulate a delay and show a success message
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Create a CSV string with some sample data
+      const headers = ['Domain', 'Metric', 'Value'];
+      const rows = [
+        [domainUrl, 'Authority', analysisResults?.authority || '0'],
+        [domainUrl, 'Traffic', analysisResults?.traffic || '0'],
+        [domainUrl, 'Keywords', analysisResults?.keywords || '0'],
+        [domainUrl, 'Backlinks', analysisResults?.backlinks || '0']
+      ];
+      
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+      
+      // Create a blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `seo_analysis_${domainUrl}_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success('SEO analysis report exported successfully');
+    } catch (error) {
+      console.error('Error exporting report:', error);
+      toast.error('Failed to export SEO analysis report');
+    } finally {
+      setIsExporting(false);
+    }
+  };
   const [keyword, setKeyword] = useState('');
   const [isSearchingKeyword, setIsSearchingKeyword] = useState(false);
   const [keywordResults, setKeywordResults] = useState<any[]>([]);
@@ -272,11 +314,12 @@ const SEOIntelligenceHub: React.FC = () => {
         <div className="flex items-center space-x-2">
           {analysisResults && (
             <button 
-              onClick={() => toast.success('Exporting analysis report')}
+              onClick={handleExportReport}
+              disabled={isExporting}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
             >
               <Download className="w-4 h-4" />
-              <span>Export</span>
+              <span>{isExporting ? 'Exporting...' : 'Export'}</span>
             </button>
           )}
         </div>

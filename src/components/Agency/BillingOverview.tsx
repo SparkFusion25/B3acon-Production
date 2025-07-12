@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DollarSign, CreditCard, FileText, TrendingUp, Download, CheckCircle, Plus, Minus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { stripeHelpers } from '../../lib/stripe';
 
 interface Invoice {
   id: string;
@@ -30,6 +31,25 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'growth' | 'pro'>('growth');
   const [selectedAddons, setSelectedAddons] = useState<string[]>(['landing_page_builder']);
 
+  const handleManageSubscription = async () => {
+    try {
+      // In a real implementation, we would get the customer ID from the user's profile
+      const customerId = 'cus_example123'; // Replace with actual customer ID
+      
+      // Get customer portal session
+      const { url } = await stripeHelpers.getCustomerPortalSession(
+        customerId,
+        window.location.origin + '/billing'
+      );
+      
+      // Redirect to customer portal
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error opening customer portal:', error);
+      toast.error('Failed to open subscription management');
+    }
+  };
+
   const handleExportInvoices = () => {
     toast.success('Exporting invoices to CSV');
   };
@@ -45,9 +65,33 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
   const handleDownloadInvoice = (invoiceId: string) => {
     toast.success(`Downloading invoice ${invoiceId}`);
   };
-  
-  const handleUpdateSubscription = () => {
-    toast.success(`Subscription updated to ${selectedPlan} plan with ${selectedAddons.length} add-ons`);
+
+  const handleUpdateSubscription = async () => {
+    try {
+      // In a real implementation, we would create a checkout session for the new subscription
+      const planPrices = {
+        starter: 'price_starter',
+        growth: 'price_growth',
+        pro: 'price_pro'
+      };
+      
+      const priceId = planPrices[selectedPlan];
+      
+      // Create a checkout session
+      const { sessionId, url } = await stripeHelpers.createCheckoutSession(
+        priceId,
+        `${window.location.origin}/billing/success`,
+        `${window.location.origin}/billing/cancel`
+      );
+      
+      // Redirect to Stripe Checkout
+      window.location.href = url;
+      
+      toast.success(`Updating subscription to ${selectedPlan} plan with ${selectedAddons.length} add-ons`);
+    } catch (error) {
+      console.error('Error updating subscription:', error);
+      toast.error('Failed to update subscription');
+    }
   };
 
   const filteredInvoices = billing.recentInvoices.filter(invoice => 

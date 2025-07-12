@@ -1,7 +1,7 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 // Load Stripe with the publishable key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51Rj8q34FURD71tBcTVDxWZBc9IXI8Nj3fD62GfTTsUmfaNxtN7BmxqQ4bFHbgCX5jJCkVDLvRgOX5gwbrDTg8TF700SMllF0B5');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 export { stripePromise };
 

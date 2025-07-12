@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp } from 'lucide-react';
+import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp, Link as LinkIcon } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
   return (
@@ -142,7 +142,7 @@ const LandingPage: React.FC = () => {
                 step: '02',
                 title: 'Connect',
                 description: 'Connect your marketing tools and import your client data to get started.',
-                icon: <Link className="w-6 h-6 text-white" />
+                icon: <LinkIcon className="w-6 h-6 text-white" />
               },
               {
                 step: '03',

@@ -1,6 +1,6 @@
-import { serve } from 'npm:http/server';
-import Stripe from 'npm:stripe@12.18.0';
-import { createClient } from 'npm:@supabase/supabase-js@2.38.4';
+import { serve } from "npm:http/server";
+import Stripe from "npm:stripe@12.18.0";
+import { createClient } from "npm:@supabase/supabase-js@2.38.4";
 
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
 const stripeWebhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET');
@@ -14,9 +14,9 @@ const stripe = new Stripe(stripeSecretKey || '', {
 const supabase = createClient(supabaseUrl || '', supabaseServiceKey || '');
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CreditCard, DollarSign, Download, Calendar, Plus, Check, ArrowRight, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { stripeHelpers } from '../../lib/stripe';
 import { toast } from 'react-hot-toast';
 
 const ClientBilling: React.FC = () => {
@@ -18,9 +19,43 @@ const ClientBilling: React.FC = () => {
   const handleDownloadInvoice = (invoiceId: string) => {
     toast.success(`Downloading invoice ${invoiceId}`);
   };
+
+  const handleManageSubscription = async () => {
+    try {
+      // In a real implementation, we would get the customer ID from the user's profile
+      const customerId = 'cus_example123'; // Replace with actual customer ID
+      
+      // Get customer portal session
+      const { url } = await stripeHelpers.getCustomerPortalSession(
+        customerId,
+        window.location.origin + '/billing'
+      );
+      
+      // Redirect to customer portal
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error opening customer portal:', error);
+      toast.error('Failed to open subscription management');
+    }
+  };
   
-  const handleUpdatePlan = () => {
-    toast.success('Updating subscription plan');
+  const handleUpdatePlan = async () => {
+    try {
+      // In a real implementation, we would get the customer ID from the user's profile
+      const customerId = 'cus_example123'; // Replace with actual customer ID
+      
+      // Get customer portal session
+      const { url } = await stripeHelpers.getCustomerPortalSession(
+        customerId,
+        window.location.origin + '/billing'
+      );
+      
+      // Redirect to customer portal
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error opening customer portal:', error);
+      toast.error('Failed to update subscription plan');
+    }
   };
   
   const handleAddPaymentMethod = () => {
@@ -261,7 +296,7 @@ const ClientBilling: React.FC = () => {
           <div 
             key={plan.id} 
             className={`bg-white rounded-xl shadow-sm border ${
-              plan.recommended ? 'border-signal-blue ring-2 ring-signal-blue' : 'border-gray-200'
+            onClick={() => handleManageSubscription()}
             } p-6 relative`}
           >
             {plan.recommended && (
@@ -292,7 +327,7 @@ const ClientBilling: React.FC = () => {
             </div>
             
             <button 
-              className={`w-full py-2 rounded-lg font-medium transition-all flex items-center justify-center space-x-2 ${
+              onClick={handleManageSubscription}
                 plan.id === 'professional' 
                   ? 'bg-gray-100 text-gray-700 cursor-not-allowed'
                   : 'bg-gradient-to-r from-signal-blue to-beacon-orange text-white hover:shadow-lg'

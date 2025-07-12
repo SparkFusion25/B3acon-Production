@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Package, Check, Star, ArrowRight, CreditCard, ShoppingCart } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { stripePromise, stripeHelpers } from '../../lib/stripe';
+import { toast } from 'react-hot-toast';
 
 const ClientPurchase: React.FC = () => {
   const { user } = useAuth();
