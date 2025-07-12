@@ -211,21 +211,18 @@ export const dbHelpers = {
     console.log('🔍 Testing Supabase connection...');
     
     try {
-      // Try a simple query to test the connection - use a table that should exist
+      // Try a simple query to test the connection - check if any tables exist
       const { data, error } = await supabase
         .from('profiles')
         .select('id')
         .limit(1);
       
       if (error) {
-        // If profiles table doesn't exist either, just test auth
-        console.warn('⚠️ Tables not found, testing basic connection...');
-        const { data: authData, error: authError } = await supabase.auth.getSession();
-        if (authError) {
-          throw new Error(`Connection test failed: ${authError.message}`);
+        // If profiles table doesn't exist, the database needs setup
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          throw new Error('TABLE_NOT_EXISTS');
         }
-        console.log('✅ Basic Supabase connection successful (tables need setup)');
-        return true;
+        throw new Error(`Connection test failed: ${error.message}`);
       }
       
       console.log('✅ Supabase connection successful!', data);
