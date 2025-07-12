@@ -136,8 +136,8 @@ const getMockDataForEndpoint = (endpoint: string) => {
 // Add a test function to verify API connectivity
 export const testSeoApi = async () => {
   try {
-    // Use mock data for testing to avoid actual API calls
-    const result = getMockDataForEndpoint('domain-data');
+    // Try to make a simple API call to test connectivity
+    const result = await fetchWithAuth('domain-data', { domain: 'example.com' });
     return {
       success: true,
       data: result
@@ -149,6 +149,9 @@ export const testSeoApi = async () => {
 
 // SEO API client
 export const seoApi = {
+  // Test API connection
+  testConnection: () => testSeoApi(),
+  
   // Onpage SEO analysis
   getOnpageAnalysis: (domain: string) => 
     fetchWithAuth('onpageseo.php', { domain }, true),

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Search, TrendingUp, BarChart3, Globe, ExternalLink, AlertCircle, Check, RefreshCw, Download } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { supabase } from '../../../lib/supabase';
-import seoApi, { testSeoApi } from '../../../lib/seoApi';
+import { supabase } from '../../../lib/supabase'; 
+import seoApi from '../../../lib/seoApi';
 
 const SEOIntelligenceHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -15,10 +15,9 @@ const SEOIntelligenceHub: React.FC = () => {
   React.useEffect(() => {
     const checkApiConnection = async () => {
       try {
-        const result = await testSeoApi();
+        const result = await seoApi.testConnection();
         if (result.success) {
           setApiStatus('connected');
-        
           console.log('SEO API connected successfully');
         } else {
           setApiStatus('error');
