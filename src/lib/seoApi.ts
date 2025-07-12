@@ -1,8 +1,8 @@
 // SEO API client for frontend
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const RAPIDAPI_KEY = 'a44cbcb368msh36010935c100d19p190087jsnea195e47cb11';
-const RAPIDAPI_HOST = 'website-analyze-and-seo-audit-pro.p.rapidapi.com';
+const RAPIDAPI_KEY = 'a44cbcb368msh36010935c100d19p190087jsnea195e47cb11'; 
+const RAPIDAPI_HOST = 'website-analyze-and-seo-audit-pro.p.rapidapi.com'; 
 
 // Base URL for the SEO API edge function
 const SEO_API_BASE_URL = `${SUPABASE_URL}/functions/v1/seo-api`;
@@ -23,7 +23,7 @@ const fetchWithAuth = async (endpoint: string, params: Record<string, string>, u
     
     if (useRapidApi) {
       // Make the request to RapidAPI
-      url = `https://${RAPIDAPI_HOST}/${endpoint}.php?${searchParams.toString()}`;
+      url = `https://${RAPIDAPI_HOST}/${endpoint}?${searchParams.toString()}`;
       headers = {
         'x-rapidapi-host': RAPIDAPI_HOST,
         'x-rapidapi-key': RAPIDAPI_KEY
@@ -71,7 +71,7 @@ const fetchWithAuth = async (endpoint: string, params: Record<string, string>, u
 // Helper function to provide mock data when API fails
 const getMockDataForEndpoint = (endpoint: string) => {
   // Basic mock data structure for each endpoint
-  const mockData = {
+  const mockData: Record<string, any> = {
     'onpage-analyze': {
       status: 'success',
       domain: 'example.com',
@@ -104,11 +104,9 @@ const getMockDataForEndpoint = (endpoint: string) => {
     'domain-data': {
       status: 'success',
       domain: 'example.com',
-      metrics: {
-        da: 45,
-        pa: 38,
-        spam_score: 2
-      }
+      domain_authority: 45,
+      page_authority: 38,
+      spam_score: 2
     },
     'backlinks': {
       status: 'success',
@@ -151,44 +149,44 @@ export const testSeoApi = async () => {
 // SEO API client
 export const seoApi = {
   // Onpage SEO analysis
-  getOnpageAnalysis: (domain: string) =>
-    fetchWithAuth('onpageseo', { domain }, true),
+  getOnpageAnalysis: (domain: string) => 
+    fetchWithAuth('onpageseo.php', { domain }, true),
   
   // Onpage SEO with suggestions
   getOnpageSuggestions: (domain: string) =>
-    fetchWithAuth('onpageseosuggestions', { domain }, true),
+    fetchWithAuth('onpageseosuggestions.php', { domain }, true),
   
   // Page speed data
   getSpeedData: (url: string) => 
-    fetchWithAuth('loadingspeed', { url }, true),
+    fetchWithAuth('loadingspeed.php', { url }, true),
   
   // Domain data
   getDomainData: (domain: string) => 
-    fetchWithAuth('domaindata', { domain }, true),
+    fetchWithAuth('domaindata.php', { domain }, true),
   
   // Backlinks
   getBacklinks: (domain: string) => 
-    fetchWithAuth('backlinks', { domain }, true),
+    fetchWithAuth('backlinks.php', { domain }, true),
   
   // URL specific backlinks
   getUrlBacklinks: (url: string) => 
-    fetchWithAuth('urlbacklinks', { url }, true),
+    fetchWithAuth('urlbacklinks.php', { url }, true),
   
   // New backlinks
   getNewBacklinks: (domain: string) => 
-    fetchWithAuth('newbacklinks', { domain }, true),
+    fetchWithAuth('newbacklinks.php', { domain }, true),
   
   // Poor backlinks
   getPoorBacklinks: (domain: string) => 
-    fetchWithAuth('poorbacklinks', { domain }, true),
+    fetchWithAuth('poorbacklinks.php', { domain }, true),
   
   // Referral domains
   getReferralDomains: (domain: string) => 
-    fetchWithAuth('referraldomains', { domain }, true),
+    fetchWithAuth('referraldomains.php', { domain }, true),
   
   // Top keywords
   getTopKeywords: (domain: string) => 
-    fetchWithAuth('topsearchkeywords', { domain }, true)
+    fetchWithAuth('topsearchkeywords.php', { domain }, true)
 };
 
 export default seoApi;
