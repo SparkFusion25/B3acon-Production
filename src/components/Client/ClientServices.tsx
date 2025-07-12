@@ -111,7 +111,7 @@ const ClientServices: React.FC = () => {
   const handlePurchaseService = async (service: any) => {
     try {
       setIsProcessing(true);
-      toast.success(`Purchasing ${service.name} service`);
+      toast.loading(`Processing purchase for ${service.name}...`);
       
       // Create a checkout session
       const { sessionId, url } = await stripeHelpers.createCheckoutSession(
@@ -120,19 +120,15 @@ const ClientServices: React.FC = () => {
         `${window.location.origin}/services/cancel`
       );
       
-      // Redirect to Stripe Checkout
-      const stripe = await stripePromise;
-      if (stripe) {
-        const { error } = await stripe.redirectToCheckout({ sessionId });
-        if (error) {
-          console.error('Error redirecting to checkout:', error);
-        }
-      } else {
-        // Fallback if Stripe isn't loaded
-        window.location.href = url;
-      }
+      // For demo purposes, show success message instead of redirecting
+      toast.dismiss();
+      toast.success(`Demo: ${service.name} service would be purchased for $${service.price}/month`);
+      
+      // In production, you would redirect to the checkout URL:
+      // window.location.href = url;
     } catch (error) {
       console.error('Error purchasing service:', error);
+      toast.error('Purchase failed. This is a demo - Stripe integration needs to be configured.');
     } finally {
       setIsProcessing(false);
     }

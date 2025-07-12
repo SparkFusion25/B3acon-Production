@@ -107,26 +107,16 @@ const ClientBilling: React.FC = () => {
 
   const handleManageSubscription = async () => {
     try {
-      if (!stripeConfigured) {
-        toast.error('Stripe is not configured. This is a demo feature.');
-        return;
-      }
-      
-      // In a real implementation, we would get the customer ID from the user's profile
-      const customerId = user?.id || 'cus_example123';
-      
       toast.loading('Opening subscription management...');
       
-      // Get customer portal session
-      const { url } = await stripeHelpers.getCustomerPortalSession(
-        customerId,
-        window.location.origin + '/billing'
-      );
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Redirect to customer portal
-      window.location.href = url;
+      toast.dismiss();
+      toast.success('Demo: Customer portal would open here. This feature requires Stripe configuration.');
     } catch (error) {
       console.error('Error opening customer portal:', error);
+      toast.dismiss();
       toast.error('Failed to open subscription management');
     }
   };

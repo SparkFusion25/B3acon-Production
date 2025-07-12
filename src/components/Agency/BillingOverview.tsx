@@ -86,35 +86,16 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
 
   const handleUpdateSubscription = async () => {
     try {
-      if (!stripeConfigured) {
-        toast.success(`Simulating subscription update to ${selectedPlan} plan with ${selectedAddons.length} add-ons`);
-        return;
-      }
+      toast.loading('Updating subscription...');
       
-      // In a real implementation, we would create a checkout session for the new subscription
-      const planPrices = {
-        starter: 'price_starter',
-        growth: 'price_growth',
-        pro: 'price_pro'
-      };
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const priceId = planPrices[selectedPlan];
-      
-      toast.loading('Creating checkout session...');
-      
-      // Create a checkout session
-      const { sessionId, url } = await stripeHelpers.createCheckoutSession(
-        priceId,
-        `${window.location.origin}/billing/success`,
-        `${window.location.origin}/billing/cancel`
-      );
-      
-      // Redirect to Stripe Checkout
-      window.location.href = url;
-      
-      toast.success(`Updating subscription to ${selectedPlan} plan with ${selectedAddons.length} add-ons`);
+      toast.dismiss();
+      toast.success(`Demo: Subscription updated to ${selectedPlan} plan with ${selectedAddons.length} add-ons. Total: $${calculateTotal()}/month`);
     } catch (error) {
       console.error('Error updating subscription:', error);
+      toast.dismiss();
       toast.error('Failed to update subscription');
     }
   };
