@@ -1,14 +1,16 @@
 // SEO API client for frontend
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const RAPIDAPI_KEY = 'a44cbcb368msh36010935c100d19p190087jsnea195e47cb11';
+const RAPIDAPI_HOST = 'website-analyze-and-seo-audit-pro.p.rapidapi.com';
 
 // Base URL for the SEO API edge function
 const SEO_API_BASE_URL = `${SUPABASE_URL}/functions/v1/seo-api`;
 
 // Helper function to make API requests
-const fetchWithAuth = async (endpoint: string, params: Record<string, string>) => {
+const fetchWithAuth = async (endpoint: string, params: Record<string, string>, useRapidApi: boolean = false) => {
   try {
-    console.log(`Making SEO API request to: ${endpoint} with params:`, params);
+    console.log(`Making SEO API request to: ${useRapidApi ? 'RapidAPI' : 'Edge Function'} - ${endpoint} with params:`, params);
     
     // Convert params to URL search params
     const searchParams = new URLSearchParams();
@@ -16,16 +18,30 @@ const fetchWithAuth = async (endpoint: string, params: Record<string, string>) =
       if (value) searchParams.append(key, value);
     });
 
-    // Make the request to the edge function
-    const url = `${SEO_API_BASE_URL}/${endpoint}?${searchParams.toString()}`;
+    let url;
+    let headers: Record<string, string>;
+    
+    if (useRapidApi) {
+      // Make the request to RapidAPI
+      url = `https://${RAPIDAPI_HOST}/${endpoint}.php?${searchParams.toString()}`;
+      headers = {
+        'x-rapidapi-host': RAPIDAPI_HOST,
+        'x-rapidapi-key': RAPIDAPI_KEY
+      };
+    } else {
+      // Make the request to the edge function
+      url = `${SEO_API_BASE_URL}/${endpoint}?${searchParams.toString()}`;
+      headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      };
+    }
+    
     console.log(`Full request URL: ${url}`);
     
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-      }
+      headers
     });
 
     if (!response.ok) {
@@ -122,7 +138,7 @@ const getMockDataForEndpoint = (endpoint: string) => {
 // Add a test function to verify API connectivity
 export const testSeoApi = async () => {
   try {
-    const result = await fetchWithAuth('domain-data', { domain: 'example.com' });
+    const result = await fetchWithAuth('domain-data', { domain: 'example.com' }, false);
     return {
       success: true,
       data: result
@@ -135,40 +151,44 @@ export const testSeoApi = async () => {
 // SEO API client
 export const seoApi = {
   // Onpage SEO analysis
-  getOnpageAnalysis: (domain: string) => 
-    fetchWithAuth('onpage-analyze', { domain }),
+  getOnpageAnalysis: (domain: string) =>
+    fetchWithAuth('onpageseo', { domain }, true),
+  
+  // Onpage SEO with suggestions
+  getOnpageSuggestions: (domain: string) =>
+    fetchWithAuth('onpageseosuggestions', { domain }, true),
   
   // Page speed data
   getSpeedData: (url: string) => 
-    fetchWithAuth('speed-data', { url }),
+    fetchWithAuth('loadingspeed', { url }, true),
   
   // Domain data
   getDomainData: (domain: string) => 
-    fetchWithAuth('domain-data', { domain }),
+    fetchWithAuth('domaindata', { domain }, true),
   
   // Backlinks
   getBacklinks: (domain: string) => 
-    fetchWithAuth('backlinks', { domain }),
+    fetchWithAuth('backlinks', { domain }, true),
   
   // URL specific backlinks
   getUrlBacklinks: (url: string) => 
-    fetchWithAuth('url-backlinks', { url }),
+    fetchWithAuth('urlbacklinks', { url }, true),
   
   // New backlinks
   getNewBacklinks: (domain: string) => 
-    fetchWithAuth('new-backlinks', { domain }),
+    fetchWithAuth('newbacklinks', { domain }, true),
   
   // Poor backlinks
   getPoorBacklinks: (domain: string) => 
-    fetchWithAuth('poor-backlinks', { domain }),
+    fetchWithAuth('poorbacklinks', { domain }, true),
   
   // Referral domains
   getReferralDomains: (domain: string) => 
-    fetchWithAuth('referral-domains', { domain }),
+    fetchWithAuth('referraldomains', { domain }, true),
   
   // Top keywords
   getTopKeywords: (domain: string) => 
-    fetchWithAuth('top-keywords', { domain })
+    fetchWithAuth('topsearchkeywords', { domain }, true)
 };
 
 export default seoApi;
