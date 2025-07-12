@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search } from 'lucide-react';
+import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import amazonApi from '../../../lib/amazonApi';
 
 const ShopifyIntegration: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -15,8 +16,12 @@ const ShopifyIntegration: React.FC = () => {
     products: true,
     customers: true,
     orders: true,
-    inventory: true
+    inventory: true,
+    amazon: false
   });
+  const [amazonProducts, setAmazonProducts] = useState<any[]>([]);
+  const [isLoadingAmazon, setIsLoadingAmazon] = useState(false);
+  const [amazonSearchQuery, setAmazonSearchQuery] = useState('');
   
   const handleConnectShopify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +68,30 @@ const ShopifyIntegration: React.FC = () => {
       console.error('Error connecting to Shopify:', error);
       setIsConnecting(false);
       toast.error('Failed to connect to Shopify store');
+    }
+  };
+  
+  const handleSearchAmazon = async () => {
+    if (!amazonSearchQuery.trim()) {
+      toast.error('Please enter a search query');
+      return;
+    }
+    
+    setIsLoadingAmazon(true);
+    try {
+      const results = await amazonApi.searchProducts(amazonSearchQuery);
+      if (results && results.products) {
+        setAmazonProducts(results.products);
+        toast.success(`Found ${results.products.length} products on Amazon`);
+      } else {
+        setAmazonProducts([]);
+        toast.error('No products found or API error occurred');
+      }
+    } catch (error) {
+      console.error('Error searching Amazon products:', error);
+      toast.error('Failed to search Amazon products');
+    } finally {
+      setIsLoadingAmazon(false);
     }
   };
   
@@ -445,6 +474,77 @@ const ShopifyIntegration: React.FC = () => {
     </div>
   );
 
+  const renderAmazon = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900">Amazon Products</h3>
+        <div className="flex space-x-2">
+          <div className="relative">
+            <input
+              type="text"
+              value={amazonSearchQuery}
+              onChange={(e) => setAmazonSearchQuery(e.target.value)}
+              placeholder="Search Amazon products..."
+              className="pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+              onKeyPress={(e) => e.key === 'Enter' && handleSearchAmazon()}
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          </div>
+          <button 
+            onClick={handleSearchAmazon}
+            disabled={isLoadingAmazon}
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            {isLoadingAmazon ? 'Searching...' : 'Search'}
+          </button>
+        </div>
+      </div>
+      
+      {isLoadingAmazon ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-signal-blue"></div>
+        </div>
+      ) : amazonProducts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {amazonProducts.map((product, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="aspect-video bg-gray-100">
+                {product.image_url ? (
+                  <img src={product.image_url} alt={product.title} className="w-full h-full object-contain" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ShoppingBasket className="w-12 h-12 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <h4 className="font-medium text-gray-900 mb-2 line-clamp-2">{product.title}</h4>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-gray-900">{product.price}</span>
+                  <span className="text-sm text-yellow-600">★ {product.rating || 'N/A'}</span>
+                </div>
+                <button 
+                  onClick={() => toast.success(`Product ${product.asin} would be imported to your store`)}
+                  className="w-full mt-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+                >
+                  Import to Store
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="text-center py-12">
+            <ShoppingBasket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h4 className="text-lg font-medium text-gray-900 mb-2">No Amazon Products</h4>
+            <p className="text-gray-600 mb-4">Search for products to import from Amazon.</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   const renderAnalytics = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -542,6 +642,7 @@ const ShopifyIntegration: React.FC = () => {
   const tabs = [
     { id: 'overview', label: 'Overview', icon: ShoppingBag },
     { id: 'products', label: 'Products', icon: Package },
+    { id: 'amazon', label: 'Amazon', icon: ShoppingBasket },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 }
   ];
 
@@ -579,6 +680,7 @@ const ShopifyIntegration: React.FC = () => {
       <div>
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'products' && renderProducts()}
+        {activeTab === 'amazon' && renderAmazon()}
         {activeTab === 'analytics' && renderAnalytics()}
       </div>
     </div>
