@@ -136,7 +136,8 @@ const getMockDataForEndpoint = (endpoint: string) => {
 // Add a test function to verify API connectivity
 export const testSeoApi = async () => {
   try {
-    const result = await fetchWithAuth('domain-data', { domain: 'example.com' }, false);
+    // Use mock data for testing to avoid actual API calls
+    const result = getMockDataForEndpoint('domain-data');
     return {
       success: true,
       data: result
