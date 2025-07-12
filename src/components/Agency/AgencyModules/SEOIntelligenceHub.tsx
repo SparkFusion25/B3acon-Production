@@ -17,7 +17,7 @@ const SEOIntelligenceHub: React.FC = () => {
       try {
         const result = await seoApi.testSeoApi();
         if (result.success) {
-          setApiStatus('connected');
+        
           console.log('SEO API connected successfully');
         } else {
           setApiStatus('error');
@@ -66,14 +66,17 @@ const SEOIntelligenceHub: React.FC = () => {
         // Get domain data
         const domainData = await seoApi.getDomainData(domain);
         
-        // Get on-page analysis
-        const onPageData = await seoApi.getOnpageAnalysis(domain);
+        // Get on-page analysis with suggestions
+        const onPageData = await seoApi.getOnpageSuggestions(domain);
         
         // Get speed data
         const speedData = await seoApi.getSpeedData(normalizedUrl);
         
         // Get backlinks
         const backlinksData = await seoApi.getBacklinks(domain);
+        
+        // Get top keywords
+        const keywordsData = await seoApi.getTopKeywords(domain);
         
         // Combine results
         const results = {
@@ -82,8 +85,9 @@ const SEOIntelligenceHub: React.FC = () => {
           timestamp: new Date().toISOString(),
           domain_data: domainData,
           onpage: onPageData,
-          speed: speedData,
-          backlinks: backlinksData
+          speed: speedData, 
+          backlinks: backlinksData,
+          keywords: keywordsData
         };
         
         // Save to database
