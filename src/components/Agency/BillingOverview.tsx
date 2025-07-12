@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DollarSign, CreditCard, FileText, TrendingUp, Download, CheckCircle, Plus, Minus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { stripeHelpers } from '../../lib/stripe';
+import { stripePromise, stripeHelpers } from '../../lib/stripe';
 
 interface Invoice {
   id: string;
@@ -30,11 +30,29 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
   const [activeTab, setActiveTab] = useState<'invoices' | 'plans' | 'addons'>('invoices');
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'growth' | 'pro'>('growth');
   const [selectedAddons, setSelectedAddons] = useState<string[]>(['landing_page_builder']);
+  const [stripeConfigured, setStripeConfigured] = useState(false);
+  
+  // Check if Stripe is configured
+  useState(() => {
+    const isConfigured = stripeHelpers.isConfigured();
+    setStripeConfigured(isConfigured);
+    
+    if (!isConfigured) {
+      console.warn('Stripe is not fully configured. Some billing features will be limited.');
+    }
+  });
 
   const handleManageSubscription = async () => {
     try {
+      if (!stripeConfigured) {
+        toast.error('Stripe is not configured. This is a demo feature.');
+        return;
+      }
+      
       // In a real implementation, we would get the customer ID from the user's profile
       const customerId = 'cus_example123'; // Replace with actual customer ID
+      
+      toast.loading('Opening customer portal...');
       
       // Get customer portal session
       const { url } = await stripeHelpers.getCustomerPortalSession(
@@ -68,6 +86,11 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
 
   const handleUpdateSubscription = async () => {
     try {
+      if (!stripeConfigured) {
+        toast.success(`Simulating subscription update to ${selectedPlan} plan with ${selectedAddons.length} add-ons`);
+        return;
+      }
+      
       // In a real implementation, we would create a checkout session for the new subscription
       const planPrices = {
         starter: 'price_starter',
@@ -76,6 +99,8 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
       };
       
       const priceId = planPrices[selectedPlan];
+      
+      toast.loading('Creating checkout session...');
       
       // Create a checkout session
       const { sessionId, url } = await stripeHelpers.createCheckoutSession(

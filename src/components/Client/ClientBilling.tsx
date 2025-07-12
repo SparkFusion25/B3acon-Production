@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CreditCard, Download, Calendar, DollarSign, FileText, AlertCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { stripePromise, stripeHelpers } from '../../lib/stripe';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface Invoice {
   id: string;
@@ -32,14 +35,24 @@ interface BillingData {
 }
 
 const ClientBilling: React.FC = () => {
+  const { user } = useAuth();
   const [billingData, setBillingData] = useState<BillingData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stripeConfigured, setStripeConfigured] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'invoices' | 'payment-methods'>('overview');
 
   useEffect(() => {
     // Simulate loading billing data
     const loadBillingData = async () => {
       try {
+        // Check if Stripe is configured
+        const isStripeConfigured = stripeHelpers.isConfigured();
+        setStripeConfigured(isStripeConfigured);
+        
+        if (!isStripeConfigured) {
+          console.warn('Stripe is not fully configured. Using mock data.');
+        }
+        
         // Mock data - replace with actual API call
         const mockData: BillingData = {
           currentBalance: 0,
@@ -91,6 +104,32 @@ const ClientBilling: React.FC = () => {
 
     loadBillingData();
   }, []);
+
+  const handleManageSubscription = async () => {
+    try {
+      if (!stripeConfigured) {
+        toast.error('Stripe is not configured. This is a demo feature.');
+        return;
+      }
+      
+      // In a real implementation, we would get the customer ID from the user's profile
+      const customerId = user?.id || 'cus_example123';
+      
+      toast.loading('Opening subscription management...');
+      
+      // Get customer portal session
+      const { url } = await stripeHelpers.getCustomerPortalSession(
+        customerId,
+        window.location.origin + '/billing'
+      );
+      
+      // Redirect to customer portal
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error opening customer portal:', error);
+      toast.error('Failed to open subscription management');
+    }
+  };
 
   const getStatusColor = (status: Invoice['status']) => {
     switch (status) {
@@ -147,7 +186,7 @@ const ClientBilling: React.FC = () => {
             { id: 'payment-methods', name: 'Payment Methods', icon: CreditCard }
           ].map((tab) => (
             <button
-              key={tab.id}
+              onClick={() => handleManageSubscription()}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === tab.id
