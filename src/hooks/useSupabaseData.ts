@@ -51,7 +51,6 @@ export const useSupabaseData = () => {
           }
           return false;
         });
-        );
 
         if (hasTableErrors) {
           console.log('⚠️ Database tables not found, using mock data');
