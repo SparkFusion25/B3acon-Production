@@ -49,12 +49,20 @@ export const dbHelpers = {
       
       if (error) {
         console.error('❌ Error fetching clients:', error);
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.log('⚠️ Clients table does not exist, database setup required');
+          throw new Error('TABLE_NOT_EXISTS');
+        }
         throw new Error(`Failed to fetch clients: ${error.message}`);
       }
       
       console.log('✅ Clients fetched:', data?.length || 0);
       return data || [];
     } catch (err) {
+      if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
+        throw err;
+      }
       console.error('❌ Database error fetching clients:', err);
       throw err;
     }
@@ -76,12 +84,20 @@ export const dbHelpers = {
       
       if (error) {
         console.error('❌ Error fetching leads:', error);
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.log('⚠️ Leads table does not exist, database setup required');
+          throw new Error('TABLE_NOT_EXISTS');
+        }
         throw new Error(`Failed to fetch leads: ${error.message}`);
       }
       
       console.log('✅ Leads fetched:', data?.length || 0);
       return data || [];
     } catch (err) {
+      if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
+        throw err;
+      }
       console.error('❌ Database error fetching leads:', err);
       throw err;
     }
@@ -103,12 +119,20 @@ export const dbHelpers = {
       
       if (error) {
         console.error('❌ Error fetching affiliates:', error);
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.log('⚠️ Affiliates table does not exist, database setup required');
+          throw new Error('TABLE_NOT_EXISTS');
+        }
         throw new Error(`Failed to fetch affiliates: ${error.message}`);
       }
       
       console.log('✅ Affiliates fetched:', data?.length || 0);
       return data || [];
     } catch (err) {
+      if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
+        throw err;
+      }
       console.error('❌ Database error fetching affiliates:', err);
       throw err;
     }
@@ -130,12 +154,20 @@ export const dbHelpers = {
       
       if (error) {
         console.error('❌ Error fetching email campaigns:', error);
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.log('⚠️ Email campaigns table does not exist, database setup required');
+          throw new Error('TABLE_NOT_EXISTS');
+        }
         throw new Error(`Failed to fetch email campaigns: ${error.message}`);
       }
       
       console.log('✅ Email campaigns fetched:', data?.length || 0);
       return data || [];
     } catch (err) {
+      if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
+        throw err;
+      }
       console.error('❌ Database error fetching email campaigns:', err);
       throw err;
     }
@@ -157,12 +189,20 @@ export const dbHelpers = {
       
       if (error) {
         console.error('❌ Error fetching landing pages:', error);
+        // Check if table doesn't exist
+        if (error.code === '42P01' || error.message?.includes('does not exist')) {
+          console.log('⚠️ Landing pages table does not exist, database setup required');
+          throw new Error('TABLE_NOT_EXISTS');
+        }
         throw new Error(`Failed to fetch landing pages: ${error.message}`);
       }
       
       console.log('✅ Landing pages fetched:', data?.length || 0);
       return data || [];
     } catch (err) {
+      if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
+        throw err;
+      }
       console.error('❌ Database error fetching landing pages:', err);
       throw err;
     }

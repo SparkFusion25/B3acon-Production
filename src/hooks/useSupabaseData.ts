@@ -42,10 +42,15 @@ export const useSupabaseData = () => {
         ]);
 
         // Check if any requests failed due to missing tables
-        const hasTableErrors = results.some(result => 
-          result.status === 'rejected' && 
-          (result.reason?.message?.includes('does not exist') || 
-           result.reason?.message?.includes('42P01'))
+        const hasTableErrors = results.some(result => {
+          if (result.status === 'rejected') {
+            const errorMessage = result.reason?.message || '';
+            return errorMessage === 'TABLE_NOT_EXISTS' || 
+                   errorMessage.includes('does not exist') || 
+                   errorMessage.includes('42P01');
+          }
+          return false;
+        });
         );
 
         if (hasTableErrors) {
@@ -77,7 +82,10 @@ export const useSupabaseData = () => {
         results.forEach((result, index) => {
           const tables = ['clients', 'leads', 'affiliates', 'emailCampaigns', 'landingPages'];
           if (result.status === 'rejected') {
-            console.warn(`⚠️ Failed to load ${tables[index]}:`, result.reason);
+            const errorMessage = result.reason?.message || '';
+            if (errorMessage !== 'TABLE_NOT_EXISTS') {
+              console.warn(`⚠️ Failed to load ${tables[index]}:`, result.reason);
+            }
           }
         });
 
