@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TrendingUp, Search, Target, BarChart3, Globe, FileText, Link as LinkIcon, ArrowRight, AlertCircle, CheckCircle, Clock, Zap } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { supabase } from '../../../lib/supabase';
 
 const SEOIntelligenceHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -8,6 +9,7 @@ const SEOIntelligenceHub: React.FC = () => {
   const [analyzedDomain, setAnalyzedDomain] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [analysisResults, setAnalysisResults] = useState<any>(null);
   
   const handleViewDetails = () => {
     toast.success('Viewing detailed SEO analysis');
@@ -17,18 +19,75 @@ const SEOIntelligenceHub: React.FC = () => {
     toast.success('Exporting SEO report');
   };
 
-  const handleDomainAnalysis = (e: React.FormEvent) => {
+  const handleDomainAnalysis = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!domainInput) return;
     
     setIsAnalyzing(true);
     setAnalyzedDomain(domainInput);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // First check if we have cached results
+      const { data: cachedData, error: cacheError } = await supabase
+        .from('seo_analysis')
+        .select('*')
+        .eq('domain', domainInput.toLowerCase())
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (!cacheError && cachedData && cachedData.length > 0) {
+        // Use cached data if it's less than 7 days old
+        const cacheDate = new Date(cachedData[0].created_at);
+        const now = new Date();
+        const daysDiff = Math.floor((now.getTime() - cacheDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (daysDiff < 7) {
+          setAnalysisResults(cachedData[0].results);
+          setIsAnalyzing(false);
+          setShowResults(true);
+          return;
+        }
+      }
+      
+      // If no recent cache, we would call an external API here
+      // For now, we'll simulate the API call
+      
+      // Store the results in the database
+      const mockResults = generateMockResults(domainInput);
+      setAnalysisResults(mockResults);
+      
+      await supabase.from('seo_analysis').insert({
+        domain: domainInput.toLowerCase(),
+        results: mockResults
+      });
+      
       setIsAnalyzing(false);
       setShowResults(true);
-    }, 2000);
+    } catch (error) {
+      console.error('Error analyzing domain:', error);
+      toast.error('Failed to analyze domain');
+      setIsAnalyzing(false);
+    }
+  };
+  
+  // Function to generate mock results for demo purposes
+  const generateMockResults = (domain: string) => {
+    return {
+      domain_authority: Math.floor(Math.random() * 60) + 20,
+      organic_keywords: Math.floor(Math.random() * 2000) + 500,
+      backlinks: Math.floor(Math.random() * 5000) + 1000,
+      page_speed: Math.floor(Math.random() * 30) + 70,
+      errors: Math.floor(Math.random() * 20),
+      warnings: Math.floor(Math.random() * 40) + 10,
+      passed: Math.floor(Math.random() * 100) + 100,
+      top_keywords: [
+        { keyword: 'digital marketing agency', position: Math.floor(Math.random() * 20) + 1, volume: 12400, difficulty: 67, cpc: 15.20, url: '/services' },
+        { keyword: 'seo services', position: Math.floor(Math.random() * 20) + 1, volume: 8100, difficulty: 72, cpc: 18.50, url: '/seo-services' },
+        { keyword: 'ppc management', position: Math.floor(Math.random() * 20) + 1, volume: 5400, difficulty: 58, cpc: 12.30, url: '/ppc-management' },
+        { keyword: 'social media marketing', position: Math.floor(Math.random() * 20) + 1, volume: 9200, difficulty: 64, cpc: 14.80, url: '/social-media' },
+        { keyword: 'content marketing strategy', position: Math.floor(Math.random() * 20) + 1, volume: 3800, difficulty: 51, cpc: 9.40, url: '/content-marketing' }
+      ]
+    };
   };
 
   const renderDashboard = () => (
@@ -98,7 +157,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <Globe className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">42/100</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{analysisResults?.domain_authority || 42}/100</div>
                 <p className="text-sm text-green-600">↗ +3 this month</p>
               </div>
 
@@ -109,7 +168,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <FileText className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">1,248</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{analysisResults?.organic_keywords?.toLocaleString() || '1,248'}</div>
                 <p className="text-sm text-green-600">↗ +156 this month</p>
               </div>
 
@@ -120,7 +179,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <LinkIcon className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">3,842</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{analysisResults?.backlinks?.toLocaleString() || '3,842'}</div>
                 <p className="text-sm text-green-600">↗ +215 this month</p>
               </div>
 
@@ -131,7 +190,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <Zap className="w-4 h-4 text-white" />
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">78/100</div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{analysisResults?.page_speed || 78}/100</div>
                 <p className="text-sm text-yellow-600">↗ +2 this month</p>
               </div>
             </div>
@@ -145,7 +204,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <AlertCircle className="w-5 h-5 text-red-500" />
                     <h5 className="font-medium text-red-800">Errors</h5>
                   </div>
-                  <div className="text-2xl font-bold text-red-700 mb-1">12</div>
+                  <div className="text-2xl font-bold text-red-700 mb-1">{analysisResults?.errors || 12}</div>
                   <p className="text-sm text-red-600">Critical issues to fix</p>
                 </div>
 
@@ -154,7 +213,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <Clock className="w-5 h-5 text-yellow-500" />
                     <h5 className="font-medium text-yellow-800">Warnings</h5>
                   </div>
-                  <div className="text-2xl font-bold text-yellow-700 mb-1">28</div>
+                  <div className="text-2xl font-bold text-yellow-700 mb-1">{analysisResults?.warnings || 28}</div>
                   <p className="text-sm text-yellow-600">Issues to address</p>
                 </div>
 
@@ -163,7 +222,7 @@ const SEOIntelligenceHub: React.FC = () => {
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <h5 className="font-medium text-green-800">Passed</h5>
                   </div>
-                  <div className="text-2xl font-bold text-green-700 mb-1">156</div>
+                  <div className="text-2xl font-bold text-green-700 mb-1">{analysisResults?.passed || 156}</div>
                   <p className="text-sm text-green-600">Checks passed</p>
                 </div>
               </div>
@@ -185,46 +244,16 @@ const SEOIntelligenceHub: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">digital marketing agency</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">8</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">12,400</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">67</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">$15.20</td>
-                      <td className="px-4 py-3 text-sm text-blue-600 truncate max-w-xs">/services</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">seo services</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">12</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">8,100</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">72</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">$18.50</td>
-                      <td className="px-4 py-3 text-sm text-blue-600 truncate max-w-xs">/seo-services</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">ppc management</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">5</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">5,400</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">58</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">$12.30</td>
-                      <td className="px-4 py-3 text-sm text-blue-600 truncate max-w-xs">/ppc-management</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">social media marketing</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">15</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">9,200</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">64</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">$14.80</td>
-                      <td className="px-4 py-3 text-sm text-blue-600 truncate max-w-xs">/social-media</td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">content marketing strategy</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">9</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">3,800</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">51</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">$9.40</td>
-                      <td className="px-4 py-3 text-sm text-blue-600 truncate max-w-xs">/content-marketing</td>
-                    </tr>
+                    {(analysisResults?.top_keywords || []).map((keyword: any, index: number) => (
+                      <tr key={index} className={index < 4 ? "border-b border-gray-100" : ""}>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{keyword.keyword}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{keyword.position}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{keyword.volume.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">{keyword.difficulty}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600">${keyword.cpc}</td>
+                        <td className="px-4 py-3 text-sm text-blue-600 truncate max-w-xs">{keyword.url}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -280,7 +309,7 @@ const SEOIntelligenceHub: React.FC = () => {
   const renderKeywords = () => (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-900">Keyword Research</h3>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6" onClick={() => toast.success('Keyword research tool coming soon!')}>
         <div className="text-center py-12">
           <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h4 className="text-lg font-medium text-gray-900 mb-2">Keyword Research Tools</h4>

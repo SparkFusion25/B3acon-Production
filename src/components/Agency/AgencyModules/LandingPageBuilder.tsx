@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Eye, Settings, BarChart3, Palette, Code, Smartphone, Monitor, Edit } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const LandingPageBuilder: React.FC = () => {
   const [activeTab, setActiveTab] = useState('editor');
@@ -617,14 +618,14 @@ const LandingPageBuilder: React.FC = () => {
         {activeTab === 'editor' && (
           <div className="text-center py-12">
             <Edit className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Loading Landing Page Editor</h3>
-            <p className="text-gray-600">Please wait while we load the editor...</p>
-            <button 
-              onClick={() => window.location.href = '/landing-editor'}
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Landing Page Editor</h3>
+            <p className="text-gray-600 mb-4">Edit your landing page content and design</p>
+            <Link 
+              to="/landing-editor"
               className="mt-4 px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
             >
               Open Landing Page Editor
-            </button>
+            </Link>
           </div>
         )}
       </div>

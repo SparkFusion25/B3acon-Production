@@ -3,7 +3,6 @@ import LoginPage from './components/Auth/LoginPage';
 import AgencyDashboard from './components/Agency/AgencyDashboard';
 import ClientDashboard from './components/Client/ClientDashboard';
 import LandingPage from './components/Landing/LandingPage';
-import LandingPageEditor from './components/Agency/AgencyModules/LandingPageEditor';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
@@ -32,7 +31,7 @@ function App() {
           element={
             !isAuthenticated ? <Navigate to="/login" /> : 
             userType === 'agency' || (user?.role && user.role !== 'client') ? 
-            <LandingPageEditor /> : <Navigate to="/dashboard" />
+            <AgencyDashboard /> : <Navigate to="/dashboard" />
           } 
         />
       </Routes>

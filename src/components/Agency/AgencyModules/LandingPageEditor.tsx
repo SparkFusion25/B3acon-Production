@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Edit, Save, Eye, Trash2, Plus, Image, Type, Box, Link as LinkIcon } from 'lucide-react';
+import { Layout, Edit, Save, Eye, Trash2, Plus, Image, Type, Box, Link as LinkIcon, Users, Zap, Target, Mail, BarChart3, ShoppingBag } from 'lucide-react';
 import { supabase } from '../../../lib/supabase';
 import { toast } from 'react-hot-toast';
 
@@ -47,8 +47,8 @@ const defaultContent: LandingPageContent = {
     {
       id: 'hero-1',
       type: 'hero',
-      title: 'Enterprise-Grade Marketing Command Center',
-      subtitle: 'B3ACON provides a comprehensive suite of digital marketing tools to help agencies scale their operations, manage clients, and drive results.',
+      title: 'Install B3ACON',
+      subtitle: 'The enterprise-grade marketing command center for agencies. Manage clients, campaigns, and performance across multiple channels in one powerful platform.',
       buttonText: 'Start Free 14-Day Trial',
       buttonUrl: '/signup',
       imageUrl: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'
@@ -61,21 +61,39 @@ const defaultContent: LandingPageContent = {
       items: [
         {
           id: 'feature-1',
-          title: 'Advanced Analytics',
-          description: 'Comprehensive reporting and insights across all marketing channels.',
-          icon: 'BarChart3'
-        },
-        {
-          id: 'feature-2',
-          title: 'Client Management',
-          description: 'Streamline client onboarding, communication, and project management.',
+          title: 'CRM',
+          description: 'Complete client relationship management with lead tracking, deal pipeline, and activity management.',
           icon: 'Users'
         },
         {
+          id: 'feature-2',
+          title: 'SEO',
+          description: 'Advanced SEO intelligence with keyword research, rank tracking, and site audit tools.',
+          icon: 'Target'
+        },
+        {
           id: 'feature-3',
-          title: 'Marketing Automation',
-          description: 'Automate repetitive tasks and focus on strategy and growth.',
-          icon: 'Zap'
+          title: 'Email',
+          description: 'Multi-provider email campaign management with automation and analytics.',
+          icon: 'Mail'
+        },
+        {
+          id: 'feature-4',
+          title: 'Affiliate',
+          description: 'Partner recruitment, commission tracking, and automated payment management.',
+          icon: 'Users'
+        },
+        {
+          id: 'feature-5',
+          title: 'Analytics',
+          description: 'Comprehensive performance tracking and reporting across all marketing channels.',
+          icon: 'BarChart3'
+        },
+        {
+          id: 'feature-6',
+          title: 'Shopify',
+          description: 'Seamless integration with Shopify for e-commerce marketing and analytics.',
+          icon: 'ShoppingBag'
         }
       ]
     }
@@ -362,12 +380,12 @@ const LandingPageEditor: React.FC = () => {
                           onChange={(e) => handleUpdateFeatureItem(section.id, item.id, { icon: e.target.value })}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                         >
-                          <option value="Star">Star</option>
-                          <option value="Zap">Zap</option>
-                          <option value="BarChart3">Chart</option>
                           <option value="Users">Users</option>
-                          <option value="Shield">Shield</option>
-                          <option value="Globe">Globe</option>
+                          <option value="Target">Target</option>
+                          <option value="Mail">Mail</option>
+                          <option value="BarChart3">Chart</option>
+                          <option value="ShoppingBag">ShoppingBag</option>
+                          <option value="Zap">Zap</option>
                         </select>
                       </div>
                     </div>

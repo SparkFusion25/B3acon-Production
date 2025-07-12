@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield } from 'lucide-react';
+import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
   return (
@@ -16,14 +16,15 @@ const LandingPage: React.FC = () => {
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-600 hover:text-gray-900">Features</a>
-            <a href="#pricing" className="text-gray-600 hover:text-gray-900">Pricing</a>
-            <a href="#comparison" className="text-gray-600 hover:text-gray-900">Comparison</a>
+            <a href="#how-it-works" className="text-gray-600 hover:text-gray-900">How It Works</a>
             <a href="#testimonials" className="text-gray-600 hover:text-gray-900">Testimonials</a>
+            <a href="#pricing" className="text-gray-600 hover:text-gray-900">Pricing</a>
+            <a href="#faq" className="text-gray-600 hover:text-gray-900">FAQ</a>
           </div>
           <div className="flex items-center space-x-4">
             <Link to="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
             <Link to="/signup" className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
-              Start Free Trial
+              Install B3ACON
             </Link>
           </div>
         </div>
@@ -35,17 +36,17 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-                Enterprise-Grade Marketing Command Center
+                Install B3ACON
               </h1>
               <p className="text-xl text-gray-600 mb-8">
-                B3ACON provides a comprehensive suite of digital marketing tools to help agencies scale their operations, manage clients, and drive results.
+                The enterprise-grade marketing command center for agencies. Manage clients, campaigns, and performance across multiple channels in one powerful platform.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <Link to="/signup" className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all text-center">
                   Start Free 14-Day Trial
                 </Link>
-                <a href="#demo" className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center">
-                  Watch Demo
+                <a href="#how-it-works" className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center">
+                  How It Works
                 </a>
               </div>
             </div>
@@ -75,34 +76,34 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                icon: <BarChart3 className="w-6 h-6 text-signal-blue" />,
-                title: 'Advanced Analytics',
-                description: 'Comprehensive reporting and insights across all marketing channels.'
+                icon: <Users className="w-6 h-6 text-signal-blue" />,
+                title: 'CRM',
+                description: 'Complete client relationship management with lead tracking, deal pipeline, and activity management.'
+              },
+              {
+                icon: <Target className="w-6 h-6 text-beacon-orange" />,
+                title: 'SEO',
+                description: 'Advanced SEO intelligence with keyword research, rank tracking, and site audit tools.'
+              },
+              {
+                icon: <Mail className="w-6 h-6 text-signal-blue" />,
+                title: 'Email',
+                description: 'Multi-provider email campaign management with automation and analytics.'
               },
               {
                 icon: <Users className="w-6 h-6 text-beacon-orange" />,
-                title: 'Client Management',
-                description: 'Streamline client onboarding, communication, and project management.'
+                title: 'Affiliate',
+                description: 'Partner recruitment, commission tracking, and automated payment management.'
               },
               {
-                icon: <Zap className="w-6 h-6 text-signal-blue" />,
-                title: 'Marketing Automation',
-                description: 'Automate repetitive tasks and focus on strategy and growth.'
+                icon: <BarChart3 className="w-6 h-6 text-signal-blue" />,
+                title: 'Analytics',
+                description: 'Comprehensive performance tracking and reporting across all marketing channels.'
               },
               {
-                icon: <Shield className="w-6 h-6 text-beacon-orange" />,
-                title: 'White Label Ready',
-                description: 'Rebrand the platform with your logo, colors, and domain.'
-              },
-              {
-                icon: <CheckCircle className="w-6 h-6 text-signal-blue" />,
-                title: 'SEO Intelligence',
-                description: 'Track rankings, analyze competitors, and optimize content.'
-              },
-              {
-                icon: <ArrowRight className="w-6 h-6 text-beacon-orange" />,
-                title: 'Multi-Channel Campaigns',
-                description: 'Manage campaigns across social, email, PPC, and more.'
+                icon: <ShoppingBag className="w-6 h-6 text-beacon-orange" />,
+                title: 'Shopify',
+                description: 'Seamless integration with Shopify for e-commerce marketing and analytics.'
               }
             ].map((feature, index) => (
               <div key={index} className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -117,12 +118,119 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get started with B3ACON in three simple steps.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                step: '01',
+                title: 'Install',
+                description: 'Sign up for B3ACON and install the platform with our guided setup process.',
+                icon: <Zap className="w-6 h-6 text-white" />
+              },
+              {
+                step: '02',
+                title: 'Connect',
+                description: 'Connect your marketing tools and import your client data to get started.',
+                icon: <Link className="w-6 h-6 text-white" />
+              },
+              {
+                step: '03',
+                title: 'Grow',
+                description: 'Scale your agency with powerful tools and insights to drive client results.',
+                icon: <TrendingUp className="w-6 h-6 text-white" />
+              }
+            ].map((step, index) => (
+              <div key={index} className="relative">
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-full flex items-center justify-center mb-6">
+                    {step.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
+                  <p className="text-gray-600 mb-4">{step.description}</p>
+                  <div className="absolute top-8 right-8 text-4xl font-bold text-gray-100">
+                    {step.step}
+                  </div>
+                </div>
+                {index < 2 && (
+                  <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
+                    <ArrowRight className="w-8 h-8 text-gray-300" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 px-6 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Trusted by Marketing Agencies
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              See what our customers have to say about B3ACON.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                quote: "B3ACON has transformed how we manage our clients. The all-in-one platform saves us countless hours every week.",
+                author: "Sarah Johnson",
+                role: "CEO, Digital Spark Agency",
+                image: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              },
+              {
+                quote: "The white label features allowed us to offer a client portal under our own brand. Our clients love the transparency.",
+                author: "Michael Chen",
+                role: "Director, Growth Partners",
+                image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              },
+              {
+                quote: "The SEO intelligence tools alone are worth the investment. We've seen dramatic improvements in our clients' rankings.",
+                author: "Emily Rodriguez",
+                role: "SEO Manager, Elevate Digital",
+                image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              }
+            ].map((testimonial, index) => (
+              <div key={index} className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
+                <div className="flex items-center space-x-4 mb-6">
+                  <img 
+                    src={testimonial.image} 
+                    alt={testimonial.author} 
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <h4 className="font-bold text-gray-900">{testimonial.author}</h4>
+                    <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 italic">"{testimonial.quote}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <section id="pricing" className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Transparent Pricing
+              Simple, Transparent Pricing
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Choose the plan that fits your agency's needs and scale as you grow.
@@ -132,48 +240,50 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: 'Starter',
-                price: '$49',
-                description: 'Perfect for freelancers and small agencies',
+                name: 'Free',
+                price: '$0',
+                description: 'For freelancers and small agencies just getting started',
                 features: [
-                  'Up to 5 clients',
-                  'Basic analytics',
+                  'Up to 3 clients',
+                  'Basic CRM functionality',
+                  'Limited SEO tools',
                   'Email support',
-                  'Client portal',
-                  'SEO tools',
-                  'Social media management'
+                  'Basic reporting'
                 ],
-                cta: 'Start Free Trial',
+                cta: 'Get Started Free',
                 highlighted: false
               },
               {
-                name: 'Professional',
-                price: '$149',
-                description: 'Ideal for growing agencies',
+                name: 'Growth',
+                price: '$99',
+                description: 'For growing agencies with established clients',
                 features: [
-                  'Up to 20 clients',
-                  'Advanced analytics',
+                  'Up to 15 clients',
+                  'Full CRM functionality',
+                  'Complete SEO toolkit',
+                  'Email marketing',
+                  'Affiliate tracking',
                   'Priority support',
-                  'White label options',
-                  'All marketing tools',
-                  'API access'
+                  'White label options'
                 ],
                 cta: 'Start Free Trial',
                 highlighted: true
               },
               {
-                name: 'Enterprise',
-                price: '$349',
+                name: 'Agency',
+                price: '$249',
                 description: 'For established agencies with multiple teams',
                 features: [
                   'Unlimited clients',
-                  'Custom reporting',
+                  'Enterprise CRM',
+                  'Advanced SEO tools',
+                  'Email automation',
+                  'Full affiliate system',
                   'Dedicated account manager',
-                  'Full white label',
-                  'Advanced security',
-                  'Custom integrations'
+                  'Custom integrations',
+                  'Full white label'
                 ],
-                cta: 'Contact Sales',
+                cta: 'Start Free Trial',
                 highlighted: false
               }
             ].map((plan, index) => (
@@ -249,7 +359,7 @@ const LandingPage: React.FC = () => {
                   { feature: 'Email marketing', b3acon: true, compA: false, compB: true },
                   { feature: 'Landing page builder', b3acon: true, compA: false, compB: false },
                   { feature: 'Affiliate marketing', b3acon: true, compA: false, compB: false },
-                  { feature: 'Unlimited clients (Enterprise)', b3acon: true, compA: false, compB: false },
+                  { feature: 'Unlimited clients (Agency)', b3acon: true, compA: false, compB: false },
                   { feature: 'API access', b3acon: true, compA: true, compB: false }
                 ].map((row, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -289,52 +399,48 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-6">
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Trusted by Marketing Agencies
+              Frequently Asked Questions
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              See what our customers have to say about B3ACON.
+              Find answers to common questions about B3ACON.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {[
               {
-                quote: "B3ACON has transformed how we manage our clients. The all-in-one platform saves us countless hours every week.",
-                author: "Sarah Johnson",
-                role: "CEO, Digital Spark Agency",
-                image: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                question: 'How long is the free trial?',
+                answer: 'Our free trial lasts for 14 days with full access to all features. No credit card required to start.'
               },
               {
-                quote: "The white label features allowed us to offer a client portal under our own brand. Our clients love the transparency.",
-                author: "Michael Chen",
-                role: "Director, Growth Partners",
-                image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                question: 'Can I white label the platform?',
+                answer: 'Yes, white labeling is available on Growth and Agency plans. You can customize the platform with your logo, colors, and domain.'
               },
               {
-                quote: "The SEO intelligence tools alone are worth the investment. We've seen dramatic improvements in our clients' rankings.",
-                author: "Emily Rodriguez",
-                role: "SEO Manager, Elevate Digital",
-                image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                question: 'How many clients can I manage?',
+                answer: 'The Free plan supports up to 3 clients, Growth plan up to 15 clients, and Agency plan offers unlimited clients.'
+              },
+              {
+                question: 'Do you offer onboarding support?',
+                answer: 'Yes, all paid plans include onboarding support. Agency plans also include a dedicated account manager.'
+              },
+              {
+                question: 'Can I cancel my subscription anytime?',
+                answer: 'Yes, you can cancel your subscription at any time. Your access will continue until the end of your current billing period.'
+              },
+              {
+                question: 'What integrations do you support?',
+                answer: 'B3ACON integrates with Google services, social media platforms, email providers, Shopify, and many more through our API.'
               }
-            ].map((testimonial, index) => (
-              <div key={index} className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-                <div className="flex items-center space-x-4 mb-6">
-                  <img 
-                    src={testimonial.image} 
-                    alt={testimonial.author} 
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <h4 className="font-bold text-gray-900">{testimonial.author}</h4>
-                    <p className="text-gray-600 text-sm">{testimonial.role}</p>
-                  </div>
-                </div>
-                <p className="text-gray-700 italic">"{testimonial.quote}"</p>
+            ].map((faq, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-3">{faq.question}</h3>
+                <p className="text-gray-600">{faq.answer}</p>
               </div>
             ))}
           </div>
@@ -401,10 +507,10 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Product</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Case Studies</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Reviews</a></li>
+                <li><a href="#testimonials" className="text-gray-400 hover:text-white transition-colors">Reviews</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Updates</a></li>
               </ul>
             </div>
@@ -423,7 +529,7 @@ const LandingPage: React.FC = () => {
               <ul className="space-y-2">
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#faq" className="text-gray-400 hover:text-white transition-colors">Help Center</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Community</a></li>
               </ul>
