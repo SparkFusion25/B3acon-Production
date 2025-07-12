@@ -44,10 +44,12 @@ export const useSupabaseData = () => {
         // Check if any requests failed due to missing tables
         const hasTableErrors = results.some(result => {
           if (result.status === 'rejected') {
-            const errorMessage = result.reason?.message || '';
+            const error = result.reason;
+            const errorMessage = error?.message || '';
+            const errorCode = error?.code || '';
             return errorMessage === 'TABLE_NOT_EXISTS' || 
                    errorMessage.includes('does not exist') || 
-                   errorMessage.includes('42P01');
+                   errorCode === '42P01';
           }
           return false;
         });
