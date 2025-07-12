@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Building, Palette, Settings, Users, Globe, Upload, Check, Edit, Trash2, Save, Eye } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { supabase } from '../../../lib/supabase';
 
 interface WhiteLabelPartner {
   id: number;
@@ -44,6 +45,65 @@ const WhiteLabelManagement: React.FC = () => {
     custom_domain: '',
     favicon_url: ''
   });
+  const [themes, setThemes] = useState<any[]>([]);
+  const [isLoadingThemes, setIsLoadingThemes] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  
+  // Fetch themes from database
+  React.useEffect(() => {
+    const fetchThemes = async () => {
+      setIsLoadingThemes(true);
+      try {
+        const { data, error } = await supabase
+          .from('white_label_themes')
+          .select('*')
+          .order('is_default', { ascending: false });
+        
+        if (error) {
+          throw error;
+        }
+        
+        if (data) {
+          setThemes(data);
+          // Set default theme
+          const defaultTheme = data.find((theme: any) => theme.is_default);
+          if (defaultTheme) {
+            setSelectedTheme(defaultTheme.id);
+            // Update branding settings with default theme
+            setBrandingSettings({
+              ...brandingSettings,
+              primary_color: defaultTheme.primary_color,
+              secondary_color: defaultTheme.secondary_color,
+              font_family: defaultTheme.font_family,
+              custom_css: defaultTheme.custom_css || ''
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching themes:', error);
+        toast.error('Failed to load themes');
+      } finally {
+        setIsLoadingThemes(false);
+      }
+    };
+    
+    fetchThemes();
+  }, []);
+  
+  const handleThemeChange = (themeId: string) => {
+    const theme = themes.find(t => t.id === themeId);
+    if (theme) {
+      setSelectedTheme(themeId);
+      setBrandingSettings({
+        ...brandingSettings,
+        primary_color: theme.primary_color,
+        secondary_color: theme.secondary_color,
+        font_family: theme.font_family,
+        custom_css: theme.custom_css || ''
+      });
+      toast.success(`Applied theme: ${theme.name}`);
+    }
+  };
   
   const handleAddPartner = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +174,19 @@ const WhiteLabelManagement: React.FC = () => {
   
   const handleSaveBrandingSettings = () => {
     toast.success('Branding settings saved successfully');
+    
+    // If this is a partner's branding, we would save to the database
+    if (editingPartnerId) {
+      setPartners(partners.map(partner => 
+        partner.id === editingPartnerId ? 
+        { 
+          ...partner, 
+          primary_color: brandingSettings.primary_color,
+          secondary_color: brandingSettings.secondary_color
+        } : 
+        partner
+      ));
+    }
   };
 
   const renderPartners = () => (
@@ -380,8 +453,29 @@ const WhiteLabelManagement: React.FC = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-medium text-gray-900 mb-4">Logo & Favicon</h4>
+            <h4 className="font-medium text-gray-900 mb-4">Theme Selection</h4>
             
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Select Theme</label>
+              <select
+                value={selectedTheme || ''}
+                onChange={(e) => handleThemeChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                disabled={isLoadingThemes}
+              >
+                {isLoadingThemes ? (
+                  <option>Loading themes...</option>
+                ) : (
+                  themes.map(theme => (
+                    <option key={theme.id} value={theme.id}>
+                      {theme.name} {theme.is_default ? '(Default)' : ''}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+            
+            <h4 className="font-medium text-gray-900 mb-4">Logo & Favicon</h4>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
@@ -550,12 +644,15 @@ const WhiteLabelManagement: React.FC = () => {
           <div className="p-4 bg-white">
             <div 
               className="p-4 rounded-lg text-white text-center"
-              style={{ background: `linear-gradient(to right, ${brandingSettings.primary_color}, ${brandingSettings.secondary_color})` }}
+              style={{ 
+                background: `linear-gradient(to right, ${brandingSettings.primary_color}, ${brandingSettings.secondary_color})`,
+                fontFamily: brandingSettings.font_family
+              }}
             >
-              <h5 className="font-bold" style={{ fontFamily: brandingSettings.font_family }}>
+              <h5 className="font-bold">
                 Sample White Label Header
               </h5>
-              <p style={{ fontFamily: brandingSettings.font_family }}>
+              <p>
                 This is how your branded content will appear
               </p>
             </div>
@@ -580,6 +677,19 @@ const WhiteLabelManagement: React.FC = () => {
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h4 className="font-medium text-gray-900 mb-4">White Label Features</h4>
+        
+        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h5 className="font-medium text-blue-900 mb-2">Theme Management</h5>
+          <p className="text-sm text-blue-800 mb-4">
+            Create and manage custom themes for your white label partners. Each theme includes colors, fonts, and custom CSS.
+          </p>
+          <button
+            onClick={() => toast.success('Theme manager coming soon')}
+            className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+          >
+            Manage Themes
+          </button>
+        </div>
         
         <div className="space-y-4">
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">

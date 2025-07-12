@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DollarSign, CreditCard, FileText, TrendingUp, Download, CheckCircle, Plus, Minus } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 interface Invoice {
   id: string;
@@ -28,6 +29,26 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
   const [activeTab, setActiveTab] = useState<'invoices' | 'plans' | 'addons'>('invoices');
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'growth' | 'pro'>('growth');
   const [selectedAddons, setSelectedAddons] = useState<string[]>(['landing_page_builder']);
+
+  const handleExportInvoices = () => {
+    toast.success('Exporting invoices to CSV');
+  };
+  
+  const handleCreateInvoice = () => {
+    toast.success('Creating new invoice');
+  };
+  
+  const handleViewInvoice = (invoiceId: string) => {
+    toast.success(`Viewing invoice ${invoiceId}`);
+  };
+  
+  const handleDownloadInvoice = (invoiceId: string) => {
+    toast.success(`Downloading invoice ${invoiceId}`);
+  };
+  
+  const handleUpdateSubscription = () => {
+    toast.success(`Subscription updated to ${selectedPlan} plan with ${selectedAddons.length} add-ons`);
+  };
 
   const filteredInvoices = billing.recentInvoices.filter(invoice => 
     filterStatus === 'all' || invoice.status === filterStatus
@@ -78,7 +99,10 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">Subscription Plans</h3>
-        <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleUpdateSubscription}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+        >
           Update Plan
         </button>
       </div>
@@ -387,7 +411,10 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
           <span className="text-lg font-bold text-gray-900">${calculateTotal()}/month</span>
         </div>
         
-        <button className="w-full mt-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all">
+        <button 
+          onClick={handleUpdateSubscription}
+          className="w-full mt-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all"
+        >
           Update Subscription
         </button>
       </div>
@@ -511,11 +538,17 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
           </div>
           
           <div className="flex items-center space-x-2">
-            <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2">
+            <button 
+              onClick={handleExportInvoices}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center space-x-2"
+            >
               <Download className="w-4 h-4" />
               <span>Export</span>
             </button>
-            <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+            <button 
+              onClick={handleCreateInvoice}
+              className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
+            >
               <FileText className="w-4 h-4" />
               <span>Create Invoice</span>
             </button>
@@ -569,10 +602,16 @@ const BillingOverview = ({ billing }: BillingOverviewProps) => {
                   <td className="py-4 px-6 text-gray-600">{invoice.dueDate}</td>
                   <td className="py-4 px-6">
                     <div className="flex items-center space-x-2">
-                      <button className="text-signal-blue hover:text-blue-700 text-sm font-medium">
+                      <button 
+                        onClick={() => handleViewInvoice(invoice.id)}
+                        className="text-signal-blue hover:text-blue-700 text-sm font-medium"
+                      >
                         View
                       </button>
-                      <button className="text-gray-400 hover:text-gray-600 text-sm font-medium">
+                      <button 
+                        onClick={() => handleDownloadInvoice(invoice.id)}
+                        className="text-gray-400 hover:text-gray-600 text-sm font-medium"
+                      >
                         Download
                       </button>
                     </div>
