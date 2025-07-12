@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { dbHelpers } from '../lib/supabase';
+import { mockAgencyData } from '../data/mockAgencyData';
 
 // Custom hook for loading data from Supabase
 export const useSupabaseData = () => {
@@ -43,12 +44,22 @@ export const useSupabaseData = () => {
         // Check if any requests failed due to missing tables
         const hasTableErrors = results.some(result => 
           result.status === 'rejected' && 
-          result.reason?.message?.includes('does not exist')
+          (result.reason?.message?.includes('does not exist') || 
+           result.reason?.message?.includes('42P01'))
         );
 
         if (hasTableErrors) {
           console.log('⚠️ Database tables not found, using mock data');
-          setError('Database not fully configured. Using demo data.');
+          setError('Database not fully configured. Using demo data. Please complete Supabase setup from SETUP_STAGE_1.md');
+          
+          // Use mock data when tables don't exist
+          setData({
+            clients: mockAgencyData.clients || [],
+            leads: mockAgencyData.leads || [],
+            affiliates: mockAgencyData.affiliates || [],
+            emailCampaigns: mockAgencyData.emailCampaigns || [],
+            landingPages: mockAgencyData.landingPages || []
+          });
           return;
         }
 
