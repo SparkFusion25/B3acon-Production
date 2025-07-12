@@ -118,13 +118,12 @@ export const dbHelpers = {
         .order('created_at', { ascending: false });
       
       if (error) {
-        console.error('❌ Error fetching affiliates:', error);
         // Check if table doesn't exist
         if (error.code === '42P01' || error.message?.includes('does not exist')) {
-          console.log('⚠️ Affiliates table does not exist, database setup required');
           throw new Error('TABLE_NOT_EXISTS');
         }
-        throw new Error(`Failed to fetch affiliates: ${error.message}`);
+        console.error('❌ Error fetching affiliates:', error);
+        throw error;
       }
       
       console.log('✅ Affiliates fetched:', data?.length || 0);
@@ -133,7 +132,6 @@ export const dbHelpers = {
       if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
         throw err;
       }
-      console.error('❌ Database error fetching affiliates:', err);
       throw err;
     }
   },
@@ -153,13 +151,12 @@ export const dbHelpers = {
         .order('created_at', { ascending: false });
       
       if (error) {
-        console.error('❌ Error fetching email campaigns:', error);
         // Check if table doesn't exist
         if (error.code === '42P01' || error.message?.includes('does not exist')) {
-          console.log('⚠️ Email campaigns table does not exist, database setup required');
           throw new Error('TABLE_NOT_EXISTS');
         }
-        throw new Error(`Failed to fetch email campaigns: ${error.message}`);
+        console.error('❌ Error fetching email campaigns:', error);
+        throw error;
       }
       
       console.log('✅ Email campaigns fetched:', data?.length || 0);
@@ -168,7 +165,6 @@ export const dbHelpers = {
       if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
         throw err;
       }
-      console.error('❌ Database error fetching email campaigns:', err);
       throw err;
     }
   },
@@ -188,13 +184,12 @@ export const dbHelpers = {
         .order('created_at', { ascending: false });
       
       if (error) {
-        console.error('❌ Error fetching landing pages:', error);
         // Check if table doesn't exist
         if (error.code === '42P01' || error.message?.includes('does not exist')) {
-          console.log('⚠️ Landing pages table does not exist, database setup required');
           throw new Error('TABLE_NOT_EXISTS');
         }
-        throw new Error(`Failed to fetch landing pages: ${error.message}`);
+        console.error('❌ Error fetching landing pages:', error);
+        throw error;
       }
       
       console.log('✅ Landing pages fetched:', data?.length || 0);
@@ -203,7 +198,6 @@ export const dbHelpers = {
       if (err instanceof Error && err.message === 'TABLE_NOT_EXISTS') {
         throw err;
       }
-      console.error('❌ Database error fetching landing pages:', err);
       throw err;
     }
   },
