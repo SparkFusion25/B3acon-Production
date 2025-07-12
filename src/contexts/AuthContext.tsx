@@ -109,94 +109,55 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const login = async (email: string, password: string, type: 'agency' | 'client') => {
-    if (!supabase) {
-      throw new Error('Supabase not configured');
-    }
-
     try {
-      // Try to sign in with Supabase
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      // Demo mode - use mock users for authentication
+      const mockUsers = {
+        'sarah@sparkdigital.com': {
+          id: '550e8400-e29b-41d4-a716-446655440001',
+          name: 'Sarah Johnson',
+          email: 'sarah@sparkdigital.com',
+          role: 'admin' as UserRole,
+          subscription: 'pro' as const,
+          addOns: ['landing_page_builder', 'ai_assistant'],
+          avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
+        },
+        'john@techcorp.com': {
+          id: '550e8400-e29b-41d4-a716-446655440002',
+          name: 'John Smith',
+          email: 'john@techcorp.com',
+          role: 'client' as UserRole,
+          subscription: 'growth' as const,
+          addOns: ['landing_page_builder'],
+          avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
+        },
+        'demo@starter.com': {
+          id: '550e8400-e29b-41d4-a716-446655440003',
+          name: 'Demo Starter',
+          email: 'demo@starter.com',
+          role: 'client' as UserRole,
+          subscription: 'starter' as const,
+          addOns: [],
+          avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
+        }
+      };
 
-      if (error) {
-        // For demo purposes, fall back to mock users if Supabase auth fails
-        const mockUsers = {
-          'sarah@sparkdigital.com': {
-            id: '550e8400-e29b-41d4-a716-446655440001',
-            name: 'Sarah Johnson',
-            email: 'sarah@sparkdigital.com',
-            role: 'admin' as UserRole,
-            subscription: 'pro' as const,
-            addOns: ['landing_page_builder', 'ai_assistant'],
-            avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
-          },
-          'john@techcorp.com': {
-            id: '550e8400-e29b-41d4-a716-446655440002',
-            name: 'John Smith',
-            email: 'john@techcorp.com',
-            role: 'client' as UserRole,
-            subscription: 'growth' as const,
-            addOns: ['landing_page_builder'],
-            avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
-          },
-          'demo@starter.com': {
-            id: '550e8400-e29b-41d4-a716-446655440003',
-            name: 'Demo Starter',
-            email: 'demo@starter.com',
-            role: 'client' as UserRole,
-            subscription: 'starter' as const,
-            addOns: [],
-            avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
-          }
-        };
-
-        const mockUser = mockUsers[email as keyof typeof mockUsers];
+      const mockUser = mockUsers[email as keyof typeof mockUsers];
+      
+      if (mockUser && password === 'password') {
+        setUser(mockUser);
+        setUserType(type);
+        setIsAuthenticated(true);
         
-        if (mockUser && password === 'password') {
-          setUser(mockUser);
-          setUserType(type);
-          setIsAuthenticated(true);
-          
-          // Save to localStorage
-          localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
-          localStorage.setItem('b3acon_user_type', type);
-        } else {
-          throw new Error('Invalid credentials');
-        }
-      } else if (data.user) {
-        // Get user profile from Supabase
-        if (supabase) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .single();
-
-          if (profile) {
-            const userRole = profile.role as UserRole || 'client';
-            
-            const userData: User = {
-              id: data.user.id,
-              name: profile.full_name || data.user.email?.split('@')[0] || 'User',
-              email: data.user.email || '',
-              role: userRole,
-              avatar: profile.avatar_url,
-              subscription: profile.subscription || 'starter',
-              addOns: profile.add_ons || []
-            };
-
-            setUser(userData);
-            setUserType(userData.role === 'client' ? 'client' : 'agency');
-            setIsAuthenticated(true);
-            localStorage.setItem('b3acon_user', JSON.stringify(userData));
-            localStorage.setItem('b3acon_user_type', userData.role === 'client' ? 'client' : 'agency');
-          }
-        }
+        // Save to localStorage
+        localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
+        localStorage.setItem('b3acon_user_type', type);
+        toast.success(`Welcome back, ${mockUser.name}!`);
+      } else {
+        throw new Error('Invalid credentials. Use demo credentials: sarah@sparkdigital.com / password or john@techcorp.com / password');
       }
     } catch (error) {
       console.error('Login error:', error);
+      toast.error(error instanceof Error ? error.message : 'Login failed');
       throw error;
     }
   };
