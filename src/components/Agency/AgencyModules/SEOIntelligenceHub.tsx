@@ -209,12 +209,12 @@ const SEOIntelligenceHub: React.FC = () => {
                   <h5 className="font-medium text-gray-900">Domain Authority</h5>
                 </div>
                 <div className="text-2xl font-bold text-gray-900">
-                  {analysisResults.domain_data?.metrics?.da || 'N/A'}
+                  {analysisResults.domain_data?.domain_authority || 'N/A'}
                 </div>
                 <p className="text-sm text-gray-600">
-                  {analysisResults.domain_data?.metrics?.da > 50 ? 'Excellent' : 
-                   analysisResults.domain_data?.metrics?.da > 30 ? 'Good' : 
-                   analysisResults.domain_data?.metrics?.da > 10 ? 'Fair' : 'Needs improvement'}
+                  {analysisResults.domain_data?.domain_authority > 50 ? 'Excellent' : 
+                   analysisResults.domain_data?.domain_authority > 30 ? 'Good' : 
+                   analysisResults.domain_data?.domain_authority > 10 ? 'Fair' : 'Needs improvement'}
                 </p>
               </div>
               
