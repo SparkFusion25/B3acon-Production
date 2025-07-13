@@ -10,7 +10,7 @@ const SEO_API_BASE_URL = `${SUPABASE_URL}/functions/v1/seo-api`;
 // Helper function to make API requests
 const fetchWithAuth = async (endpoint: string, params: Record<string, string>, useRapidApi: boolean = false) => {
   try {
-    console.log(`Making SEO API request to: ${useRapidApi ? 'RapidAPI' : 'Edge Function'} - ${endpoint} with params:`, params);
+    console.log(`Making SEO API request to: ${useRapidApi ? 'RapidAPI' : 'Edge Function'} - ${endpoint}`);
     
     // Convert params to URL search params
     const searchParams = new URLSearchParams();
@@ -134,10 +134,10 @@ const getMockDataForEndpoint = (endpoint: string) => {
 };
 
 // Add a test function to verify API connectivity
-export const testSeoApi = async () => {
+const testSeoApiConnection = async () => {
   try {
     // Try to make a simple API call to test connectivity
-    const result = await fetchWithAuth('domain-data', { domain: 'example.com' });
+    const result = await fetchWithAuth('domain-data', { domain: 'example.com' }, false);
     return {
       success: true,
       data: result
@@ -150,7 +150,7 @@ export const testSeoApi = async () => {
 // SEO API client
 export const seoApi = {
   // Test API connection
-  testConnection: () => testSeoApi(),
+  testConnection: () => testSeoApiConnection(),
   
   // Onpage SEO analysis
   getOnpageAnalysis: (domain: string) => 
