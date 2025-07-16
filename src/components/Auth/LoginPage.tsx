@@ -1,23 +1,36 @@
 import React, { useState } from 'react';
-import { Globe, Mail, Lock, Users, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search } from 'lucide-react';
+import { Globe, Mail, Lock, Users, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search, UserPlus, Linkedin } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loginType, setLoginType] = useState<'agency' | 'client'>('agency');
   const [isLoading, setIsLoading] = useState(false);
   const [showSocialLogin, setShowSocialLogin] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const { login, loginWithSocial } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
     try {
-      await login(email, password, loginType);
+      if (isSignUp) {
+        if (password !== confirmPassword) {
+          throw new Error('Passwords do not match');
+        }
+        // In a real implementation, we would call a signup function
+        toast.success('Account created successfully! You can now log in.');
+        setIsSignUp(false);
+      } else {
+        await login(email, password, loginType);
+      }
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error(error instanceof Error ? error.message : 'Authentication failed');
     } finally {
       setIsLoading(false);
     }
@@ -37,14 +50,14 @@ const LoginPage: React.FC = () => {
   // Features for the commerce platform
   const platformFeatures = [
     { title: "Global Trade Intelligence", icon: Globe, color: "from-blue-500 to-cyan-500" },
-    { title: "Freight & Tariff Tools", icon: Truck, color: "from-green-500 to-teal-500" },
-    { title: "HS Code Lookup + FTA Matching", icon: FileCheck, color: "from-purple-500 to-indigo-500" },
-    { title: "Shipment Tracking", icon: Package, color: "from-amber-500 to-orange-500" },
-    { title: "AI-powered Marketing + CRM", icon: BarChart3, color: "from-red-500 to-pink-500" }
+    { title: "Freight & Tariff Tools", icon: Truck, color: "from-green-500 to-teal-500", animate: true },
+    { title: "HS Code Lookup + FTA Matching", icon: FileCheck, color: "from-purple-500 to-indigo-500", animate: true },
+    { title: "Shipment Tracking", icon: Package, color: "from-amber-500 to-orange-500", animate: true },
+    { title: "AI-powered Marketing + CRM", icon: BarChart3, color: "from-red-500 to-pink-500", animate: true }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -59,8 +72,8 @@ const LoginPage: React.FC = () => {
       </Link>
 
       <div className="flex flex-col md:flex-row max-w-6xl w-full gap-8 z-10">
-        {/* Welcome panel with features */}
-        <div className="hidden md:flex flex-col flex-1 text-white p-8">
+        {/* Welcome panel with features - now visible on all screens */}
+        <div className="hidden md:flex flex-col flex-1 text-white p-6 bg-black/20 backdrop-blur-sm rounded-xl border border-white/10">
           <div className="mb-8">
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
@@ -75,7 +88,7 @@ const LoginPage: React.FC = () => {
             <h2 className="text-3xl font-bold mt-8 mb-2">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
                 The Global Commerce Command Center
-              </span>
+              </span><span className="animate-pulse">|</span>
             </h2>
             <p className="text-xl text-gray-300 mb-8">
               One Command Center. Every Global Trade Advantage.
@@ -86,7 +99,7 @@ const LoginPage: React.FC = () => {
             {platformFeatures.map((feature, index) => (
               <div 
                 key={index} 
-                className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 transform transition-all hover:scale-105 hover:bg-opacity-20"
+                className={`bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 transform transition-all hover:scale-105 hover:bg-opacity-20 ${feature.animate ? 'animate-pulse-glow' : ''}`}
               >
                 <div className="flex items-center space-x-4">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${feature.color} flex items-center justify-center`}>
@@ -99,7 +112,7 @@ const LoginPage: React.FC = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 mt-auto">
-            <button className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+            <button className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all animate-pulse-glow">
               Explore Our Platform
             </button>
             <button className="px-6 py-3 bg-white bg-opacity-10 text-white rounded-lg hover:bg-opacity-20 transition-all">
@@ -113,7 +126,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Login form */}
-        <div className="max-w-md w-full">
+        <div className="max-w-sm w-full">
           <div className="text-center mb-8 md:hidden">
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
@@ -126,55 +139,87 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 mb-6">
-          <div className="grid grid-cols-2 gap-1">
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-1 mb-4">
+            <div className="grid grid-cols-2 gap-1">
+              <button
+                type="button"
+                onClick={() => setLoginType('agency')}
+                className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
+                  loginType === 'agency'
+                    ? 'bg-white text-gray-900 shadow-lg'
+                    : 'text-white hover:bg-signal-blue/20'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span className="font-medium">Agency</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setLoginType('client')}
+                className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
+                  loginType === 'client'
+                    ? 'bg-white text-gray-900 shadow-lg'
+                    : 'text-white hover:bg-signal-blue/20'
+                }`}
+              >
+                <Building className="w-4 h-4" />
+                <span className="font-medium">Client</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-1 mb-4">
+            <div className="grid grid-cols-2 gap-1">
+              <button
+                type="button"
+                onClick={() => setIsSignUp(false)}
+                className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
+                  !isSignUp
+                    ? 'bg-white text-gray-900 shadow-lg'
+                    : 'text-white hover:bg-signal-blue/20'
+                }`}
+              >
+                <Mail className="w-4 h-4" />
+                <span className="font-medium">Sign In</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsSignUp(true)}
+                className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
+                  isSignUp
+                    ? 'bg-white text-gray-900 shadow-lg'
+                    : 'text-white hover:bg-signal-blue/20'
+                }`}
+              >
+                <UserPlus className="w-4 h-4" />
+                <span className="font-medium">Sign Up</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-2 text-center">
             <button
               type="button"
-              onClick={() => setLoginType('agency')}
-              className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-lg transition-all ${
-                loginType === 'agency'
-                  ? 'bg-white text-gray-900 shadow-lg'
-                  : 'text-white hover:bg-signal-blue/20'
-              }`}
+              onClick={() => setShowSocialLogin(!showSocialLogin)}
+              className="text-gray-300 text-xs hover:text-white transition-colors"
             >
-              <Users className="w-4 h-4" />
-              <span className="font-medium">Agency</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setLoginType('client')}
-              className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-lg transition-all ${
-                loginType === 'client'
-                  ? 'bg-white text-gray-900 shadow-lg'
-                  : 'text-white hover:bg-signal-blue/20'
-              }`}
-            >
-              <Building className="w-4 h-4" />
-              <span className="font-medium">Client</span>
+              {showSocialLogin ? 'Use email instead' : 'Or sign in with social accounts'}
             </button>
           </div>
-        </div>
 
-        <div className="mb-4 text-center max-w-md w-full">
-          <button
-            type="button"
-            onClick={() => setShowSocialLogin(!showSocialLogin)}
-            className="text-gray-300 text-sm hover:text-white transition-colors"
-          >
-            {showSocialLogin ? 'Use email instead' : 'Or sign in with social accounts'}
-          </button>
-        </div>
-
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20">
-          <h2 className="text-xl font-semibold text-white mb-6 text-center">
-            {loginType === 'agency' ? 'Agency Login' : 'Client Portal'}
+        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+          <h2 className="text-lg font-semibold text-white mb-4 text-center">
+            {isSignUp 
+              ? (loginType === 'agency' ? 'Create Agency Account' : 'Create Client Account')
+              : (loginType === 'agency' ? 'Agency Login' : 'Client Portal')
+            }
           </h2>
 
           {showSocialLogin ? (
             <div className="space-y-4">
               <button
                 type="button"
-                className="w-full py-3 bg-white text-gray-800 font-medium rounded-lg hover:bg-gray-100 transition-all flex items-center justify-center space-x-2"
+                className="w-full py-2 bg-white text-gray-800 font-medium rounded-lg hover:bg-gray-100 transition-all flex items-center justify-center space-x-2"
                 disabled={isLoading}
                 onClick={() => handleSocialLogin('google')}
               >
@@ -201,7 +246,17 @@ const LoginPage: React.FC = () => {
 
               <button
                 type="button"
-                className="w-full py-3 bg-[#1877F2] text-white font-medium rounded-lg hover:bg-[#166FE5] transition-all flex items-center justify-center space-x-2"
+                className="w-full py-2 bg-[#0077B5] text-white font-medium rounded-lg hover:bg-[#006699] transition-all flex items-center justify-center space-x-2"
+                disabled={isLoading}
+                onClick={() => handleSocialLogin('linkedin')}
+              >
+                <Linkedin className="w-5 h-5" />
+                <span>Continue with LinkedIn</span>
+              </button>
+
+              <button
+                type="button"
+                className="w-full py-2 bg-[#1877F2] text-white font-medium rounded-lg hover:bg-[#166FE5] transition-all flex items-center justify-center space-x-2"
                 disabled={isLoading}
                 onClick={() => handleSocialLogin('facebook')}
               >
@@ -211,7 +266,7 @@ const LoginPage: React.FC = () => {
 
               <button
                 type="button"
-                className="w-full py-3 bg-[#24292e] text-white font-medium rounded-lg hover:bg-[#1b1f23] transition-all flex items-center justify-center space-x-2"
+                className="w-full py-2 bg-[#24292e] text-white font-medium rounded-lg hover:bg-[#1b1f23] transition-all flex items-center justify-center space-x-2"
                 disabled={isLoading}
                 onClick={() => handleSocialLogin('github')}
               >
@@ -222,14 +277,14 @@ const LoginPage: React.FC = () => {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                <label className="block text-xs font-medium text-gray-300 mb-1">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder={loginType === 'agency' ? 'sarah@sparkdigital.com' : 'john@techcorp.com'}
                     required
                   />
@@ -237,32 +292,49 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                <label className="block text-xs font-medium text-gray-300 mb-1">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="Enter your password"
                     required
                   />
                 </div>
               </div>
+              
+              {isSignUp && (
+                <div>
+                  <label className="block text-xs font-medium text-gray-300 mb-1">Confirm Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                      placeholder="Confirm your password"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed animate-pulse-glow"
               >
-                {isLoading ? 'Signing In...' : 'Sign In'}
+                {isLoading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Create Account' : 'Sign In')}
               </button>
             </form>
           )}
 
-          <div className="mt-6 p-4 bg-white/5 rounded-lg border border-white/10">
-            <p className="text-xs text-gray-300 mb-2">Demo Credentials:</p>
+          <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/10">
+            <p className="text-xs text-gray-300 mb-1">Demo Credentials:</p>
             <div className="text-xs text-gray-400 space-y-1">
               <p className="cursor-pointer hover:text-white transition-colors" onClick={() => {
                 setEmail('sarah@sparkdigital.com');
@@ -276,6 +348,14 @@ const LoginPage: React.FC = () => {
               }}><strong>Client:</strong> john@techcorp.com / password</p>
             </div>
           </div>
+          
+          {!isSignUp && (
+            <div className="mt-3 text-center">
+              <a href="#" className="text-xs text-gray-300 hover:text-white transition-colors">
+                Forgot password?
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

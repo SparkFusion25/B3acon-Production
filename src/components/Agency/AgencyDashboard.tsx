@@ -98,7 +98,7 @@ const AgencyDashboard: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <AgencySidebar activeModule={activeModule} onModuleChange={handleModuleChange} />
       <AgencyHeader currentModule={activeModule} />
-      <main className="transition-all duration-300 lg:ml-56 xl:ml-64">
+      <main className="transition-all duration-300 lg:ml-56 xl:ml-64 p-4 lg:p-6">
         {renderModule()}
       </main>
     </div>

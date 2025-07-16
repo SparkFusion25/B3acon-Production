@@ -47,11 +47,11 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     { id: 'clients', label: 'Client Management', icon: Users, gradient: 'from-signal-blue to-blue-600' },
     { id: 'crm', label: 'CRM Hub', icon: Target, gradient: 'from-beacon-orange to-orange-600' },
     { id: 'team', label: 'Team Management', icon: UserCheck, gradient: 'from-signal-blue to-purple-600' },
-    { id: 'global-commerce', label: 'Global Commerce', icon: Globe, gradient: 'from-green-500 to-teal-500' },
-    { id: 'tariff-calculator', label: 'Tariff Calculator', icon: DollarSign, gradient: 'from-blue-500 to-cyan-500' },
-    { id: 'compliance', label: 'Compliance Checker', icon: ShieldCheck, gradient: 'from-red-500 to-pink-500' },
-    { id: 'shipping', label: 'Shipping Tools', icon: Truck, gradient: 'from-amber-500 to-orange-500' },
-    { id: 'hs-codes', label: 'HS Code Lookup', icon: Search, gradient: 'from-purple-500 to-indigo-500' },
+    { id: 'global-commerce', label: 'Global Commerce', icon: Globe, gradient: 'from-green-500 to-teal-500', premium: true },
+    { id: 'tariff-calculator', label: 'Tariff Calculator', icon: DollarSign, gradient: 'from-blue-500 to-cyan-500', premium: true },
+    { id: 'compliance', label: 'Compliance Checker', icon: ShieldCheck, gradient: 'from-red-500 to-pink-500', premium: true },
+    { id: 'shipping', label: 'Shipping Tools', icon: Truck, gradient: 'from-amber-500 to-orange-500', premium: true },
+    { id: 'hs-codes', label: 'HS Code Lookup', icon: Search, gradient: 'from-purple-500 to-indigo-500', premium: true },
     { id: 'google', label: 'Google Services', icon: Search, gradient: 'from-beacon-orange to-red-500' },
     { id: 'seo', label: 'SEO Intelligence', icon: TrendingUp, gradient: 'from-signal-blue to-cyan-500' },
     { id: 'social', label: 'Social Media Center', icon: MessageCircle, gradient: 'from-beacon-orange to-pink-500' },
@@ -116,7 +116,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
       <div className={`
         fixed left-0 top-0 z-40 h-full bg-jet-black border-r border-slate-gray
         transition-transform duration-300 ease-in-out
-        w-72 lg:w-64 xl:w-72
+        w-64 lg:w-56 xl:w-64
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="flex flex-col h-full p-3 lg:p-4">
@@ -147,27 +147,39 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
               const Icon = item.icon;
               const isActive = activeModule === item.id;
               
+              // Check if this is a premium feature that should be restricted
+              const isPremiumLocked = item.premium && false; // Set to true when implementing subscription checks
+              
               console.log(`Rendering menu item ${index + 1}:`, item.label, 'Active:', isActive);
               
               return (
                 <button
                   key={item.id}
-                  onClick={() => handleMenuItemClick(item.id)}
-                  className={`w-full flex items-center space-x-2 lg:space-x-3 px-3 py-2 lg:py-3 rounded-lg transition-all duration-200 text-left ${
+                  onClick={() => isPremiumLocked ? toast.error('Upgrade your plan to access this feature') : handleMenuItemClick(item.id)}
+                  className={`w-full flex items-center justify-between px-3 py-2 lg:py-3 rounded-lg transition-all duration-200 text-left group ${
                     isActive 
                       ? 'bg-gradient-to-r ' + item.gradient + ' text-white shadow-lg'
-                      : 'text-gray-300 hover:bg-slate-gray hover:text-white'
+                      : isPremiumLocked 
+                        ? 'text-gray-500 cursor-not-allowed'
+                        : 'text-gray-300 hover:bg-slate-gray hover:text-white'
                   }`}
                 >
-                  <Icon className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
-                  <span className="font-medium text-xs lg:text-sm truncate">{item.label}</span>
+                  <div className="flex items-center space-x-2 lg:space-x-3">
+                    <Icon className={`w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
+                    <span className="font-medium text-xs lg:text-sm truncate">{item.label}</span>
+                  </div>
+                  {isPremiumLocked && (
+                    <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      Upgrade
+                    </span>
+                  )}
                 </button>
               );
             })}
           </nav>
 
           {/* Settings & Logout */}
-          <div className="mt-4 pt-4 border-t border-slate-gray space-y-1">
+          <div className="mt-auto pt-4 border-t border-slate-gray space-y-1">
             <button 
               onClick={handleSettingsClick}
               className="w-full flex items-center space-x-2 lg:space-x-3 px-3 py-2 lg:py-3 text-gray-300 hover:bg-slate-gray hover:text-white rounded-lg transition-all duration-200"

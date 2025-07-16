@@ -218,7 +218,11 @@ const TariffCalculator: React.FC = () => {
                   <input
                     type="number"
                     value={productValue}
-                    onChange={(e) => setProductValue(e.target.value)}
+                    onChange={(e) => {
+                      // Format with commas and decimal precision
+                      const value = e.target.value;
+                      setProductValue(value);
+                    }}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="0.00"
                     step="0.01"
@@ -235,7 +239,11 @@ const TariffCalculator: React.FC = () => {
                   <input
                     type="number"
                     value={shippingCost}
-                    onChange={(e) => setShippingCost(e.target.value)}
+                    onChange={(e) => {
+                      // Format with commas and decimal precision
+                      const value = e.target.value;
+                      setShippingCost(value);
+                    }}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="0.00"
                     step="0.01"
@@ -251,7 +259,11 @@ const TariffCalculator: React.FC = () => {
                   <input
                     type="number"
                     value={insuranceCost}
-                    onChange={(e) => setInsuranceCost(e.target.value)}
+                    onChange={(e) => {
+                      // Format with commas and decimal precision
+                      const value = e.target.value;
+                      setInsuranceCost(value);
+                    }}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="0.00"
                     step="0.01"
@@ -290,18 +302,18 @@ const TariffCalculator: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <p className="text-sm text-blue-600 mb-1">Customs Value</p>
-                  <p className="text-2xl font-bold text-gray-900">${results.customsValue.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-gray-900">${results.customsValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                 </div>
                 
                 <div className="p-4 bg-green-50 rounded-lg">
                   <p className="text-sm text-green-600 mb-1">Total Duty</p>
-                  <p className="text-2xl font-bold text-gray-900">${results.dutyAmount.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-gray-900">${results.dutyAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                   <p className="text-xs text-gray-500">Rate: {(results.dutyRate * 100).toFixed(1)}%</p>
                 </div>
                 
                 <div className="p-4 bg-purple-50 rounded-lg">
                   <p className="text-sm text-purple-600 mb-1">VAT/Sales Tax</p>
-                  <p className="text-2xl font-bold text-gray-900">${results.vatAmount.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-gray-900">${results.vatAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                   <p className="text-xs text-gray-500">Rate: {(results.vatRate * 100).toFixed(1)}%</p>
                 </div>
               </div>
@@ -309,7 +321,7 @@ const TariffCalculator: React.FC = () => {
               <div className="p-6 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-lg text-white mb-6">
                 <div className="flex items-center justify-between">
                   <h5 className="font-medium">Total Landed Cost</h5>
-                  <p className="text-3xl font-bold">${results.totalLandedCost.toFixed(2)}</p>
+                  <p className="text-3xl font-bold">${results.totalLandedCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                 </div>
               </div>
               
@@ -318,36 +330,36 @@ const TariffCalculator: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Product Value:</span>
-                    <span className="font-medium text-gray-900">${results.breakdown.productValue.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">${results.breakdown.productValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   </div>
                   
                   {results.breakdown.shippingCost > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Shipping Cost:</span>
-                      <span className="font-medium text-gray-900">${results.breakdown.shippingCost.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">${results.breakdown.shippingCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                   )}
                   
                   {results.breakdown.insuranceCost > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Insurance Cost:</span>
-                      <span className="font-medium text-gray-900">${results.breakdown.insuranceCost.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">${results.breakdown.insuranceCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                   )}
                   
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Duty Amount:</span>
-                    <span className="font-medium text-gray-900">${results.breakdown.dutyAmount.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">${results.breakdown.dutyAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">VAT/Sales Tax:</span>
-                    <span className="font-medium text-gray-900">${results.breakdown.vatAmount.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">${results.breakdown.vatAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   </div>
                   
                   <div className="flex justify-between items-center pt-3 border-t border-gray-200">
                     <span className="font-medium text-gray-900">Total Landed Cost:</span>
-                    <span className="font-bold text-gray-900">${results.totalLandedCost.toFixed(2)}</span>
+                    <span className="font-bold text-gray-900">${results.totalLandedCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                   </div>
                 </div>
               </div>

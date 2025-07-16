@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { Package, Search, MapPin, Calendar, Clock, Truck, Ship, Plane, Info } from 'lucide-react';
+import { Package, Search, MapPin, Calendar, Clock, Truck, Ship, Plane, Info, FileText } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const ShipmentTracker: React.FC = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
   const [carrier, setCarrier] = useState('');
+  const [trackingType, setTrackingType] = useState('tracking');
   const [isTracking, setIsTracking] = useState(false);
   const [shipment, setShipment] = useState<any>(null);
   
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!trackingNumber) {
-      toast.error('Please enter a tracking number');
+    if (!trackingNumber && trackingType === 'tracking') {
+      toast.error('Please enter a tracking or reference number');
       return;
     }
     
@@ -26,7 +27,7 @@ const ShipmentTracker: React.FC = () => {
       // Sample tracking data
       const mockShipment = {
         tracking_number: trackingNumber,
-        carrier: carrier || 'FedEx',
+        carrier: carrier || (trackingType === 'ocean' ? 'Maersk' : 'FedEx'),
         status: 'in_transit',
         estimated_delivery: '2025-02-15',
         origin: {
@@ -155,32 +156,95 @@ const ShipmentTracker: React.FC = () => {
         
         <form onSubmit={handleTrack} className="space-y-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tracking Number</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tracking Type</label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setTrackingType('tracking')}
+                className={`py-2 px-3 rounded-lg text-sm font-medium ${
+                  trackingType === 'tracking' 
+                    ? 'bg-signal-blue text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                } transition-colors`}
+              >
+                Tracking #
+              </button>
+              <button
+                type="button"
+                onClick={() => setTrackingType('ocean')}
+                className={`py-2 px-3 rounded-lg text-sm font-medium ${
+                  trackingType === 'ocean' 
+                    ? 'bg-signal-blue text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                } transition-colors`}
+              >
+                Container/BL #
+              </button>
+              <button
+                type="button"
+                onClick={() => setTrackingType('booking')}
+                className={`py-2 px-3 rounded-lg text-sm font-medium ${
+                  trackingType === 'booking' 
+                    ? 'bg-signal-blue text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                } transition-colors`}
+              >
+                Booking #
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {trackingType === 'tracking' ? 'Tracking Number' : 
+               trackingType === 'ocean' ? 'Container/BL Number' : 'Booking Number'}
+            </label>
             <input
               type="text"
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
-              placeholder="Enter tracking number"
+              placeholder={trackingType === 'tracking' ? 'Enter tracking number' : 
+                          trackingType === 'ocean' ? 'Enter container or BL number' : 'Enter booking number'}
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Carrier (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {trackingType === 'ocean' ? 'Ocean Carrier' : trackingType === 'booking' ? 'Freight Forwarder' : 'Carrier'}
+            </label>
             <select
               value={carrier}
               onChange={(e) => setCarrier(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
             >
-              <option value="">Auto Detect</option>
-              <option value="fedex">FedEx</option>
-              <option value="ups">UPS</option>
-              <option value="dhl">DHL</option>
-              <option value="usps">USPS</option>
-              <option value="maersk">Maersk</option>
-              <option value="msc">MSC</option>
-              <option value="cosco">COSCO</option>
+              <option value="">Auto Detect Carrier</option>
+              {trackingType === 'ocean' ? (
+                <>
+                  <option value="maersk">Maersk</option>
+                  <option value="msc">MSC</option>
+                  <option value="cosco">COSCO</option>
+                  <option value="cma">CMA CGM</option>
+                  <option value="hapag">Hapag Lloyd</option>
+                  <option value="oocl">OOCL</option>
+                </>
+              ) : trackingType === 'booking' ? (
+                <>
+                  <option value="dsv">DSV</option>
+                  <option value="kuehne">Kuehne + Nagel</option>
+                  <option value="expeditors">Expeditors</option>
+                  <option value="dhl_global">DHL Global Forwarding</option>
+                  <option value="db_schenker">DB Schenker</option>
+                </>
+              ) : (
+                <>
+                  <option value="fedex">FedEx</option>
+                  <option value="ups">UPS</option>
+                  <option value="dhl">DHL</option>
+                  <option value="usps">USPS</option>
+                </>
+              )}
             </select>
           </div>
           
@@ -208,7 +272,10 @@ const ShipmentTracker: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h5 className="font-medium text-gray-900">Shipment Details</h5>
-                <p className="text-sm text-gray-600">Tracking #{shipment.tracking_number}</p>
+                <p className="text-sm text-gray-600">
+                  {trackingType === 'tracking' ? 'Tracking' : 
+                   trackingType === 'ocean' ? 'Container/BL' : 'Booking'} #{shipment.tracking_number}
+                </p>
               </div>
               <div className={`px-3 py-1 rounded-full text-sm font-medium ${
                 shipment.status === 'delivered' ? 'bg-green-100 text-green-800' :
@@ -222,7 +289,7 @@ const ShipmentTracker: React.FC = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
                 <div className="flex items-center mb-3">
                   <MapPin className="w-5 h-5 text-gray-400 mr-2" />
@@ -270,6 +337,19 @@ const ShipmentTracker: React.FC = () => {
                   <div className="flex justify-between p-2 bg-gray-50 rounded-lg">
                     <span className="text-gray-600">Packages:</span>
                     <span className="font-medium text-gray-900">{shipment.package_count}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <div className="flex items-center mb-3">
+                  <FileText className="w-5 h-5 text-gray-400 mr-2" />
+                  <h6 className="font-medium text-gray-900">Live Map View</h6>
+                </div>
+                <div className="bg-gray-100 rounded-lg h-40 flex items-center justify-center">
+                  <div className="text-center">
+                    <Globe className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">Interactive map view coming soon</p>
                   </div>
                 </div>
               </div>
