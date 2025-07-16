@@ -14,9 +14,10 @@ const SEOIntelligenceHub: React.FC = () => {
   // Check API connection on component mount
   React.useEffect(() => {
     const checkApiConnection = async () => {
+      setApiStatus('checking');
       try {
         const result = await seoApi.testConnection();
-        if (result.success) {
+        if (result && result.success) {
           setApiStatus('connected');
           console.log('SEO API connected successfully');
         } else {
@@ -63,20 +64,20 @@ const SEOIntelligenceHub: React.FC = () => {
         // Perform new analysis
         toast.loading('Analyzing website...');
         
-        // Get domain data
-        const domainData = await seoApi.getDomainData(domain);
-        
-        // Get on-page analysis with suggestions
-        const onPageData = await seoApi.getOnpageSuggestions(domain);
-        
-        // Get speed data
-        const speedData = await seoApi.getSpeedData(normalizedUrl);
-        
-        // Get backlinks
-        const backlinksData = await seoApi.getBacklinks(domain);
-        
-        // Get top keywords
-        const keywordsData = await seoApi.getTopKeywords(domain);
+        // Get all data (using mock data in our updated seoApi)
+        const [
+          domainData,
+          onPageData,
+          speedData,
+          backlinksData,
+          keywordsData
+        ] = await Promise.all([
+          seoApi.getDomainData(domain),
+          seoApi.getOnpageSuggestions(domain),
+          seoApi.getSpeedData(normalizedUrl),
+          seoApi.getBacklinks(domain),
+          seoApi.getTopKeywords(domain)
+        ]);
         
         // Combine results
         const results = {
