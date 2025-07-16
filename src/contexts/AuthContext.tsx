@@ -23,6 +23,7 @@ interface AuthContextType {
   userType: 'agency' | 'client';
   currentClientId: string | null;
   login: (email: string, password: string, type: 'agency' | 'client') => Promise<void>;
+  signup: (email: string, password: string, name: string, company: string, type: 'agency' | 'client') => Promise<void>;
   loginWithSocial: (provider: SocialProvider, type: 'agency' | 'client') => Promise<void>;
   logout: () => void;
   switchToClient: (clientId: string) => void;
@@ -183,6 +184,47 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const signup = async (email: string, password: string, name: string, company: string, type: 'agency' | 'client') => {
+    setIsLoading(true);
+    
+    try {
+      // In a real implementation, we would call Supabase auth.signUp
+      // For now, we'll simulate the signup process with mock data
+      const role: UserRole = type === 'agency' ? 'specialist' : 'client';
+      
+      const newUser: User = {
+        id: `user_${Date.now()}`,
+        name,
+        email,
+        role,
+        subscription: 'starter',
+        company,
+        addOns: []
+      };
+      
+      // Use a safe setTimeout pattern
+      const timeoutId = window.setTimeout(() => {
+        setUser(newUser);
+        setUserType(type);
+        setIsAuthenticated(true);
+        
+        // Save to localStorage
+        localStorage.setItem('b3acon_user', JSON.stringify(newUser));
+        localStorage.setItem('b3acon_user_type', type);
+      }, 100);
+      
+      // Store the timeout ID for cleanup
+      setAuthTimeouts(prev => [...prev, timeoutId]);
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Signup error:', error);
+      return Promise.reject(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const loginWithSocial = async (provider: SocialProvider, type: 'agency' | 'client') => {
     if (!supabase) {
       throw new Error('Supabase not configured');
@@ -297,6 +339,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     userType,
     currentClientId,
     login,
+    signup,
     loginWithSocial,
     logout,
     switchToClient,

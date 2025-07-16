@@ -132,7 +132,7 @@ const LandingPage: React.FC = () => {
           </div>
           <div className="flex items-center space-x-4">
             <Link to="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
-            <Link to="/signup" className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+            <Link to="/signup" className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all">
               Install B3ACON
             </Link>
           </div>
@@ -166,19 +166,19 @@ const LandingPage: React.FC = () => {
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <button 
                   onClick={handleStartTrial}
-                  className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all text-center"
+                  className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg hover:scale-105 hover:brightness-105 transition-all text-center"
                 >
                   {landingSettings.cta_primary}
                 </button>
                 <button 
                   onClick={handleSeePlans}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center"
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 transition-all text-center"
                 >
                   {landingSettings.cta_secondary}
                 </button>
                 <button 
                   onClick={handleBookDemo}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center sm:hidden md:block"
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 transition-all text-center sm:hidden md:block"
                 >
                   {landingSettings.cta_tertiary}
                 </button>
@@ -657,19 +657,19 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 relative z-10">
             <button 
               onClick={handleStartTrial}
-              className="px-8 py-4 bg-white text-signal-blue rounded-lg hover:shadow-lg transition-all text-lg font-medium"
+              className="px-8 py-4 bg-white text-signal-blue rounded-lg hover:shadow-lg hover:scale-105 hover:brightness-105 transition-all text-lg font-medium"
             >
               {landingSettings.cta_primary}
             </button>
             <button 
               onClick={handleSeePlans}
-              className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-all text-lg font-medium"
+              className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 hover:scale-105 transition-all text-lg font-medium"
             >
               {landingSettings.cta_secondary}
             </button>
             <button 
               onClick={handleBookDemo}
-              className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-all text-lg font-medium sm:hidden md:block"
+              className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 hover:scale-105 transition-all text-lg font-medium sm:hidden md:block"
             >
               {landingSettings.cta_tertiary}
             </button>
@@ -746,7 +746,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">© 2025 B3ACON. All rights reserved.</p>
+            <p className="text-gray-400">© 2025 B3ACON | <a href="/privacy" className="hover:text-white">Privacy</a> | <a href="/terms" className="hover:text-white">Terms</a> | <a href="/support" className="hover:text-white">Support</a> | <Link to="/agency/login" className="text-signal-blue hover:text-white">🔑 Agency Portal Login</Link></p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
@@ -757,6 +757,19 @@ const LandingPage: React.FC = () => {
       </footer>
     </div>
   );
+};
+
+// Update the handler functions to properly redirect
+const handleStartTrial = () => {
+  window.location.href = '/signup';
+};
+
+const handleSeePlans = () => {
+  window.location.href = '/pricing';
+};
+
+const handleBookDemo = () => {
+  window.location.href = '/demo';
 };
 
 export default LandingPage;

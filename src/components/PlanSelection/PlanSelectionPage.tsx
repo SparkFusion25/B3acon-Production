@@ -7,7 +7,11 @@ import { loadStripe } from '@stripe/stripe-js';
 // Initialize Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const PlanSelectionPage: React.FC = () => {
+interface PlanSelectionPageProps {
+  viewOnly?: boolean;
+}
+
+const PlanSelectionPage: React.FC<PlanSelectionPageProps> = ({ viewOnly = false }) => {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,8 +22,8 @@ const PlanSelectionPage: React.FC = () => {
       id: 'starter_free',
       name: 'Free Starter',
       price: 0,
-      stripeProductId: 'prod_FREE',
-      stripePriceId: 'price_FREE',
+      stripeProductId: 'prod_FREE', // Stripe product ID
+      stripePriceId: 'price_FREE', // Stripe price ID
       description: 'Basic tools for small businesses just getting started',
       features: [
         'Limited access to all tools (3 uses each)',
@@ -43,8 +47,8 @@ const PlanSelectionPage: React.FC = () => {
       id: 'growth',
       name: 'Growth',
       price: 49.99,
-      stripeProductId: 'prod_GROWTH',
-      stripePriceId: 'price_12345G',
+      stripeProductId: 'prod_GROWTH', // Stripe product ID
+      stripePriceId: 'price_12345G', // Stripe price ID
       description: 'Essential tools for growing businesses',
       features: [
         'Unlimited access to core tools',
@@ -69,8 +73,8 @@ const PlanSelectionPage: React.FC = () => {
       id: 'pro_trader',
       name: 'Pro Trader',
       price: 149.99,
-      stripeProductId: 'prod_PRO',
-      stripePriceId: 'price_12345P',
+      stripeProductId: 'prod_PRO', // Stripe product ID
+      stripePriceId: 'price_12345P', // Stripe price ID
       description: 'Advanced tools for serious global traders',
       features: [
         'All Growth features',
@@ -93,8 +97,8 @@ const PlanSelectionPage: React.FC = () => {
       id: 'enterprise',
       name: 'Enterprise',
       price: 'Custom',
-      stripeProductId: 'prod_ENT',
-      stripePriceId: '',
+      stripeProductId: 'prod_ENT', // Stripe product ID
+      stripePriceId: '', // Custom pricing
       description: 'Custom solutions for large organizations',
       features: [
         'All Pro Trader features',
@@ -116,9 +120,9 @@ const PlanSelectionPage: React.FC = () => {
   // Feature availability by plan
   const featuresByPlan = {
     'starter_free': ['tariff-calculator', 'hs-codes', 'crm'],
-    'growth': ['tariff-calculator', 'hs-codes', 'crm', 'shipping', 'email', 'landing'],
-    'pro_trader': ['tariff-calculator', 'hs-codes', 'crm', 'shipping', 'email', 'landing', 'compliance', 'fta', 'landed_cost', 'google', 'seo', 'shopify'],
-    'enterprise': ['tariff-calculator', 'hs-codes', 'crm', 'shipping', 'email', 'landing', 'compliance', 'fta', 'landed_cost', 'google', 'seo', 'shopify', 'whitelabel']
+    'growth': ['tariff-calculator', 'hs-codes', 'crm', 'shipping', 'email', 'landing', 'social-scheduler-tool'],
+    'pro_trader': ['tariff-calculator', 'hs-codes', 'crm', 'shipping', 'email', 'landing', 'compliance', 'fta', 'landed_cost', 'google', 'seo', 'shopify', 'social-scheduler-tool', 'seo-content-gap-tool', 'shipment-tracking-pro'],
+    'enterprise': ['tariff-calculator', 'hs-codes', 'crm', 'shipping', 'email', 'landing', 'compliance', 'fta', 'landed_cost', 'google', 'seo', 'shopify', 'whitelabel', 'social-scheduler-tool', 'seo-content-gap-tool', 'shipment-tracking-pro', 'api-access-/-webhooks', 'ai-blog-writer']
   };
 
   // Feature icons and names
@@ -135,6 +139,11 @@ const PlanSelectionPage: React.FC = () => {
     'google': { name: 'Google Services', icon: Search },
     'seo': { name: 'SEO Intelligence', icon: TrendingUp },
     'shopify': { name: 'Shopify Integration', icon: ShoppingBag }
+    'social-scheduler-tool': { name: 'Social Scheduler', icon: Calendar },
+    'seo-content-gap-tool': { name: 'SEO Content Gap', icon: FileText },
+    'shipment-tracking-pro': { name: 'Shipment Tracking Pro', icon: Package },
+    'api-access-/-webhooks': { name: 'API Access', icon: Code },
+    'ai-blog-writer': { name: 'AI Blog Writer', icon: Edit }
   };
 
   const handleSelectPlan = (planId: string) => {
@@ -159,16 +168,24 @@ const PlanSelectionPage: React.FC = () => {
       // For free plan, create user profile and redirect to dashboard
       if (plan.id === 'starter_free') {
         // In a real implementation, we would create a user profile with the free plan
-        toast.success('Free plan activated! Redirecting to dashboard...');
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1500);
+        if (!viewOnly) {
+          toast.success('Free plan activated! Redirecting to dashboard...');
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 1500);
+        } else {
+          toast.success('Free plan selected. Sign up to activate!');
+        }
         return;
       }
 
       // For Enterprise plan, redirect to contact sales page
       if (plan.id === 'enterprise') {
-        navigate('/contact-sales');
+        if (!viewOnly) {
+          navigate('/contact-sales');
+        } else {
+          toast.success('Enterprise plan requires contacting sales');
+        }
         return;
       }
 
@@ -179,14 +196,17 @@ const PlanSelectionPage: React.FC = () => {
       }
 
       // In a real implementation, we would create a checkout session on the server
-      // For now, we'll simulate the redirect
-      toast.success(`Redirecting to checkout for ${plan.name} plan...`);
-      
-      // Simulate redirect to Stripe checkout
-      setTimeout(() => {
-        // After successful payment, user would be redirected to dashboard
-        navigate('/dashboard');
-      }, 1500);
+      if (!viewOnly) {
+        toast.success(`Redirecting to checkout for ${plan.name} plan...`);
+        
+        // Simulate redirect to Stripe checkout
+        setTimeout(() => {
+          // After successful payment, user would be redirected to dashboard
+          navigate('/dashboard');
+        }, 1500);
+      } else {
+        toast.success(`${plan.name} plan selected. Sign up to subscribe!`);
+      }
     } catch (error) {
       console.error('Error processing plan selection:', error);
       toast.error('Failed to process plan selection');
@@ -200,19 +220,35 @@ const PlanSelectionPage: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center space-x-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
-              <Globe className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-800">B3ACON</h1>
-              <p className="text-slate-600 text-sm">Global Commerce Command Center</p>
-            </div>
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
+                <Globe className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800">B3ACON</h1>
+                <p className="text-slate-600 text-sm">Global Commerce Command Center</p>
+              </div>
+            </Link>
           </div>
           
-          <h2 className="text-3xl font-bold text-slate-800 mb-4">Choose Your Plan</h2>
+          <h2 className="text-3xl font-bold text-slate-800 mb-4">{viewOnly ? "Our Plans & Pricing" : "Choose Your Plan"}</h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Select the plan that best fits your business needs. All plans include a 14-day free trial.
+            {viewOnly ? 
+              "Compare our plans and find the perfect fit for your business needs." :
+              "Select the plan that best fits your business needs. All plans include a 14-day free trial."
+            }
           </p>
+          
+          {viewOnly && (
+            <div className="mt-6">
+              <Link 
+                to="/signup" 
+                className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all inline-block"
+              >
+                Start Free Trial
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -279,8 +315,10 @@ const PlanSelectionPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelectPlan(plan.id);
+                    if (!viewOnly) {
+                      e.stopPropagation();
+                      handleSelectPlan(plan.id);
+                    }
                   }}
                   className={`w-full py-2 rounded-lg font-medium transition-all ${
                     selectedPlan === plan.id
@@ -288,7 +326,7 @@ const PlanSelectionPage: React.FC = () => {
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  {plan.id === 'enterprise' ? 'Contact Sales' : 'Select Plan'}
+                  {plan.id === 'enterprise' ? 'Contact Sales' : viewOnly ? 'View Details' : 'Select Plan'}
                 </button>
               </div>
             </div>
@@ -336,20 +374,30 @@ const PlanSelectionPage: React.FC = () => {
         </div>
 
         <div className="flex justify-center">
-          <button
-            onClick={handleContinue}
-            disabled={!selectedPlan || isLoading}
-            className="px-8 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-          >
-            {isLoading ? (
-              <span>Processing...</span>
-            ) : (
-              <>
-                <span>Continue with {selectedPlan ? plans.find(p => p.id === selectedPlan)?.name : 'Selected Plan'}</span>
-                <ArrowRight className="w-5 h-5" />
-              </>
-            )}
-          </button>
+          {!viewOnly ? (
+            <button
+              onClick={handleContinue}
+              disabled={!selectedPlan || isLoading}
+              className="px-8 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            >
+              {isLoading ? (
+                <span>Processing...</span>
+              ) : (
+                <>
+                  <span>Continue with {selectedPlan ? plans.find(p => p.id === selectedPlan)?.name : 'Selected Plan'}</span>
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          ) : (
+            <Link 
+              to="/signup" 
+              className="px-8 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center space-x-2"
+            >
+              <span>Start Free Trial</span>
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          )}
         </div>
       </div>
     </div>

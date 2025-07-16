@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
-  const { login, loginWithSocial } = useAuth();
+  const { login, loginWithSocial, signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,12 +24,18 @@ const LoginPage: React.FC = () => {
     try {
       if (isSignUp) {
         if (password !== confirmPassword) {
-          throw new Error('Passwords do not match');
+          toast.error('Passwords do not match');
+          return;
         }
-        // In a real implementation, we would call a signup function here
-        toast.success('Account created successfully!');
-        // Redirect to plan selection page
-        navigate('/select-plan');
+        
+        // Call the signup function
+        await signup(email, password, name, company, loginType);
+        toast.success('Account created successfully! Redirecting to plan selection...');
+        
+        // Redirect to plan selection page after a short delay
+        setTimeout(() => {
+          navigate('/select-plan');
+        }, 1500);
       } else {
         await login(email, password, loginType);
       }
@@ -147,7 +153,7 @@ const LoginPage: React.FC = () => {
           <div className="text-center mb-8 md:hidden">
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
-                <Globe className="w-7 h-7 text-white" />
+                <Globe className="w-7 h-7 text-white animate-pulse" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">B3ACON</h1>
@@ -376,7 +382,7 @@ const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="w-full py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg hover:scale-105 hover:brightness-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 <span>{isLoading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Create Account' : 'Sign In')}</span>
                 {!isLoading && <ArrowRight className="w-4 h-4" />}
@@ -409,7 +415,7 @@ const LoginPage: React.FC = () => {
           )}
           
           <div className="mt-6 pt-4 border-t border-slate-200 text-center">
-            <Link to="/agency-login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
+            <Link to="/agency/login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
               Agency Portal Login
             </Link>
           </div>
