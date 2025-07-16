@@ -1,8 +1,104 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp, Link as LinkIcon, Check } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp, Link as LinkIcon, Check, Globe, Package, FileCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
+import { toast } from 'react-hot-toast';
 
 const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [landingSettings, setLandingSettings] = useState<any>({
+    headlines: [
+      "AI-Powered SEO & Marketing",
+      "Global Trade Intelligence",
+      "Shipment Tracking & Freight Tools",
+      "CRM + Outreach Tools",
+      "Integrated Analytics & Dashboard"
+    ],
+    main_headline: "The Ultimate Marketing Command Center",
+    background_image: "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+    cta_primary: "Start Free 14-Day Trial",
+    cta_secondary: "See Plans",
+    cta_tertiary: "Book Demo"
+  });
+  const [currentHeadlineIndex, setCurrentHeadlineIndex] = useState(0);
+  const [displayText, setDisplayText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(100);
+
+  // Fetch landing page settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'landing_page')
+          .single();
+        
+        if (error) {
+          console.error('Error fetching landing page settings:', error);
+          return;
+        }
+        
+        if (data && data.value) {
+          setLandingSettings(data.value);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    
+    fetchSettings();
+  }, []);
+
+  // Typewriter effect
+  useEffect(() => {
+    if (!landingSettings.headlines || landingSettings.headlines.length === 0) return;
+    
+    const currentHeadline = landingSettings.headlines[currentHeadlineIndex];
+    
+    if (isDeleting) {
+      if (displayText.length === 0) {
+        setIsDeleting(false);
+        setCurrentHeadlineIndex((currentHeadlineIndex + 1) % landingSettings.headlines.length);
+        setTypingSpeed(100);
+      } else {
+        setDisplayText(displayText.slice(0, -1));
+        setTypingSpeed(50);
+      }
+    } else {
+      if (displayText === currentHeadline) {
+        // Pause at the end of typing
+        setTimeout(() => {
+          setIsDeleting(true);
+        }, 2000);
+      } else {
+        setDisplayText(currentHeadline.slice(0, displayText.length + 1));
+      }
+    }
+    
+    const timer = setTimeout(() => {
+      // This will trigger the effect again
+    }, typingSpeed);
+    
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, currentHeadlineIndex, landingSettings.headlines, typingSpeed]);
+
+  const handleStartTrial = () => {
+    navigate('/signup');
+    toast.success('Starting your free trial');
+  };
+
+  const handleSeePlans = () => {
+    navigate('/pricing');
+    toast.success('Viewing pricing plans');
+  };
+
+  const handleBookDemo = () => {
+    toast.success('Demo booking form will appear here');
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -31,23 +127,48 @@ const LandingPage: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-20 px-6">
+      <section className="py-20 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 z-0">
+          <img 
+            src={landingSettings.background_image} 
+            alt="Background" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/80 z-0"></div>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-8">
-            <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 gradient-text">
-                The Ultimate Marketing Command Center
+            <div className="z-10">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 gradient-text relative">
+                {landingSettings.main_headline}
               </h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Empower your agency with our all-in-one platform. Manage clients, campaigns, and performance across multiple channels with unparalleled efficiency.
+              <div className="h-16 mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-signal-blue to-beacon-orange">
+                  {displayText}<span className="animate-pulse">|</span>
+                </h2>
+              </div>
+              <p className="text-xl text-gray-600 mb-8 max-w-xl">
+                Empower your agency with our all-in-one platform. Manage clients, campaigns, and global operations across multiple channels with unparalleled efficiency.
               </p>
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                <Link to="/signup" className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all text-center">
-                  Start Free 14-Day Trial
-                </Link>
-                <a href="#how-it-works" className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center">
-                  How It Works
-                </a>
+                <button 
+                  onClick={handleStartTrial}
+                  className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all text-center"
+                >
+                  {landingSettings.cta_primary}
+                </button>
+                <button 
+                  onClick={handleSeePlans}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center"
+                >
+                  {landingSettings.cta_secondary}
+                </button>
+                <button 
+                  onClick={handleBookDemo}
+                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all text-center sm:hidden md:block"
+                >
+                  {landingSettings.cta_tertiary}
+                </button>
               </div>
               <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-6">
                 <div className="flex items-center">
@@ -91,7 +212,7 @@ const LandingPage: React.FC = () => {
       {/* Features Section */}
       <section id="features" className="py-20 px-6 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
               All-in-One Marketing Platform
             </h2>
@@ -118,6 +239,24 @@ const LandingPage: React.FC = () => {
                 description: 'Multi-provider email campaign management with automation and analytics.'
               },
               {
+                icon: <Globe className="w-6 h-6 text-green-600" />,
+                title: 'Global Commerce',
+                description: 'International trade tools including tariff calculator, compliance checker, and freight estimator.',
+                highlight: true
+              },
+              {
+                icon: <Package className="w-6 h-6 text-blue-600" />,
+                title: 'Shipping',
+                description: 'Track shipments, estimate freight costs, and manage logistics across multiple carriers.',
+                highlight: true
+              },
+              {
+                icon: <FileCheck className="w-6 h-6 text-purple-600" />,
+                title: 'Compliance',
+                description: 'Ensure trade compliance with restricted party screening and regulatory checks.',
+                highlight: true
+              },
+              {
                 icon: <Users className="w-6 h-6 text-beacon-orange" />,
                 title: 'Affiliate',
                 description: 'Partner recruitment, commission tracking, and automated payment management.'
@@ -134,7 +273,7 @@ const LandingPage: React.FC = () => {
               }
             ].map((feature, index) => (
               <div key={index} className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-signal-blue transition-all">
-                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-6">
+                <div className={`w-12 h-12 ${feature.highlight ? 'bg-gradient-to-r from-signal-blue to-beacon-orange' : 'bg-gray-100'} rounded-lg flex items-center justify-center mb-6 ${feature.highlight ? 'animate-pulse-glow' : ''}`}>
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
@@ -146,7 +285,9 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 px-6">
+      <section id="how-it-works" className="py-20 px-6 relative overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-signal-blue opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-beacon-orange opacity-10 rounded-full blur-3xl"></div>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
@@ -201,7 +342,8 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-6 bg-gray-50">
+      <section id="testimonials" className="py-20 px-6 bg-gray-50 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-signal-blue/5 to-beacon-orange/5"></div>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
@@ -253,7 +395,9 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-6">
+      <section id="pricing" className="py-20 px-6 relative overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-signal-blue opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-beacon-orange opacity-10 rounded-full blur-3xl"></div>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
@@ -336,7 +480,7 @@ const LandingPage: React.FC = () => {
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start">
-                      <CheckCircle className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" />
+                      <CheckCircle className={`w-5 h-5 ${plan.highlighted ? 'text-signal-blue' : 'text-green-500'} mr-2 flex-shrink-0`} />
                       <span className="text-gray-600">{feature}</span>
                     </li>
                   ))}
@@ -355,7 +499,8 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Comparison Section */}
-      <section id="comparison" className="py-20 px-6 bg-gray-50">
+      <section id="comparison" className="py-20 px-6 bg-gray-50 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-signal-blue/5 to-beacon-orange/5"></div>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
@@ -386,6 +531,9 @@ const LandingPage: React.FC = () => {
                   { feature: 'Email marketing', b3acon: true, compA: false, compB: true },
                   { feature: 'Landing page builder', b3acon: true, compA: false, compB: false },
                   { feature: 'Affiliate marketing', b3acon: true, compA: false, compB: false },
+                  { feature: 'Global Commerce Tools', b3acon: true, compA: false, compB: false },
+                  { feature: 'Tariff & Duty Calculator', b3acon: true, compA: false, compB: false },
+                  { feature: 'Shipment Tracking', b3acon: true, compA: false, compB: false },
                   { feature: 'Unlimited clients (Agency)', b3acon: true, compA: false, compB: false },
                   { feature: 'API access', b3acon: true, compA: true, compB: false }
                 ].map((row, index) => (
@@ -427,7 +575,9 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 px-6">
+      <section id="faq" className="py-20 px-6 relative overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-signal-blue opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-beacon-orange opacity-10 rounded-full blur-3xl"></div>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
@@ -443,6 +593,10 @@ const LandingPage: React.FC = () => {
               {
                 question: 'How long is the free trial?',
                 answer: 'Our free trial lasts for 14 days with full access to all features. No credit card required to start.'
+              },
+              {
+                question: 'What global commerce features are included?',
+                answer: 'Our platform includes tariff calculation, landed cost estimation, compliance checking, freight estimation, shipment tracking, HS code lookup, and FTA eligibility checking. Access varies by subscription tier.'
               },
               {
                 question: 'Can I white label the platform?',
@@ -475,7 +629,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-signal-blue to-beacon-orange relative overflow-hidden">
+      <section className="py-20 px-6 bg-gradient-to-r from-signal-blue to-beacon-orange relative overflow-hidden z-10">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')] bg-cover bg-center"></div>
         </div>
@@ -487,12 +641,24 @@ const LandingPage: React.FC = () => {
             Join thousands of agencies already using B3ACON to scale their operations and deliver better results for their clients.
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 relative z-10">
-            <Link to="/signup" className="px-8 py-4 bg-white text-signal-blue rounded-lg hover:shadow-lg transition-all text-lg font-medium">
-              Start Your Free Trial
-            </Link>
-            <a href="#demo" className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-all text-lg font-medium">
-              Schedule a Demo
-            </a>
+            <button 
+              onClick={handleStartTrial}
+              className="px-8 py-4 bg-white text-signal-blue rounded-lg hover:shadow-lg transition-all text-lg font-medium"
+            >
+              {landingSettings.cta_primary}
+            </button>
+            <button 
+              onClick={handleSeePlans}
+              className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-all text-lg font-medium"
+            >
+              {landingSettings.cta_secondary}
+            </button>
+            <button 
+              onClick={handleBookDemo}
+              className="px-8 py-4 border-2 border-white text-white rounded-lg hover:bg-white/10 transition-all text-lg font-medium sm:hidden md:block"
+            >
+              {landingSettings.cta_tertiary}
+            </button>
           </div>
         </div>
       </section>

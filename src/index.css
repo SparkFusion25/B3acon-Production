@@ -34,6 +34,10 @@
   .gradient-bg {
     @apply bg-gradient-to-r from-signal-blue to-beacon-orange;
   }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
   
   .card {
     @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
@@ -78,6 +82,15 @@
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(52, 120, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(52, 120, 246, 0.6);
+  }
 }
 
 /* Smooth transitions */
