@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Terminal49 API configuration
-const API_KEY = 'LQuypbifoKpCGBsxkzbBFsPv';
+const API_KEY = import.meta.env.VITE_TERMINAL49_API_KEY || 'LQuypbifoKpCGBsxkzbBFsPv';
 const BASE_URL = 'https://api.terminal49.com/v3';
 
 // Interface for container tracking response
@@ -40,7 +40,7 @@ interface TrackingRequest {
 export const trackContainer = async (params: TrackingRequest): Promise<ContainerTrackingResponse> => {
   try {
     // Determine the endpoint based on tracking type
-    let endpoint = '';
+    let endpoint;
     switch (params.trackingType) {
       case 'container':
         endpoint = `/containers/${params.trackingNumber}`;
@@ -56,7 +56,7 @@ export const trackContainer = async (params: TrackingRequest): Promise<Container
     }
 
     // Add carrier parameter if provided
-    if (params.carrier) {
+    if (params.carrier && params.carrier !== '') {
       endpoint += `?carrier=${params.carrier}`;
     }
 
@@ -64,7 +64,7 @@ export const trackContainer = async (params: TrackingRequest): Promise<Container
     const response = await axios.get(`${BASE_URL}${endpoint}`, {
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
     });
 
@@ -72,7 +72,7 @@ export const trackContainer = async (params: TrackingRequest): Promise<Container
   } catch (error) {
     console.error('Error tracking container:', error);
     
-    // For demo purposes, return mock data if API call fails
+    // Return mock data if API call fails
     return getMockTrackingData(params.trackingNumber, params.carrier);
   }
 };
@@ -85,7 +85,7 @@ export const trackContainer = async (params: TrackingRequest): Promise<Container
  */
 const getMockTrackingData = (trackingNumber: string, carrier?: string): ContainerTrackingResponse => {
   return {
-    container: {
+    container: { 
       container_number: trackingNumber,
       carrier: carrier || 'MAERSK',
       status: 'In Transit',
@@ -93,7 +93,7 @@ const getMockTrackingData = (trackingNumber: string, carrier?: string): Containe
       location: {
         lat: 19.4326,
         lon: -155.2453,
-        port: 'Pacific Ocean'
+        port: 'Pacific Ocean',
       },
       events: [
         {
@@ -113,7 +113,7 @@ const getMockTrackingData = (trackingNumber: string, carrier?: string): Containe
           location: 'Pacific Ocean, near Hawaii',
           status: 'In Transit',
           description: 'Vessel in transit'
-        }
+        },
       ]
     }
   };
@@ -128,7 +128,7 @@ export const getSupportedCarriers = async () => {
     const response = await axios.get(`${BASE_URL}/carriers`, {
       headers: {
         'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
     });
 
@@ -144,7 +144,7 @@ export const getSupportedCarriers = async () => {
         { code: 'CMA', name: 'CMA CGM' },
         { code: 'COSCO', name: 'COSCO' },
         { code: 'HAPAG', name: 'Hapag Lloyd' },
-        { code: 'OOCL', name: 'OOCL' }
+        { code: 'OOCL', name: 'OOCL' },
       ]
     };
   }

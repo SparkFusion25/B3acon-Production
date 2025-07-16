@@ -4,14 +4,18 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 
-const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  initialMode?: 'signup' | 'agency';
+}
+
+const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loginType, setLoginType] = useState<'agency' | 'client'>('agency');
+  const [loginType, setLoginType] = useState<'agency' | 'client'>(initialMode === 'agency' ? 'agency' : 'client');
   const [isLoading, setIsLoading] = useState(false);
   const [showSocialLogin, setShowSocialLogin] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [name, setName] = useState('');
   const [company, setCompany] = useState('');
   const { login, loginWithSocial, signup } = useAuth();
@@ -415,9 +419,16 @@ const LoginPage: React.FC = () => {
           )}
           
           <div className="mt-6 pt-4 border-t border-slate-200 text-center">
-            <Link to="/agency/login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
-              Agency Portal Login
-            </Link>
+            {loginType !== 'agency' && (
+              <Link to="/agency/login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
+                Agency Portal Login
+              </Link>
+            )}
+            {loginType === 'agency' && (
+              <Link to="/login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
+                Client Portal Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

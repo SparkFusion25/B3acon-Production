@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Package, Search, MapPin, Calendar, Clock, Truck, Ship, Plane, Info, FileText } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import terminal49 from '../../../../lib/terminal49';
 
 const ShipmentTracker: React.FC = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -25,106 +25,63 @@ const ShipmentTracker: React.FC = () => {
     try {
       // Call Terminal49 API to track the container
       let response;
-      
+
       // Clear any existing timeout
       if (trackingTimeoutId !== null) {
         clearTimeout(trackingTimeoutId);
       }
       
       try {
-        // For demo purposes, we'll simulate the API call
-        // In production, use the actual API endpoint
-        // response = await axios.get(`https://api.terminal49.com/v3/containers/${trackingNumber}`, {
-        //   headers: {
-        //     Authorization: `Bearer LQuypbifoKpCGBsxkzbBFsPv`
-        //   }
-        // });
+        // Call the Terminal49 API through our wrapper
+        if (trackingType === 'tracking') {
+          response = await terminal49.trackContainer({
+            trackingNumber,
+            trackingType: 'container',
+            carrier: carrier || undefined
+          });
+        } else if (trackingType === 'ocean') {
+          response = await terminal49.trackContainer({
+            trackingNumber,
+            trackingType: 'container',
+            carrier: carrier || undefined
+          });
+        } else if (trackingType === 'booking') {
+          response = await terminal49.trackContainer({
+            trackingNumber,
+            trackingType: 'booking',
+            carrier: carrier || undefined
+          });
+        }
         
-        // Simulate API response
-        const newTimeoutId = window.setTimeout(() => {
-          // Sample tracking data based on Terminal49 API response format
-          const mockShipment = {
+        // Process the response
+        if (response && response.container) {
+          setShipment({
             tracking_number: trackingNumber,
-            carrier: carrier || (trackingType === 'ocean' ? 'Maersk' : 'FedEx'),
-            status: 'in_transit',
-            estimated_delivery: '2025-02-15',
+            carrier: response.container.carrier,
+            status: response.container.status,
+            estimated_delivery: response.container.eta,
+            current_location: response.container.location,
+            events: response.container.events,
+            // Add other fields as needed
             origin: {
-              city: 'Shanghai',
-              country: 'China',
-              postal_code: '200000',
-              coordinates: {
-                lat: 31.2304,
-                lon: 121.4737
-              }
+              city: response.container.events[0]?.location.split(', ')[0] || 'Unknown',
+              country: response.container.events[0]?.location.split(', ')[1] || 'Unknown'
             },
             destination: {
-              city: 'Los Angeles',
-              country: 'United States',
-              postal_code: '90001',
-              coordinates: {
-                lat: 34.0522,
-                lon: -118.2437
-              }
+              city: 'Destination',
+              country: 'Country'
             },
-            current_location: {
-              coordinates: {
-                lat: 19.4326,
-                lon: -155.2453
-              },
-              description: 'Pacific Ocean, near Hawaii'
-            },
-            shipment_date: '2025-02-01',
-            service_type: 'International Priority',
-            weight: '15.5 kg',
-            package_count: 2,
-            events: [
-              {
-                date: '2025-02-01T10:30:00Z',
-                location: 'Shanghai, China',
-                status: 'Shipment picked up',
-                description: 'Shipment picked up by carrier'
-              },
-              {
-                date: '2025-02-02T14:15:00Z',
-                location: 'Shanghai, China',
-                status: 'Departed facility',
-                description: 'Shipment has left the origin facility'
-              },
-              {
-                date: '2025-02-03T08:45:00Z',
-                location: 'Hong Kong, China',
-                status: 'Arrived at facility',
-                description: 'Shipment has arrived at transit facility'
-              },
-              {
-                date: '2025-02-04T02:20:00Z',
-                location: 'Hong Kong, China',
-                status: 'Departed facility',
-                description: 'Shipment has left the transit facility'
-              },
-              {
-                date: '2025-02-05T18:10:00Z',
-                location: 'Pacific Ocean',
-                status: 'In transit',
-                description: 'Vessel in transit'
-              },
-              {
-                date: '2025-02-06T03:45:00Z',
-                location: 'Pacific Ocean, near Hawaii',
-                status: 'In transit',
-                description: 'Vessel in transit'
-              }
-            ]
-          };
+            service_type: 'International Shipping',
+            weight: 'N/A',
+            package_count: 1
+          });
           
-          setShipment(mockShipment);
           setMapVisible(true);
           toast.success('Shipment found');
           setIsTracking(false);
-        }, 1500);
-        
-        // Store the timeout ID
-        setTrackingTimeoutId(newTimeoutId);
+        } else {
+          throw new Error('No shipment data found');
+        }
       } catch (apiError) {
         console.error('Error calling Terminal49 API:', apiError);
         throw new Error('Failed to retrieve shipment data from Terminal49');
@@ -255,27 +212,27 @@ const ShipmentTracker: React.FC = () => {
               <option value="">Auto Detect Carrier</option>
               {trackingType === 'ocean' ? (
                 <>
-                  <option value="maersk">Maersk</option>
-                  <option value="msc">MSC</option>
-                  <option value="cosco">COSCO</option>
-                  <option value="cma">CMA CGM</option>
-                  <option value="hapag">Hapag Lloyd</option>
-                  <option value="oocl">OOCL</option>
+                  <option value="MAERSK">Maersk</option>
+                  <option value="MSC">MSC</option>
+                  <option value="COSCO">COSCO</option>
+                  <option value="CMA">CMA CGM</option>
+                  <option value="HAPAG">Hapag Lloyd</option>
+                  <option value="OOCL">OOCL</option>
                 </>
               ) : trackingType === 'booking' ? (
                 <>
-                  <option value="dsv">DSV</option>
-                  <option value="kuehne">Kuehne + Nagel</option>
-                  <option value="expeditors">Expeditors</option>
-                  <option value="dhl_global">DHL Global Forwarding</option>
-                  <option value="db_schenker">DB Schenker</option>
+                  <option value="DSV">DSV</option>
+                  <option value="KUEHNE">Kuehne + Nagel</option>
+                  <option value="EXPEDITORS">Expeditors</option>
+                  <option value="DHL_GLOBAL">DHL Global Forwarding</option>
+                  <option value="DB_SCHENKER">DB Schenker</option>
                 </>
               ) : (
                 <>
-                  <option value="fedex">FedEx</option>
-                  <option value="ups">UPS</option>
-                  <option value="dhl">DHL</option>
-                  <option value="usps">USPS</option>
+                  <option value="FEDEX">FedEx</option>
+                  <option value="UPS">UPS</option>
+                  <option value="DHL">DHL</option>
+                  <option value="USPS">USPS</option>
                 </>
               )}
             </select>
@@ -399,27 +356,13 @@ const ShipmentTracker: React.FC = () => {
                       
                       {/* Map labels */}
                       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 text-xs font-bold bg-white px-1 rounded">
-                    <option value="MAERSK">Maersk</option>
-                    <option value="MSC">MSC</option>
-                    <option value="COSCO">COSCO</option>
-                    <option value="CMA">CMA CGM</option>
-                    <option value="HAPAG">Hapag Lloyd</option>
-                    <option value="OOCL">OOCL</option>
                         Current: {shipment.current_location?.description || 'In Transit'}
                       </div>
                     </div>
-                    <option value="DSV">DSV</option>
-                    <option value="KUEHNE">Kuehne + Nagel</option>
-                    <option value="EXPEDITORS">Expeditors</option>
-                    <option value="DHL_GLOBAL">DHL Global Forwarding</option>
-                    <option value="DB_SCHENKER">DB Schenker</option>
                   </div>
                 ) : (
                   <div className="bg-gray-100 rounded-lg h-40 flex items-center justify-center">
-                    <option value="FEDEX">FedEx</option>
-                    <option value="UPS">UPS</option>
-                    <option value="DHL">DHL</option>
-                    <option value="USPS">USPS</option>
+                    <p className="text-gray-500">Click "Show Map" to view shipment location</p>
                   </div>
                 )}
               </div>
