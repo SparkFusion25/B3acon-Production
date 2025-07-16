@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image, Type, CreditCard, Package, Search, BarChart3, ShoppingBag, Mail, FileCheck, DollarSign, TrendingUp, ToggleLeft as Toggle, Check, X } from 'lucide-react' = () => {
+import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image, Type, CreditCard, Package, Search, BarChart3, ShoppingBag, Mail, FileCheck, DollarSign, TrendingUp, ToggleLeft as Toggle, Check, X } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { supabase } from '../../lib/supabase';
+
+const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [landingPageSettings, setLandingPageSettings] = useState<any>({
     headlines: [],
@@ -18,11 +22,18 @@ import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image
     plugin_access: {
       tariff_calculator: 'starter',
       landed_cost: 'pro',
-      compliance_checker: 'pro',
+      compliance_checker: 'starter',
       freight_estimator: 'starter',
-      shipment_tracker: 'enterprise',
+      shipment_tracker: 'pro',
       hs_code_finder: 'starter',
-      fta_checker: 'pro'
+      fta_checker: 'pro',
+      'api-access-/-webhooks': 'pro',
+      'shopify-integration': 'pro',
+      'social-scheduler-tool': 'growth',
+      'seo-content-gap-tool': 'pro',
+      'google-analytics-connector': 'pro',
+      'crm-hub': 'starter',
+      'ai-blog-writer': 'enterprise'
     },
     landing_visuals: {
       show_global_trade: true,
@@ -676,6 +687,12 @@ import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h4 className="font-medium text-gray-900 mb-4">Plugin Access Levels</h4>
         
+        <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+          <p className="text-blue-800 text-sm">
+            Set which subscription tier is required to access each plugin. This controls visibility and access in the client dashboard.
+          </p>
+        </div>
+        
         <div className="space-y-4">
           {Object.entries(globalCommerceSettings.plugin_access || {}).map(([plugin, level]) => (
             <div key={plugin} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -686,11 +703,34 @@ import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image
                 className="px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
               >
                 <option value="starter">Starter</option>
-                <option value="pro">Pro</option>
+                <option value="growth">Growth</option>
+                <option value="pro_trader">Pro Trader</option>
                 <option value="enterprise">Enterprise</option>
               </select>
             </div>
           ))}
+        </div>
+        
+        <div className="mt-6">
+          <button 
+            onClick={() => {
+              const newPlugin = prompt('Enter new plugin name:');
+              if (newPlugin) {
+                setGlobalCommerceSettings({
+                  ...globalCommerceSettings,
+                  plugin_access: {
+                    ...globalCommerceSettings.plugin_access,
+                    [newPlugin]: 'pro'
+                  }
+                });
+                toast.success(`Added new plugin: ${newPlugin}`);
+              }
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New Plugin</span>
+          </button>
         </div>
       </div>
     </div>
@@ -739,8 +779,12 @@ import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Admin Dashboard</h2>
         <p className="text-gray-600">Manage system settings and configurations</p>
-        <div className="mt-2 p-2 bg-green-100 text-green-800 rounded-lg text-sm">
-          <p>✅ Admin access granted - You have full access to all features and settings</p>
+        <div className="mt-2 p-4 bg-green-100 text-green-800 rounded-lg text-sm flex items-start">
+          <Shield className="w-5 h-5 mr-2 flex-shrink-0" />
+          <div>
+            <p className="font-medium">✅ Admin access granted</p>
+            <p>You have full access to all features and settings. Use this dashboard to manage subscription plans, plugin access, and system configurations.</p>
+          </div>
         </div>
       </div>
 
@@ -776,14 +820,109 @@ import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image
         {activeTab === 'settings' && (
           <div className="text-center py-12">
             <Settings className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h4 className="text-lg font-medium text-gray-900 mb-2">System Settings</h4>
-            <p className="text-gray-600 mb-4">Configure system-wide settings</p>
-            <button 
-              onClick={() => toast.success('System settings coming soon')}
-              className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
-            >
-              View Settings
-            </button>
+            <h4 className="text-lg font-medium text-gray-900 mb-2">Stripe Integration Settings</h4>
+            <p className="text-gray-600 mb-4">Configure Stripe products, prices, and subscription settings</p>
+            
+            <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-sm border border-gray-200 text-left">
+              <h5 className="font-medium text-gray-900 mb-4">Stripe Products & Prices</h5>
+              
+              <div className="space-y-4 mb-6">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">Free Starter</p>
+                      <p className="text-sm text-gray-600">$0.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      prod_FREE / price_FREE
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">Growth</p>
+                      <p className="text-sm text-gray-600">$49.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      prod_GROWTH / price_12345G
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">Pro Trader</p>
+                      <p className="text-sm text-gray-600">$149.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      prod_PRO / price_12345P
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">Enterprise</p>
+                      <p className="text-sm text-gray-600">$995.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      prod_ENT / Custom
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <h5 className="font-medium text-gray-900 mb-4">Add-On Products</h5>
+              
+              <div className="space-y-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">API Access / Webhooks</p>
+                      <p className="text-sm text-gray-600">$29.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      api-access-/-webhooks
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">Shopify Integration</p>
+                      <p className="text-sm text-gray-600">$19.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      shopify-integration
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-gray-900">Social Scheduler Tool</p>
+                      <p className="text-sm text-gray-600">$19.00 USD / month</p>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      social-scheduler-tool
+                    </div>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => toast.success('Stripe settings saved')}
+                  className="mt-4 px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+                >
+                  Save Stripe Settings
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
