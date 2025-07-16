@@ -16,6 +16,7 @@ import WhiteLabelManagement from './AgencyModules/WhiteLabelManagement';
 import AffiliateMarketing from './AgencyModules/AffiliateMarketing';
 import EmailMarketing from './AgencyModules/EmailMarketing';
 import LandingPageBuilder from './AgencyModules/LandingPageBuilder';
+import AdminDashboard from './AgencyModules/AdminDashboard';
 import { mockAgencyData } from '../../data/mockAgencyData';
 
 const AgencyDashboard: React.FC = () => {
@@ -61,6 +62,8 @@ const AgencyDashboard: React.FC = () => {
         return <BillingOverview billing={mockAgencyData.billing} />;
       case 'analytics':
         return <PerformanceAnalytics analytics={mockAgencyData.analytics} />;
+      case 'admin':
+        return <AdminDashboard />;
       default:
         return <AgencyOverview data={mockAgencyData.overview} />;
     }

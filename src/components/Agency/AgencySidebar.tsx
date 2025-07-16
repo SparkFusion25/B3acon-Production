@@ -19,6 +19,7 @@ import {
   Layout,
   Menu,
   X
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -49,6 +50,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     { id: 'email', label: 'Email Marketing', icon: Mail, gradient: 'from-beacon-orange to-red-500' },
     { id: 'landing', label: 'Landing Pages', icon: Layout, gradient: 'from-signal-blue to-purple-600' },
     { id: 'whitelabel', label: 'White Label', icon: Building, gradient: 'from-signal-blue to-beacon-orange' },
+    { id: 'admin', label: 'Admin Dashboard', icon: Shield, gradient: 'from-purple-500 to-pink-500' },
     { id: 'billing', label: 'Billing Overview', icon: CreditCard, gradient: 'from-beacon-orange to-red-500' },
     { id: 'analytics', label: 'Performance Analytics', icon: BarChart3, gradient: 'from-signal-blue to-purple-600' }
   ];
