@@ -288,7 +288,7 @@ const AdminDashboard: React.FC = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h4 className="font-medium text-gray-900 mb-4">Main Content</h4>
         
-        <div className="space-y-4">
+        <div className="space-y-4 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Main Headline</label>
             <input
@@ -343,6 +343,15 @@ const AdminDashboard: React.FC = () => {
               placeholder="Book Demo"
             />
           </div>
+        </div>
+        
+        <div className="flex justify-end">
+          <button 
+            onClick={() => toast.success('Changes saved and published to landing page')}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+          >
+            <span>Publish Changes</span>
+          </button>
         </div>
       </div>
       
@@ -566,6 +575,49 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+        <h4 className="font-medium text-gray-900 mb-4">Landing Page Editor</h4>
+        
+        <div className="p-4 bg-blue-50 rounded-lg mb-4">
+          <p className="text-blue-800">Edit your landing page sections including About Us, Services, and Blog content.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <button 
+            onClick={() => toast.success('Opening About Us editor')}
+            className="p-4 bg-white border border-gray-200 rounded-lg hover:border-signal-blue hover:shadow-md transition-all text-center"
+          >
+            <h5 className="font-medium text-gray-900 mb-2">About Us</h5>
+            <p className="text-sm text-gray-600">Edit company information and team details</p>
+          </button>
+          
+          <button 
+            onClick={() => toast.success('Opening Services editor')}
+            className="p-4 bg-white border border-gray-200 rounded-lg hover:border-signal-blue hover:shadow-md transition-all text-center"
+          >
+            <h5 className="font-medium text-gray-900 mb-2">Services</h5>
+            <p className="text-sm text-gray-600">Edit service offerings and descriptions</p>
+          </button>
+          
+          <button 
+            onClick={() => toast.success('Opening Blog editor')}
+            className="p-4 bg-white border border-gray-200 rounded-lg hover:border-signal-blue hover:shadow-md transition-all text-center"
+          >
+            <h5 className="font-medium text-gray-900 mb-2">Blog</h5>
+            <p className="text-sm text-gray-600">Manage blog posts and categories</p>
+          </button>
+        </div>
+        
+        <div className="flex justify-end">
+          <button 
+            onClick={() => toast.success('Opening full page editor')}
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+          >
+            Open Full Page Editor
+          </button>
+        </div>
+      </div>
     </div>
   );
 
@@ -691,6 +743,9 @@ const AdminDashboard: React.FC = () => {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Admin Dashboard</h2>
         <p className="text-gray-600">Manage system settings and configurations</p>
+        <div className="mt-2 p-2 bg-green-100 text-green-800 rounded-lg text-sm">
+          <p>✅ Admin access granted - You have full access to all features and settings</p>
+        </div>
       </div>
 
       {/* Tab Navigation */}

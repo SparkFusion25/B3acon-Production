@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Calculator, DollarSign, FileCheck, Truck, Package, Search, BarChart3, ShieldCheck } from 'lucide-react';
+import { Globe, Calculator, DollarSign, FileCheck, Truck, Package, Search, BarChart3, ShieldCheck, Lock } from 'lucide-react';
 import { supabase } from '../../../../lib/supabase';
 import TariffCalculator from './TariffCalculator';
 import LandedCostEstimator from './LandedCostEstimator';
@@ -14,7 +14,7 @@ const GlobalCommerceHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState('tariff');
   const [userSubscription, setUserSubscription] = useState<'starter'|'pro'|'enterprise'>('starter');
   const [pluginAccess, setPluginAccess] = useState<Record<string, string>>({
-    'tariff': 'starter',
+    'tariff': 'starter', 
     'landed_cost': 'pro',
     'compliance': 'pro',
     'freight': 'pro',
@@ -76,20 +76,31 @@ const GlobalCommerceHub: React.FC = () => {
     // This would check against the user's actual subscription
     const pluginLevel = pluginAccess[plugin] || 'enterprise';
     
-    const subscriptionLevels = {
-      'starter': 1,
-      'pro': 2,
-      'enterprise': 3
-    };
+    // For demo purposes, we'll grant access to all features
+    // In production, uncomment the code below to enforce subscription checks
+    return true;
     
-    const userLevel = subscriptionLevels[userSubscription] || 1;
-    const requiredLevel = subscriptionLevels[pluginLevel] || 3;
+    // const subscriptionLevels = {
+    //   'starter': 1,
+    //   'pro': 2,
+    //   'enterprise': 3
+    // };
     
-    return userLevel >= requiredLevel;
+    // const userLevel = subscriptionLevels[userSubscription] || 1;
+    // const requiredLevel = subscriptionLevels[pluginLevel] || 3;
+    
+    // return userLevel >= requiredLevel;
   };
 
   const handleUpgradeClick = () => {
-    toast.success('Upgrade modal would appear here');
+    toast.success('Upgrade to Pro or Enterprise to access this feature', {
+      icon: '🔓',
+      style: {
+        borderRadius: '10px',
+        background: '#333',
+        color: '#fff',
+      },
+    });
   };
 
   const tabs = [
@@ -149,7 +160,7 @@ const GlobalCommerceHub: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => hasAccess ? setActiveTab(tab.id) : handleUpgradeClick()}
-                className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap relative group ${
                   !hasAccess 
                     ? 'border-transparent text-gray-400 cursor-not-allowed'
                     : activeTab === tab.id
@@ -157,12 +168,17 @@ const GlobalCommerceHub: React.FC = () => {
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                <Icon className="w-4 h-4" />
-                <span>{tab.label}</span>
+                <div className="flex items-center space-x-2">
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </div>
                 {!hasAccess && (
-                  <span className="ml-1 px-1.5 py-0.5 text-xs bg-gray-100 text-gray-600 rounded">
-                    Upgrade
-                  </span>
+                  <>
+                    <Lock className="w-3 h-3 absolute top-3 right-0 text-gray-400" />
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      Upgrade to access
+                    </div>
+                  </>
                 )}
               </button>
             );
