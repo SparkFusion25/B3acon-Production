@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AgencySidebar from './AgencySidebar';
 import AgencyHeader from './AgencyHeader';
+import ClientSwitcher from './ClientSwitcher';
 import AgencyOverview from './AgencyOverview';
 import ClientManagement from './ClientManagement';
 import TeamManagement from './TeamManagement';
@@ -96,9 +97,17 @@ const AgencyDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <AgencySidebar activeModule={activeModule} onModuleChange={handleModuleChange} />
-      <AgencyHeader currentModule={activeModule} />
-      <main className="transition-all duration-300 lg:ml-56 xl:ml-64 p-4 lg:p-6">
+      <AgencySidebar 
+        activeModule={activeModule} 
+        onModuleChange={handleModuleChange} 
+      />
+      <div className="lg:ml-56 xl:ml-64">
+        <AgencyHeader currentModule={activeModule} />
+        <div className="px-4 lg:px-6 py-2 bg-white border-b border-gray-200 flex justify-end">
+          <ClientSwitcher />
+        </div>
+      </div>
+      <main className="transition-all duration-300 lg:ml-56 xl:ml-64 p-4 lg:p-6 pt-16 md:pt-4">
         {renderModule()}
       </main>
     </div>

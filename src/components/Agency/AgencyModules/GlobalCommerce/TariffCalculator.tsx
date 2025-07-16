@@ -30,8 +30,8 @@ const TariffCalculator: React.FC = () => {
       
       // Sample calculation
       const productValueNum = parseFloat(productValue);
-      const shippingCostNum = shippingCost ? parseFloat(shippingCost) : 0;
-      const insuranceCostNum = insuranceCost ? parseFloat(insuranceCost) : 0;
+      const shippingCostNum = shippingCost ? parseFloat(shippingCost.replace(/,/g, '')) : 0;
+      const insuranceCostNum = insuranceCost ? parseFloat(insuranceCost.replace(/,/g, '')) : 0;
       
       // Mock duty rates based on destination country
       const dutyRates: {[key: string]: number} = {
@@ -215,18 +215,24 @@ const TariffCalculator: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Product Value (USD) *</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="number"
-                    value={productValue}
+                  <input 
+                    type="text"
+                    value={productValue} 
                     onChange={(e) => {
-                      // Format with commas and decimal precision
-                      const value = e.target.value;
-                      setProductValue(value);
+                      // Remove non-numeric characters except decimal point
+                      const value = e.target.value.replace(/[^\d.]/g, '');
+                      
+                      // Format with commas
+                      if (value) {
+                        const parts = value.split('.');
+                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        setProductValue(parts.join('.'));
+                      } else {
+                        setProductValue('');
+                      }
                     }}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="0.00"
-                    step="0.01"
-                    min="0"
                     required
                   />
                 </div>
@@ -236,18 +242,24 @@ const TariffCalculator: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Shipping Cost (USD)</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="number"
-                    value={shippingCost}
+                  <input 
+                    type="text"
+                    value={shippingCost} 
                     onChange={(e) => {
-                      // Format with commas and decimal precision
-                      const value = e.target.value;
-                      setShippingCost(value);
+                      // Remove non-numeric characters except decimal point
+                      const value = e.target.value.replace(/[^\d.]/g, '');
+                      
+                      // Format with commas
+                      if (value) {
+                        const parts = value.split('.');
+                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        setShippingCost(parts.join('.'));
+                      } else {
+                        setShippingCost('');
+                      }
                     }}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="0.00"
-                    step="0.01"
-                    min="0"
                   />
                 </div>
               </div>
@@ -256,18 +268,24 @@ const TariffCalculator: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Cost (USD)</label>
                 <div className="relative">
                   <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="number"
-                    value={insuranceCost}
+                  <input 
+                    type="text"
+                    value={insuranceCost} 
                     onChange={(e) => {
-                      // Format with commas and decimal precision
-                      const value = e.target.value;
-                      setInsuranceCost(value);
+                      // Remove non-numeric characters except decimal point
+                      const value = e.target.value.replace(/[^\d.]/g, '');
+                      
+                      // Format with commas
+                      if (value) {
+                        const parts = value.split('.');
+                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        setInsuranceCost(parts.join('.'));
+                      } else {
+                        setInsuranceCost('');
+                      }
                     }}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="0.00"
-                    step="0.01"
-                    min="0"
                   />
                 </div>
               </div>

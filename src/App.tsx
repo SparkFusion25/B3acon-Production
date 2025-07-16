@@ -1,5 +1,6 @@
 import { useAuth } from './contexts/AuthContext';
 import LoginPage from './components/Auth/LoginPage';
+import PlanSelectionPage from './components/PlanSelection/PlanSelectionPage';
 import AgencyDashboard from './components/Agency/AgencyDashboard';
 import ClientDashboard from './components/Client/ClientDashboard';
 import LandingPage from './components/Landing/LandingPage';
@@ -16,7 +17,11 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route 
           path="/login" 
-          element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />} 
+          element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />}
+        />
+        <Route 
+          path="/select-plan" 
+          element={isAuthenticated ? <PlanSelectionPage /> : <Navigate to="/login" />}
         />
         <Route 
           path="/dashboard" 

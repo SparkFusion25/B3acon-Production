@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image, Type } from 'lucide-react';
+import { 
+  Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image, Type, 
+  CreditCard, Package, Search, BarChart3, ShoppingBag, Mail, FileCheck, DollarSign, 
+  TrendingUp, Toggle, Check, X
+} from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'react-hot-toast';
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('plans');
   const [landingPageSettings, setLandingPageSettings] = useState<any>({
     headlines: [],
     main_headline: 'The Global Commerce Command Center',
@@ -39,6 +43,103 @@ const AdminDashboard: React.FC = () => {
       color_scheme: 'blue-orange'
     }
   });
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([
+    {
+      id: 'starter_free',
+      name: 'Free Starter',
+      price: 0,
+      stripeProductId: 'prod_FREE',
+      stripePriceId: 'price_FREE',
+      trial: true,
+      trialDays: 14,
+      features: {
+        'tariff-calculator': { enabled: true, limit: 3 },
+        'hs-codes': { enabled: true, limit: 3 },
+        'crm': { enabled: true, limit: 3 },
+        'shipping': { enabled: false },
+        'email': { enabled: false },
+        'landing': { enabled: false },
+        'compliance': { enabled: false },
+        'fta': { enabled: false },
+        'landed_cost': { enabled: false },
+        'google': { enabled: false },
+        'seo': { enabled: false },
+        'shopify': { enabled: false }
+      }
+    },
+    {
+      id: 'growth',
+      name: 'Growth',
+      price: 49.99,
+      stripeProductId: 'prod_GROWTH',
+      stripePriceId: 'price_12345G',
+      trial: true,
+      trialDays: 14,
+      features: {
+        'tariff-calculator': { enabled: true, limit: null },
+        'hs-codes': { enabled: true, limit: null },
+        'crm': { enabled: true, limit: null },
+        'shipping': { enabled: true, limit: null },
+        'email': { enabled: true, limit: null },
+        'landing': { enabled: true, limit: null },
+        'compliance': { enabled: false },
+        'fta': { enabled: false },
+        'landed_cost': { enabled: false },
+        'google': { enabled: false },
+        'seo': { enabled: true, limit: null },
+        'shopify': { enabled: false }
+      }
+    },
+    {
+      id: 'pro_trader',
+      name: 'Pro Trader',
+      price: 149.99,
+      stripeProductId: 'prod_PRO',
+      stripePriceId: 'price_12345P',
+      trial: true,
+      trialDays: 14,
+      features: {
+        'tariff-calculator': { enabled: true, limit: null },
+        'hs-codes': { enabled: true, limit: null },
+        'crm': { enabled: true, limit: null },
+        'shipping': { enabled: true, limit: null },
+        'email': { enabled: true, limit: null },
+        'landing': { enabled: true, limit: null },
+        'compliance': { enabled: true, limit: null },
+        'fta': { enabled: true, limit: null },
+        'landed_cost': { enabled: true, limit: null },
+        'google': { enabled: true, limit: null },
+        'seo': { enabled: true, limit: null },
+        'shopify': { enabled: true, limit: null }
+      }
+    },
+    {
+      id: 'enterprise',
+      name: 'Enterprise',
+      price: 'Custom',
+      stripeProductId: 'prod_ENT',
+      stripePriceId: '',
+      trial: false,
+      trialDays: 0,
+      features: {
+        'tariff-calculator': { enabled: true, limit: null },
+        'hs-codes': { enabled: true, limit: null },
+        'crm': { enabled: true, limit: null },
+        'shipping': { enabled: true, limit: null },
+        'email': { enabled: true, limit: null },
+        'landing': { enabled: true, limit: null },
+        'compliance': { enabled: true, limit: null },
+        'fta': { enabled: true, limit: null },
+        'landed_cost': { enabled: true, limit: null },
+        'google': { enabled: true, limit: null },
+        'seo': { enabled: true, limit: null },
+        'shopify': { enabled: true, limit: null }
+      }
+    }
+  ]);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [editingPlan, setEditingPlan] = useState<any | null>(null);
+  const [showEditPlanModal, setShowEditPlanModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [newHeadline, setNewHeadline] = useState('');
@@ -82,6 +183,22 @@ const AdminDashboard: React.FC = () => {
     
     fetchSettings();
   }, []);
+  
+  // Feature details for the plan editor
+  const featureDetails = {
+    'tariff-calculator': { name: 'Tariff Calculator', icon: CreditCard, description: 'Calculate import duties and taxes' },
+    'hs-codes': { name: 'HS Code Lookup', icon: Search, description: 'Find harmonized system codes for products' },
+    'crm': { name: 'CRM Hub', icon: BarChart3, description: 'Manage clients and leads' },
+    'shipping': { name: 'Shipment Tracking', icon: Package, description: 'Track shipments across carriers' },
+    'email': { name: 'Email Marketing', icon: Mail, description: 'Create and manage email campaigns' },
+    'landing': { name: 'Landing Pages', icon: Layout, description: 'Build and optimize landing pages' },
+    'compliance': { name: 'Compliance Checker', icon: Shield, description: 'Screen against restricted party lists' },
+    'fta': { name: 'FTA Checker', icon: FileCheck, description: 'Check free trade agreement eligibility' },
+    'landed_cost': { name: 'Landed Cost Calculator', icon: DollarSign, description: 'Calculate total landed costs' },
+    'google': { name: 'Google Services', icon: Search, description: 'Integrate with Google services' },
+    'seo': { name: 'SEO Intelligence', icon: TrendingUp, description: 'Analyze and improve search performance' },
+    'shopify': { name: 'Shopify Integration', icon: ShoppingBag, description: 'Connect with Shopify stores' }
+  };
 
   const handleSaveLandingSettings = async () => {
     setIsSaving(true);
@@ -123,6 +240,80 @@ const AdminDashboard: React.FC = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleSavePlans = async () => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('admin_settings')
+        .update({ value: { plans: subscriptionPlans } })
+        .eq('key', 'subscription_plans');
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast.success('Subscription plans saved successfully');
+    } catch (error) {
+      console.error('Error saving subscription plans:', error);
+      toast.error('Failed to save subscription plans');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleEditPlan = (planId: string) => {
+    const plan = subscriptionPlans.find(p => p.id === planId);
+    if (plan) {
+      setEditingPlan({...plan});
+      setShowEditPlanModal(true);
+    }
+  };
+
+  const handleSaveEditedPlan = () => {
+    if (!editingPlan) return;
+    
+    setSubscriptionPlans(subscriptionPlans.map(plan => 
+      plan.id === editingPlan.id ? editingPlan : plan
+    ));
+    
+    setShowEditPlanModal(false);
+    setEditingPlan(null);
+    toast.success(`Plan "${editingPlan.name}" updated successfully`);
+  };
+
+  const handleToggleFeature = (planId: string, featureId: string) => {
+    setSubscriptionPlans(subscriptionPlans.map(plan => {
+      if (plan.id === planId) {
+        return {
+          ...plan,
+          features: {
+            ...plan.features,
+            [featureId]: {
+              ...plan.features[featureId],
+              enabled: !plan.features[featureId]?.enabled
+            }
+          }
+        };
+      }
+      return plan;
+    }));
+  };
+
+  const handleUpdateFeatureLimit = (featureId: string, limit: number | null) => {
+    if (!editingPlan) return;
+    
+    setEditingPlan({
+      ...editingPlan,
+      features: {
+        ...editingPlan.features,
+        [featureId]: {
+          ...editingPlan.features[featureId],
+          limit
+        }
+      }
+    });
   };
 
   const handleAddHeadline = () => {
@@ -179,6 +370,290 @@ const AdminDashboard: React.FC = () => {
       }
     });
   };
+
+  const renderPlansEditor = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900">Subscription Plans</h3>
+        <button 
+          onClick={handleSavePlans}
+          disabled={isSaving}
+          className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 flex items-center space-x-2"
+        >
+          <Save className="w-4 h-4" />
+          <span>{isSaving ? 'Saving...' : 'Save Plans'}</span>
+        </button>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h4 className="font-medium text-gray-900 mb-6">Manage Subscription Plans</h4>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="py-3 px-4 text-left text-gray-600 font-medium">Plan Name</th>
+                <th className="py-3 px-4 text-left text-gray-600 font-medium">Price</th>
+                <th className="py-3 px-4 text-left text-gray-600 font-medium">Stripe Product ID</th>
+                <th className="py-3 px-4 text-left text-gray-600 font-medium">Trial</th>
+                <th className="py-3 px-4 text-left text-gray-600 font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subscriptionPlans.map((plan) => (
+                <tr key={plan.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="py-3 px-4 font-medium text-gray-900">{plan.name}</td>
+                  <td className="py-3 px-4 text-gray-600">
+                    {typeof plan.price === 'number' ? `$${plan.price}` : plan.price}
+                  </td>
+                  <td className="py-3 px-4 text-gray-600">{plan.stripeProductId}</td>
+                  <td className="py-3 px-4 text-gray-600">
+                    {plan.trial ? `${plan.trialDays} days` : 'No trial'}
+                  </td>
+                  <td className="py-3 px-4">
+                    <button 
+                      onClick={() => handleEditPlan(plan.id)}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors text-sm"
+                    >
+                      Edit Plan
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h4 className="font-medium text-gray-900 mb-6">Feature Access by Plan</h4>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="py-3 px-4 text-left text-gray-600 font-medium">Feature</th>
+                {subscriptionPlans.map((plan) => (
+                  <th key={plan.id} className="py-3 px-4 text-center text-gray-600 font-medium">
+                    {plan.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(featureDetails).map(([featureId, feature]) => (
+                <tr key={featureId} className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="py-3 px-4">
+                    <div className="flex items-center">
+                      <feature.icon className="w-5 h-5 text-gray-500 mr-2" />
+                      <div>
+                        <div className="font-medium text-gray-900">{feature.name}</div>
+                        <div className="text-xs text-gray-500">{feature.description}</div>
+                      </div>
+                    </div>
+                  </td>
+                  {subscriptionPlans.map((plan) => (
+                    <td key={`${plan.id}-${featureId}`} className="py-3 px-4 text-center">
+                      <button
+                        onClick={() => handleToggleFeature(plan.id, featureId)}
+                        className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          plan.features[featureId]?.enabled
+                            ? 'bg-green-100 text-green-600 hover:bg-green-200'
+                            : 'bg-red-100 text-red-600 hover:bg-red-200'
+                        } transition-colors`}
+                      >
+                        {plan.features[featureId]?.enabled ? (
+                          <Check className="w-4 h-4" />
+                        ) : (
+                          <X className="w-4 h-4" />
+                        )}
+                      </button>
+                      {plan.features[featureId]?.enabled && plan.features[featureId]?.limit && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          Limit: {plan.features[featureId].limit}
+                        </div>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      {/* Edit Plan Modal */}
+      {showEditPlanModal && editingPlan && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-2xl">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Plan: {editingPlan.name}</h3>
+            
+            <div className="space-y-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Plan Name</label>
+                  <input
+                    type="text"
+                    value={editingPlan.name}
+                    onChange={(e) => setEditingPlan({...editingPlan, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                  <input
+                    type={typeof editingPlan.price === 'number' ? 'number' : 'text'}
+                    value={editingPlan.price}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEditingPlan({
+                        ...editingPlan, 
+                        price: value === 'Custom' ? value : parseFloat(value)
+                      });
+                    }}
+                    step="0.01"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stripe Product ID</label>
+                  <input
+                    type="text"
+                    value={editingPlan.stripeProductId}
+                    onChange={(e) => setEditingPlan({...editingPlan, stripeProductId: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stripe Price ID</label>
+                  <input
+                    type="text"
+                    value={editingPlan.stripePriceId}
+                    onChange={(e) => setEditingPlan({...editingPlan, stripePriceId: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                  />
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="trial-enabled"
+                      checked={editingPlan.trial}
+                      onChange={(e) => setEditingPlan({...editingPlan, trial: e.target.checked})}
+                      className="mr-2"
+                    />
+                    <label htmlFor="trial-enabled" className="text-sm text-gray-700">
+                      Enable Trial
+                    </label>
+                  </div>
+                  
+                  {editingPlan.trial && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Trial Days</label>
+                      <input
+                        type="number"
+                        value={editingPlan.trialDays}
+                        onChange={(e) => setEditingPlan({...editingPlan, trialDays: parseInt(e.target.value)})}
+                        className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                        min="1"
+                        max="90"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            <h4 className="font-medium text-gray-900 mb-4">Feature Access & Limits</h4>
+            
+            <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
+              {Object.entries(featureDetails).map(([featureId, feature]) => (
+                <div key={featureId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center">
+                    <feature.icon className="w-5 h-5 text-gray-500 mr-2" />
+                    <div>
+                      <div className="font-medium text-gray-900">{feature.name}</div>
+                      <div className="text-xs text-gray-500">{feature.description}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="sr-only peer"
+                        checked={editingPlan.features[featureId]?.enabled || false}
+                        onChange={() => {
+                          setEditingPlan({
+                            ...editingPlan,
+                            features: {
+                              ...editingPlan.features,
+                              [featureId]: {
+                                ...editingPlan.features[featureId],
+                                enabled: !editingPlan.features[featureId]?.enabled
+                              }
+                            }
+                          });
+                        }}
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-signal-blue"></div>
+                    </label>
+                    
+                    {editingPlan.features[featureId]?.enabled && (
+                      <div className="flex items-center space-x-2">
+                        <label className="text-sm text-gray-700">Limit:</label>
+                        <select
+                          value={editingPlan.features[featureId]?.limit === null ? 'unlimited' : editingPlan.features[featureId]?.limit}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            handleUpdateFeatureLimit(
+                              featureId, 
+                              value === 'unlimited' ? null : parseInt(value)
+                            );
+                          }}
+                          className="px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent text-sm"
+                        >
+                          <option value="unlimited">Unlimited</option>
+                          <option value="3">3 uses</option>
+                          <option value="5">5 uses</option>
+                          <option value="10">10 uses</option>
+                          <option value="25">25 uses</option>
+                          <option value="50">50 uses</option>
+                          <option value="100">100 uses</option>
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setShowEditPlanModal(false);
+                  setEditingPlan(null);
+                }}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEditedPlan}
+                className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   const renderOverview = () => (
     <div className="space-y-6">
@@ -724,6 +1199,7 @@ const AdminDashboard: React.FC = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Shield },
+    { id: 'plans', label: 'Subscription Plans', icon: CreditCard },
     { id: 'landing', label: 'Landing Page Control', icon: Layout },
     { id: 'commerce', label: 'Global Commerce', icon: Globe },
     { id: 'users', label: 'User Management', icon: Users },
@@ -774,6 +1250,7 @@ const AdminDashboard: React.FC = () => {
       {/* Tab Content */}
       <div>
         {activeTab === 'overview' && renderOverview()}
+        {activeTab === 'plans' && renderPlansEditor()}
         {activeTab === 'landing' && renderLandingPageSettings()}
         {activeTab === 'commerce' && renderGlobalCommerceSettings()}
         {activeTab === 'users' && renderUserManagement()}

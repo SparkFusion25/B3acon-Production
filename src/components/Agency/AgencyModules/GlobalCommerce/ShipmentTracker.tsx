@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Package, Search, MapPin, Calendar, Clock, Truck, Ship, Plane, Info, FileText } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import axios from 'axios';
 
 const ShipmentTracker: React.FC = () => {
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -8,6 +9,7 @@ const ShipmentTracker: React.FC = () => {
   const [trackingType, setTrackingType] = useState('tracking');
   const [isTracking, setIsTracking] = useState(false);
   const [shipment, setShipment] = useState<any>(null);
+  const [mapVisible, setMapVisible] = useState(false);
   
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,84 +22,104 @@ const ShipmentTracker: React.FC = () => {
     setIsTracking(true);
     
     try {
-      // In a real implementation, we would make an API call to track the shipment
-      // For now, we'll simulate the tracking process
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call Terminal49 API to track the container
+      let response;
       
-      // Sample tracking data
-      const mockShipment = {
-        tracking_number: trackingNumber,
-        carrier: carrier || (trackingType === 'ocean' ? 'Maersk' : 'FedEx'),
-        status: 'in_transit',
-        estimated_delivery: '2025-02-15',
-        origin: {
-          city: 'Shanghai',
-          country: 'China',
-          postal_code: '200000'
-        },
-        destination: {
-          city: 'Los Angeles',
-          country: 'United States',
-          postal_code: '90001'
-        },
-        shipment_date: '2025-02-01',
-        service_type: 'International Priority',
-        weight: '15.5 kg',
-        package_count: 2,
-        events: [
-          {
-            date: '2025-02-01T10:30:00Z',
-            location: 'Shanghai, China',
-            status: 'Shipment picked up',
-            description: 'Shipment picked up by carrier'
+      try {
+        // For demo purposes, we'll simulate the API call
+        // In production, use the actual API endpoint
+        // response = await axios.get(`https://api.terminal49.com/v3/containers/${trackingNumber}`, {
+        //   headers: {
+        //     Authorization: `Bearer LQuypbifoKpCGBsxkzbBFsPv`
+        //   }
+        // });
+        
+        // Simulate API response
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Sample tracking data based on Terminal49 API response format
+        const mockShipment = {
+          tracking_number: trackingNumber,
+          carrier: carrier || (trackingType === 'ocean' ? 'Maersk' : 'FedEx'),
+          status: 'in_transit',
+          estimated_delivery: '2025-02-15',
+          origin: {
+            city: 'Shanghai',
+            country: 'China',
+            postal_code: '200000',
+            coordinates: {
+              lat: 31.2304,
+              lon: 121.4737
+            }
           },
-          {
-            date: '2025-02-02T14:15:00Z',
-            location: 'Shanghai, China',
-            status: 'Departed facility',
-            description: 'Shipment has left the origin facility'
+          destination: {
+            city: 'Los Angeles',
+            country: 'United States',
+            postal_code: '90001',
+            coordinates: {
+              lat: 34.0522,
+              lon: -118.2437
+            }
           },
-          {
-            date: '2025-02-03T08:45:00Z',
-            location: 'Hong Kong, China',
-            status: 'Arrived at facility',
-            description: 'Shipment has arrived at transit facility'
+          current_location: {
+            coordinates: {
+              lat: 19.4326,
+              lon: -155.2453
+            },
+            description: 'Pacific Ocean, near Hawaii'
           },
-          {
-            date: '2025-02-04T02:20:00Z',
-            location: 'Hong Kong, China',
-            status: 'Departed facility',
-            description: 'Shipment has left the transit facility'
-          },
-          {
-            date: '2025-02-05T18:10:00Z',
-            location: 'Anchorage, United States',
-            status: 'Arrived at facility',
-            description: 'Shipment has arrived at transit facility'
-          },
-          {
-            date: '2025-02-06T03:45:00Z',
-            location: 'Anchorage, United States',
-            status: 'Departed facility',
-            description: 'Shipment has left the transit facility'
-          },
-          {
-            date: '2025-02-07T09:30:00Z',
-            location: 'Los Angeles, United States',
-            status: 'Arrived at destination',
-            description: 'Shipment has arrived at destination facility'
-          },
-          {
-            date: '2025-02-07T14:20:00Z',
-            location: 'Los Angeles, United States',
-            status: 'Customs clearance',
-            description: 'Shipment is undergoing customs clearance'
-          }
-        ]
-      };
+          shipment_date: '2025-02-01',
+          service_type: 'International Priority',
+          weight: '15.5 kg',
+          package_count: 2,
+          events: [
+            {
+              date: '2025-02-01T10:30:00Z',
+              location: 'Shanghai, China',
+              status: 'Shipment picked up',
+              description: 'Shipment picked up by carrier'
+            },
+            {
+              date: '2025-02-02T14:15:00Z',
+              location: 'Shanghai, China',
+              status: 'Departed facility',
+              description: 'Shipment has left the origin facility'
+            },
+            {
+              date: '2025-02-03T08:45:00Z',
+              location: 'Hong Kong, China',
+              status: 'Arrived at facility',
+              description: 'Shipment has arrived at transit facility'
+            },
+            {
+              date: '2025-02-04T02:20:00Z',
+              location: 'Hong Kong, China',
+              status: 'Departed facility',
+              description: 'Shipment has left the transit facility'
+            },
+            {
+              date: '2025-02-05T18:10:00Z',
+              location: 'Pacific Ocean',
+              status: 'In transit',
+              description: 'Vessel in transit'
+            },
+            {
+              date: '2025-02-06T03:45:00Z',
+              location: 'Pacific Ocean, near Hawaii',
+              status: 'In transit',
+              description: 'Vessel in transit'
+            }
+          ]
+        };
+        
+        setShipment(mockShipment);
+        setMapVisible(true);
+        toast.success('Shipment found');
+      } catch (apiError) {
+        console.error('Error calling Terminal49 API:', apiError);
+        throw new Error('Failed to retrieve shipment data from Terminal49');
+      }
       
-      setShipment(mockShipment);
-      toast.success('Shipment found');
     } catch (error) {
       console.error('Error tracking shipment:', error);
       toast.error('Failed to track shipment');
@@ -345,13 +367,50 @@ const ShipmentTracker: React.FC = () => {
                 <div className="flex items-center mb-3">
                   <FileText className="w-5 h-5 text-gray-400 mr-2" />
                   <h6 className="font-medium text-gray-900">Live Map View</h6>
+                  <button 
+                    onClick={() => setMapVisible(!mapVisible)}
+                    className="ml-2 text-xs text-blue-600 hover:text-blue-800"
+                  >
+                    {mapVisible ? 'Hide Map' : 'Show Map'}
+                  </button>
                 </div>
-                <div className="bg-gray-100 rounded-lg h-40 flex items-center justify-center">
-                  <div className="text-center">
-                    <Globe className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-sm text-gray-500">Interactive map view coming soon</p>
+                {mapVisible ? (
+                  <div className="bg-gray-100 rounded-lg h-64 relative overflow-hidden">
+                    {/* This would be replaced with an actual map component in production */}
+                    <div className="absolute inset-0 bg-blue-50">
+                      {/* Simulated map with origin, destination and current location */}
+                      <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-green-500 rounded-full" title="Origin: Shanghai"></div>
+                      <div className="absolute bottom-1/4 right-1/4 w-3 h-3 bg-red-500 rounded-full" title="Destination: Los Angeles"></div>
+                      <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-blue-500 rounded-full animate-pulse" title="Current Location"></div>
+                      
+                      {/* Simulated route */}
+                      <div className="absolute top-1/4 left-1/4 w-[60%] h-[50%] border-2 border-dashed border-blue-400 rounded-full opacity-50"></div>
+                      
+                      {/* Map labels */}
+                      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 text-xs font-bold bg-white px-1 rounded">
+                    <option value="MAERSK">Maersk</option>
+                    <option value="MSC">MSC</option>
+                    <option value="COSCO">COSCO</option>
+                    <option value="CMA">CMA CGM</option>
+                    <option value="HAPAG">Hapag Lloyd</option>
+                    <option value="OOCL">OOCL</option>
+                        Current: {shipment.current_location?.description || 'In Transit'}
+                      </div>
+                    </div>
+                    <option value="DSV">DSV</option>
+                    <option value="KUEHNE">Kuehne + Nagel</option>
+                    <option value="EXPEDITORS">Expeditors</option>
+                    <option value="DHL_GLOBAL">DHL Global Forwarding</option>
+                    <option value="DB_SCHENKER">DB Schenker</option>
                   </div>
-                </div>
+                ) : (
+                  <div className="bg-gray-100 rounded-lg h-40 flex items-center justify-center">
+                    <option value="FEDEX">FedEx</option>
+                    <option value="UPS">UPS</option>
+                    <option value="DHL">DHL</option>
+                    <option value="USPS">USPS</option>
+                  </div>
+                )}
               </div>
             </div>
             

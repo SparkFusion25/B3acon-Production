@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Calculator, DollarSign, FileCheck, Truck, Package, Search, BarChart3, ShieldCheck, Lock } from 'lucide-react';
+import { Globe, Calculator, DollarSign, FileCheck, Truck, Package, Search, BarChart3, ShieldCheck, Lock, CreditCard } from 'lucide-react';
 import { supabase } from '../../../../lib/supabase';
 import TariffCalculator from './TariffCalculator';
 import LandedCostEstimator from './LandedCostEstimator';
@@ -16,9 +16,9 @@ const GlobalCommerceHub: React.FC = () => {
   const [pluginAccess, setPluginAccess] = useState<Record<string, string>>({
     'tariff': 'starter', 
     'landed_cost': 'pro',
-    'compliance': 'pro',
+    'compliance': 'starter',
     'freight': 'pro',
-    'tracker': 'enterprise',
+    'tracker': 'starter',
     'hs_finder': 'starter',
     'fta': 'pro'
   });
@@ -76,24 +76,33 @@ const GlobalCommerceHub: React.FC = () => {
     // This would check against the user's actual subscription
     const pluginLevel = pluginAccess[plugin] || 'enterprise';
     
-    // For demo purposes, we'll grant access to all features
-    // In production, uncomment the code below to enforce subscription checks
-    return true;
+    // For demo purposes, we'll grant access to starter features
+    // and show upgrade prompts for others
+    if (pluginLevel === 'starter') {
+      return true;
+    }
     
-    // const subscriptionLevels = {
-    //   'starter': 1,
-    //   'pro': 2,
-    //   'enterprise': 3
-    // };
+    // For admin users, grant access to all features
+    // In a real implementation, check user role
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    if (isAdmin) {
+      return true;
+    }
     
-    // const userLevel = subscriptionLevels[userSubscription] || 1;
-    // const requiredLevel = subscriptionLevels[pluginLevel] || 3;
+    const subscriptionLevels = {
+      'starter': 1,
+      'pro': 2,
+      'enterprise': 3
+    };
     
-    // return userLevel >= requiredLevel;
+    const userLevel = subscriptionLevels[userSubscription] || 1;
+    const requiredLevel = subscriptionLevels[pluginLevel] || 3;
+    
+    return userLevel >= requiredLevel;
   };
 
   const handleUpgradeClick = () => {
-    toast.success('Upgrade to Pro or Enterprise to access this feature', {
+    toast.error('Upgrade to Pro or Enterprise to access this feature', {
       icon: '🔓',
       style: {
         borderRadius: '10px',
@@ -104,7 +113,7 @@ const GlobalCommerceHub: React.FC = () => {
   };
 
   const tabs = [
-    { id: 'tariff', label: 'Tariff Calculator', icon: Calculator, plugin: 'tariff' },
+    { id: 'tariff', label: 'Tariff Calculator', icon: CreditCard, plugin: 'tariff' },
     { id: 'landed_cost', label: 'Landed Cost', icon: DollarSign, plugin: 'landed_cost' },
     { id: 'compliance', label: 'Compliance', icon: ShieldCheck, plugin: 'compliance' },
     { id: 'freight', label: 'Freight Estimator', icon: Truck, plugin: 'freight' },
@@ -171,11 +180,16 @@ const GlobalCommerceHub: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <Icon className="w-4 h-4" />
                   <span>{tab.label}</span>
+                  {!hasAccess && (
+                    <span className="text-xs bg-red-100 text-red-600 px-1 rounded">
+                      Pro
+                    </span>
+                  )}
                 </div>
                 {!hasAccess && (
                   <>
-                    <Lock className="w-3 h-3 absolute top-3 right-0 text-gray-400" />
-                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <Lock className="w-3 h-3 absolute top-3 right-0 text-red-400" />
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 px-2 py-1 bg-red-600 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                       Upgrade to access
                     </div>
                   </>

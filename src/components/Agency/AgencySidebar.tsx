@@ -39,8 +39,17 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
   const { logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   
   console.log('AgencySidebar rendering with activeModule:', activeModule);
+
+  // Check if user is admin
+  useEffect(() => {
+    // In a real implementation, this would check the user's role from auth context
+    // For now, we'll use localStorage for demo purposes
+    const adminStatus = localStorage.getItem('isAdmin') === 'true';
+    setIsAdmin(adminStatus);
+  }, []);
 
   const menuItems = [
     { id: 'overview', label: 'Command Center', icon: Home, gradient: 'from-signal-blue to-beacon-orange' },
@@ -61,7 +70,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     { id: 'email', label: 'Email Marketing', icon: Mail, gradient: 'from-beacon-orange to-red-500' },
     { id: 'prospecting', label: 'Lead Prospecting', icon: Briefcase, gradient: 'from-green-500 to-teal-500' },
     { id: 'landing', label: 'Landing Pages', icon: Layout, gradient: 'from-signal-blue to-purple-600' },
-    { id: 'whitelabel', label: 'White Label', icon: Building, gradient: 'from-signal-blue to-beacon-orange' },
+    { id: 'whitelabel', label: 'White Label', icon: Building, gradient: 'from-signal-blue to-beacon-orange', premium: true },
     { id: 'admin', label: 'Admin Dashboard', icon: Shield, gradient: 'from-purple-500 to-pink-500' },
     { id: 'billing', label: 'Billing Overview', icon: CreditCard, gradient: 'from-beacon-orange to-red-500' },
     { id: 'analytics', label: 'Performance Analytics', icon: BarChart3, gradient: 'from-signal-blue to-purple-600' }
@@ -80,7 +89,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     console.log('Menu item clicked:', itemId);
     onModuleChange(itemId);
     setIsMobileMenuOpen(false); // Close mobile menu after selection
-  };
+  };  
 
   const handleSettingsClick = () => {
     setShowSettingsModal(true);
@@ -92,6 +101,14 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     setTimeout(() => {
       logout();
     }, 1000);
+  };
+  
+  const handleToggleAdmin = () => {
+    const newAdminStatus = !isAdmin;
+    localStorage.setItem('isAdmin', String(newAdminStatus));
+    setIsAdmin(newAdminStatus);
+    toast.success(newAdminStatus ? 'Admin access enabled' : 'Admin access disabled');
+    window.location.reload(); // Refresh to update access
   };
 
   return (
@@ -134,7 +151,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
           {/* Debug Info - Only show in development */}
           {(import.meta as any).env?.DEV && (
             <div className="mb-4 p-2 bg-red-600 rounded text-xs text-white">
-              <div>🚀 NEW CODE ACTIVE</div>
+              <div>🚀 {isAdmin ? 'ADMIN MODE' : 'USER MODE'}</div>
               <div>Items: {menuItems.length}</div>
               <div>Active: {activeModule}</div>
               <div>Time: {new Date().toLocaleTimeString()}</div>
@@ -148,7 +165,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
               const isActive = activeModule === item.id;
               
               // Check if this is a premium feature that should be restricted
-              const isPremiumLocked = item.premium && false; // Set to true when implementing subscription checks
+              const isPremiumLocked = item.premium && !isAdmin; // Lock premium features for non-admin users
               
               console.log(`Rendering menu item ${index + 1}:`, item.label, 'Active:', isActive);
               
@@ -167,6 +184,11 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
                   <div className="flex items-center space-x-2 lg:space-x-3">
                     <Icon className={`w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
                     <span className="font-medium text-xs lg:text-sm truncate">{item.label}</span>
+                    {isPremiumLocked && (
+                      <span className="text-xs bg-red-100 text-red-600 px-1 rounded">
+                        Pro
+                      </span>
+                    )}
                   </div>
                   {isPremiumLocked && (
                     <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
@@ -186,6 +208,17 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
             >
               <Settings className="w-4 h-4 lg:w-5 lg:h-5" />
               <span className="font-medium text-xs lg:text-sm">Settings</span>
+            </button>
+            <button 
+              onClick={handleToggleAdmin}
+              className={`w-full flex items-center space-x-2 lg:space-x-3 px-3 py-2 lg:py-3 rounded-lg transition-all duration-200 ${
+                isAdmin 
+                  ? 'bg-purple-600 text-white' 
+                  : 'text-gray-300 hover:bg-slate-gray hover:text-white'
+              }`}
+            >
+              <Shield className="w-4 h-4 lg:w-5 lg:h-5" />
+              <span className="font-medium text-xs lg:text-sm">{isAdmin ? 'Disable Admin' : 'Enable Admin'}</span>
             </button>
             <button 
               onClick={handleLogout}
