@@ -6,17 +6,20 @@ import ClientManagement from './ClientManagement';
 import TeamManagement from './TeamManagement';
 import BillingOverview from './BillingOverview';
 import PerformanceAnalytics from './PerformanceAnalytics';
-import CRMHub from './AgencyModules/CRMHub';
-import GoogleServicesHub from './AgencyModules/GoogleServicesHub';
-import SEOIntelligenceHub from './AgencyModules/SEOIntelligenceHub';
-import SocialMediaCenter from './AgencyModules/SocialMediaCenter';
-import ShopifyIntegration from './AgencyModules/ShopifyIntegration';
-import CreativeStudio from './AgencyModules/CreativeStudio';
-import WhiteLabelManagement from './AgencyModules/WhiteLabelManagement';
-import AffiliateMarketing from './AgencyModules/AffiliateMarketing';
-import EmailMarketing from './AgencyModules/EmailMarketing';
-import LandingPageBuilder from './AgencyModules/LandingPageBuilder';
-import AdminDashboard from './AgencyModules/AdminDashboard';
+import {
+  CRMHub,
+  GoogleServicesHub,
+  SEOIntelligenceHub,
+  SocialMediaCenter,
+  ShopifyIntegration,
+  CreativeStudio,
+  WhiteLabelManagement,
+  AffiliateMarketing,
+  EmailMarketing,
+  LandingPageBuilder,
+  AdminDashboard,
+  LeadProspectingTool
+} from './AgencyModules/AgencyModules';
 import { mockAgencyData } from '../../data/mockAgencyData';
 import { toast } from 'react-hot-toast';
 
@@ -66,6 +69,8 @@ const AgencyDashboard: React.FC = () => {
         return <PerformanceAnalytics analytics={mockAgencyData.analytics} />;
       case 'admin':
         return <AdminDashboard />;
+      case 'prospecting':
+        return <LeadProspectingTool />;
       default:
         return <AgencyOverview data={mockAgencyData.overview} />;
     }
