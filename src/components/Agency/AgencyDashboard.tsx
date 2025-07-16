@@ -18,6 +18,7 @@ import EmailMarketing from './AgencyModules/EmailMarketing';
 import LandingPageBuilder from './AgencyModules/LandingPageBuilder';
 import AdminDashboard from './AgencyModules/AdminDashboard';
 import { mockAgencyData } from '../../data/mockAgencyData';
+import { toast } from 'react-hot-toast';
 
 const AgencyDashboard: React.FC = () => {
   const [activeModule, setActiveModule] = useState('overview');
@@ -27,6 +28,7 @@ const AgencyDashboard: React.FC = () => {
   const handleModuleChange = (module: string) => {
     console.log('Module change requested:', module);
     setActiveModule(module);
+    toast.success(`Navigated to ${module.charAt(0).toUpperCase() + module.slice(1)} module`);
   };
 
   const renderModule = () => {
