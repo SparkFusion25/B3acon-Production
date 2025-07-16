@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Mail, Lock, Users, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search, UserPlus, Linkedin, ArrowRight } from 'lucide-react';
+import { Globe, Mail, Lock, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search, UserPlus, Linkedin, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -12,7 +12,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loginType, setLoginType] = useState<'agency' | 'client'>(initialMode === 'agency' ? 'agency' : 'client');
+  const [loginType] = useState<'agency' | 'client'>(initialMode === 'agency' ? 'agency' : 'client');
   const [isLoading, setIsLoading] = useState(false);
   const [showSocialLogin, setShowSocialLogin] = useState(false);
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
@@ -167,31 +167,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
           </div>
 
           <div className="bg-white/80 shadow-md backdrop-blur-sm rounded-xl p-1 mb-4">
-            <div className="grid grid-cols-2 gap-1">
-              <button
-                type="button"
-                onClick={() => setLoginType('agency')}
-                className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
-                  loginType === 'agency'
-                    ? 'bg-signal-blue text-white shadow-lg'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <Users className="w-4 h-4" />
-                <span className="font-medium">Agency</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setLoginType('client')}
-                className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
-                  loginType === 'client'
-                    ? 'bg-slate-800 text-white shadow-lg'
-                    : 'text-slate-700 hover:bg-slate-100'
-                }`}
-              >
-                <Building className="w-4 h-4" />
-                <span className="font-medium">Client</span>
-              </button>
+            <div className="p-2 bg-slate-800 text-white shadow-lg rounded-lg flex items-center justify-center space-x-2">
+              <Building className="w-4 h-4" />
+              <span className="font-medium">Client Portal</span>
             </div>
           </div>
 
@@ -308,7 +286,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
                   <div>
                     <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
                     <div className="relative">
-                      <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                      <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                       <input
                         type="text"
                         value={name}
@@ -419,16 +397,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
           )}
           
           <div className="mt-6 pt-4 border-t border-slate-200 text-center">
-            {loginType !== 'agency' && (
-              <Link to="/agency/login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
-                Agency Portal Login
-              </Link>
-            )}
-            {loginType === 'agency' && (
-              <Link to="/login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
-                Client Portal Login
-              </Link>
-            )}
+            <p className="text-xs text-slate-600">
+              Need help? <a href="#" className="hover:text-slate-900 transition-colors">Contact Support</a>
+            </p>
           </div>
         </div>
       </div>

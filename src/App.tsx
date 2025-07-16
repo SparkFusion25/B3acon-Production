@@ -29,7 +29,7 @@ function App() {
         />
         <Route 
           path="/select-plan" 
-          element={isAuthenticated ? <PlanSelectionPage /> : <Navigate to="/login" />}
+          element={<PlanSelectionPage />}
         />
         <Route 
           path="/pricing" 

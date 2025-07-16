@@ -131,9 +131,9 @@ const LandingPage: React.FC = () => {
             <a href="#faq" className="text-gray-600 hover:text-gray-900">FAQ</a>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
+              className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg hover:scale-105 hover:brightness-105 transition-all inline-block"
             <Link to="/signup" className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg hover:scale-105 transition-all">
-              Install B3ACON
+              Start Free Trial
             </Link>
           </div>
         </div>
@@ -746,7 +746,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">© 2025 B3ACON | <a href="/privacy" className="hover:text-white">Privacy</a> | <a href="/terms" className="hover:text-white">Terms</a> | <a href="/support" className="hover:text-white">Support</a> | <Link to="/agency/login" className="text-signal-blue hover:text-white">🔑 Agency Portal Login</Link></p>
+            <p className="text-gray-400">© 2025 B3ACON | <a href="/privacy" className="hover:text-white">Privacy</a> | <a href="/terms" className="hover:text-white">Terms</a> | <a href="/support" className="hover:text-white">Support</a> | <Link to="/agency/login" className="text-signal-blue hover:text-white transition-colors">🔑 Agency Portal Login</Link></p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
