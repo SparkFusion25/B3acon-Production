@@ -4,13 +4,13 @@
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-signal-blue to-beacon-orange bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-signal-blue to-beacon-orange;
   }
 }
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-signal-blue to-beacon-orange bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-signal-blue to-beacon-orange;
   }
 }
 
@@ -28,7 +28,7 @@
 
 @layer components {
   .gradient-text {
-    @apply bg-gradient-to-r from-signal-blue to-beacon-orange bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-signal-blue to-beacon-orange;
   }
   
   .gradient-bg {
@@ -123,21 +123,36 @@
 
 /* Hover effects for menu items */
 .menu-item {
-  position: relative;
-  overflow: hidden;
+  @apply relative overflow-hidden transition-all duration-300;
 }
 
 .menu-item::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: currentColor;
-  transition: width 0.3s ease;
+  @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-current transition-all duration-300 ease-in-out;
 }
 
 .menu-item:hover::after {
-  width: 100%;
+  @apply w-full;
+}
+
+/* Sidebar menu hover effects */
+.sidebar-menu-item {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.sidebar-menu-item:hover {
+  @apply transform translate-x-1;
+}
+
+/* Premium feature badge */
+.premium-badge {
+  @apply absolute -top-1 -right-1 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-xs px-1.5 py-0.5 rounded-full shadow-sm;
+}
+
+/* Tooltip */
+.tooltip {
+  @apply absolute invisible opacity-0 bg-gray-900 text-white text-xs rounded py-1 px-2 transition-all duration-300;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible opacity-100;
 }
