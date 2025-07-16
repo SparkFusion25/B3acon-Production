@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AgencySidebar from './AgencySidebar';
 import AgencyHeader from './AgencyHeader';
-import ClientSwitcher from './ClientSwitcher';
+import ClientSwitcher from '../Layout/ClientSwitcher';
 import AgencyOverview from './AgencyOverview';
 import ClientManagement from './ClientManagement';
 import TeamManagement from './TeamManagement';
