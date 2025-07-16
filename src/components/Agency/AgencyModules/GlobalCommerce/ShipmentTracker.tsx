@@ -10,6 +10,7 @@ const ShipmentTracker: React.FC = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [shipment, setShipment] = useState<any>(null);
   const [mapVisible, setMapVisible] = useState(false);
+  const [trackingTimeoutId, setTrackingTimeoutId] = useState<number | null>(null);
   
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +26,11 @@ const ShipmentTracker: React.FC = () => {
       // Call Terminal49 API to track the container
       let response;
       
+      // Clear any existing timeout
+      if (trackingTimeoutId !== null) {
+        clearTimeout(trackingTimeoutId);
+      }
+      
       try {
         // For demo purposes, we'll simulate the API call
         // In production, use the actual API endpoint
@@ -35,86 +41,90 @@ const ShipmentTracker: React.FC = () => {
         // });
         
         // Simulate API response
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        const newTimeoutId = window.setTimeout(() => {
+          // Sample tracking data based on Terminal49 API response format
+          const mockShipment = {
+            tracking_number: trackingNumber,
+            carrier: carrier || (trackingType === 'ocean' ? 'Maersk' : 'FedEx'),
+            status: 'in_transit',
+            estimated_delivery: '2025-02-15',
+            origin: {
+              city: 'Shanghai',
+              country: 'China',
+              postal_code: '200000',
+              coordinates: {
+                lat: 31.2304,
+                lon: 121.4737
+              }
+            },
+            destination: {
+              city: 'Los Angeles',
+              country: 'United States',
+              postal_code: '90001',
+              coordinates: {
+                lat: 34.0522,
+                lon: -118.2437
+              }
+            },
+            current_location: {
+              coordinates: {
+                lat: 19.4326,
+                lon: -155.2453
+              },
+              description: 'Pacific Ocean, near Hawaii'
+            },
+            shipment_date: '2025-02-01',
+            service_type: 'International Priority',
+            weight: '15.5 kg',
+            package_count: 2,
+            events: [
+              {
+                date: '2025-02-01T10:30:00Z',
+                location: 'Shanghai, China',
+                status: 'Shipment picked up',
+                description: 'Shipment picked up by carrier'
+              },
+              {
+                date: '2025-02-02T14:15:00Z',
+                location: 'Shanghai, China',
+                status: 'Departed facility',
+                description: 'Shipment has left the origin facility'
+              },
+              {
+                date: '2025-02-03T08:45:00Z',
+                location: 'Hong Kong, China',
+                status: 'Arrived at facility',
+                description: 'Shipment has arrived at transit facility'
+              },
+              {
+                date: '2025-02-04T02:20:00Z',
+                location: 'Hong Kong, China',
+                status: 'Departed facility',
+                description: 'Shipment has left the transit facility'
+              },
+              {
+                date: '2025-02-05T18:10:00Z',
+                location: 'Pacific Ocean',
+                status: 'In transit',
+                description: 'Vessel in transit'
+              },
+              {
+                date: '2025-02-06T03:45:00Z',
+                location: 'Pacific Ocean, near Hawaii',
+                status: 'In transit',
+                description: 'Vessel in transit'
+              }
+            ]
+          };
+          
+          setShipment(mockShipment);
+          setMapVisible(true);
+          toast.success('Shipment found');
+          setIsTracking(false);
+        }, 1500);
         
-        // Sample tracking data based on Terminal49 API response format
-        const mockShipment = {
-          tracking_number: trackingNumber,
-          carrier: carrier || (trackingType === 'ocean' ? 'Maersk' : 'FedEx'),
-          status: 'in_transit',
-          estimated_delivery: '2025-02-15',
-          origin: {
-            city: 'Shanghai',
-            country: 'China',
-            postal_code: '200000',
-            coordinates: {
-              lat: 31.2304,
-              lon: 121.4737
-            }
-          },
-          destination: {
-            city: 'Los Angeles',
-            country: 'United States',
-            postal_code: '90001',
-            coordinates: {
-              lat: 34.0522,
-              lon: -118.2437
-            }
-          },
-          current_location: {
-            coordinates: {
-              lat: 19.4326,
-              lon: -155.2453
-            },
-            description: 'Pacific Ocean, near Hawaii'
-          },
-          shipment_date: '2025-02-01',
-          service_type: 'International Priority',
-          weight: '15.5 kg',
-          package_count: 2,
-          events: [
-            {
-              date: '2025-02-01T10:30:00Z',
-              location: 'Shanghai, China',
-              status: 'Shipment picked up',
-              description: 'Shipment picked up by carrier'
-            },
-            {
-              date: '2025-02-02T14:15:00Z',
-              location: 'Shanghai, China',
-              status: 'Departed facility',
-              description: 'Shipment has left the origin facility'
-            },
-            {
-              date: '2025-02-03T08:45:00Z',
-              location: 'Hong Kong, China',
-              status: 'Arrived at facility',
-              description: 'Shipment has arrived at transit facility'
-            },
-            {
-              date: '2025-02-04T02:20:00Z',
-              location: 'Hong Kong, China',
-              status: 'Departed facility',
-              description: 'Shipment has left the transit facility'
-            },
-            {
-              date: '2025-02-05T18:10:00Z',
-              location: 'Pacific Ocean',
-              status: 'In transit',
-              description: 'Vessel in transit'
-            },
-            {
-              date: '2025-02-06T03:45:00Z',
-              location: 'Pacific Ocean, near Hawaii',
-              status: 'In transit',
-              description: 'Vessel in transit'
-            }
-          ]
-        };
-        
-        setShipment(mockShipment);
-        setMapVisible(true);
-        toast.success('Shipment found');
+        // Store the timeout ID
+        setTrackingTimeoutId(newTimeoutId);
       } catch (apiError) {
         console.error('Error calling Terminal49 API:', apiError);
         throw new Error('Failed to retrieve shipment data from Terminal49');
@@ -123,8 +133,9 @@ const ShipmentTracker: React.FC = () => {
     } catch (error) {
       console.error('Error tracking shipment:', error);
       toast.error('Failed to track shipment');
-    } finally {
       setIsTracking(false);
+    } finally {
+      // Cleanup is handled in the timeout callback
     }
   };
   

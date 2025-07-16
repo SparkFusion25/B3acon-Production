@@ -12,6 +12,7 @@ const TariffCalculator: React.FC = () => {
   const [isCalculating, setIsCalculating] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [showHsCodeHelp, setShowHsCodeHelp] = useState(false);
+  const [calculationTimeoutId, setCalculationTimeoutId] = useState<number | null>(null);
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,71 +25,81 @@ const TariffCalculator: React.FC = () => {
     setIsCalculating(true);
     
     try {
+      // Clear any existing timeout
+      if (calculationTimeoutId !== null) {
+        clearTimeout(calculationTimeoutId);
+      }
+      
       // In a real implementation, we would make an API call to calculate tariffs
       // For now, we'll simulate the calculation process
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Sample calculation
-      const productValueNum = parseFloat(productValue);
-      const shippingCostNum = shippingCost ? parseFloat(shippingCost.replace(/,/g, '')) : 0;
-      const insuranceCostNum = insuranceCost ? parseFloat(insuranceCost.replace(/,/g, '')) : 0;
-      
-      // Mock duty rates based on destination country
-      const dutyRates: {[key: string]: number} = {
-        'US': 0.025,
-        'CA': 0.05,
-        'GB': 0.03,
-        'DE': 0.035,
-        'FR': 0.035,
-        'CN': 0.08,
-        'JP': 0.04,
-        'AU': 0.05
-      };
-      
-      // Mock VAT/sales tax rates
-      const vatRates: {[key: string]: number} = {
-        'US': 0.0, // No federal VAT in US
-        'CA': 0.05, // GST
-        'GB': 0.20, // UK VAT
-        'DE': 0.19, // German VAT
-        'FR': 0.20, // French VAT
-        'CN': 0.13, // Chinese VAT
-        'JP': 0.10, // Japanese Consumption Tax
-        'AU': 0.10  // Australian GST
-      };
-      
-      const dutyRate = dutyRates[destinationCountry] || 0.05;
-      const vatRate = vatRates[destinationCountry] || 0.10;
-      
-      const customsValue = productValueNum + shippingCostNum + insuranceCostNum;
-      const dutyAmount = customsValue * dutyRate;
-      const vatableAmount = customsValue + dutyAmount;
-      const vatAmount = vatableAmount * vatRate;
-      
-      const totalLandedCost = customsValue + dutyAmount + vatAmount;
-      
-      setResults({
-        customsValue,
-        dutyRate,
-        dutyAmount,
-        vatRate,
-        vatAmount,
-        totalLandedCost,
-        breakdown: {
-          productValue: productValueNum,
-          shippingCost: shippingCostNum,
-          insuranceCost: insuranceCostNum,
+      const newTimeoutId = window.setTimeout(() => {
+        // Sample calculation
+        const productValueNum = parseFloat(productValue.replace(/,/g, ''));
+        const shippingCostNum = shippingCost ? parseFloat(shippingCost.replace(/,/g, '')) : 0;
+        const insuranceCostNum = insuranceCost ? parseFloat(insuranceCost.replace(/,/g, '')) : 0;
+        
+        // Mock duty rates based on destination country
+        const dutyRates: {[key: string]: number} = {
+          'US': 0.025,
+          'CA': 0.05,
+          'GB': 0.03,
+          'DE': 0.035,
+          'FR': 0.035,
+          'CN': 0.08,
+          'JP': 0.04,
+          'AU': 0.05
+        };
+        
+        // Mock VAT/sales tax rates
+        const vatRates: {[key: string]: number} = {
+          'US': 0.0, // No federal VAT in US
+          'CA': 0.05, // GST
+          'GB': 0.20, // UK VAT
+          'DE': 0.19, // German VAT
+          'FR': 0.20, // French VAT
+          'CN': 0.13, // Chinese VAT
+          'JP': 0.10, // Japanese Consumption Tax
+          'AU': 0.10  // Australian GST
+        };
+        
+        const dutyRate = dutyRates[destinationCountry] || 0.05;
+        const vatRate = vatRates[destinationCountry] || 0.10;
+        
+        const customsValue = productValueNum + shippingCostNum + insuranceCostNum;
+        const dutyAmount = customsValue * dutyRate;
+        const vatableAmount = customsValue + dutyAmount;
+        const vatAmount = vatableAmount * vatRate;
+        
+        const totalLandedCost = customsValue + dutyAmount + vatAmount;
+        
+        setResults({
+          customsValue,
+          dutyRate,
           dutyAmount,
-          vatAmount
-        }
-      });
+          vatRate,
+          vatAmount,
+          totalLandedCost,
+          breakdown: {
+            productValue: productValueNum,
+            shippingCost: shippingCostNum,
+            insuranceCost: insuranceCostNum,
+            dutyAmount,
+            vatAmount
+          }
+        });
+        
+        toast.success('Tariff calculation completed');
+        setIsCalculating(false);
+      }, 1500);
       
-      toast.success('Tariff calculation completed');
+      // Store the timeout ID
+      setCalculationTimeoutId(newTimeoutId);
     } catch (error) {
       console.error('Error calculating tariffs:', error);
       toast.error('Failed to calculate tariffs');
-    } finally {
       setIsCalculating(false);
+    } finally {
+      // Cleanup is handled in the timeout callback
     }
   };
   

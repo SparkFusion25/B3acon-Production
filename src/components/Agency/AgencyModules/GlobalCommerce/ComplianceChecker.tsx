@@ -7,6 +7,7 @@ const ComplianceChecker: React.FC = () => {
   const [searchType, setSearchType] = useState('entity');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [searchTimeoutId, setSearchTimeoutId] = useState<number | null>(null);
   
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,42 +20,52 @@ const ComplianceChecker: React.FC = () => {
     setIsSearching(true);
     
     try {
-      // In a real implementation, we would make an API call to check compliance
-      // For now, we'll simulate the search process
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Sample results based on search term
-      if (searchTerm.toLowerCase().includes('restricted')) {
-        setResults({
-          status: 'match_found',
-          matches: [
-            {
-              entity_name: 'Restricted Trading Company',
-              list_name: 'Entity List (EL) - Bureau of Industry and Security',
-              match_score: 95,
-              address: '123 Restricted St, Sanctioned City, 12345',
-              country: 'Restricted Country',
-              federal_register_notice: 'Vol. 84, No. 115, 06/14/2019',
-              start_date: '2019-06-14',
-              remarks: 'Determined to be acting contrary to the national security or foreign policy interests of the United States'
-            }
-          ]
-        });
-      } else {
-        setResults({
-          status: 'no_matches',
-          searched_term: searchTerm,
-          search_type: searchType,
-          timestamp: new Date().toISOString()
-        });
+      // Clear any existing timeout
+      if (searchTimeoutId !== null) {
+        clearTimeout(searchTimeoutId);
       }
       
-      toast.success('Compliance check completed');
+      // In a real implementation, we would make an API call to check compliance
+      // For now, we'll simulate the search process
+      const newTimeoutId = window.setTimeout(() => {
+        // Sample results based on search term
+        if (searchTerm.toLowerCase().includes('restricted')) {
+          setResults({
+            status: 'match_found',
+            matches: [
+              {
+                entity_name: 'Restricted Trading Company',
+                list_name: 'Entity List (EL) - Bureau of Industry and Security',
+                match_score: 95,
+                address: '123 Restricted St, Sanctioned City, 12345',
+                country: 'Restricted Country',
+                federal_register_notice: 'Vol. 84, No. 115, 06/14/2019',
+                start_date: '2019-06-14',
+                remarks: 'Determined to be acting contrary to the national security or foreign policy interests of the United States'
+              }
+            ]
+          });
+        } else {
+          setResults({
+            status: 'no_matches',
+            searched_term: searchTerm,
+            search_type: searchType,
+            timestamp: new Date().toISOString()
+          });
+        }
+        
+        toast.success('Compliance check completed');
+        setIsSearching(false);
+      }, 1500);
+      
+      // Store the timeout ID
+      setSearchTimeoutId(newTimeoutId);
     } catch (error) {
       console.error('Error checking compliance:', error);
       toast.error('Failed to check compliance');
-    } finally {
       setIsSearching(false);
+    } finally {
+      // Cleanup is handled in the timeout callback
     }
   };
   

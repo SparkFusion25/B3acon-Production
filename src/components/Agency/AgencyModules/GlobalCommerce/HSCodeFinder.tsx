@@ -7,6 +7,7 @@ const HSCodeFinder: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedCode, setSelectedCode] = useState<any>(null);
+  const [searchTimeoutId, setSearchTimeoutId] = useState<number | null>(null);
   
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,60 +22,70 @@ const HSCodeFinder: React.FC = () => {
     setSelectedCode(null);
     
     try {
+      // Clear any existing timeout
+      if (searchTimeoutId !== null) {
+        clearTimeout(searchTimeoutId);
+      }
+      
       // In a real implementation, we would make an API call to search for HS codes
       // For now, we'll simulate the search process
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const newTimeoutId = window.setTimeout(() => {
+        // Sample results based on search term
+        const mockResults = [
+          {
+            code: '8471.30.0100',
+            description: 'Portable automatic data processing machines, weighing not more than 10 kg, consisting of at least a central processing unit, a keyboard and a display',
+            category: 'Electronics',
+            chapter: '84',
+            notes: 'Includes laptops, notebooks and sub-notebooks',
+            duty_rates: {
+              'US': '0%',
+              'EU': '0%',
+              'CA': '0%',
+              'UK': '0%'
+            }
+          },
+          {
+            code: '8471.41.0100',
+            description: 'Other automatic data processing machines comprising in the same housing at least a central processing unit and an input and output unit',
+            category: 'Electronics',
+            chapter: '84',
+            notes: 'Includes desktop computers',
+            duty_rates: {
+              'US': '0%',
+              'EU': '0%',
+              'CA': '0%',
+              'UK': '0%'
+            }
+          },
+          {
+            code: '8471.50.0100',
+            description: 'Processing units other than those of subheading 8471.41 or 8471.49, whether or not containing in the same housing one or two of the following types of unit: storage units, input units, output units',
+            category: 'Electronics',
+            chapter: '84',
+            notes: 'Includes computer processing units',
+            duty_rates: {
+              'US': '0%',
+              'EU': '0%',
+              'CA': '0%',
+              'UK': '0%'
+            }
+          }
+        ];
+        
+        setSearchResults(mockResults);
+        toast.success(`Found ${mockResults.length} matching HS codes`);
+        setIsSearching(false);
+      }, 1500);
       
-      // Sample results based on search term
-      const mockResults = [
-        {
-          code: '8471.30.0100',
-          description: 'Portable automatic data processing machines, weighing not more than 10 kg, consisting of at least a central processing unit, a keyboard and a display',
-          category: 'Electronics',
-          chapter: '84',
-          notes: 'Includes laptops, notebooks and sub-notebooks',
-          duty_rates: {
-            'US': '0%',
-            'EU': '0%',
-            'CA': '0%',
-            'UK': '0%'
-          }
-        },
-        {
-          code: '8471.41.0100',
-          description: 'Other automatic data processing machines comprising in the same housing at least a central processing unit and an input and output unit',
-          category: 'Electronics',
-          chapter: '84',
-          notes: 'Includes desktop computers',
-          duty_rates: {
-            'US': '0%',
-            'EU': '0%',
-            'CA': '0%',
-            'UK': '0%'
-          }
-        },
-        {
-          code: '8471.50.0100',
-          description: 'Processing units other than those of subheading 8471.41 or 8471.49, whether or not containing in the same housing one or two of the following types of unit: storage units, input units, output units',
-          category: 'Electronics',
-          chapter: '84',
-          notes: 'Includes computer processing units',
-          duty_rates: {
-            'US': '0%',
-            'EU': '0%',
-            'CA': '0%',
-            'UK': '0%'
-          }
-        }
-      ];
-      
-      setSearchResults(mockResults);
-      toast.success(`Found ${mockResults.length} matching HS codes`);
+      // Store the timeout ID
+      setSearchTimeoutId(newTimeoutId);
     } catch (error) {
       console.error('Error searching HS codes:', error);
       toast.error('Failed to search HS codes');
-    } finally {
       setIsSearching(false);
+    } finally {
+      // Cleanup is handled in the timeout callback
     }
   };
   

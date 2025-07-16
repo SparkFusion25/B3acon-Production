@@ -8,6 +8,7 @@ const FTAChecker: React.FC = () => {
   const [hsCode, setHsCode] = useState('');
   const [isChecking, setIsChecking] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [checkTimeoutId, setCheckTimeoutId] = useState<number | null>(null);
   
   const handleCheck = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,60 +21,70 @@ const FTAChecker: React.FC = () => {
     setIsChecking(true);
     
     try {
+      // Clear any existing timeout
+      if (checkTimeoutId !== null) {
+        clearTimeout(checkTimeoutId);
+      }
+      
       // In a real implementation, we would make an API call to check FTA eligibility
       // For now, we'll simulate the check process
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const newTimeoutId = window.setTimeout(() => {
+        // Sample results based on countries and HS code
+        const mockResults = {
+          origin_country: originCountry,
+          destination_country: destinationCountry,
+          hs_code: hsCode,
+          product_description: 'Portable automatic data processing machines, weighing not more than 10 kg, consisting of at least a central processing unit, a keyboard and a display',
+          agreements: [
+            {
+              name: 'USMCA (United States-Mexico-Canada Agreement)',
+              eligible: originCountry === 'US' && destinationCountry === 'CA' || originCountry === 'CA' && destinationCountry === 'US',
+              normal_duty_rate: '0%',
+              preferential_duty_rate: '0%',
+              requirements: [
+                'Regional Value Content (RVC) of at least 60%',
+                'Certificate of Origin required',
+                'Direct shipment between parties'
+              ]
+            },
+            {
+              name: 'US-Korea Free Trade Agreement (KORUS)',
+              eligible: originCountry === 'US' && destinationCountry === 'KR' || originCountry === 'KR' && destinationCountry === 'US',
+              normal_duty_rate: '8%',
+              preferential_duty_rate: '0%',
+              requirements: [
+                'Product must be originating according to KORUS rules',
+                'Certificate of Origin required',
+                'Direct shipment between parties'
+              ]
+            },
+            {
+              name: 'Comprehensive and Progressive Agreement for Trans-Pacific Partnership (CPTPP)',
+              eligible: ['CA', 'JP', 'AU', 'NZ', 'SG', 'MX'].includes(originCountry) && ['CA', 'JP', 'AU', 'NZ', 'SG', 'MX'].includes(destinationCountry),
+              normal_duty_rate: '5%',
+              preferential_duty_rate: '0%',
+              requirements: [
+                'Product must be originating according to CPTPP rules',
+                'Certificate of Origin required',
+                'Direct shipment between parties'
+              ]
+            }
+          ]
+        };
+        
+        setResults(mockResults);
+        toast.success('FTA eligibility check completed');
+        setIsChecking(false);
+      }, 1500);
       
-      // Sample results based on countries and HS code
-      const mockResults = {
-        origin_country: originCountry,
-        destination_country: destinationCountry,
-        hs_code: hsCode,
-        product_description: 'Portable automatic data processing machines, weighing not more than 10 kg, consisting of at least a central processing unit, a keyboard and a display',
-        agreements: [
-          {
-            name: 'USMCA (United States-Mexico-Canada Agreement)',
-            eligible: originCountry === 'US' && destinationCountry === 'CA' || originCountry === 'CA' && destinationCountry === 'US',
-            normal_duty_rate: '0%',
-            preferential_duty_rate: '0%',
-            requirements: [
-              'Regional Value Content (RVC) of at least 60%',
-              'Certificate of Origin required',
-              'Direct shipment between parties'
-            ]
-          },
-          {
-            name: 'US-Korea Free Trade Agreement (KORUS)',
-            eligible: originCountry === 'US' && destinationCountry === 'KR' || originCountry === 'KR' && destinationCountry === 'US',
-            normal_duty_rate: '8%',
-            preferential_duty_rate: '0%',
-            requirements: [
-              'Product must be originating according to KORUS rules',
-              'Certificate of Origin required',
-              'Direct shipment between parties'
-            ]
-          },
-          {
-            name: 'Comprehensive and Progressive Agreement for Trans-Pacific Partnership (CPTPP)',
-            eligible: ['CA', 'JP', 'AU', 'NZ', 'SG', 'MX'].includes(originCountry) && ['CA', 'JP', 'AU', 'NZ', 'SG', 'MX'].includes(destinationCountry),
-            normal_duty_rate: '5%',
-            preferential_duty_rate: '0%',
-            requirements: [
-              'Product must be originating according to CPTPP rules',
-              'Certificate of Origin required',
-              'Direct shipment between parties'
-            ]
-          }
-        ]
-      };
-      
-      setResults(mockResults);
-      toast.success('FTA eligibility check completed');
+      // Store the timeout ID
+      setCheckTimeoutId(newTimeoutId);
     } catch (error) {
       console.error('Error checking FTA eligibility:', error);
       toast.error('Failed to check FTA eligibility');
-    } finally {
       setIsChecking(false);
+    } finally {
+      // Cleanup is handled in the timeout callback
     }
   };
   

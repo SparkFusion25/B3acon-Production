@@ -5,16 +5,25 @@ import { toast } from 'react-hot-toast';
 const FreightEstimator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [estimatorTimeoutId, setEstimatorTimeoutId] = useState<number | null>(null);
   
   const handleCalculate = () => {
     setIsLoading(true);
     
+    // Clear any existing timeout
+    if (estimatorTimeoutId !== null) {
+      clearTimeout(estimatorTimeoutId);
+    }
+    
     // Simulate API call
-    setTimeout(() => {
+    const newTimeoutId = window.setTimeout(() => {
       setIsLoading(false);
       setShowResults(true);
       toast.success('Freight rate calculation complete');
     }, 1500);
+    
+    // Store the timeout ID
+    setEstimatorTimeoutId(newTimeoutId);
   };
   
   return (

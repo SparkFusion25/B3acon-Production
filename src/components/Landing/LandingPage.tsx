@@ -26,6 +26,7 @@ const LandingPage: React.FC = () => {
   const [displayText, setDisplayText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [typingSpeed, setTypingSpeed] = useState(100);
+  const [typewriterTimeoutId, setTypewriterTimeoutId] = useState<number | null>(null);
 
   // Fetch landing page settings
   useEffect(() => {
@@ -79,11 +80,22 @@ const LandingPage: React.FC = () => {
       }
     }
     
-    const timer = setTimeout(() => {
+    // Clear previous timeout if it exists
+    if (typewriterTimeoutId !== null) {
+      clearTimeout(typewriterTimeoutId);
+    }
+    
+    // Set new timeout and store its ID
+    const newTimeoutId = window.setTimeout(() => {
       // This will trigger the effect again
     }, typingSpeed);
+    setTypewriterTimeoutId(newTimeoutId);
     
-    return () => clearTimeout(timer);
+    return () => {
+      if (typewriterTimeoutId !== null) {
+        clearTimeout(typewriterTimeoutId);
+      }
+    };
   }, [displayText, isDeleting, currentHeadlineIndex, landingSettings.headlines, typingSpeed]);
 
   const handleStartTrial = () => {

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 // Define valid social providers
 type SocialProvider = 'google' | 'facebook' | 'github';
@@ -45,8 +46,20 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [authTimeouts, setAuthTimeouts] = useState<number[]>([]);
   const [userType, setUserType] = useState<'agency' | 'client'>('agency');
   const [currentClientId, setCurrentClientId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Clear any existing timeouts when component unmounts
+    return () => {
+      authTimeouts.forEach(timeoutId => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+      });
+    };
+  }, [authTimeouts]);
 
   useEffect(() => {
     // Check for existing session
@@ -111,6 +124,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string, type: 'agency' | 'client') => {
     try {
       // Demo mode - use mock users for authentication
+      let timeoutId: number;
       const mockUsers = {
         'sarah@sparkdigital.com': {
           id: '550e8400-e29b-41d4-a716-446655440001',
@@ -146,12 +160,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (mockUser && password === 'password') {
         setUser(mockUser);
         setUserType(type);
-        setIsAuthenticated(true);
         
-        // Save to localStorage
-        localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
-        localStorage.setItem('b3acon_user_type', type);
-        toast.success(`Welcome back, ${mockUser.name}!`);
+        // Use a safe setTimeout pattern
+        timeoutId = window.setTimeout(() => {
+          setIsAuthenticated(true);
+          
+          // Save to localStorage
+          localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
+          localStorage.setItem('b3acon_user_type', type);
+          toast.success(`Welcome back, ${mockUser.name}!`);
+        }, 100);
+        
+        // Store the timeout ID for cleanup
+        setAuthTimeouts(prev => [...prev, timeoutId]);
       } else {
         throw new Error('Invalid credentials. Use demo credentials: sarah@sparkdigital.com / password or john@techcorp.com / password');
       }
@@ -168,6 +189,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
+      let timeoutId: number;
       // For demo purposes, we'll use mock data since social auth requires proper setup
       const mockSocialUsers = {
         'google': {
@@ -200,13 +222,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       };
 
       const mockUser = mockSocialUsers[provider];
-      setUser(mockUser);
-      setUserType(type);
-      setIsAuthenticated(true);
       
-      // Save to localStorage
-      localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
-      localStorage.setItem('b3acon_user_type', type);
+      // Use a safe setTimeout pattern
+      timeoutId = window.setTimeout(() => {
+        setUser(mockUser);
+        setUserType(type);
+        setIsAuthenticated(true);
+        
+        // Save to localStorage
+        localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
+        localStorage.setItem('b3acon_user_type', type);
+      }, 100);
+      
+      // Store the timeout ID for cleanup
+      setAuthTimeouts(prev => [...prev, timeoutId]);
 
       // In a real implementation, we would use Supabase social auth:
       // const { data, error } = await supabase.auth.signInWithOAuth({
@@ -226,14 +255,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     if (supabase) {
       supabase.auth.signOut();
-      toast.success('Logged out successfully');
     }
-    setUser(null);
-    setIsAuthenticated(false);
-    setCurrentClientId(null);
-    localStorage.removeItem('b3acon_user');
-    localStorage.removeItem('b3acon_user_type');
-    window.location.href = '/';
+    
+    // Use a safe setTimeout pattern
+    const timeoutId = window.setTimeout(() => {
+      setUser(null);
+      setIsAuthenticated(false);
+      setCurrentClientId(null);
+      localStorage.removeItem('b3acon_user');
+      localStorage.removeItem('b3acon_user_type');
+      toast.success('Logged out successfully');
+      window.location.href = '/';
+    }, 100);
+    
+    // Store the timeout ID for cleanup
+    setAuthTimeouts(prev => [...prev, timeoutId]);
   };
 
   const switchToClient = (clientId: string) => {
@@ -245,7 +281,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const switchToAgency = () => {
     setCurrentClientId(null);
     setUserType('agency');
-    toast.success('Switched to agency view');
+    
+    // Use a safe setTimeout pattern
+    const timeoutId = window.setTimeout(() => {
+      toast.success('Switched to agency view');
+    }, 100);
+    
+    // Store the timeout ID for cleanup
+    setAuthTimeouts(prev => [...prev, timeoutId]);
   };
 
   const value: AuthContextType = {
