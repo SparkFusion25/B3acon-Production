@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Globe, Mail, Lock, Users, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search, UserPlus, Linkedin } from 'lucide-react';
+import { Globe, Mail, Lock, Users, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search, UserPlus, Linkedin, ArrowRight } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,7 +12,10 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSocialLogin, setShowSocialLogin] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
   const { login, loginWithSocial } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,9 +26,10 @@ const LoginPage: React.FC = () => {
         if (password !== confirmPassword) {
           throw new Error('Passwords do not match');
         }
-        // In a real implementation, we would call a signup function
-        toast.success('Account created successfully! You can now log in.');
-        setIsSignUp(false);
+        // In a real implementation, we would call a signup function here
+        toast.success('Account created successfully!');
+        // Redirect to plan selection page
+        navigate('/select-plan');
       } else {
         await login(email, password, loginType);
       }
@@ -57,40 +62,40 @@ const LoginPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-white to-slate-100 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+        <div className="absolute top-0 left-0 w-full h-full opacity-30">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
           <div className="absolute top-2/3 left-1/3 w-72 h-72 bg-green-500 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
         </div>
       </div>
 
-      <Link to="/" className="absolute top-4 left-4 text-white hover:text-gray-300 transition-colors">
+      <Link to="/" className="absolute top-4 left-4 text-gray-700 hover:text-gray-900 transition-colors">
         ← Back to Home
       </Link>
 
       <div className="flex flex-col md:flex-row max-w-6xl w-full gap-8 z-10">
         {/* Welcome panel with features - now visible on all screens */}
-        <div className="hidden md:flex flex-col flex-1 text-white p-6 bg-black/20 backdrop-blur-sm rounded-xl border border-white/10">
+        <div className="hidden md:flex flex-col flex-1 text-gray-800 p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 shadow-xl">
           <div className="mb-8">
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
                 <Globe className="w-7 h-7 text-white animate-pulse" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">B3ACON</h1>
-                <p className="text-gray-300 text-sm">Global Commerce Command Center</p>
+                <h1 className="text-2xl font-bold text-gray-900">B3ACON</h1>
+                <p className="text-gray-600 text-sm">Global Commerce Command Center</p>
               </div>
             </div>
             
-            <h2 className="text-3xl font-bold mt-8 mb-2">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+            <h2 className="text-3xl font-bold mt-8 mb-2 text-gray-900">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
                 The Global Commerce Command Center
               </span><span className="animate-pulse">|</span>
             </h2>
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="text-xl text-gray-700 mb-8">
               One Command Center. Every Global Trade Advantage.
             </p>
           </div>
@@ -99,26 +104,38 @@ const LoginPage: React.FC = () => {
             {platformFeatures.map((feature, index) => (
               <div 
                 key={index} 
-                className={`bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 transform transition-all hover:scale-105 hover:bg-opacity-20 ${feature.animate ? 'animate-pulse-glow' : ''}`}
+                className={`bg-white bg-opacity-80 backdrop-blur-sm rounded-xl p-4 transform transition-all hover:scale-105 hover:shadow-lg border border-gray-200 ${feature.animate ? 'animate-pulse-glow' : ''}`}
               >
                 <div className="flex items-center space-x-4">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${feature.color} flex items-center justify-center`}>
                     <feature.icon className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="font-semibold text-white">{feature.title}</h3>
+                  <h3 className="font-semibold text-gray-800">{feature.title}</h3>
                 </div>
               </div>
             ))}
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 mt-auto">
-            <button className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all animate-pulse-glow">
+            <button 
+              onClick={() => navigate('/features')}
+              className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all animate-pulse-glow"
+            >
               Explore Our Platform
             </button>
-            <button className="px-6 py-3 bg-white bg-opacity-10 text-white rounded-lg hover:bg-opacity-20 transition-all">
+            <button 
+              onClick={() => {
+                setIsSignUp(true);
+                setShowSocialLogin(false);
+              }}
+              className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-all"
+            >
               Start Free Trial
             </button>
-            <button className="px-6 py-3 bg-white bg-opacity-10 text-white rounded-lg hover:bg-opacity-20 transition-all">
+            <button 
+              onClick={() => navigate('/pricing')}
+              className="px-6 py-3 bg-white border border-gray-300 text-gray-800 rounded-lg hover:bg-gray-100 transition-all"
+            >
               View Plans
             </button>
             </div>
@@ -126,28 +143,28 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Login form */}
-        <div className="max-w-sm w-full">
+        <div className="max-w-md w-full">
           <div className="text-center mb-8 md:hidden">
             <div className="inline-flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
                 <Globe className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">B3ACON</h1>
-                <p className="text-gray-300 text-sm">Global Commerce Command Center</p>
+                <h1 className="text-2xl font-bold text-gray-900">B3ACON</h1>
+                <p className="text-gray-600 text-sm">Global Commerce Command Center</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-1 mb-4">
+          <div className="bg-white/80 shadow-md backdrop-blur-sm rounded-xl p-1 mb-4">
             <div className="grid grid-cols-2 gap-1">
               <button
                 type="button"
                 onClick={() => setLoginType('agency')}
                 className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
                   loginType === 'agency'
-                    ? 'bg-white text-gray-900 shadow-lg'
-                    : 'text-white hover:bg-signal-blue/20'
+                    ? 'bg-signal-blue text-white shadow-lg'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Users className="w-4 h-4" />
@@ -158,8 +175,8 @@ const LoginPage: React.FC = () => {
                 onClick={() => setLoginType('client')}
                 className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
                   loginType === 'client'
-                    ? 'bg-white text-gray-900 shadow-lg'
-                    : 'text-white hover:bg-signal-blue/20'
+                    ? 'bg-slate-800 text-white shadow-lg'
+                    : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 <Building className="w-4 h-4" />
@@ -168,15 +185,15 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-1 mb-4">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl p-1 mb-4 shadow-lg">
             <div className="grid grid-cols-2 gap-1">
               <button
                 type="button"
                 onClick={() => setIsSignUp(false)}
                 className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
                   !isSignUp
-                    ? 'bg-white text-gray-900 shadow-lg'
-                    : 'text-white hover:bg-signal-blue/20'
+                    ? 'bg-slate-800 text-white shadow-lg'
+                    : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 <Mail className="w-4 h-4" />
@@ -187,8 +204,8 @@ const LoginPage: React.FC = () => {
                 onClick={() => setIsSignUp(true)}
                 className={`flex items-center justify-center space-x-2 py-2 px-3 rounded-lg transition-all ${
                   isSignUp
-                    ? 'bg-white text-gray-900 shadow-lg'
-                    : 'text-white hover:bg-signal-blue/20'
+                    ? 'bg-slate-800 text-white shadow-lg'
+                    : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
                 <UserPlus className="w-4 h-4" />
@@ -201,14 +218,14 @@ const LoginPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowSocialLogin(!showSocialLogin)}
-              className="text-gray-300 text-xs hover:text-white transition-colors"
+              className="text-slate-700 text-xs hover:text-slate-900 transition-colors"
             >
               {showSocialLogin ? 'Use email instead' : 'Or sign in with social accounts'}
             </button>
           </div>
 
-        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-          <h2 className="text-lg font-semibold text-white mb-4 text-center">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-slate-200 shadow-xl">
+          <h2 className="text-lg font-semibold text-slate-800 mb-4 text-center">
             {isSignUp 
               ? (loginType === 'agency' ? 'Create Agency Account' : 'Create Client Account')
               : (loginType === 'agency' ? 'Agency Login' : 'Client Portal')
@@ -276,15 +293,48 @@ const LoginPage: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {isSignUp && (
+                <>
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
+                    <div className="relative">
+                      <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-xs font-medium text-slate-700 mb-1">Company Name</label>
+                    <div className="relative">
+                      <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                      <input
+                        type="text"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                        placeholder="Enter your company name"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+              
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Email Address</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder={loginType === 'agency' ? 'sarah@sparkdigital.com' : 'john@techcorp.com'}
                     required
                   />
@@ -292,14 +342,14 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-300 mb-1">Password</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                     placeholder="Enter your password"
                     required
                   />
@@ -308,14 +358,14 @@ const LoginPage: React.FC = () => {
               
               {isSignUp && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-300 mb-1">Confirm Password</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Confirm Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                     <input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-signal-blue focus:border-transparent"
                       placeholder="Confirm your password"
                       required
                     />
@@ -326,22 +376,23 @@ const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed animate-pulse-glow"
+                className="w-full py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white font-medium rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
-                {isLoading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Create Account' : 'Sign In')}
+                <span>{isLoading ? (isSignUp ? 'Creating Account...' : 'Signing In...') : (isSignUp ? 'Create Account' : 'Sign In')}</span>
+                {!isLoading && <ArrowRight className="w-4 h-4" />}
               </button>
             </form>
           )}
 
-          <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/10">
-            <p className="text-xs text-gray-300 mb-1">Demo Credentials:</p>
-            <div className="text-xs text-gray-400 space-y-1">
-              <p className="cursor-pointer hover:text-white transition-colors" onClick={() => {
+          <div className="mt-4 p-3 bg-slate-100 rounded-lg border border-slate-200">
+            <p className="text-xs text-slate-700 mb-1">Demo Credentials:</p>
+            <div className="text-xs text-slate-600 space-y-1">
+              <p className="cursor-pointer hover:text-slate-900 transition-colors" onClick={() => {
                 setEmail('sarah@sparkdigital.com');
                 setPassword('password');
                 setLoginType('agency');
               }}><strong>Agency:</strong> sarah@sparkdigital.com / password</p>
-              <p className="cursor-pointer hover:text-white transition-colors" onClick={() => {
+              <p className="cursor-pointer hover:text-slate-900 transition-colors" onClick={() => {
                 setEmail('john@techcorp.com');
                 setPassword('password');
                 setLoginType('client');
@@ -351,11 +402,17 @@ const LoginPage: React.FC = () => {
           
           {!isSignUp && (
             <div className="mt-3 text-center">
-              <a href="#" className="text-xs text-gray-300 hover:text-white transition-colors">
+              <a href="#" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
                 Forgot password?
               </a>
             </div>
           )}
+          
+          <div className="mt-6 pt-4 border-t border-slate-200 text-center">
+            <Link to="/agency-login" className="text-xs text-slate-600 hover:text-slate-900 transition-colors">
+              Agency Portal Login
+            </Link>
+          </div>
         </div>
       </div>
 
