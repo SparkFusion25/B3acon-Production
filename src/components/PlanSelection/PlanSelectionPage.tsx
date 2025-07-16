@@ -139,7 +139,7 @@ const PlanSelectionPage: React.FC<PlanSelectionPageProps> = ({ viewOnly = false 
     'google': { name: 'Google Services', icon: Search },
     'seo': { name: 'SEO Intelligence', icon: TrendingUp },
     'shopify': { name: 'Shopify Integration', icon: ShoppingBag }
-    'social-scheduler-tool': { name: 'Social Scheduler', icon: Calendar },
+    , 'social-scheduler-tool': { name: 'Social Scheduler', icon: Calendar },
     'seo-content-gap-tool': { name: 'SEO Content Gap', icon: FileText },
     'shipment-tracking-pro': { name: 'Shipment Tracking Pro', icon: Package },
     'api-access-/-webhooks': { name: 'API Access', icon: Code },
