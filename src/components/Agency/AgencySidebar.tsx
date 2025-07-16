@@ -18,7 +18,7 @@ import {
   Mail,
   Layout,
   Menu,
-  X
+  X,
   Shield
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
