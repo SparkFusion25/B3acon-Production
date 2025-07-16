@@ -8,7 +8,7 @@ import {
   Settings,
   Home,
   TrendingUp,
-  Zap,
+  Globe,
   UserCheck,
   Search,
   Palette,
@@ -20,7 +20,12 @@ import {
   Menu,
   X,
   Shield,
-  Briefcase
+  Briefcase,
+  Truck,
+  FileCheck,
+  Package,
+  DollarSign,
+  ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -38,10 +43,15 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
   console.log('AgencySidebar rendering with activeModule:', activeModule);
 
   const menuItems = [
-    { id: 'overview', label: 'Agency Overview', icon: Home, gradient: 'from-signal-blue to-beacon-orange' },
+    { id: 'overview', label: 'Command Center', icon: Home, gradient: 'from-signal-blue to-beacon-orange' },
     { id: 'clients', label: 'Client Management', icon: Users, gradient: 'from-signal-blue to-blue-600' },
     { id: 'crm', label: 'CRM Hub', icon: Target, gradient: 'from-beacon-orange to-orange-600' },
     { id: 'team', label: 'Team Management', icon: UserCheck, gradient: 'from-signal-blue to-purple-600' },
+    { id: 'global-commerce', label: 'Global Commerce', icon: Globe, gradient: 'from-green-500 to-teal-500' },
+    { id: 'tariff-calculator', label: 'Tariff Calculator', icon: DollarSign, gradient: 'from-blue-500 to-cyan-500' },
+    { id: 'compliance', label: 'Compliance Checker', icon: ShieldCheck, gradient: 'from-red-500 to-pink-500' },
+    { id: 'shipping', label: 'Shipping Tools', icon: Truck, gradient: 'from-amber-500 to-orange-500' },
+    { id: 'hs-codes', label: 'HS Code Lookup', icon: Search, gradient: 'from-purple-500 to-indigo-500' },
     { id: 'google', label: 'Google Services', icon: Search, gradient: 'from-beacon-orange to-red-500' },
     { id: 'seo', label: 'SEO Intelligence', icon: TrendingUp, gradient: 'from-signal-blue to-cyan-500' },
     { id: 'social', label: 'Social Media Center', icon: MessageCircle, gradient: 'from-beacon-orange to-pink-500' },
@@ -106,18 +116,18 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
       <div className={`
         fixed left-0 top-0 z-40 h-full bg-jet-black border-r border-slate-gray
         transition-transform duration-300 ease-in-out
-        w-64 lg:w-56 xl:w-64
+        w-72 lg:w-64 xl:w-72
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="flex flex-col h-full p-3 lg:p-4">
           {/* Logo */}
           <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-slate-gray">
             <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-lg flex items-center justify-center">
-              <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+              <Globe className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
             </div>
             <div>
               <h1 className="text-white font-bold text-base lg:text-lg">B3ACON</h1>
-              <p className="text-gray-300 text-xs lg:text-sm">Agency Command</p>
+              <p className="text-gray-300 text-xs lg:text-sm">Global Commerce</p>
             </div>
           </div>
 

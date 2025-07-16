@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Zap, Mail, Lock, Users, Building, Github, Facebook } from 'lucide-react';
+import { Globe, Mail, Lock, Users, Building, Github, Facebook, Truck, FileCheck, Package, BarChart3, Search } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -34,25 +34,99 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  // Features for the commerce platform
+  const platformFeatures = [
+    { title: "Global Trade Intelligence", icon: Globe, color: "from-blue-500 to-cyan-500" },
+    { title: "Freight & Tariff Tools", icon: Truck, color: "from-green-500 to-teal-500" },
+    { title: "HS Code Lookup + FTA Matching", icon: FileCheck, color: "from-purple-500 to-indigo-500" },
+    { title: "Shipment Tracking", icon: Package, color: "from-amber-500 to-orange-500" },
+    { title: "AI-powered Marketing + CRM", icon: BarChart3, color: "from-red-500 to-pink-500" }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-jet-black via-slate-gray to-jet-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute top-2/3 left-1/3 w-72 h-72 bg-green-500 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        </div>
+      </div>
+
       <Link to="/" className="absolute top-4 left-4 text-white hover:text-gray-300 transition-colors">
         ← Back to Home
       </Link>
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
-              <Zap className="w-7 h-7 text-white" />
+
+      <div className="flex flex-col md:flex-row max-w-6xl w-full gap-8 z-10">
+        {/* Welcome panel with features */}
+        <div className="hidden md:flex flex-col flex-1 text-white p-8">
+          <div className="mb-8">
+            <div className="inline-flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
+                <Globe className="w-7 h-7 text-white animate-pulse" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">B3ACON</h1>
+                <p className="text-gray-300 text-sm">Global Commerce Command Center</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">B3ACON</h1>
-              <p className="text-gray-300 text-sm">Digital Marketing Command Center</p>
+            
+            <h2 className="text-3xl font-bold mt-8 mb-2">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                The Global Commerce Command Center
+              </span>
+            </h2>
+            <p className="text-xl text-gray-300 mb-8">
+              One Command Center. Every Global Trade Advantage.
+            </p>
+          </div>
+          
+          <div className="space-y-4 mb-8">
+            {platformFeatures.map((feature, index) => (
+              <div 
+                key={index} 
+                className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-4 transform transition-all hover:scale-105 hover:bg-opacity-20"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${feature.color} flex items-center justify-center`}>
+                    <feature.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-white">{feature.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 mt-auto">
+            <button className="px-6 py-3 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all">
+              Explore Our Platform
+            </button>
+            <button className="px-6 py-3 bg-white bg-opacity-10 text-white rounded-lg hover:bg-opacity-20 transition-all">
+              Start Free Trial
+            </button>
+            <button className="px-6 py-3 bg-white bg-opacity-10 text-white rounded-lg hover:bg-opacity-20 transition-all">
+              View Plans
+            </button>
             </div>
           </div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 mb-6">
+        {/* Login form */}
+        <div className="max-w-md w-full">
+          <div className="text-center mb-8 md:hidden">
+            <div className="inline-flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-xl flex items-center justify-center">
+                <Globe className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">B3ACON</h1>
+                <p className="text-gray-300 text-sm">Global Commerce Command Center</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-1 mb-6">
           <div className="grid grid-cols-2 gap-1">
             <button
               type="button"
@@ -81,7 +155,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="mb-4 text-center">
+        <div className="mb-4 text-center max-w-md w-full">
           <button
             type="button"
             onClick={() => setShowSocialLogin(!showSocialLogin)}
@@ -204,6 +278,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };

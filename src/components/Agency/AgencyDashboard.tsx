@@ -18,7 +18,15 @@ import {
   EmailMarketing,
   LandingPageBuilder,
   AdminDashboard,
-  LeadProspectingTool
+  LeadProspectingTool,
+  GlobalCommerceHub,
+  TariffCalculator,
+  LandedCostEstimator,
+  ComplianceChecker,
+  FreightEstimator,
+  ShipmentTracker,
+  HSCodeFinder,
+  FTAChecker
 } from './AgencyModules/AgencyModules';
 import { mockAgencyData } from '../../data/mockAgencyData';
 import { toast } from 'react-hot-toast';
@@ -71,6 +79,16 @@ const AgencyDashboard: React.FC = () => {
         return <AdminDashboard />;
       case 'prospecting':
         return <LeadProspectingTool />;
+      case 'global-commerce':
+        return <GlobalCommerceHub />;
+      case 'tariff-calculator':
+        return <TariffCalculator />;
+      case 'compliance':
+        return <ComplianceChecker />;
+      case 'shipping':
+        return <ShipmentTracker />;
+      case 'hs-codes':
+        return <HSCodeFinder />;
       default:
         return <AgencyOverview data={mockAgencyData.overview} />;
     }

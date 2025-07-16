@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle, ArrowRight, Zap, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp, Link as LinkIcon, Check, Globe, Package, FileCheck } from 'lucide-react';
+import { CheckCircle, ArrowRight, Globe, BarChart3, Users, Shield, MessageCircle, Mail, Target, ShoppingBag, TrendingUp, Link as LinkIcon, Check, Truck, Package, FileCheck, Search, DollarSign, ShieldCheck } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'react-hot-toast';
@@ -10,12 +10,13 @@ const LandingPage: React.FC = () => {
   const [landingSettings, setLandingSettings] = useState<any>({
     headlines: [
       "AI-Powered SEO & Marketing",
-      "Global Trade Intelligence",
-      "Shipment Tracking & Freight Tools",
-      "CRM + Outreach Tools",
-      "Integrated Analytics & Dashboard"
+      "Global Trade Intelligence Platform",
+      "Tariff & Duty Calculation Tools",
+      "Shipment Tracking & Freight Rates",
+      "Compliance & Restricted Party Screening",
+      "HS Code Lookup & FTA Matching"
     ],
-    main_headline: "The Ultimate Marketing Command Center",
+    main_headline: "The Global Commerce Command Center",
     background_image: "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
     cta_primary: "Start Free 14-Day Trial",
     cta_secondary: "See Plans",
@@ -106,7 +107,7 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-lg flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
+              <Globe className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold text-gray-900">B3ACON</span>
           </div>
@@ -217,7 +218,7 @@ const LandingPage: React.FC = () => {
               All-in-One Marketing Platform
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Everything you need to manage your digital marketing operations in one powerful platform.
+              Everything you need to manage your global commerce operations in one powerful platform.
             </p>
           </div>
 
@@ -225,18 +226,8 @@ const LandingPage: React.FC = () => {
             {[
               {
                 icon: <Users className="w-6 h-6 text-signal-blue" />,
-                title: 'CRM',
-                description: 'Complete client relationship management with lead tracking, deal pipeline, and activity management.'
-              },
-              {
-                icon: <Target className="w-6 h-6 text-beacon-orange" />,
-                title: 'SEO',
-                description: 'Advanced SEO intelligence with keyword research, rank tracking, and site audit tools.'
-              },
-              {
-                icon: <Mail className="w-6 h-6 text-signal-blue" />,
-                title: 'Email',
-                description: 'Multi-provider email campaign management with automation and analytics.'
+                title: 'CRM & Marketing',
+                description: 'Complete client relationship management with lead tracking, deal pipeline, and marketing automation.'
               },
               {
                 icon: <Globe className="w-6 h-6 text-green-600" />,
@@ -245,15 +236,27 @@ const LandingPage: React.FC = () => {
                 highlight: true
               },
               {
-                icon: <Package className="w-6 h-6 text-blue-600" />,
+                icon: <DollarSign className="w-6 h-6 text-beacon-orange" />,
+                title: 'Tariff & Duty',
+                description: 'Calculate accurate tariffs, duties, and taxes for cross-border shipments to any country.',
+                highlight: true
+              },
+              {
+                icon: <ShieldCheck className="w-6 h-6 text-purple-600" />,
+                title: 'Compliance',
+                description: 'Ensure trade compliance with restricted party screening and regulatory checks.',
+                highlight: true
+              },
+              {
+                icon: <Truck className="w-6 h-6 text-blue-600" />,
                 title: 'Shipping',
                 description: 'Track shipments, estimate freight costs, and manage logistics across multiple carriers.',
                 highlight: true
               },
               {
-                icon: <FileCheck className="w-6 h-6 text-purple-600" />,
-                title: 'Compliance',
-                description: 'Ensure trade compliance with restricted party screening and regulatory checks.',
+                icon: <Search className="w-6 h-6 text-indigo-600" />,
+                title: 'HS Code Finder',
+                description: 'Find the right HS codes for your products and check FTA eligibility for duty savings.',
                 highlight: true
               },
               {
@@ -303,8 +306,8 @@ const LandingPage: React.FC = () => {
               {
                 step: '01',
                 title: 'Install',
-                description: 'Sign up for B3ACON and install the platform with our guided setup process.',
-                icon: <Zap className="w-6 h-6 text-white" />
+                description: 'Sign up for B3ACON Global Commerce and install the platform with our guided setup process.',
+                icon: <Globe className="w-6 h-6 text-white" />
               },
               {
                 step: '02',
@@ -315,7 +318,7 @@ const LandingPage: React.FC = () => {
               {
                 step: '03',
                 title: 'Grow',
-                description: 'Scale your agency with powerful tools and insights to drive client results.',
+                description: 'Scale your global operations with powerful tools and insights to drive business results.',
                 icon: <TrendingUp className="w-6 h-6 text-white" />
               }
             ].map((step, index) => (
@@ -347,7 +350,7 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 gradient-text">
-              Trusted by Marketing Agencies
+              Trusted by Global Businesses
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               See what our customers have to say about B3ACON.
@@ -357,21 +360,21 @@ const LandingPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                quote: "B3ACON has transformed how we manage our clients. The all-in-one platform saves us countless hours every week.",
+                quote: "B3ACON has transformed how we manage our global trade operations. The all-in-one platform saves us countless hours every week.",
                 author: "Sarah Johnson",
-                role: "CEO, Digital Spark Agency",
+                role: "VP of Global Trade, TechCorp Solutions",
                 image: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               },
               {
-                quote: "The white label features allowed us to offer a client portal under our own brand. Our clients love the transparency.",
+                quote: "The tariff and duty calculator has saved us thousands in unexpected fees. We now have complete visibility into our landed costs.",
                 author: "Michael Chen",
-                role: "Director, Growth Partners",
+                role: "Import Manager, RetailMax Inc",
                 image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               },
               {
-                quote: "The SEO intelligence tools alone are worth the investment. We've seen dramatic improvements in our clients' rankings.",
+                quote: "The compliance screening tools have eliminated our risk of shipping to restricted parties. It's peace of mind for our entire team.",
                 author: "Emily Rodriguez",
-                role: "SEO Manager, Elevate Digital",
+                role: "Compliance Director, Global Logistics Partners",
                 image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               }
             ].map((testimonial, index) => (
@@ -412,12 +415,12 @@ const LandingPage: React.FC = () => {
             {[
               {
                 name: 'Free',
-                price: '$0',
-                description: 'For freelancers and small agencies just getting started',
+                price: '$0/mo',
+                description: 'For small businesses just getting started with global trade',
                 features: [
-                  'Up to 3 clients',
-                  'Basic CRM functionality',
-                  'Limited SEO tools',
+                  'Basic tariff lookup',
+                  'Limited HS code search',
+                  'Simple shipment tracking',
                   'Email support',
                   'Basic reporting'
                 ],
@@ -426,33 +429,33 @@ const LandingPage: React.FC = () => {
               },
               {
                 name: 'Growth',
-                price: '$99',
-                description: 'For growing agencies with established clients',
+                price: '$99/mo',
+                description: 'For growing businesses with regular international shipments',
                 features: [
-                  'Up to 15 clients',
-                  'Full CRM functionality',
-                  'Complete SEO toolkit',
-                  'Email marketing',
-                  'Affiliate tracking',
+                  'Full tariff & duty calculator',
+                  'Landed cost estimator',
+                  'Compliance screening',
+                  'HS code lookup with AI',
+                  'FTA eligibility checker',
                   'Priority support',
-                  'White label options'
+                  'API access'
                 ],
                 cta: 'Start Free Trial',
                 highlighted: true
               },
               {
                 name: 'Agency',
-                price: '$249',
-                description: 'For established agencies with multiple teams',
+                price: '$249/mo',
+                description: 'For enterprises with complex global supply chains',
                 features: [
-                  'Unlimited clients',
-                  'Enterprise CRM',
-                  'Advanced SEO tools',
-                  'Email automation',
-                  'Full affiliate system',
+                  'Unlimited tariff calculations',
+                  'Advanced compliance screening',
+                  'Bulk HS code lookup',
+                  'Freight rate comparison',
+                  'Real-time shipment tracking',
                   'Dedicated account manager',
                   'Custom integrations',
-                  'Full white label'
+                  'Enterprise dashboard'
                 ],
                 cta: 'Start Free Trial',
                 highlighted: false
@@ -474,7 +477,6 @@ const LandingPage: React.FC = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
                 <div className="mb-4">
                   <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                  <span className="text-gray-600">/month</span>
                 </div>
                 <p className="text-gray-600 mb-6">{plan.description}</p>
                 <ul className="space-y-3 mb-8">
@@ -526,15 +528,15 @@ const LandingPage: React.FC = () => {
                   { feature: 'All-in-one platform', b3acon: true, compA: false, compB: false },
                   { feature: 'White label options', b3acon: true, compA: true, compB: false },
                   { feature: 'Client portal', b3acon: true, compA: true, compB: true },
-                  { feature: 'SEO intelligence', b3acon: true, compA: false, compB: true },
-                  { feature: 'Social media management', b3acon: true, compA: true, compB: true },
-                  { feature: 'Email marketing', b3acon: true, compA: false, compB: true },
-                  { feature: 'Landing page builder', b3acon: true, compA: false, compB: false },
-                  { feature: 'Affiliate marketing', b3acon: true, compA: false, compB: false },
+                  { feature: 'Tariff & Duty Calculator', b3acon: true, compA: false, compB: true },
+                  { feature: 'Landed Cost Estimator', b3acon: true, compA: true, compB: false },
+                  { feature: 'Compliance Screening', b3acon: true, compA: false, compB: true },
+                  { feature: 'HS Code Lookup', b3acon: true, compA: false, compB: false },
+                  { feature: 'FTA Eligibility Checker', b3acon: true, compA: false, compB: false },
                   { feature: 'Global Commerce Tools', b3acon: true, compA: false, compB: false },
                   { feature: 'Tariff & Duty Calculator', b3acon: true, compA: false, compB: false },
                   { feature: 'Shipment Tracking', b3acon: true, compA: false, compB: false },
-                  { feature: 'Unlimited clients (Agency)', b3acon: true, compA: false, compB: false },
+                  { feature: 'Unlimited calculations', b3acon: true, compA: false, compB: false },
                   { feature: 'API access', b3acon: true, compA: true, compB: false }
                 ].map((row, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
@@ -635,10 +637,10 @@ const LandingPage: React.FC = () => {
         </div>
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 relative z-10">
-            Ready to transform your agency?
+            Ready to transform your global trade operations?
           </h2>
           <p className="text-xl text-white opacity-90 mb-8 max-w-3xl mx-auto relative z-10">
-            Join thousands of agencies already using B3ACON to scale their operations and deliver better results for their clients.
+            Join thousands of businesses already using B3ACON to streamline their global commerce operations and reduce costs.
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 relative z-10">
             <button 
@@ -670,12 +672,12 @@ const LandingPage: React.FC = () => {
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-gradient-to-r from-signal-blue to-beacon-orange rounded-lg flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
+                  <Globe className="w-6 h-6 text-white" />
                 </div>
                 <span className="text-2xl font-bold">B3ACON</span>
               </div>
               <p className="text-gray-400 mb-6">
-                The complete digital marketing command center for agencies.
+                The complete global commerce command center for businesses.
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -703,7 +705,7 @@ const LandingPage: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Product</h3>
               <ul className="space-y-2">
-                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Features</a></li>
+                <li><a href="#features" className="text-gray-400 hover:text-white transition-colors">Global Commerce Tools</a></li>
                 <li><a href="#pricing" className="text-gray-400 hover:text-white transition-colors">Pricing</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Case Studies</a></li>
                 <li><a href="#testimonials" className="text-gray-400 hover:text-white transition-colors">Reviews</a></li>

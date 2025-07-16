@@ -11,6 +11,14 @@ import EmailMarketing from './EmailMarketing';
 import LandingPageBuilder from './LandingPageBuilder';
 import AdminDashboard from './AdminDashboard';
 import LeadProspectingTool from './LeadProspectingTool';
+import GlobalCommerceHub from './GlobalCommerce/GlobalCommerceHub';
+import TariffCalculator from './GlobalCommerce/TariffCalculator';
+import LandedCostEstimator from './GlobalCommerce/LandedCostEstimator';
+import ComplianceChecker from './GlobalCommerce/ComplianceChecker';
+import FreightEstimator from './GlobalCommerce/FreightEstimator';
+import ShipmentTracker from './GlobalCommerce/ShipmentTracker';
+import HSCodeFinder from './GlobalCommerce/HSCodeFinder';
+import FTAChecker from './GlobalCommerce/FTAChecker';
 
 // This file exports all agency modules for easier imports
 export {
@@ -25,5 +33,13 @@ export {
   EmailMarketing,
   LandingPageBuilder,
   AdminDashboard,
-  LeadProspectingTool
+  LeadProspectingTool,
+  GlobalCommerceHub,
+  TariffCalculator,
+  LandedCostEstimator,
+  ComplianceChecker,
+  FreightEstimator,
+  ShipmentTracker,
+  HSCodeFinder,
+  FTAChecker
 };

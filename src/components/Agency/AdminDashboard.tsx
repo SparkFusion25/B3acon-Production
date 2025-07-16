@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2 } from 'lucide-react';
+import { Shield, Settings, Users, Globe, Layout, Edit, Save, Plus, Trash2, Image, Type } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { toast } from 'react-hot-toast';
 
@@ -7,11 +7,11 @@ const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [landingPageSettings, setLandingPageSettings] = useState<any>({
     headlines: [],
-    main_headline: '',
-    background_image: '',
-    cta_primary: '',
-    cta_secondary: '',
-    cta_tertiary: ''
+    main_headline: 'The Global Commerce Command Center',
+    background_image: 'https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+    cta_primary: 'Start Free Trial',
+    cta_secondary: 'See Plans',
+    cta_tertiary: 'Book Demo'
   });
   const [globalCommerceSettings, setGlobalCommerceSettings] = useState<any>({
     api_keys: {
@@ -23,10 +23,20 @@ const AdminDashboard: React.FC = () => {
       tariff_calculator: 'starter',
       landed_cost: 'pro',
       compliance_checker: 'pro',
-      freight_estimator: 'pro',
+      freight_estimator: 'starter',
       shipment_tracker: 'enterprise',
       hs_code_finder: 'starter',
       fta_checker: 'pro'
+    },
+    landing_visuals: {
+      show_global_trade: true,
+      show_freight_tariff: true,
+      show_hs_code: true,
+      show_shipment_tracking: true,
+      show_ai_marketing: true,
+      typewriter_speed: 100,
+      animation_speed: 'medium',
+      color_scheme: 'blue-orange'
     }
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -186,7 +196,7 @@ const AdminDashboard: React.FC = () => {
           >
             <div className="flex items-center space-x-3 mb-2">
               <Layout className="w-5 h-5 text-blue-600" />
-              <h5 className="font-medium text-blue-900">Landing Page Settings</h5>
+              <h5 className="font-medium text-blue-900">Landing Page Control Panel</h5>
             </div>
             <p className="text-sm text-blue-700">
               Customize the landing page content and appearance
@@ -338,7 +348,7 @@ const AdminDashboard: React.FC = () => {
       
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="font-medium text-gray-900">Typewriter Headlines</h4>
+          <h4 className="font-medium text-gray-900">Typewriter Headlines (Global Commerce Focus)</h4>
           <div className="flex items-center space-x-2">
             <input
               type="text"
@@ -374,6 +384,186 @@ const AdminDashboard: React.FC = () => {
               No headlines added yet. Add some headlines for the typewriter effect.
             </div>
           )}
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+        <h4 className="font-medium text-gray-900 mb-4">Featured Sections Visibility</h4>
+        
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <h5 className="font-medium text-gray-900">Global Trade Intelligence</h5>
+              <p className="text-sm text-gray-600">Show global trade feature card</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={globalCommerceSettings.landing_visuals?.show_global_trade !== false}
+                onChange={() => setGlobalCommerceSettings({
+                  ...globalCommerceSettings,
+                  landing_visuals: {
+                    ...globalCommerceSettings.landing_visuals,
+                    show_global_trade: !globalCommerceSettings.landing_visuals?.show_global_trade
+                  }
+                })}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-signal-blue"></div>
+            </label>
+          </div>
+          
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <h5 className="font-medium text-gray-900">Freight & Tariff Tools</h5>
+              <p className="text-sm text-gray-600">Show freight and tariff feature card</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={globalCommerceSettings.landing_visuals?.show_freight_tariff !== false}
+                onChange={() => setGlobalCommerceSettings({
+                  ...globalCommerceSettings,
+                  landing_visuals: {
+                    ...globalCommerceSettings.landing_visuals,
+                    show_freight_tariff: !globalCommerceSettings.landing_visuals?.show_freight_tariff
+                  }
+                })}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-signal-blue"></div>
+            </label>
+          </div>
+          
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <h5 className="font-medium text-gray-900">HS Code Lookup + FTA Matching</h5>
+              <p className="text-sm text-gray-600">Show HS code and FTA feature card</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={globalCommerceSettings.landing_visuals?.show_hs_code !== false}
+                onChange={() => setGlobalCommerceSettings({
+                  ...globalCommerceSettings,
+                  landing_visuals: {
+                    ...globalCommerceSettings.landing_visuals,
+                    show_hs_code: !globalCommerceSettings.landing_visuals?.show_hs_code
+                  }
+                })}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-signal-blue"></div>
+            </label>
+          </div>
+          
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <h5 className="font-medium text-gray-900">Shipment Tracking</h5>
+              <p className="text-sm text-gray-600">Show shipment tracking feature card</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={globalCommerceSettings.landing_visuals?.show_shipment_tracking !== false}
+                onChange={() => setGlobalCommerceSettings({
+                  ...globalCommerceSettings,
+                  landing_visuals: {
+                    ...globalCommerceSettings.landing_visuals,
+                    show_shipment_tracking: !globalCommerceSettings.landing_visuals?.show_shipment_tracking
+                  }
+                })}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-signal-blue"></div>
+            </label>
+          </div>
+          
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+              <h5 className="font-medium text-gray-900">AI-powered Marketing + CRM</h5>
+              <p className="text-sm text-gray-600">Show AI marketing feature card</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                className="sr-only peer" 
+                checked={globalCommerceSettings.landing_visuals?.show_ai_marketing !== false}
+                onChange={() => setGlobalCommerceSettings({
+                  ...globalCommerceSettings,
+                  landing_visuals: {
+                    ...globalCommerceSettings.landing_visuals,
+                    show_ai_marketing: !globalCommerceSettings.landing_visuals?.show_ai_marketing
+                  }
+                })}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-signal-blue"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+        <h4 className="font-medium text-gray-900 mb-4">Visual Settings</h4>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Animation Speed</label>
+            <select
+              value={globalCommerceSettings.landing_visuals?.animation_speed || 'medium'}
+              onChange={(e) => setGlobalCommerceSettings({
+                ...globalCommerceSettings,
+                landing_visuals: {
+                  ...globalCommerceSettings.landing_visuals,
+                  animation_speed: e.target.value
+                }
+              })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+            >
+              <option value="slow">Slow</option>
+              <option value="medium">Medium</option>
+              <option value="fast">Fast</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Typewriter Speed (ms)</label>
+            <input
+              type="number"
+              value={globalCommerceSettings.landing_visuals?.typewriter_speed || 100}
+              onChange={(e) => setGlobalCommerceSettings({
+                ...globalCommerceSettings,
+                landing_visuals: {
+                  ...globalCommerceSettings.landing_visuals,
+                  typewriter_speed: parseInt(e.target.value)
+                }
+              })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+              min="50"
+              max="500"
+              step="10"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Color Scheme</label>
+            <select
+              value={globalCommerceSettings.landing_visuals?.color_scheme || 'blue-orange'}
+              onChange={(e) => setGlobalCommerceSettings({
+                ...globalCommerceSettings,
+                landing_visuals: {
+                  ...globalCommerceSettings.landing_visuals,
+                  color_scheme: e.target.value
+                }
+              })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+            >
+              <option value="blue-orange">Blue-Orange (Default)</option>
+              <option value="purple-pink">Purple-Pink</option>
+              <option value="green-blue">Green-Blue</option>
+              <option value="red-orange">Red-Orange</option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -482,7 +672,7 @@ const AdminDashboard: React.FC = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: Shield },
-    { id: 'landing', label: 'Landing Page', icon: Layout },
+    { id: 'landing', label: 'Landing Page Control', icon: Layout },
     { id: 'commerce', label: 'Global Commerce', icon: Globe },
     { id: 'users', label: 'User Management', icon: Users },
     { id: 'settings', label: 'System Settings', icon: Settings }
