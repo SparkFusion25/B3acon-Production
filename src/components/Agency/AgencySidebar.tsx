@@ -27,7 +27,9 @@ import {
   DollarSign,
   ShieldCheck,
   Ship,
-  Store
+  Store,
+  BookOpen,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -75,6 +77,8 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     { id: 'email', label: 'Email Marketing', icon: Mail, gradient: 'from-beacon-orange to-red-500' },
     { id: 'prospecting', label: 'Lead Prospecting', icon: Briefcase, gradient: 'from-green-500 to-teal-500' },
     { id: 'landing', label: 'Landing Pages', icon: Layout, gradient: 'from-signal-blue to-purple-600' },
+    { id: 'blog-management', label: 'Blog Management', icon: BookOpen, gradient: 'from-emerald-500 to-teal-500' },
+    { id: 'contact-management', label: 'Contact Management', icon: MessageSquare, gradient: 'from-blue-500 to-cyan-500' },
     { id: 'whitelabel', label: 'White Label', icon: Building, gradient: 'from-signal-blue to-beacon-orange', premium: true },
     { id: 'admin', label: 'Admin Dashboard', icon: Shield, gradient: 'from-purple-500 to-pink-500' },
     { id: 'billing', label: 'Billing Overview', icon: CreditCard, gradient: 'from-beacon-orange to-red-500' },
