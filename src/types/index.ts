@@ -144,6 +144,7 @@ export interface User {
   updated_at: string;
   last_login?: string;
   avatar?: string;
+  company?: string;
 }
 
 export interface SubscriptionPlan {

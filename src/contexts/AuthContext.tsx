@@ -15,6 +15,7 @@ interface User {
   avatar?: string;
   subscription?: 'starter' | 'growth' | 'pro';
   addOns?: string[];
+  company?: string;
 }
 
 interface AuthContextType {
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [userType, setUserType] = useState<'agency' | 'client'>('agency');
   const [currentClientId, setCurrentClientId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Use useRef to store timeout IDs for proper cleanup
   const timeoutRefs = useRef<Set<number>>(new Set());
