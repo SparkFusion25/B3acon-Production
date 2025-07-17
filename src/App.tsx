@@ -14,6 +14,9 @@ import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
+import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
+import PremiumDashboard from './components/Premium/PremiumDashboard';
+import CRMDealsPage from './components/Premium/CRMDealsPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,9 +41,13 @@ const AppRoutes: React.FC = () => {
        <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
        <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
       
-      {/* Public Auth Routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<LoginPage initialMode="signup" />} />
+              {/* Premium Auth Routes */}
+        <Route path="/login" element={<PremiumLoginForm />} />
+        <Route path="/signup" element={<PremiumSignupForm />} />
+        
+        {/* Legacy Auth Routes */}
+        <Route path="/auth/legacy-login" element={<LoginPage />} />
+        <Route path="/auth/legacy-signup" element={<LoginPage initialMode="signup" />} />
       <Route path="/plans" element={<PlanSelectionPage viewOnly={!isAuthenticated} />} />
 
       {/* Conditional Routing Based on Authentication */}
@@ -57,8 +64,27 @@ const AppRoutes: React.FC = () => {
               </ProtectedRoute>
             } 
           />
+          {/* Premium Dashboard Routes */}
           <Route 
             path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <PremiumDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard/crm/deals" 
+            element={
+              <ProtectedRoute>
+                <CRMDealsPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Legacy Dashboard Routes */}
+          <Route 
+            path="/dashboard/legacy" 
             element={
               <ProtectedRoute>
                 {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}

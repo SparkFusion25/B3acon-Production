@@ -4,6 +4,9 @@
 /* Import Premium Design System */
 @import './styles/premium-design-system.css';
 
+/* Import B3ACON Premium Design System */
+@import './styles/premium-b3acon-design-system.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
