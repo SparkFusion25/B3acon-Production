@@ -65,7 +65,7 @@ const EmailMarketing: React.FC = () => {
       setCampaignForm({
         name: `Copy of ${campaignToDuplicate.name}`,
         subject: campaignToDuplicate.subject,
-        preview_text: campaignToDuplicate.preview_text || '',
+        preview_text: (campaignToDuplicate as any).preview_text || '',
         template_id: '',
         list_ids: [],
         scheduled_at: '',

@@ -23,6 +23,7 @@ interface AuthContextType {
   user: User | null;
   userType: 'agency' | 'client';
   currentClientId: string | null;
+  isLoading: boolean;
   login: (email: string, password: string, type: 'agency' | 'client') => Promise<void>;
   signup: (email: string, password: string, name: string, company: string, type: 'agency' | 'client') => Promise<void>;
   loginWithSocial: (provider: SocialProvider, type: 'agency' | 'client') => Promise<void>;
@@ -349,6 +350,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     user,
     userType,
     currentClientId,
+    isLoading,
     login,
     signup,
     loginWithSocial,

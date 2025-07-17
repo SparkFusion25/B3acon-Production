@@ -56,6 +56,9 @@ const AdminDashboard: React.FC = () => {
       setIsLoading(true);
       try {
         // Get landing page settings
+        if (!supabase) {
+          throw new Error('Supabase not configured');
+        }
         const { data: landingData, error: landingError } = await supabase
           .from('admin_settings')
           .select('value')
@@ -93,6 +96,9 @@ const AdminDashboard: React.FC = () => {
   const handleSaveLandingSettings = async () => {
     setIsSaving(true);
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
       const { error } = await supabase
         .from('admin_settings')
         .update({ value: landingPageSettings })
@@ -114,6 +120,9 @@ const AdminDashboard: React.FC = () => {
   const handleSaveCommerceSettings = async () => {
     setIsSaving(true);
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
       const { error } = await supabase
         .from('admin_settings')
         .update({ value: globalCommerceSettings })

@@ -78,7 +78,7 @@ const AgencyDashboard: React.FC = () => {
       case 'billing':
         return <BillingOverview billing={mockAgencyData.billing} />;
       case 'analytics':
-        return <PerformanceAnalytics analytics={mockAgencyData.analytics} />;
+        return <PerformanceAnalytics />;
       case 'admin':
         return <AdminDashboard />;
       case 'prospecting':

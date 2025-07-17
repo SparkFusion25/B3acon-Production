@@ -227,5 +227,9 @@ export const mockAgencyData = {
     projectCompletionRate: 87,
     revenueGrowth: 18.5,
     clientRetention: 96
-  }
+  },
+  leads: [],
+  affiliates: [],
+  emailCampaigns: [],
+  landingPages: []
 };
