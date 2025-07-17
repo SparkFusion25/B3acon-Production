@@ -25,7 +25,8 @@ import {
   FileCheck,
   Package,
   DollarSign,
-  ShieldCheck
+  ShieldCheck,
+  Ship
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -61,6 +62,7 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     { id: 'compliance', label: 'Compliance Checker', icon: ShieldCheck, gradient: 'from-red-500 to-pink-500', premium: true },
     { id: 'shipping', label: 'Shipping Tools', icon: Truck, gradient: 'from-amber-500 to-orange-500', premium: true },
     { id: 'hs-codes', label: 'HS Code Lookup', icon: Search, gradient: 'from-purple-500 to-indigo-500', premium: true },
+    { id: 'ocean-freight', label: 'Ocean Freight Portal', icon: Ship, gradient: 'from-blue-600 to-indigo-600', premium: true },
     { id: 'google', label: 'Google Services', icon: Search, gradient: 'from-beacon-orange to-red-500' },
     { id: 'seo', label: 'SEO Intelligence', icon: TrendingUp, gradient: 'from-signal-blue to-cyan-500' },
     { id: 'social', label: 'Social Media Center', icon: MessageCircle, gradient: 'from-beacon-orange to-pink-500' },

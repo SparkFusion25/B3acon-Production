@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import TariffCalculatorWidget from './TariffCalculatorWidget';
 
 const LandingPage: React.FC = () => {
   return (
@@ -42,12 +43,15 @@ const LandingPage: React.FC = () => {
             </form>
             <p className="demo-text">
               Demo Credentials:<br />
-              Client: <code>john@techcorp.com / password</code>
+              Client: <code>john@techcorp.com / ClientPass456!</code>
             </p>
             <a href="/forgot-password" className="link">Forgot password?</a>
           </div>
         </div>
       </div>
+      
+      {/* Tariff Calculator Widget */}
+      <TariffCalculatorWidget />
 
       <footer className="footer">
         <div className="footer-content">
