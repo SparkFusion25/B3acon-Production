@@ -1,0 +1,156 @@
+{
+  "name": "B3ACON SEO Optimizer",
+  "handle": "b3acon-seo-optimizer",
+  "version": "1.0.0",
+  "author": "B3ACON Technologies",
+  "description": "Smart image optimization and enterprise-grade SEO analytics for Shopify stores. Boost your search rankings and page speed with AI-powered optimization tools.",
+  "app_url": "https://b3acon.com/shopify",
+  "embedded": true,
+  "pos": false,
+  "proxy_url": "https://api.b3acon.com/shopify",
+  "application_url": "https://app.b3acon.com/shopify",
+  "icon": {
+    "small": "https://cdn.b3acon.com/icons/shopify-app-icon-64.png",
+    "large": "https://cdn.b3acon.com/icons/shopify-app-icon-512.png"
+  },
+  "pricing": [
+    {
+      "name": "Starter",
+      "price": 29.99,
+      "interval": "monthly",
+      "trial_days": 14,
+      "features": [
+        "Basic image optimization (up to 100 images/month)",
+        "Essential SEO analysis",
+        "Core Web Vitals monitoring",
+        "Basic keyword tracking (25 keywords)",
+        "Email support"
+      ]
+    },
+    {
+      "name": "Professional",
+      "price": 79.99,
+      "interval": "monthly",
+      "trial_days": 14,
+      "features": [
+        "Advanced image optimization (up to 1,000 images/month)",
+        "Comprehensive SEO analysis",
+        "Competitor analysis",
+        "Advanced keyword tracking (200 keywords)",
+        "Priority support",
+        "Custom reporting"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "price": 199.99,
+      "interval": "monthly",
+      "trial_days": 30,
+      "features": [
+        "Unlimited image optimization",
+        "Full SEO suite with white-label options",
+        "Advanced competitor intelligence",
+        "Unlimited keyword tracking",
+        "Dedicated account manager",
+        "API access",
+        "Custom integrations"
+      ]
+    }
+  ],
+  "required_permissions": [
+    "read_products",
+    "write_products",
+    "read_content",
+    "write_content",
+    "read_themes",
+    "write_themes",
+    "read_files",
+    "write_files",
+    "read_reports",
+    "read_analytics",
+    "read_online_store_pages",
+    "write_online_store_pages"
+  ],
+  "optional_permissions": [
+    "read_customers",
+    "read_orders",
+    "read_marketing_events",
+    "write_marketing_events"
+  ],
+  "webhooks": [
+    {
+      "topic": "products/create",
+      "address": "https://api.b3acon.com/webhooks/shopify/products/create"
+    },
+    {
+      "topic": "products/update",
+      "address": "https://api.b3acon.com/webhooks/shopify/products/update"
+    },
+    {
+      "topic": "themes/publish",
+      "address": "https://api.b3acon.com/webhooks/shopify/themes/publish"
+    },
+    {
+      "topic": "app/uninstalled",
+      "address": "https://api.b3acon.com/webhooks/shopify/app/uninstalled"
+    }
+  ],
+  "app_store_listing": {
+    "category": "Store optimization",
+    "subcategory": "SEO & Marketing",
+    "tags": [
+      "SEO",
+      "Image Optimization",
+      "Page Speed",
+      "Analytics",
+      "Marketing",
+      "Conversion Optimization",
+      "Core Web Vitals",
+      "Search Rankings"
+    ],
+    "features": [
+      "Smart image compression with up to 75% file size reduction",
+      "AI-powered alt text generation for better SEO",
+      "Comprehensive SEO analysis and scoring",
+      "Real-time keyword ranking tracking",
+      "Competitor analysis and insights",
+      "Core Web Vitals monitoring",
+      "Technical SEO audit and recommendations",
+      "Automated optimization suggestions",
+      "Performance analytics dashboard",
+      "White-label reporting options"
+    ],
+    "benefits": [
+      "Improve search engine rankings",
+      "Increase page load speed",
+      "Boost conversion rates",
+      "Reduce bounce rates",
+      "Save development time",
+      "Professional SEO insights",
+      "Competitive intelligence",
+      "Data-driven optimization"
+    ],
+    "screenshots": [
+      "https://cdn.b3acon.com/screenshots/shopify-dashboard.png",
+      "https://cdn.b3acon.com/screenshots/image-optimization.png",
+      "https://cdn.b3acon.com/screenshots/seo-analysis.png",
+      "https://cdn.b3acon.com/screenshots/keyword-tracking.png",
+      "https://cdn.b3acon.com/screenshots/competitor-analysis.png"
+    ],
+    "video_url": "https://cdn.b3acon.com/videos/shopify-app-demo.mp4"
+  },
+  "gdpr_compliance": {
+    "data_collection": true,
+    "data_processing": true,
+    "data_retention_days": 730,
+    "customer_data_request": "https://b3acon.com/gdpr/data-request",
+    "customer_redact": "https://api.b3acon.com/webhooks/shopify/customers/redact",
+    "shop_redact": "https://api.b3acon.com/webhooks/shopify/shop/redact"
+  },
+  "security": {
+    "uses_https": true,
+    "encrypted_data": true,
+    "pci_compliant": true,
+    "soc2_compliant": true
+  }
+}

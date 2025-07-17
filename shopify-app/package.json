@@ -1,0 +1,154 @@
+{
+  "name": "b3acon-shopify-app",
+  "version": "1.0.0",
+  "description": "B3ACON SEO Optimizer - Smart image optimization and enterprise-grade SEO analytics for Shopify stores",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon server/index.js",
+    "dev:client": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "deploy": "npm run build && npm run start",
+    "shopify:generate": "shopify app generate",
+    "shopify:deploy": "shopify app deploy",
+    "shopify:dev": "shopify app dev"
+  },
+  "keywords": [
+    "shopify",
+    "app",
+    "seo",
+    "image-optimization",
+    "ecommerce",
+    "b3acon",
+    "optimization",
+    "analytics"
+  ],
+  "author": "B3ACON Technologies",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/b3acon/shopify-app.git"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^8.1.1",
+    "@shopify/app-bridge": "^3.7.9",
+    "@shopify/app-bridge-react": "^3.7.9",
+    "@shopify/polaris": "^11.27.0",
+    "@shopify/polaris-icons": "^7.10.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "compression": "^1.7.4",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.3",
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
+    "lucide-react": "^0.294.0",
+    "tailwindcss": "^3.3.6",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "crypto-js": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.1",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@types/node": "^20.10.4",
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/compression": "^1.7.5",
+    "@types/multer": "^1.4.11",
+    "@types/crypto-js": "^4.2.1",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "@shopify/cli": "^3.51.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "testMatch": ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"]
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "@typescript-eslint/recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "react-refresh"],
+    "rules": {
+      "react-refresh/only-export-components": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "react/react-in-jsx-scope": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  },
+  "shopify": {
+    "app_type": "public",
+    "organization_id": "your-partner-org-id",
+    "application_url": "https://your-domain.com",
+    "embedded": true,
+    "pos": false,
+    "webhook_endpoints": [
+      {
+        "uri": "/webhooks/app/uninstalled",
+        "topic": "app/uninstalled"
+      },
+      {
+        "uri": "/webhooks/products/create",
+        "topic": "products/create"
+      },
+      {
+        "uri": "/webhooks/products/update",
+        "topic": "products/update"
+      },
+      {
+        "uri": "/webhooks/themes/publish",
+        "topic": "themes/publish"
+      }
+    ]
+  }
+}
