@@ -1,6 +1,9 @@
 /* Import B3ACON Shopify App Styles */
 @import './styles/shopify-app.css';
 
+/* Import Premium Design System */
+@import './styles/premium-design-system.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

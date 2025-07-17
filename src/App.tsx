@@ -11,6 +11,9 @@ import ShopifyLanding from './components/Shopify/ShopifyLanding';
 import ShopifyDashboard from './components/Shopify/ShopifyDashboard';
 import ShopifyInstallation from './components/Shopify/ShopifyInstallation';
 import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
+import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
+import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
+import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -25,10 +28,15 @@ const AppRoutes: React.FC = () => {
   return (
     <Routes>
       {/* Public Shopify App Routes - Always Available */}
-      <Route path="/shopify" element={<ShopifyLanding />} />
-      <Route path="/shopify/install" element={<ShopifyInstallation />} />
-      <Route path="/shopify/dashboard" element={<ShopifyDashboard />} />
+      <Route path="/shopify" element={<PremiumShopifyLanding />} />
+      <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
+      <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+      
+             {/* Legacy Routes for Testing */}
+       <Route path="/shopify/legacy" element={<ShopifyLanding />} />
+       <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
+       <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
       
       {/* Public Auth Routes */}
       <Route path="/login" element={<LoginPage />} />
