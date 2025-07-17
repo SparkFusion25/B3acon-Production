@@ -4,7 +4,6 @@ import {
   Sparkles, 
   Mail, 
   Megaphone, 
-  Search, 
   Star, 
   Settings,
   BarChart3,
@@ -21,7 +20,6 @@ const ShopifyIntegration = () => {
     { id: 'ai-popups', label: 'AI Popups', icon: Sparkles },
     { id: 'email-integration', label: 'Email Capture', icon: Mail },
     { id: 'announcements', label: 'Announcements', icon: Megaphone },
-    { id: 'prospecting', label: 'Store Prospecting', icon: Search },
     { id: 'reviews', label: 'Review Management', icon: Star },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -48,13 +46,6 @@ const ShopifyIntegration = () => {
       icon: Megaphone,
       color: 'bg-orange-500',
       stats: { announcements: 5, engagement: '12.3%', clicks: 892 }
-    },
-    {
-      title: 'Store Prospecting',
-      description: 'Find and analyze Shopify competitors with AI-powered insights',
-      icon: Search,
-      color: 'bg-green-500',
-      stats: { stores: 156, leads: 47, contacted: 23 }
     }
   ];
 
@@ -142,14 +133,6 @@ const ShopifyIntegration = () => {
                 >
                   <Megaphone className="w-8 h-8 text-orange-500 mb-2" />
                   <p className="font-medium text-gray-900">Create Announcement</p>
-                </button>
-                
-                <button 
-                  onClick={() => setActiveTab('prospecting')}
-                  className="p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 transition-colors"
-                >
-                  <Search className="w-8 h-8 text-green-500 mb-2" />
-                  <p className="font-medium text-gray-900">Find Competitors</p>
                 </button>
               </div>
             </div>
