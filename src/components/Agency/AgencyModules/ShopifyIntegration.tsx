@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket, Target, Eye, Zap, Globe } from 'lucide-react';
+import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket, Target, Eye, Zap, Globe, MessageCircle, Megaphone, Mail, Star } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import amazonApi from '../../../lib/amazonApi';
 import { serpApiService } from '../../../lib/serpApiService';
+import AiPopupGenerator from './ShopifyEnhancements/AiPopupGenerator';
+import AnnouncementManager from './ShopifyEnhancements/AnnouncementManager';
+import EmailIntegration from './ShopifyEnhancements/EmailIntegration';
 
 const ShopifyIntegration: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -1100,6 +1103,11 @@ const ShopifyIntegration: React.FC = () => {
     { id: 'competitor-analysis', label: 'Competitor Analysis', icon: Target },
     { id: 'trend-analysis', label: 'Trend Analysis', icon: TrendingUp },
     { id: 'amazon', label: 'Amazon', icon: ShoppingBasket },
+    { id: 'ai-popups', label: 'AI Popups', icon: MessageCircle },
+    { id: 'announcements', label: 'Announcements', icon: Megaphone },
+    { id: 'email-integration', label: 'Email Forms', icon: Mail },
+    { id: 'review-management', label: 'Reviews', icon: Star },
+    { id: 'shopify-prospecting', label: 'Store Prospecting', icon: Users },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 }
   ];
 
@@ -1141,6 +1149,23 @@ const ShopifyIntegration: React.FC = () => {
         {activeTab === 'competitor-analysis' && renderCompetitorAnalysis()}
         {activeTab === 'trend-analysis' && renderTrendAnalysis()}
         {activeTab === 'amazon' && renderAmazon()}
+        {activeTab === 'ai-popups' && <AiPopupGenerator />}
+        {activeTab === 'announcements' && <AnnouncementManager />}
+        {activeTab === 'email-integration' && <EmailIntegration />}
+        {activeTab === 'review-management' && (
+          <div className="text-center py-12">
+            <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Review Management</h3>
+            <p className="text-gray-600">Universal review management across Google, Amazon, and Shopify coming soon</p>
+          </div>
+        )}
+        {activeTab === 'shopify-prospecting' && (
+          <div className="text-center py-12">
+            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Shopify Store Prospecting</h3>
+            <p className="text-gray-600">Find and analyze potential Shopify store clients for your marketing services</p>
+          </div>
+        )}
         {activeTab === 'analytics' && renderAnalytics()}
       </div>
     </div>
