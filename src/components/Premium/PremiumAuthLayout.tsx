@@ -16,6 +16,72 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import '../../styles/premium-b3acon-design-system.css';
+import '../../styles/auth-layout.css';
+
+// Demo Login Component
+const DemoLoginButton: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleDemoLogin = async () => {
+    try {
+      setLoading(true);
+      
+      // Auto-fill demo credentials
+      const demoCredentials = {
+        email: 'demo@b3acon.com',
+        password: 'demo123456'
+      };
+      
+      // Simulate login process
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // In a real app, you would create the demo account if it doesn't exist
+      // and handle the authentication with your backend
+      
+      // For now, redirect to dashboard
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Demo login failed:', error);
+      alert('Demo login temporarily unavailable. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div className="mt-4">
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-white/20" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-transparent text-gray-400">Or</span>
+        </div>
+      </div>
+      
+      <button
+        onClick={handleDemoLogin}
+        disabled={loading}
+        className="mt-4 w-full bg-white/10 text-white py-3 px-4 rounded-xl font-medium hover:bg-white/20 focus:ring-2 focus:ring-white/50 focus:ring-offset-2 transition-all border border-white/20 disabled:opacity-50"
+      >
+        {loading ? (
+          <div className="flex items-center justify-center space-x-2">
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            <span>Setting up demo...</span>
+          </div>
+        ) : (
+          <span>🚀 Try Demo Account (Full Access)</span>
+        )}
+      </button>
+      
+      <div className="mt-2 text-center">
+        <p className="text-xs text-gray-500">
+          Demo account includes sample data and full feature access
+        </p>
+      </div>
+    </div>
+  );
+};
 
 interface FeatureHighlightProps {
   icon: string;
@@ -84,7 +150,7 @@ const PremiumInput: React.FC<PremiumInputProps> = ({
           onChange={onChange}
           placeholder={placeholder}
           className={`
-            input-glass pl-10 pr-${type === 'password' ? '10' : '4'} py-3
+            w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all pl-10 pr-${type === 'password' ? '10' : '4'}
             ${error ? 'border-red-500' : success ? 'border-emerald-500' : ''}
           `}
         />
@@ -170,61 +236,53 @@ const PremiumAuthLayout: React.FC<PremiumAuthLayoutProps> = ({ children, type = 
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-auth relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-      </div>
-      
-      {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-      
-      <div className="relative z-10 flex min-h-screen">
-        {/* Left Side - Branding & Features */}
-        <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-16">
-          <div className="max-w-lg">
-            {/* Logo */}
-            <div className={`mb-12 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-                  <Zap className="w-7 h-7 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900">
+      {/* CENTERED CONTAINER */}
+      <div className="flex items-center justify-center min-h-screen px-4">
+        <div className="w-full max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            {/* LEFT SIDE - Branding (EQUAL WIDTH) */}
+            <div className="flex flex-col justify-center p-8 lg:p-12">
+              <div className="max-w-lg mx-auto lg:mx-0">
+                          {/* Logo */}
+                <div className="mb-8">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-xl">⚡</span>
+                    </div>
+                    <h1 className="text-3xl font-bold text-white">B3ACON</h1>
+                  </div>
+                  <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
                 </div>
-                <h1 className="text-4xl font-bold text-white">B3ACON</h1>
-              </div>
-              <div className="w-16 h-1 bg-gradient-primary rounded-full"></div>
-            </div>
             
-            {/* Value Proposition */}
-            <div className={`mb-12 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <h2 className="text-3xl font-bold text-white mb-6 leading-tight">
-                The Complete Business Intelligence Platform
-              </h2>
-              <p className="text-xl text-gray-300 leading-relaxed">
-                Unify your CRM, marketing automation, SEO tools, and business analytics 
-                in one powerful platform trusted by <span className="font-semibold text-emerald-400">10,000+</span> businesses.
-              </p>
-            </div>
-            
-            {/* Feature Highlights */}
-            <div className={`space-y-6 transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <FeatureHighlight 
-                icon="🚀" 
-                title="247% Average Revenue Growth"
-                description="Our clients see massive growth within 90 days"
-              />
-              <FeatureHighlight 
-                icon="⚡" 
-                title="All-in-One Platform"
-                description="Replace 15+ tools with one unified solution"
-              />
-              <FeatureHighlight 
-                icon="🔒" 
-                title="Enterprise Security"
-                description="Bank-grade security with SOC 2 compliance"
-              />
-            </div>
+                {/* Value Proposition */}
+                <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">
+                  The Complete Business Intelligence Platform
+                </h2>
+                <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+                  Unify your CRM, marketing automation, SEO tools, and business analytics 
+                  in one powerful platform trusted by <span className="text-emerald-400 font-semibold">10,000+</span> businesses.
+                </p>
+                
+                {/* Feature Highlights */}
+                <div className="space-y-4">
+                  <FeatureHighlight 
+                    icon="🚀" 
+                    title="247% Average Revenue Growth"
+                    description="Our clients see massive growth within 90 days"
+                  />
+                  <FeatureHighlight 
+                    icon="⚡" 
+                    title="All-in-One Platform"
+                    description="Replace 15+ tools with one unified solution"
+                  />
+                  <FeatureHighlight 
+                    icon="🔒" 
+                    title="Enterprise Security"
+                    description="Bank-grade security with SOC 2 compliance"
+                  />
+                </div>
             
             {/* Stats */}
             <div className={`mt-12 grid grid-cols-3 gap-6 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -244,29 +302,23 @@ const PremiumAuthLayout: React.FC<PremiumAuthLayoutProps> = ({ children, type = 
           </div>
         </div>
         
-        {/* Right Side - Auth Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-          <div className="w-full max-w-md">
-            {/* Glass Card */}
-            <div className={`card-glass-dark p-8 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              {children}
-            </div>
+            {/* RIGHT SIDE - Auth Form (EQUAL WIDTH) */}
+            <div className="flex items-center justify-center p-8 lg:p-12">
+              <div className="w-full max-w-md">
+                {/* Glass Card with CONSISTENT SIZING */}
+                <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8 shadow-2xl">
+                  {children}
+                </div>
             
-            {/* Social Proof */}
-            <div className={`mt-8 text-center transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <p className="text-gray-400 text-sm mb-4">Trusted by industry leaders</p>
-              <div className="flex justify-center space-x-6 opacity-60">
-                <CompanyLogo name="techstars" />
-                <CompanyLogo name="y combinator" />
-                <CompanyLogo name="forbes" />
-              </div>
-              <div className="flex items-center justify-center space-x-1 mt-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                ))}
-                <span className="ml-2 text-gray-400 text-sm">4.9/5 from 2,847 reviews</span>
-              </div>
-            </div>
+                {/* Social Proof */}
+                <div className="mt-6 text-center">
+                  <p className="text-gray-400 text-sm mb-3">Trusted by industry leaders</p>
+                  <div className="flex justify-center space-x-4 opacity-60">
+                    <div className="text-white text-xs font-medium px-3 py-1 bg-white/10 rounded">TechStars</div>
+                    <div className="text-white text-xs font-medium px-3 py-1 bg-white/10 rounded">Y Combinator</div>
+                    <div className="text-white text-xs font-medium px-3 py-1 bg-white/10 rounded">Forbes</div>
+                  </div>
+                </div>
           </div>
         </div>
       </div>
@@ -370,6 +422,9 @@ export const PremiumLoginForm: React.FC = () => {
           </p>
         </div>
       </form>
+      
+      {/* Demo Login Button */}
+      <DemoLoginButton />
     </PremiumAuthLayout>
   );
 };

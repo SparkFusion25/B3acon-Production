@@ -195,10 +195,9 @@ const PremiumShopifyLanding = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative z-10 pt-20 pb-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
+      {/* Hero Section - PROPERLY CENTERED */}
+      <section className="relative z-10 flex items-center justify-center min-h-screen">
+        <div className="max-w-6xl mx-auto px-4 text-center">
             {/* Badge */}
             <div className={`inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-indigo-200 mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
               <Award className="w-5 h-5 text-indigo-600" />

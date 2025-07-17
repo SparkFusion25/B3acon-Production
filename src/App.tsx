@@ -17,6 +17,7 @@ import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInsta
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
+import SEOAnalysisPage from './components/Shopify/pages/SEOAnalysisPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -35,6 +36,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+      
+      {/* Shopify Feature Pages */}
+      <Route path="/shopify/seo/analysis" element={<SEOAnalysisPage />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />

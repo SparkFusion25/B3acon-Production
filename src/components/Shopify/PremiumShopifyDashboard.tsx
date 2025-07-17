@@ -21,6 +21,7 @@ import {
   Download,
   Sparkles
 } from 'lucide-react';
+import ShopifyAppLayout from './ShopifyAppLayout';
 import '../../styles/premium-design-system.css';
 
 interface MetricData {
@@ -205,48 +206,8 @@ const PremiumShopifyDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
-      {/* Top Navigation */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold text-gray-900">B3ACON</span>
-              </div>
-              
-              <div className="hidden md:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <Bell className="w-6 h-6" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </button>
-              
-              <div className="flex items-center space-x-3 cursor-pointer group">
-                <div className="text-right hidden sm:block">
-                  <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Sarah Chen</div>
-                  <div className="text-xs text-gray-500">Store Owner</div>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <ShopifyAppLayout storeName="techstore.myshopify.com" isConnected={true}>
+      <div className="space-y-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -425,7 +386,7 @@ const PremiumShopifyDashboard = () => {
           </div>
         </div>
       </div>
-    </div>
+    </ShopifyAppLayout>
   );
 };
 
