@@ -21,7 +21,8 @@
     "react-hot-toast": "^2.5.2",
     "react-is": "^19.1.0",
     "react-router-dom": "^7.6.3",
-    "recharts": "^3.1.0"
+    "recharts": "^3.1.0",
+    "serpapi": "^2.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.45",
