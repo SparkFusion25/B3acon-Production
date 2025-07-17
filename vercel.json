@@ -1,10 +1,11 @@
 {
-  "buildCommand": "vite build",
+  "buildCommand": "npm run build",
   "framework": "vite",
-  "installCommand": "npm install",
+  "installCommand": "rm -rf node_modules package-lock.json && npm install",
   "env": {
     "CI": "false",
     "DISABLE_ESLINT_PLUGIN": "true",
-    "SKIP_PREFLIGHT_CHECK": "true"
+    "SKIP_PREFLIGHT_CHECK": "true",
+    "npm_config_optional": "false"
   }
 }
