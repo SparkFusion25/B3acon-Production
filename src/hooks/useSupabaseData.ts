@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { dbHelpers } from '../lib/supabase';
 import { mockAgencyData } from '../data/mockAgencyData';
+import { SupabaseDataResponse, Client, Lead, Affiliate, EmailCampaign, LandingPage } from '../types';
 
 // Custom hook for loading data from Supabase
 export const useSupabaseData = () => {
-  const [data, setData] = useState({
-    clients: [] as any[],
-    leads: [] as any[],
-    affiliates: [] as any[],
-    emailCampaigns: [] as any[],
-    landingPages: [] as any[]
+  const [data, setData] = useState<SupabaseDataResponse>({
+    clients: [] as Client[],
+    leads: [] as Lead[],
+    affiliates: [] as Affiliate[],
+    emailCampaigns: [] as EmailCampaign[],
+    landingPages: [] as LandingPage[]
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -91,11 +92,11 @@ export const useSupabaseData = () => {
         const [clientsResult, leadsResult, affiliatesResult, emailCampaignsResult, landingPagesResult] = results;
 
         setData({
-          clients: clientsResult.status === 'fulfilled' ? clientsResult.value : [] as any[],
-          leads: leadsResult.status === 'fulfilled' ? leadsResult.value : [] as any[],
-          affiliates: affiliatesResult.status === 'fulfilled' ? affiliatesResult.value : [] as any[],
-          emailCampaigns: emailCampaignsResult.status === 'fulfilled' ? emailCampaignsResult.value : [] as any[],
-          landingPages: landingPagesResult.status === 'fulfilled' ? landingPagesResult.value : [] as any[]
+          clients: clientsResult.status === 'fulfilled' ? clientsResult.value as Client[] : [] as Client[],
+          leads: leadsResult.status === 'fulfilled' ? leadsResult.value as Lead[] : [] as Lead[],
+          affiliates: affiliatesResult.status === 'fulfilled' ? affiliatesResult.value as Affiliate[] : [] as Affiliate[],
+          emailCampaigns: emailCampaignsResult.status === 'fulfilled' ? emailCampaignsResult.value as EmailCampaign[] : [] as EmailCampaign[],
+          landingPages: landingPagesResult.status === 'fulfilled' ? landingPagesResult.value as LandingPage[] : [] as LandingPage[]
         });
 
         // Log any individual failures
