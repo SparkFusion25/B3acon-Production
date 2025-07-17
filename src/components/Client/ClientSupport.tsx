@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Phone, Mail, HelpCircle, Send, Paperclip, Clock } from 'lucide-react';
+import { MessageCircle, Phone, Mail, HelpCircle, Send, Paperclip, Clock, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
@@ -343,11 +343,10 @@ const ClientSupport: React.FC = () => {
           <p className="text-sm text-gray-600 mb-4">Send us an email anytime</p>
           <button 
             onClick={handleEmailSupport}
-          onClick={() => setShowNewTicketModal(true)}
+            className="w-full py-2 bg-gradient-to-r from-signal-blue to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
           >
             support@b3acon.com
           </button>
-          <span>Create Ticket</span>
         </div>
       </div>
 

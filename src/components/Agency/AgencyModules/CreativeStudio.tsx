@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Palette, Image, Video, FileText, Upload, Plus, Folder, Grid, List, Search, MoreVertical, Download, Trash2, Share2 } from 'lucide-react';
+import { Palette, Image, Video, FileText, Upload, Plus, Folder, Grid, List, Search, MoreVertical, Download, Trash2, Share2, Zap } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../../lib/supabase';
 

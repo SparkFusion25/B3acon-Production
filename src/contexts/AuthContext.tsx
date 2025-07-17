@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 // Define valid social providers
-type SocialProvider = 'google' | 'facebook' | 'github';
+type SocialProvider = 'google' | 'facebook' | 'github' | 'linkedin';
 type UserRole = 'admin' | 'manager' | 'specialist' | 'client';
 
 interface User {
@@ -13,6 +13,7 @@ interface User {
   email: string;
   role: UserRole;
   avatar?: string;
+  company?: string;
   subscription?: 'starter' | 'growth' | 'pro';
   addOns?: string[];
 }
@@ -47,6 +48,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [authTimeouts, setAuthTimeouts] = useState<number[]>([]);
   const [userType, setUserType] = useState<'agency' | 'client'>('agency');
   const [currentClientId, setCurrentClientId] = useState<string | null>(null);
@@ -259,6 +261,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           role: type === 'agency' ? 'admin' : 'client' as UserRole,
           subscription: 'starter' as const,
           addOns: [],
+          avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
+        },
+        'linkedin': {
+          id: '550e8400-e29b-41d4-a716-446655440007',
+          name: 'LinkedIn User',
+          email: 'linkedin@example.com',
+          role: type === 'agency' ? 'admin' : 'client' as UserRole,
+          subscription: 'pro' as const,
+          addOns: ['landing_page_builder'],
           avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
         }
       };

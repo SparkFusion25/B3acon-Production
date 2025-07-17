@@ -12,7 +12,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loginType] = useState<'agency' | 'client'>(initialMode === 'agency' ? 'agency' : 'client');
+  const [loginType, setLoginType] = useState<'agency' | 'client'>(initialMode === 'agency' ? 'agency' : 'client');
   const [isLoading, setIsLoading] = useState(false);
   const [showSocialLogin, setShowSocialLogin] = useState(false);
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
@@ -51,7 +51,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ initialMode }) => {
     }
   };
 
-  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'github') => {
+  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'github' | 'linkedin') => {
     setIsLoading(true);
     try {
       await loginWithSocial(provider, loginType);

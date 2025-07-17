@@ -176,7 +176,6 @@ const ClientBilling: React.FC = () => {
             { id: 'payment-methods', name: 'Payment Methods', icon: CreditCard }
           ].map((tab) => (
             <button
-              onClick={() => handleManageSubscription()}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center py-2 px-1 border-b-2 font-medium text-sm ${
                 activeTab === tab.id

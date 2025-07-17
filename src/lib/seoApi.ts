@@ -46,7 +46,10 @@ const fetchWithAuth = async (endpoint: string, params: Record<string, string>, u
         console.error('SEO API error details:', errorData);
       } catch (e) {
       }
+      throw new Error(errorMessage);
     }
+    
+    const data = await response.json();
     return data;
   } catch (error) {
     console.error(`Error in SEO API (${endpoint}):`, error);
