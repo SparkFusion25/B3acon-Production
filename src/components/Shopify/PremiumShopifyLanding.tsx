@@ -254,7 +254,6 @@ const PremiumShopifyLanding = () => {
                 <div className="text-gray-600 font-medium">Revenue Generated</div>
               </div>
             </div>
-          </div>
         </div>
       </section>
 

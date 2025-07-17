@@ -319,6 +319,9 @@ const PremiumAuthLayout: React.FC<PremiumAuthLayoutProps> = ({ children, type = 
                     <div className="text-white text-xs font-medium px-3 py-1 bg-white/10 rounded">Forbes</div>
                   </div>
                 </div>
+              </div>
+            </div>
+            
           </div>
         </div>
       </div>
