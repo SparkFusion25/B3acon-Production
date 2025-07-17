@@ -18,7 +18,8 @@ import {
   Home,
   FileText,
   Users,
-  Globe
+  Globe,
+  Star
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -43,7 +44,8 @@ const ShopifyAppLayout: React.FC<ShopifyAppLayoutProps> = ({
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    seo: true,
+    plugins: true,
+    seo: false,
     email: false,
     analytics: false,
     conversion: false,
@@ -64,6 +66,17 @@ const ShopifyAppLayout: React.FC<ShopifyAppLayoutProps> = ({
       name: 'Dashboard',
       href: '/shopify/dashboard',
       icon: Home
+    },
+    {
+      name: 'Store Plugins',
+      href: '/shopify/plugins',
+      icon: Zap,
+      children: [
+        { name: 'Plugin Store', href: '/shopify/plugins/store', icon: ShoppingBag },
+        { name: 'Typewriter Effect', href: '/shopify/plugins/typewriter', icon: Target },
+        { name: 'Review System', href: '/shopify/plugins/reviews', icon: Star },
+        { name: 'Installed Plugins', href: '/shopify/plugins/installed', icon: Settings }
+      ]
     },
     {
       name: 'SEO Optimization',
@@ -151,6 +164,7 @@ const ShopifyAppLayout: React.FC<ShopifyAppLayoutProps> = ({
   ];
 
   const sectionKeys = {
+    'Store Plugins': 'plugins',
     'SEO Optimization': 'seo',
     'Email Marketing': 'email',
     'Analytics & Reports': 'analytics',

@@ -18,6 +18,9 @@ import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/Premiu
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
 import SEOAnalysisPage from './components/Shopify/pages/SEOAnalysisPage';
+import TypewriterPluginPage from './components/Shopify/pages/TypewriterPluginPage';
+import ReviewSystemPage from './components/Shopify/pages/ReviewSystemPage';
+import PluginStorePage from './components/Shopify/pages/PluginStorePage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -39,6 +42,11 @@ const AppRoutes: React.FC = () => {
       
       {/* Shopify Feature Pages */}
       <Route path="/shopify/seo/analysis" element={<SEOAnalysisPage />} />
+      
+      {/* Shopify Plugin Pages */}
+      <Route path="/shopify/plugins/store" element={<PluginStorePage />} />
+      <Route path="/shopify/plugins/typewriter" element={<TypewriterPluginPage />} />
+      <Route path="/shopify/plugins/reviews" element={<ReviewSystemPage />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />
