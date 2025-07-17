@@ -1,0 +1,43 @@
+# Shopify App Configuration
+name = "B3ACON"
+client_id = ""
+application_url = "https://b3acon-production-pl15.vercel.app/shopify"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = ""
+include_config_on_deploy = true
+
+[access_scopes]
+# Required scopes for B3ACON SEO functionality
+scopes = "read_products,read_content,read_themes,read_script_tags,write_script_tags,read_locales,read_checkouts"
+
+[auth]
+redirect_urls = [
+  "https://b3acon-production-pl15.vercel.app/shopify/auth/callback",
+  "https://b3acon-production-pl15.vercel.app/shopify/auth/shopify/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+  [webhooks.app_uninstalled]
+  url = "https://b3acon-production-pl15.vercel.app/api/webhooks/app_uninstalled"
+
+  [webhooks.customers_data_request]
+  url = "https://b3acon-production-pl15.vercel.app/api/webhooks/customers_data_request"
+
+  [webhooks.customers_redact]
+  url = "https://b3acon-production-pl15.vercel.app/api/webhooks/customers_redact"
+
+  [webhooks.shop_redact]
+  url = "https://b3acon-production-pl15.vercel.app/api/webhooks/shop_redact"
+
+[pos]
+embedded = false
+
+[[app_proxy]]
+url = "https://b3acon-production-pl15.vercel.app/shopify/proxy"
+subpath = "apps"
+prefix = "b3acon"

@@ -148,7 +148,7 @@ const ShopifyLanding = () => {
             </button>
             <button 
               className="btn-secondary text-lg px-8 py-4 h-auto bg-white/10 border-white/20 text-white hover:bg-white hover:text-gray-900"
-              onClick={() => window.open('https://apps.shopify.com/b3acon', '_blank')}
+              onClick={() => window.location.href = '/shopify/install'}
             >
               <ExternalLink className="w-5 h-5" />
               Install via Shopify
@@ -322,10 +322,10 @@ const ShopifyLanding = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               className="btn-primary bg-white text-gray-900 hover:bg-gray-100 text-lg px-8 py-4 h-auto"
-              onClick={() => window.open('https://apps.shopify.com/b3acon', '_blank')}
+              onClick={() => window.location.href = '/shopify/install'}
             >
               <ShoppingBag className="w-5 h-5" />
-              Install from Shopify App Store
+              Install B3ACON App
             </button>
             <button 
               className="btn-secondary border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-4 h-auto"

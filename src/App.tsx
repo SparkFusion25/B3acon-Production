@@ -22,65 +22,71 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppRoutes: React.FC = () => {
   const { isAuthenticated, userType } = useAuth();
 
-  if (!isAuthenticated) {
-    return (
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<LoginPage initialMode="signup" />} />
-        <Route path="/plans" element={<PlanSelectionPage viewOnly />} />
-        <Route path="/integrations/shopify" element={<ShopifyIntegration />} />
-        <Route path="/shopify" element={<ShopifyLanding />} />
-        <Route path="/shopify/install" element={<ShopifyInstallation />} />
-        <Route path="/shopify/dashboard" element={<ShopifyDashboard />} />
-        <Route path="/shopify/admin" element={<ShopifyAdmin />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    );
-  }
-
   return (
     <Routes>
-      {/* Protected Routes */}
-      <Route 
-        path="/" 
-        element={
-          <ProtectedRoute>
-            {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/agency/*" 
-        element={
-          <ProtectedRoute>
-            <AgencyDashboard />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/client/*" 
-        element={
-          <ProtectedRoute>
-            <ClientDashboard />
-          </ProtectedRoute>
-        } 
-      />
-      <Route path="/plans" element={<PlanSelectionPage />} />
-      <Route path="/integrations/shopify" element={<ShopifyIntegration />} />
+      {/* Public Shopify App Routes - Always Available */}
       <Route path="/shopify" element={<ShopifyLanding />} />
       <Route path="/shopify/install" element={<ShopifyInstallation />} />
       <Route path="/shopify/dashboard" element={<ShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
-      <Route path="/login" element={<Navigate to="/" replace />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      
+      {/* Public Auth Routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<LoginPage initialMode="signup" />} />
+      <Route path="/plans" element={<PlanSelectionPage viewOnly={!isAuthenticated} />} />
+
+      {/* Conditional Routing Based on Authentication */}
+      {!isAuthenticated ? (
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      ) : (
+        <>
+          {/* Protected B3ACON Platform Routes */}
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/agency/*" 
+            element={
+              <ProtectedRoute>
+                <AgencyDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/client/*" 
+            element={
+              <ProtectedRoute>
+                <ClientDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* B3ACON Platform Shopify Integration */}
+          <Route 
+            path="/integrations/shopify" 
+            element={
+              <ProtectedRoute>
+                <ShopifyIntegration />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </>
+      )}
     </Routes>
   );
 };
