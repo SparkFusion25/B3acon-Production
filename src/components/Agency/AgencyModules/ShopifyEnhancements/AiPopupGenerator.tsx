@@ -139,8 +139,8 @@ const AiPopupGenerator: React.FC = () => {
     }
 
     const campaign: PopupCampaign = {
-      id: Date.now().toString(),
-      ...newCampaign as PopupCampaign
+      ...newCampaign as PopupCampaign,
+      id: Date.now().toString()
     };
 
     setCampaigns(prev => [...prev, campaign]);

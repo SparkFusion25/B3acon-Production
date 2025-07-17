@@ -1290,7 +1290,7 @@ Best regards,
                   required
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Use variables like {{first_name}}, {{company}}, {{industry}} for personalization.
+                  Use variables like first_name, company, industry for personalization.
                 </p>
               </div>
               

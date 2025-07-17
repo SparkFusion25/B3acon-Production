@@ -179,7 +179,7 @@ const ShopifyIntegration: React.FC = () => {
       const competitorList = competitorAnalysis.competitors.split(',').map(c => c.trim());
       const productList = competitorAnalysis.products.split(',').map(p => p.trim());
       
-      const analysisResults = [];
+      const analysisResults: any[] = [];
       
       for (const competitor of competitorList) {
         for (const product of productList) {
@@ -1067,7 +1067,7 @@ const ShopifyIntegration: React.FC = () => {
                     
                     {data.relatedQuestions && data.relatedQuestions.length > 0 && (
                       <div className="mb-3">
-                        <h7 className="text-sm font-medium text-gray-700 mb-2">Related Questions:</h7>
+                        <h6 className="text-sm font-medium text-gray-700 mb-2">Related Questions:</h6>
                         <div className="space-y-1">
                           {data.relatedQuestions.slice(0, 3).map((question: string, idx: number) => (
                             <p key={idx} className="text-sm text-gray-600">• {question}</p>
@@ -1078,7 +1078,7 @@ const ShopifyIntegration: React.FC = () => {
                     
                     {data.peopleAlsoAsk && data.peopleAlsoAsk.length > 0 && (
                       <div>
-                        <h7 className="text-sm font-medium text-gray-700 mb-2">People Also Ask:</h7>
+                        <h6 className="text-sm font-medium text-gray-700 mb-2">People Also Ask:</h6>
                         <div className="space-y-1">
                           {data.peopleAlsoAsk.slice(0, 3).map((question: string, idx: number) => (
                             <p key={idx} className="text-sm text-gray-600">• {question}</p>

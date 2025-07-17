@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Users, Zap, BarChart3, Settings, Gift, Calendar, Target, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import klaviyoService from '../../../lib/klaviyoService';
+import klaviyoService from '../../../../lib/klaviyoService';
 
 interface EmailForm {
   id: string;
@@ -147,8 +147,8 @@ const EmailIntegration: React.FC = () => {
     }
 
     const form: EmailForm = {
-      id: Date.now().toString(),
-      ...newForm as EmailForm
+      ...newForm as EmailForm,
+      id: Date.now().toString()
     };
 
     setEmailForms(prev => [...prev, form]);

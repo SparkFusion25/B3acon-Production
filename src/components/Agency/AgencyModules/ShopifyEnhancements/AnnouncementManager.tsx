@@ -108,8 +108,8 @@ const AnnouncementManager: React.FC = () => {
     }
 
     const banner: AnnouncementBanner = {
-      id: Date.now().toString(),
-      ...newBanner as AnnouncementBanner
+      ...newBanner as AnnouncementBanner,
+      id: Date.now().toString()
     };
 
     setBanners(prev => [...prev, banner]);

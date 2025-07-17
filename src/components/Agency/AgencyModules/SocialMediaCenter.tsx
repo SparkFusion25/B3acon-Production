@@ -127,7 +127,7 @@ const SocialMediaCenter: React.FC = () => {
     setHashtagAnalysis(prev => ({ ...prev, isLoading: true }));
     try {
       const hashtagList = hashtagAnalysis.hashtags.split(',').map(h => h.trim().replace('#', ''));
-      const analysisResults = [];
+      const analysisResults: any[] = [];
 
       for (const hashtag of hashtagList) {
         // Search for hashtag usage and trends
@@ -981,7 +981,7 @@ const SocialMediaCenter: React.FC = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {newsItem.news_results?.slice(0, 2).map((article: any, idx: number) => (
                           <div key={idx} className="border border-gray-200 rounded p-3">
-                            <h7 className="font-medium text-sm text-gray-900 line-clamp-2">{article.title}</h7>
+                            <h6 className="font-medium text-sm text-gray-900 line-clamp-2">{article.title}</h6>
                             <p className="text-xs text-gray-600 mt-1">{article.source} • {article.date}</p>
                             <button
                               onClick={() => {
@@ -1013,7 +1013,7 @@ const SocialMediaCenter: React.FC = () => {
                       
                       {angle.relatedQuestions && angle.relatedQuestions.length > 0 && (
                         <div className="mb-3">
-                          <h7 className="text-sm font-medium text-gray-700 mb-2">Content Questions:</h7>
+                                                     <h6 className="text-sm font-medium text-gray-700 mb-2">Content Questions:</h6>
                           <div className="space-y-1">
                             {angle.relatedQuestions.slice(0, 3).map((question: string, idx: number) => (
                               <div key={idx} className="flex items-center justify-between text-sm">
@@ -1036,7 +1036,7 @@ const SocialMediaCenter: React.FC = () => {
                       
                       {angle.peopleAlsoAsk && angle.peopleAlsoAsk.length > 0 && (
                         <div>
-                          <h7 className="text-sm font-medium text-gray-700 mb-2">People Also Ask:</h7>
+                                                     <h6 className="text-sm font-medium text-gray-700 mb-2">People Also Ask:</h6>
                           <div className="space-y-1">
                             {angle.peopleAlsoAsk.slice(0, 2).map((question: string, idx: number) => (
                               <div key={idx} className="flex items-center justify-between text-sm">
