@@ -7,6 +7,8 @@ import ClientManagement from './ClientManagement';
 import TeamManagement from './TeamManagement';
 import BillingOverview from './BillingOverview';
 import PerformanceAnalytics from './PerformanceAnalytics';
+import InteractiveGuide from '../Onboarding/InteractiveGuide';
+import { HelpCircle } from 'lucide-react';
 import {
   CRMHub,
   GoogleServicesHub,
@@ -34,6 +36,7 @@ import { toast } from 'react-hot-toast';
 
 const AgencyDashboard: React.FC = () => {
   const [activeModule, setActiveModule] = useState('overview');
+  const [showInteractiveGuide, setShowInteractiveGuide] = useState(false);
   
   console.log('AgencyDashboard rendering with activeModule:', activeModule);
 
@@ -103,13 +106,26 @@ const AgencyDashboard: React.FC = () => {
       />
       <div className="lg:ml-56 xl:ml-64">
         <AgencyHeader currentModule={activeModule} />
-        <div className="px-4 lg:px-6 py-2 bg-white border-b border-gray-200 flex justify-end">
+        <div className="px-4 lg:px-6 py-2 bg-white border-b border-gray-200 flex justify-between items-center">
+          <button
+            onClick={() => setShowInteractiveGuide(true)}
+            className="flex items-center space-x-2 px-3 py-2 text-signal-blue hover:bg-blue-50 rounded-lg transition-colors"
+          >
+            <HelpCircle className="w-4 h-4" />
+            <span className="text-sm font-medium">Setup Guide</span>
+          </button>
           <ClientSwitcher />
         </div>
       </div>
       <main className="transition-all duration-300 lg:ml-56 xl:ml-64 p-4 lg:p-6 pt-16 md:pt-4">
         {renderModule()}
       </main>
+      
+      {/* Interactive Guide */}
+      <InteractiveGuide 
+        isOpen={showInteractiveGuide}
+        onClose={() => setShowInteractiveGuide(false)}
+      />
     </div>
   );
 };

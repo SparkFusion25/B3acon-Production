@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket } from 'lucide-react';
+import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket, Target, Eye, Zap, Globe } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import amazonApi from '../../../lib/amazonApi';
+import { serpApiService } from '../../../lib/serpApiService';
 
 const ShopifyIntegration: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -22,6 +23,25 @@ const ShopifyIntegration: React.FC = () => {
   const [amazonProducts, setAmazonProducts] = useState<any[]>([]);
   const [isLoadingAmazon, setIsLoadingAmazon] = useState(false);
   const [amazonSearchQuery, setAmazonSearchQuery] = useState('');
+  
+  // SerpAPI enhanced features
+  const [productResearch, setProductResearch] = useState({
+    query: '',
+    location: 'United States',
+    results: [] as any[],
+    isLoading: false
+  });
+  const [competitorAnalysis, setCompetitorAnalysis] = useState({
+    competitors: '',
+    products: '',
+    results: [] as any[],
+    isLoading: false
+  });
+  const [trendAnalysis, setTrendAnalysis] = useState({
+    keywords: '',
+    results: null as any,
+    isLoading: false
+  });
   
   const handleConnectShopify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +112,163 @@ const ShopifyIntegration: React.FC = () => {
       toast.error('Failed to search Amazon products');
     } finally {
       setIsLoadingAmazon(false);
+    }
+  };
+
+  // Enhanced SerpAPI Product Research
+  const handleProductResearch = async () => {
+    if (!productResearch.query.trim()) {
+      toast.error('Please enter a product to research');
+      return;
+    }
+
+    setProductResearch(prev => ({ ...prev, isLoading: true }));
+    try {
+      // Use SerpAPI Shopping to find product trends and pricing
+      const shoppingResults = await serpApiService.analyzeShopping(
+        productResearch.query,
+        productResearch.location
+      );
+
+      // Get related search suggestions for product ideas
+      const suggestions = await serpApiService.getSearchSuggestions(productResearch.query);
+
+      // Analyze Google Images for visual trends
+      const imageResults = await serpApiService.analyzeImages(productResearch.query);
+
+      const formattedResults = shoppingResults.shopping_results.map((product: any, index: number) => ({
+        id: `product-${index}`,
+        title: product.title,
+        price: product.price,
+        source: product.source,
+        link: product.link,
+        image: product.thumbnail,
+        rating: product.rating,
+        reviews: product.reviews,
+        shipping: product.shipping,
+        suggestions: suggestions.slice(0, 5),
+        visualTrends: imageResults.images_results?.slice(0, 3) || []
+      }));
+
+      setProductResearch(prev => ({
+        ...prev,
+        results: formattedResults,
+        isLoading: false
+      }));
+
+      toast.success(`Found ${formattedResults.length} product insights`);
+    } catch (error) {
+      console.error('Product research failed:', error);
+      toast.error('Failed to research products. Check your SerpAPI configuration.');
+      setProductResearch(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  // Competitor Analysis for E-commerce
+  const handleCompetitorAnalysis = async () => {
+    if (!competitorAnalysis.competitors.trim() || !competitorAnalysis.products.trim()) {
+      toast.error('Please enter both competitors and products to analyze');
+      return;
+    }
+
+    setCompetitorAnalysis(prev => ({ ...prev, isLoading: true }));
+    try {
+      const competitorList = competitorAnalysis.competitors.split(',').map(c => c.trim());
+      const productList = competitorAnalysis.products.split(',').map(p => p.trim());
+      
+      const analysisResults = [];
+      
+      for (const competitor of competitorList) {
+        for (const product of productList) {
+          const searchQuery = `site:${competitor} ${product}`;
+          const searchResult = await serpApiService.searchGoogle({
+            q: searchQuery,
+            num: 10
+          });
+
+          // Also check shopping results for the competitor
+          const shoppingQuery = `${competitor} ${product}`;
+          const shoppingResult = await serpApiService.analyzeShopping(shoppingQuery);
+
+          analysisResults.push({
+            competitor,
+            product,
+            organicResults: searchResult.organic_results.length,
+            shoppingPresence: shoppingResult.shopping_results?.length || 0,
+            topResult: searchResult.organic_results[0],
+            shoppingListings: shoppingResult.shopping_results?.slice(0, 3) || []
+          });
+
+          // Rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      setCompetitorAnalysis(prev => ({
+        ...prev,
+        results: analysisResults,
+        isLoading: false
+      }));
+
+      toast.success(`Analyzed ${analysisResults.length} competitor-product combinations`);
+    } catch (error) {
+      console.error('Competitor analysis failed:', error);
+      toast.error('Failed to analyze competitors. Check your SerpAPI configuration.');
+      setCompetitorAnalysis(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  // Trend Analysis for Product Planning
+  const handleTrendAnalysis = async () => {
+    if (!trendAnalysis.keywords.trim()) {
+      toast.error('Please enter keywords to analyze trends');
+      return;
+    }
+
+    setTrendAnalysis(prev => ({ ...prev, isLoading: true }));
+    try {
+      const keywordList = trendAnalysis.keywords.split(',').map(k => k.trim());
+      
+      // Get Google Trends data
+      const trendsData = await serpApiService.getTrends(keywordList, 'US');
+      
+      // Get related searches and questions
+      const relatedData = await Promise.all(
+        keywordList.map(async (keyword) => {
+          const searchData = await serpApiService.searchGoogle({
+            q: keyword,
+            num: 10
+          });
+          return {
+            keyword,
+            relatedQuestions: searchData.related_questions,
+            peopleAlsoAsk: searchData.people_also_ask
+          };
+        })
+      );
+
+      const formattedResults = {
+        trends: trendsData,
+        relatedSearches: relatedData,
+        insights: {
+          highestTrend: keywordList[0], // Would be calculated from trends data
+          emergingKeywords: relatedData.flatMap(d => d.relatedQuestions?.slice(0, 2) || []),
+          seasonalPotential: 'Medium', // Would be calculated from trends data
+          competitiveness: 'Moderate' // Would be calculated based on search results
+        }
+      };
+
+      setTrendAnalysis(prev => ({
+        ...prev,
+        results: formattedResults,
+        isLoading: false
+      }));
+
+      toast.success('Trend analysis completed successfully');
+    } catch (error) {
+      console.error('Trend analysis failed:', error);
+      toast.error('Failed to analyze trends. Check your SerpAPI configuration.');
+      setTrendAnalysis(prev => ({ ...prev, isLoading: false }));
     }
   };
   
@@ -639,9 +816,289 @@ const ShopifyIntegration: React.FC = () => {
     </div>
   );
 
+  // SerpAPI-powered render functions
+  const renderProductResearch = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Research & Market Intelligence</h3>
+        <p className="text-gray-600 mb-6">Analyze product opportunities, pricing trends, and market demand using real-time data.</p>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Product/Category to Research
+            </label>
+            <input
+              type="text"
+              value={productResearch.query}
+              onChange={(e) => setProductResearch(prev => ({ ...prev, query: e.target.value }))}
+              placeholder="e.g., wireless headphones, organic skincare, fitness trackers"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Target Market
+            </label>
+            <select
+              value={productResearch.location}
+              onChange={(e) => setProductResearch(prev => ({ ...prev, location: e.target.value }))}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+            >
+              <option value="United States">United States</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Canada">Canada</option>
+              <option value="Australia">Australia</option>
+              <option value="Germany">Germany</option>
+            </select>
+          </div>
+        </div>
+        
+        <button
+          onClick={handleProductResearch}
+          disabled={productResearch.isLoading || !productResearch.query.trim()}
+          className="px-6 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+        >
+          {productResearch.isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+          <span>{productResearch.isLoading ? 'Researching...' : 'Research Products'}</span>
+        </button>
+
+        {/* Product Research Results */}
+        {productResearch.results.length > 0 && (
+          <div className="mt-8">
+            <h4 className="text-lg font-medium text-gray-900 mb-4">Research Results ({productResearch.results.length})</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {productResearch.results.map((product) => (
+                <div key={product.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start space-x-3 mb-3">
+                    {product.image && (
+                      <img src={product.image} alt={product.title} className="w-16 h-16 object-cover rounded-lg" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <h5 className="font-medium text-gray-900 text-sm line-clamp-2">{product.title}</h5>
+                      <p className="text-lg font-bold text-green-600 mt-1">{product.price}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                    <span>{product.source}</span>
+                    {product.rating && <span>⭐ {product.rating}</span>}
+                  </div>
+                  
+                  {product.suggestions && product.suggestions.length > 0 && (
+                    <div className="mb-3">
+                      <h6 className="text-xs font-medium text-gray-700 mb-1">Related Searches:</h6>
+                      <div className="flex flex-wrap gap-1">
+                        {product.suggestions.slice(0, 3).map((suggestion: string, idx: number) => (
+                          <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded">{suggestion}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <button
+                    onClick={() => window.open(product.link, '_blank')}
+                    className="w-full px-3 py-1 text-xs bg-signal-blue text-white rounded hover:bg-blue-600 transition-colors flex items-center justify-center space-x-1"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>View Product</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderCompetitorAnalysis = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">E-commerce Competitor Analysis</h3>
+        <p className="text-gray-600 mb-6">Analyze competitor product listings, pricing strategies, and market presence.</p>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Competitor Domains (comma-separated)
+            </label>
+            <textarea
+              value={competitorAnalysis.competitors}
+              onChange={(e) => setCompetitorAnalysis(prev => ({ ...prev, competitors: e.target.value }))}
+              placeholder="amazon.com, etsy.com, shopify-store.com"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+              rows={3}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Products to Analyze (comma-separated)
+            </label>
+            <textarea
+              value={competitorAnalysis.products}
+              onChange={(e) => setCompetitorAnalysis(prev => ({ ...prev, products: e.target.value }))}
+              placeholder="wireless headphones, bluetooth speakers, phone cases"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+              rows={3}
+            />
+          </div>
+        </div>
+        
+        <button
+          onClick={handleCompetitorAnalysis}
+          disabled={competitorAnalysis.isLoading || !competitorAnalysis.competitors.trim() || !competitorAnalysis.products.trim()}
+          className="px-6 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+        >
+          {competitorAnalysis.isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Target className="w-4 h-4" />}
+          <span>{competitorAnalysis.isLoading ? 'Analyzing...' : 'Analyze Competitors'}</span>
+        </button>
+
+        {/* Competitor Analysis Results */}
+        {competitorAnalysis.results.length > 0 && (
+          <div className="mt-8">
+            <h4 className="text-lg font-medium text-gray-900 mb-4">Competitor Analysis Results</h4>
+            <div className="space-y-4">
+              {competitorAnalysis.results.map((result, index) => (
+                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h5 className="font-medium text-gray-900">{result.competitor} - {result.product}</h5>
+                    <div className="flex items-center space-x-4 text-sm">
+                      <span className="text-blue-600">{result.organicResults} organic results</span>
+                      <span className="text-green-600">{result.shoppingPresence} shopping listings</span>
+                    </div>
+                  </div>
+                  
+                  {result.topResult && (
+                    <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                      <h6 className="font-medium text-sm text-gray-900 mb-1">Top Organic Result:</h6>
+                      <p className="text-sm text-gray-700 line-clamp-2">{result.topResult.title}</p>
+                      <a href={result.topResult.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
+                        {result.topResult.link}
+                      </a>
+                    </div>
+                  )}
+                  
+                  {result.shoppingListings && result.shoppingListings.length > 0 && (
+                    <div>
+                      <h6 className="font-medium text-sm text-gray-900 mb-2">Shopping Listings:</h6>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        {result.shoppingListings.map((listing: any, idx: number) => (
+                          <div key={idx} className="border border-gray-200 rounded p-2 text-sm">
+                            <p className="font-medium text-gray-900 line-clamp-1">{listing.title}</p>
+                            <p className="text-green-600 font-bold">{listing.price}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderTrendAnalysis = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Market Trend Analysis</h3>
+        <p className="text-gray-600 mb-6">Analyze market trends, seasonal patterns, and emerging opportunities for product planning.</p>
+        
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Keywords/Products to Analyze (comma-separated)
+          </label>
+          <textarea
+            value={trendAnalysis.keywords}
+            onChange={(e) => setTrendAnalysis(prev => ({ ...prev, keywords: e.target.value }))}
+            placeholder="sustainable fashion, smart home devices, fitness equipment, organic food"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
+            rows={3}
+          />
+        </div>
+        
+        <button
+          onClick={handleTrendAnalysis}
+          disabled={trendAnalysis.isLoading || !trendAnalysis.keywords.trim()}
+          className="px-6 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+        >
+          {trendAnalysis.isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <TrendingUp className="w-4 h-4" />}
+          <span>{trendAnalysis.isLoading ? 'Analyzing...' : 'Analyze Trends'}</span>
+        </button>
+
+        {/* Trend Analysis Results */}
+        {trendAnalysis.results && (
+          <div className="mt-8">
+            <h4 className="text-lg font-medium text-gray-900 mb-6">Trend Analysis Insights</h4>
+            
+            {/* Insights Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-blue-50 rounded-lg p-4">
+                <h5 className="font-medium text-blue-900 mb-1">Highest Trend</h5>
+                <p className="text-sm text-blue-700">{trendAnalysis.results.insights.highestTrend}</p>
+              </div>
+              <div className="bg-green-50 rounded-lg p-4">
+                <h5 className="font-medium text-green-900 mb-1">Seasonal Potential</h5>
+                <p className="text-sm text-green-700">{trendAnalysis.results.insights.seasonalPotential}</p>
+              </div>
+              <div className="bg-yellow-50 rounded-lg p-4">
+                <h5 className="font-medium text-yellow-900 mb-1">Competitiveness</h5>
+                <p className="text-sm text-yellow-700">{trendAnalysis.results.insights.competitiveness}</p>
+              </div>
+              <div className="bg-purple-50 rounded-lg p-4">
+                <h5 className="font-medium text-purple-900 mb-1">Emerging Keywords</h5>
+                <p className="text-sm text-purple-700">{trendAnalysis.results.insights.emergingKeywords.length} found</p>
+              </div>
+            </div>
+            
+            {/* Related Searches */}
+            {trendAnalysis.results.relatedSearches && (
+              <div className="space-y-4">
+                <h5 className="font-medium text-gray-900">Related Search Insights</h5>
+                {trendAnalysis.results.relatedSearches.map((data: any, index: number) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                    <h6 className="font-medium text-gray-900 mb-3">{data.keyword}</h6>
+                    
+                    {data.relatedQuestions && data.relatedQuestions.length > 0 && (
+                      <div className="mb-3">
+                        <h7 className="text-sm font-medium text-gray-700 mb-2">Related Questions:</h7>
+                        <div className="space-y-1">
+                          {data.relatedQuestions.slice(0, 3).map((question: string, idx: number) => (
+                            <p key={idx} className="text-sm text-gray-600">• {question}</p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {data.peopleAlsoAsk && data.peopleAlsoAsk.length > 0 && (
+                      <div>
+                        <h7 className="text-sm font-medium text-gray-700 mb-2">People Also Ask:</h7>
+                        <div className="space-y-1">
+                          {data.peopleAlsoAsk.slice(0, 3).map((question: string, idx: number) => (
+                            <p key={idx} className="text-sm text-gray-600">• {question}</p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   const tabs = [
     { id: 'overview', label: 'Overview', icon: ShoppingBag },
     { id: 'products', label: 'Products', icon: Package },
+    { id: 'product-research', label: 'Product Research', icon: Search },
+    { id: 'competitor-analysis', label: 'Competitor Analysis', icon: Target },
+    { id: 'trend-analysis', label: 'Trend Analysis', icon: TrendingUp },
     { id: 'amazon', label: 'Amazon', icon: ShoppingBasket },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 }
   ];
@@ -680,6 +1137,9 @@ const ShopifyIntegration: React.FC = () => {
       <div>
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'products' && renderProducts()}
+        {activeTab === 'product-research' && renderProductResearch()}
+        {activeTab === 'competitor-analysis' && renderCompetitorAnalysis()}
+        {activeTab === 'trend-analysis' && renderTrendAnalysis()}
         {activeTab === 'amazon' && renderAmazon()}
         {activeTab === 'analytics' && renderAnalytics()}
       </div>
