@@ -1,0 +1,10 @@
+{
+  "buildCommand": "vite build",
+  "framework": "vite",
+  "installCommand": "npm install",
+  "env": {
+    "CI": "false",
+    "DISABLE_ESLINT_PLUGIN": "true",
+    "SKIP_PREFLIGHT_CHECK": "true"
+  }
+}
