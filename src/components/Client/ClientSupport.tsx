@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Phone, Mail, HelpCircle, Send, Paperclip, Clock } from 'lucide-react';
+import { MessageCircle, Phone, Mail, HelpCircle, Send, Paperclip, Clock, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';

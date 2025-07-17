@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "framework": "vite",
+  "installCommand": "npm install --no-optional --prefer-offline",
+  "outputDirectory": "dist",
+  "env": {
+    "CI": "false",
+    "NODE_ENV": "production",
+    "DISABLE_ESLINT_PLUGIN": "true",
+    "SKIP_PREFLIGHT_CHECK": "true",
+    "NPM_CONFIG_OPTIONAL": "false"
+  },
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}

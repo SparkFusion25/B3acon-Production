@@ -1,6 +1,30 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Globe, ArrowRight, Info, CreditCard, Shield, Package, Search, BarChart3, ShoppingBag } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { 
+  CheckCircle, 
+  Globe, 
+  ArrowRight, 
+  Info, 
+  CreditCard, 
+  Shield, 
+  Package, 
+  Search, 
+  BarChart3, 
+  ShoppingBag,
+  Check, 
+  Star, 
+  Zap, 
+  Users, 
+  TrendingUp,
+  Mail,
+  Layout,
+  FileCheck,
+  DollarSign,
+  Calendar,
+  FileText,
+  Code,
+  Edit
+} from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { loadStripe } from '@stripe/stripe-js';
 

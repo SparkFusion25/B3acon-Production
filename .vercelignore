@@ -1,0 +1,7 @@
+# Safe exclusions for Vercel deployment
+node_modules/
+.env.local
+.DS_Store
+*.log
+.vercel/
+coverage/

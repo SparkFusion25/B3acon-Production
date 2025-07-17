@@ -4,6 +4,9 @@ import PlanSelectionPage from './components/PlanSelection/PlanSelectionPage';
 import AgencyDashboard from './components/Agency/AgencyDashboard';
 import ClientDashboard from './components/Client/ClientDashboard';
 import LandingPage from './components/Landing/LandingPage';
+import BlogPage from './components/Blog/BlogPage';
+import ContactPage from './components/Contact/ContactPage';
+import FAQPage from './components/FAQ/FAQPage';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 function App() {
@@ -42,6 +45,18 @@ function App() {
         <Route 
           path="/platform-overview" 
           element={<PlatformOverviewPage />}
+        />
+        <Route 
+          path="/blog" 
+          element={<BlogPage posts={[]} categories={[]} />}
+        />
+        <Route 
+          path="/contact" 
+          element={<ContactPage />}
+        />
+        <Route 
+          path="/faq" 
+          element={<FAQPage />}
         />
         <Route 
           path="/dashboard" 

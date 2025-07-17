@@ -19,6 +19,7 @@ import FreightEstimator from './GlobalCommerce/FreightEstimator';
 import ShipmentTracker from './GlobalCommerce/ShipmentTracker';
 import HSCodeFinder from './GlobalCommerce/HSCodeFinder';
 import FTAChecker from './GlobalCommerce/FTAChecker';
+import OceanFreightPortal from './GlobalCommerce/OceanFreightPortal';
 
 // This file exports all agency modules for easier imports
 export {
@@ -41,5 +42,6 @@ export {
   FreightEstimator,
   ShipmentTracker,
   HSCodeFinder,
-  FTAChecker
+  FTAChecker,
+  OceanFreightPortal
 };

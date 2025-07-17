@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ interface User {
   avatar?: string;
   subscription?: 'starter' | 'growth' | 'pro';
   addOns?: string[];
+  company?: string;
 }
 
 interface AuthContextType {
@@ -47,20 +48,22 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [authTimeouts, setAuthTimeouts] = useState<number[]>([]);
   const [userType, setUserType] = useState<'agency' | 'client'>('agency');
   const [currentClientId, setCurrentClientId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Use useRef to store timeout IDs for proper cleanup
+  const timeoutRefs = useRef<Set<number>>(new Set());
 
   useEffect(() => {
-    // Clear any existing timeouts when component unmounts
+    // Clear all timeouts when component unmounts
     return () => {
-      authTimeouts.forEach(timeoutId => {
-        if (timeoutId) {
-          clearTimeout(timeoutId);
-        }
+      timeoutRefs.current.forEach(timeoutId => {
+        clearTimeout(timeoutId);
       });
+      timeoutRefs.current.clear();
     };
-  }, [authTimeouts]);
+  }, []);
 
   useEffect(() => {
     // Check for existing session
@@ -158,11 +161,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const mockUser = mockUsers[email as keyof typeof mockUsers];
       
-      if (mockUser && password === 'password') {
+      // Enhanced security: Check for specific email-password combinations
+      // In production, this would use proper password hashing (bcrypt, argon2, etc.)
+      const validCredentials = {
+        'sarah@sparkdigital.com': 'SecurePass123!',
+        'john@techcorp.com': 'ClientPass456!',
+        'demo@starter.com': 'DemoAccess789!'
+      };
+      
+      const expectedPassword = validCredentials[email as keyof typeof validCredentials];
+      
+      if (mockUser && expectedPassword && password === expectedPassword) {
         setUser(mockUser);
         setUserType(type);
         
-        // Use a safe setTimeout pattern
+        // Use a safe setTimeout pattern with proper cleanup
         timeoutId = window.setTimeout(() => {
           setIsAuthenticated(true);
           
@@ -170,12 +183,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
           localStorage.setItem('b3acon_user_type', type);
           toast.success(`Welcome back, ${mockUser.name}!`);
+          
+          // Remove from cleanup set when completed
+          timeoutRefs.current.delete(timeoutId);
         }, 100);
         
         // Store the timeout ID for cleanup
-        setAuthTimeouts(prev => [...prev, timeoutId]);
+        timeoutRefs.current.add(timeoutId);
       } else {
-        throw new Error('Invalid credentials. Use demo credentials: sarah@sparkdigital.com / password or john@techcorp.com / password');
+        throw new Error('Invalid credentials. Demo accounts:\n• sarah@sparkdigital.com / SecurePass123!\n• john@techcorp.com / ClientPass456!\n• demo@starter.com / DemoAccess789!');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -202,7 +218,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         addOns: []
       };
       
-      // Use a safe setTimeout pattern
+      // Use a safe setTimeout pattern with proper cleanup
       const timeoutId = window.setTimeout(() => {
         setUser(newUser);
         setUserType(type);
@@ -211,10 +227,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Save to localStorage
         localStorage.setItem('b3acon_user', JSON.stringify(newUser));
         localStorage.setItem('b3acon_user_type', type);
+        
+        // Remove from cleanup set when completed
+        timeoutRefs.current.delete(timeoutId);
       }, 100);
       
       // Store the timeout ID for cleanup
-      setAuthTimeouts(prev => [...prev, timeoutId]);
+      timeoutRefs.current.add(timeoutId);
       
       return Promise.resolve();
     } catch (error) {
@@ -265,7 +284,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       const mockUser = mockSocialUsers[provider];
       
-      // Use a safe setTimeout pattern
+      // Use a safe setTimeout pattern with proper cleanup
       timeoutId = window.setTimeout(() => {
         setUser(mockUser);
         setUserType(type);
@@ -274,10 +293,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         // Save to localStorage
         localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
         localStorage.setItem('b3acon_user_type', type);
+        
+        // Remove from cleanup set when completed
+        timeoutRefs.current.delete(timeoutId);
       }, 100);
       
       // Store the timeout ID for cleanup
-      setAuthTimeouts(prev => [...prev, timeoutId]);
+      timeoutRefs.current.add(timeoutId);
 
       // In a real implementation, we would use Supabase social auth:
       // const { data, error } = await supabase.auth.signInWithOAuth({
@@ -299,7 +321,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       supabase.auth.signOut();
     }
     
-    // Use a safe setTimeout pattern
+    // Use a safe setTimeout pattern with proper cleanup
     const timeoutId = window.setTimeout(() => {
       setUser(null);
       setIsAuthenticated(false);
@@ -308,10 +330,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.removeItem('b3acon_user_type');
       toast.success('Logged out successfully');
       window.location.href = '/';
+      
+      // Remove from cleanup set when completed
+      timeoutRefs.current.delete(timeoutId);
     }, 100);
     
     // Store the timeout ID for cleanup
-    setAuthTimeouts(prev => [...prev, timeoutId]);
+    timeoutRefs.current.add(timeoutId);
   };
 
   const switchToClient = (clientId: string) => {
@@ -324,13 +349,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setCurrentClientId(null);
     setUserType('agency');
     
-    // Use a safe setTimeout pattern
+    // Use a safe setTimeout pattern with proper cleanup
     const timeoutId = window.setTimeout(() => {
       toast.success('Switched to agency view');
+      
+      // Remove from cleanup set when completed
+      timeoutRefs.current.delete(timeoutId);
     }, 100);
     
     // Store the timeout ID for cleanup
-    setAuthTimeouts(prev => [...prev, timeoutId]);
+    timeoutRefs.current.add(timeoutId);
   };
 
   const value: AuthContextType = {

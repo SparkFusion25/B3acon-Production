@@ -27,8 +27,13 @@ import {
   FreightEstimator,
   ShipmentTracker,
   HSCodeFinder,
-  FTAChecker
+  FTAChecker,
+  OceanFreightPortal
 } from './AgencyModules/AgencyModules';
+import ShopifySEODashboard from './AgencyModules/ShopifySEODashboard';
+import AmazonSEOOptimizer from './AgencyModules/AmazonSEOOptimizer';
+import BlogManagement from './AgencyModules/BlogManagement';
+import ContactManagement from './AgencyModules/ContactManagement';
 import { mockAgencyData } from '../../data/mockAgencyData';
 import { toast } from 'react-hot-toast';
 
@@ -90,6 +95,16 @@ const AgencyDashboard: React.FC = () => {
         return <ShipmentTracker />;
       case 'hs-codes':
         return <HSCodeFinder />;
+      case 'ocean-freight':
+        return <OceanFreightPortal />;
+      case 'shopify-seo':
+        return <ShopifySEODashboard />;
+      case 'amazon-seo':
+        return <AmazonSEOOptimizer />;
+      case 'blog-management':
+        return <BlogManagement />;
+      case 'contact-management':
+        return <ContactManagement />;
       default:
         return <AgencyOverview data={mockAgencyData.overview} />;
     }

@@ -23,7 +23,11 @@ import {
   FileText, 
   BarChart3, 
   Zap, 
-  ExternalLink 
+  ExternalLink,
+  Save,
+  Eye,
+  Pause,
+  Play
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { supabase } from '../../../lib/supabase';
