@@ -83,6 +83,9 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
     setIsSubmitting(true);
     
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
       const { data, error } = await supabase
         .from('clients')
         .insert([{
@@ -227,8 +230,10 @@ const ClientManagement = ({ clients }: ClientManagementProps) => {
             </div>
           </div>
           
-          <button className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2">
+          <button 
+            className="px-4 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all flex items-center space-x-2"
             onClick={() => setShowAddClientModal(true)}
+          >
             <Plus className="w-4 h-4" />
             <span>Add Client</span>
           </button>

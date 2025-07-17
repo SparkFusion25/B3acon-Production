@@ -18,6 +18,9 @@ const CRMHub: React.FC = () => {
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
       const { error } = await supabase
         .from('client_contacts')
         .insert([contactForm]);

@@ -135,6 +135,9 @@ const SEOIntelligenceHub: React.FC = () => {
       // First check if we already have analysis for this domain
       const domain = new URL(normalizedUrl).hostname;
       
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
       const { data: existingAnalysis, error } = await supabase
         .from('seo_analysis')
         .select('*')

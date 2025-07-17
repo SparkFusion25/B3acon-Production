@@ -92,6 +92,9 @@ const LeadProspectingTool: React.FC = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        if (!supabase) {
+          throw new Error('Supabase not configured');
+        }
         // Fetch lead databases
         const { data: dbData, error: dbError } = await supabase
           .from('lead_databases')
@@ -131,6 +134,9 @@ const LeadProspectingTool: React.FC = () => {
     if (activeCampaign) {
       const fetchCampaignSteps = async () => {
         try {
+          if (!supabase) {
+            throw new Error('Supabase not configured');
+          }
           const { data, error } = await supabase
             .from('lead_campaign_steps')
             .select('*')

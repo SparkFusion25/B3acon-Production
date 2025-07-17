@@ -910,7 +910,7 @@ const AdminDashboard: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
             
             <div className="space-y-2 mb-4">
-              {plan.features.map((feature, index) => (
+              {plan.features.map((feature: string, index: number) => (
                 <div key={index} className="flex items-center space-x-2">
                   <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   <span className="text-sm text-gray-700">{feature}</span>
@@ -1317,7 +1317,7 @@ const AdminDashboard: React.FC = () => {
             <p className="text-sm text-gray-600 mb-4">{service.description}</p>
             
             <div className="space-y-2 mb-4">
-              {service.features.map((feature, index) => (
+              {service.features.map((feature: string, index: number) => (
                 <div key={index} className="flex items-center space-x-2">
                   <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                   <span className="text-sm text-gray-700">{feature}</span>

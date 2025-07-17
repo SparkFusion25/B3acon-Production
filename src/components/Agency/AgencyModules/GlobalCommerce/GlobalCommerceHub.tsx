@@ -29,6 +29,9 @@ const GlobalCommerceHub: React.FC = () => {
     const fetchUserSubscription = async () => {
       setIsLoading(true);
       try {
+        if (!supabase) {
+          throw new Error('Supabase not configured');
+        }
         // Get the current user
         const { data: { user } } = await supabase.auth.getUser();
         
@@ -89,7 +92,7 @@ const GlobalCommerceHub: React.FC = () => {
       return true;
     }
     
-    const subscriptionLevels = {
+    const subscriptionLevels: Record<string, number> = {
       'starter': 1,
       'pro': 2,
       'enterprise': 3

@@ -36,6 +36,9 @@ const ClientSupport: React.FC = () => {
   
   const fetchTickets = async () => {
     if (!user) return;
+    if (!supabase) {
+      throw new Error('Supabase not configured');
+    }
     
     setIsLoadingTickets(true);
     try {
@@ -70,6 +73,9 @@ const ClientSupport: React.FC = () => {
   };
   
   const fetchTicketMessages = async (ticketId: string) => {
+    if (!supabase) {
+      throw new Error('Supabase not configured');
+    }
     setIsLoadingMessages(true);
     try {
       const { data, error } = await supabase
@@ -109,6 +115,10 @@ const ClientSupport: React.FC = () => {
     if (!newTicketForm.subject || !newTicketForm.description) {
       toast.error('Subject and description are required');
       return;
+    }
+    
+    if (!supabase) {
+      throw new Error('Supabase not configured');
     }
     
     try {
@@ -170,6 +180,10 @@ const ClientSupport: React.FC = () => {
       return;
     }
     
+    if (!supabase) {
+      throw new Error('Supabase not configured');
+    }
+    
     setIsSendingMessage(true);
     try {
       const { error } = await supabase
@@ -216,6 +230,9 @@ const ClientSupport: React.FC = () => {
   };
   
   const handleReopenTicket = async (ticketId: string) => {
+    if (!supabase) {
+      throw new Error('Supabase not configured');
+    }
     try {
       const { error } = await supabase
         .from('support_tickets')

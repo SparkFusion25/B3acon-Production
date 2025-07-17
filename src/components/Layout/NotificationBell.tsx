@@ -25,6 +25,10 @@ const NotificationBell: React.FC = () => {
       fetchNotifications();
       
       // Set up real-time subscription for new notifications
+      if (!supabase) {
+        console.warn('Supabase not configured - notifications disabled');
+        return;
+      }
       const subscription = supabase
         .channel('notifications_channel')
         .on(
@@ -41,15 +45,15 @@ const NotificationBell: React.FC = () => {
             setUnreadCount(prev => prev + 1);
             
             // Show toast for new notification
-            toast.success(newNotification.title, {
-              description: newNotification.message
-            });
+            toast.success(`${newNotification.title}: ${newNotification.message}`);
           }
         )
         .subscribe();
       
       return () => {
-        supabase.removeChannel(subscription);
+        if (supabase) {
+          supabase.removeChannel(subscription);
+        }
       };
     }
   }, [user]);
@@ -64,6 +68,11 @@ const NotificationBell: React.FC = () => {
       return;
     }
 
+    if (!supabase) {
+      console.warn('Supabase not configured');
+      return;
+    }
+    
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -93,6 +102,10 @@ const NotificationBell: React.FC = () => {
   };
   
   const handleMarkAsRead = async (notificationId: string) => {
+    if (!supabase) {
+      console.warn('Supabase not configured');
+      return;
+    }
     try {
       const { error } = await supabase
         .from('notifications')
@@ -114,6 +127,10 @@ const NotificationBell: React.FC = () => {
   };
   
   const handleMarkAllAsRead = async () => {
+    if (!supabase) {
+      console.warn('Supabase not configured');
+      return;
+    }
     try {
       const { error } = await supabase
         .from('notifications')

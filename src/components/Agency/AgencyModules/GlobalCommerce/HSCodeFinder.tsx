@@ -221,7 +221,7 @@ const HSCodeFinder: React.FC = () => {
               {Object.entries(selectedCode.duty_rates).map(([country, rate]) => (
                 <div key={country} className="p-3 bg-gray-50 rounded-lg">
                   <p className="text-sm text-gray-500">{country}</p>
-                  <p className="font-medium text-gray-900">{rate}</p>
+                  <p className="font-medium text-gray-900">{String(rate)}</p>
                 </div>
               ))}
             </div>

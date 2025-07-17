@@ -122,6 +122,9 @@ const LandingPageEditor: React.FC = () => {
     // Load content from database
     const fetchContent = async () => {
       try {
+        if (!supabase) {
+          throw new Error('Supabase not configured');
+        }
         const { data, error } = await supabase
           .from('landing_page_content')
           .select('*')
@@ -147,6 +150,9 @@ const LandingPageEditor: React.FC = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      if (!supabase) {
+        throw new Error('Supabase not configured');
+      }
       const { data, error } = await supabase
         .from('landing_page_content')
         .upsert({
