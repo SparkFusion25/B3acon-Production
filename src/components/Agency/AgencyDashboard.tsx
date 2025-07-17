@@ -30,6 +30,8 @@ import {
   FTAChecker,
   OceanFreightPortal
 } from './AgencyModules/AgencyModules';
+import ShopifySEODashboard from './AgencyModules/ShopifySEODashboard';
+import AmazonSEOOptimizer from './AgencyModules/AmazonSEOOptimizer';
 import { mockAgencyData } from '../../data/mockAgencyData';
 import { toast } from 'react-hot-toast';
 
@@ -93,6 +95,10 @@ const AgencyDashboard: React.FC = () => {
         return <HSCodeFinder />;
       case 'ocean-freight':
         return <OceanFreightPortal />;
+      case 'shopify-seo':
+        return <ShopifySEODashboard />;
+      case 'amazon-seo':
+        return <AmazonSEOOptimizer />;
       default:
         return <AgencyOverview data={mockAgencyData.overview} />;
     }

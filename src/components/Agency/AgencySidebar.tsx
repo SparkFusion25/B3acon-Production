@@ -26,7 +26,8 @@ import {
   Package,
   DollarSign,
   ShieldCheck,
-  Ship
+  Ship,
+  Store
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -65,6 +66,8 @@ const AgencySidebar: React.FC<AgencySidebarProps> = ({ activeModule, onModuleCha
     { id: 'ocean-freight', label: 'Ocean Freight Portal', icon: Ship, gradient: 'from-blue-600 to-indigo-600', premium: true },
     { id: 'google', label: 'Google Services', icon: Search, gradient: 'from-beacon-orange to-red-500' },
     { id: 'seo', label: 'SEO Intelligence', icon: TrendingUp, gradient: 'from-signal-blue to-cyan-500' },
+    { id: 'shopify-seo', label: 'Shopify SEO Optimizer', icon: Store, gradient: 'from-green-500 to-emerald-600', premium: true },
+    { id: 'amazon-seo', label: 'Amazon SEO Optimizer', icon: Store, gradient: 'from-orange-500 to-amber-600', premium: true },
     { id: 'social', label: 'Social Media Center', icon: MessageCircle, gradient: 'from-beacon-orange to-pink-500' },
     { id: 'shopify', label: 'Shopify Integration', icon: ShoppingBag, gradient: 'from-signal-blue to-green-600' },
     { id: 'creative', label: 'Creative Studio', icon: Palette, gradient: 'from-beacon-orange to-purple-500' },
