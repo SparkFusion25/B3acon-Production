@@ -1,11 +1,19 @@
 {
+  "version": 2,
   "buildCommand": "npm run build",
   "framework": "vite",
-  "installCommand": "rm -rf node_modules package-lock.json && npm install",
+  "installCommand": "npm install --no-optional --prefer-offline",
+  "outputDirectory": "dist",
   "env": {
     "CI": "false",
+    "NODE_ENV": "production",
     "DISABLE_ESLINT_PLUGIN": "true",
     "SKIP_PREFLIGHT_CHECK": "true",
-    "npm_config_optional": "false"
+    "NPM_CONFIG_OPTIONAL": "false"
+  },
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
   }
 }

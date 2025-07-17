@@ -6,15 +6,29 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],
+    include: ['react', 'react-dom', '@supabase/supabase-js']
   },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
     cssCodeSplit: false,
+    target: 'esnext',
+    minify: 'terser',
     rollupOptions: {
+      external: [],
       output: {
-        manualChunks: undefined,
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('lucide-react')) {
+              return 'icons';
+            }
+            return 'vendor';
+          }
+        },
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
@@ -30,6 +44,9 @@ export default defineConfig({
     },
   },
   css: {
-    postcss: './postcss.config.js',
+    postcss: './postcss.config.cjs',
+  },
+  define: {
+    global: 'globalThis',
   },
 })
