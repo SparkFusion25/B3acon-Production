@@ -1,3 +1,0 @@
-git add .
-git commit -m "Fix Rollup build errors - update Vite to 5.4.0"
-git push origin main
