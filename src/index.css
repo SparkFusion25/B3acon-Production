@@ -1,3 +1,6 @@
+/* Import B3ACON Shopify App Styles */
+@import './styles/shopify-app.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

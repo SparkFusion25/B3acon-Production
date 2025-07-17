@@ -9,11 +9,18 @@ import {
   BarChart3,
   Eye,
   Save,
-  Play
+  Play,
+  ExternalLink,
+  Zap,
+  ArrowRight
 } from 'lucide-react';
+import ShopifyLanding from '../Shopify/ShopifyLanding';
+import ShopifyDashboard from '../Shopify/ShopifyDashboard';
+import ShopifyInstallation from '../Shopify/ShopifyInstallation';
 
 const ShopifyIntegration = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'installation', 'dashboard'
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -141,17 +148,138 @@ const ShopifyIntegration = () => {
     }
   };
 
+  // Route to the appropriate B3ACON Shopify App view
+  if (currentView === 'landing') {
+    return <ShopifyLanding />;
+  }
+  
+  if (currentView === 'installation') {
+    return <ShopifyInstallation />;
+  }
+  
+  if (currentView === 'dashboard') {
+    return <ShopifyDashboard />;
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Shopify Integration</h1>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-green-600 font-medium">Connected</span>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">B3ACON Shopify App</h1>
+          <p className="text-gray-600 mt-2">Your Command Center for eCommerce Growth</p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <button 
+            onClick={() => setCurrentView('landing')}
+            className="btn-secondary px-4 py-2 h-auto text-sm"
+          >
+            <ExternalLink className="w-4 h-4" />
+            View Landing Page
+          </button>
+          <button 
+            onClick={() => setCurrentView('dashboard')}
+            className="btn-primary px-4 py-2 h-auto text-sm"
+          >
+            <BarChart3 className="w-4 h-4" />
+            Open Dashboard
+          </button>
         </div>
       </div>
 
-      {/* Tab Navigation */}
+      {/* Quick Navigation Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div 
+          onClick={() => setCurrentView('landing')}
+          className="b3acon-card cursor-pointer hover:shadow-lg transition-all"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-lime-100 rounded-lg flex items-center justify-center">
+              <Zap className="w-6 h-6 text-lime-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Landing Page</h3>
+              <p className="text-sm text-gray-600">Marketing site for the B3ACON app</p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center text-lime-600 text-sm font-medium">
+            View Page <ArrowRight className="w-4 h-4 ml-1" />
+          </div>
+        </div>
+
+        <div 
+          onClick={() => setCurrentView('installation')}
+          className="b3acon-card cursor-pointer hover:shadow-lg transition-all"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Settings className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Installation Flow</h3>
+              <p className="text-sm text-gray-600">OAuth setup and onboarding process</p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center text-blue-600 text-sm font-medium">
+            Start Installation <ArrowRight className="w-4 h-4 ml-1" />
+          </div>
+        </div>
+
+        <div 
+          onClick={() => setCurrentView('dashboard')}
+          className="b3acon-card cursor-pointer hover:shadow-lg transition-all"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-6 h-6 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">App Dashboard</h3>
+              <p className="text-sm text-gray-600">Main application interface</p>
+            </div>
+          </div>
+          <div className="mt-4 flex items-center text-purple-600 text-sm font-medium">
+            Open Dashboard <ArrowRight className="w-4 h-4 ml-1" />
+          </div>
+        </div>
+      </div>
+
+      {/* Feature Overview */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">B3ACON Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="w-4 h-4 text-green-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">SEO Score Tracking</h3>
+              <p className="text-sm text-gray-600">Real-time SEO analysis with actionable insights</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Play className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">Internal Linking</h3>
+              <p className="text-sm text-gray-600">AI-powered internal link automation</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-3">
+            <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <ShoppingBag className="w-4 h-4 text-purple-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">Amazon Sync</h3>
+              <p className="text-sm text-gray-600">Cross-platform inventory management</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Legacy Tab Navigation for Reference */}
       <div className="bg-white rounded-lg shadow-md">
         <div className="border-b border-gray-200">
           <nav className="flex overflow-x-auto">
@@ -161,7 +289,7 @@ const ShopifyIntegration = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 px-6 py-4 border-b-2 transition-colors whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600 bg-blue-50'
+                    ? 'border-lime-500 text-lime-600 bg-lime-50'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
