@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket, Target, Eye, Zap, Globe, MessageCircle, Megaphone, Mail, Star } from 'lucide-react';
+import { ShoppingBag, BarChart3, Package, TrendingUp, Settings, Tag, CreditCard, Users, ShoppingCart, Check, AlertCircle, RefreshCw, Download, ExternalLink, Search, ShoppingBasket, Eye, Zap, Globe, MessageCircle, Megaphone, Mail, Star } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import amazonApi from '../../../lib/amazonApi';
 import { serpApiService } from '../../../lib/serpApiService';
@@ -34,12 +34,7 @@ const ShopifyIntegration: React.FC = () => {
     results: [] as any[],
     isLoading: false
   });
-  const [competitorAnalysis, setCompetitorAnalysis] = useState({
-    competitors: '',
-    products: '',
-    results: [] as any[],
-    isLoading: false
-  });
+
   const [trendAnalysis, setTrendAnalysis] = useState({
     keywords: '',
     results: null as any,
@@ -167,59 +162,7 @@ const ShopifyIntegration: React.FC = () => {
     }
   };
 
-  // Competitor Analysis for E-commerce
-  const handleCompetitorAnalysis = async () => {
-    if (!competitorAnalysis.competitors.trim() || !competitorAnalysis.products.trim()) {
-      toast.error('Please enter both competitors and products to analyze');
-      return;
-    }
 
-    setCompetitorAnalysis(prev => ({ ...prev, isLoading: true }));
-    try {
-      const competitorList = competitorAnalysis.competitors.split(',').map(c => c.trim());
-      const productList = competitorAnalysis.products.split(',').map(p => p.trim());
-      
-      const analysisResults: any[] = [];
-      
-      for (const competitor of competitorList) {
-        for (const product of productList) {
-          const searchQuery = `site:${competitor} ${product}`;
-          const searchResult = await serpApiService.searchGoogle({
-            q: searchQuery,
-            num: 10
-          });
-
-          // Also check shopping results for the competitor
-          const shoppingQuery = `${competitor} ${product}`;
-          const shoppingResult = await serpApiService.analyzeShopping(shoppingQuery);
-
-          analysisResults.push({
-            competitor,
-            product,
-            organicResults: searchResult.organic_results.length,
-            shoppingPresence: shoppingResult.shopping_results?.length || 0,
-            topResult: searchResult.organic_results[0],
-            shoppingListings: shoppingResult.shopping_results?.slice(0, 3) || []
-          });
-
-          // Rate limiting
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
-      }
-
-      setCompetitorAnalysis(prev => ({
-        ...prev,
-        results: analysisResults,
-        isLoading: false
-      }));
-
-      toast.success(`Analyzed ${analysisResults.length} competitor-product combinations`);
-    } catch (error) {
-      console.error('Competitor analysis failed:', error);
-      toast.error('Failed to analyze competitors. Check your SerpAPI configuration.');
-      setCompetitorAnalysis(prev => ({ ...prev, isLoading: false }));
-    }
-  };
 
   // Trend Analysis for Product Planning
   const handleTrendAnalysis = async () => {
@@ -915,94 +858,7 @@ const ShopifyIntegration: React.FC = () => {
     </div>
   );
 
-  const renderCompetitorAnalysis = () => (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">E-commerce Competitor Analysis</h3>
-        <p className="text-gray-600 mb-6">Analyze competitor product listings, pricing strategies, and market presence.</p>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Competitor Domains (comma-separated)
-            </label>
-            <textarea
-              value={competitorAnalysis.competitors}
-              onChange={(e) => setCompetitorAnalysis(prev => ({ ...prev, competitors: e.target.value }))}
-              placeholder="amazon.com, etsy.com, shopify-store.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
-              rows={3}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Products to Analyze (comma-separated)
-            </label>
-            <textarea
-              value={competitorAnalysis.products}
-              onChange={(e) => setCompetitorAnalysis(prev => ({ ...prev, products: e.target.value }))}
-              placeholder="wireless headphones, bluetooth speakers, phone cases"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-signal-blue focus:border-transparent"
-              rows={3}
-            />
-          </div>
-        </div>
-        
-        <button
-          onClick={handleCompetitorAnalysis}
-          disabled={competitorAnalysis.isLoading || !competitorAnalysis.competitors.trim() || !competitorAnalysis.products.trim()}
-          className="px-6 py-2 bg-gradient-to-r from-signal-blue to-beacon-orange text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-        >
-          {competitorAnalysis.isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Target className="w-4 h-4" />}
-          <span>{competitorAnalysis.isLoading ? 'Analyzing...' : 'Analyze Competitors'}</span>
-        </button>
 
-        {/* Competitor Analysis Results */}
-        {competitorAnalysis.results.length > 0 && (
-          <div className="mt-8">
-            <h4 className="text-lg font-medium text-gray-900 mb-4">Competitor Analysis Results</h4>
-            <div className="space-y-4">
-              {competitorAnalysis.results.map((result, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h5 className="font-medium text-gray-900">{result.competitor} - {result.product}</h5>
-                    <div className="flex items-center space-x-4 text-sm">
-                      <span className="text-blue-600">{result.organicResults} organic results</span>
-                      <span className="text-green-600">{result.shoppingPresence} shopping listings</span>
-                    </div>
-                  </div>
-                  
-                  {result.topResult && (
-                    <div className="bg-gray-50 rounded-lg p-3 mb-3">
-                      <h6 className="font-medium text-sm text-gray-900 mb-1">Top Organic Result:</h6>
-                      <p className="text-sm text-gray-700 line-clamp-2">{result.topResult.title}</p>
-                      <a href={result.topResult.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline">
-                        {result.topResult.link}
-                      </a>
-                    </div>
-                  )}
-                  
-                  {result.shoppingListings && result.shoppingListings.length > 0 && (
-                    <div>
-                      <h6 className="font-medium text-sm text-gray-900 mb-2">Shopping Listings:</h6>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                        {result.shoppingListings.map((listing: any, idx: number) => (
-                          <div key={idx} className="border border-gray-200 rounded p-2 text-sm">
-                            <p className="font-medium text-gray-900 line-clamp-1">{listing.title}</p>
-                            <p className="text-green-600 font-bold">{listing.price}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
 
   const renderTrendAnalysis = () => (
     <div className="space-y-6">
@@ -1100,14 +956,12 @@ const ShopifyIntegration: React.FC = () => {
     { id: 'overview', label: 'Overview', icon: ShoppingBag },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'product-research', label: 'Product Research', icon: Search },
-    { id: 'competitor-analysis', label: 'Competitor Analysis', icon: Target },
     { id: 'trend-analysis', label: 'Trend Analysis', icon: TrendingUp },
     { id: 'amazon', label: 'Amazon', icon: ShoppingBasket },
     { id: 'ai-popups', label: 'AI Popups', icon: MessageCircle },
     { id: 'announcements', label: 'Announcements', icon: Megaphone },
     { id: 'email-integration', label: 'Email Forms', icon: Mail },
     { id: 'review-management', label: 'Reviews', icon: Star },
-    { id: 'shopify-prospecting', label: 'Store Prospecting', icon: Users },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 }
   ];
 
@@ -1146,7 +1000,6 @@ const ShopifyIntegration: React.FC = () => {
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'products' && renderProducts()}
         {activeTab === 'product-research' && renderProductResearch()}
-        {activeTab === 'competitor-analysis' && renderCompetitorAnalysis()}
         {activeTab === 'trend-analysis' && renderTrendAnalysis()}
         {activeTab === 'amazon' && renderAmazon()}
         {activeTab === 'ai-popups' && <AiPopupGenerator />}
@@ -1157,13 +1010,6 @@ const ShopifyIntegration: React.FC = () => {
             <Star className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Review Management</h3>
             <p className="text-gray-600">Universal review management across Google, Amazon, and Shopify coming soon</p>
-          </div>
-        )}
-        {activeTab === 'shopify-prospecting' && (
-          <div className="text-center py-12">
-            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Shopify Store Prospecting</h3>
-            <p className="text-gray-600">Find and analyze potential Shopify store clients for your marketing services</p>
           </div>
         )}
         {activeTab === 'analytics' && renderAnalytics()}
