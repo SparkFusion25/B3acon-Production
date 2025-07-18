@@ -124,6 +124,42 @@ CREATE TABLE IF NOT EXISTS shopify_analytics (
   UNIQUE(store_id, date)
 );
 
+-- Create GDPR requests table for tracking compliance requests
+CREATE TABLE IF NOT EXISTS gdpr_requests (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  request_type VARCHAR(50) NOT NULL, -- 'data_request', 'customer_redact', 'shop_redact'
+  shop_domain VARCHAR(255) NOT NULL,
+  customer_id VARCHAR(100),
+  customer_email VARCHAR(255),
+  request_data JSONB,
+  status VARCHAR(50) DEFAULT 'pending', -- 'pending', 'completed', 'failed'
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create app events table for logging important events
+CREATE TABLE IF NOT EXISTS app_events (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  event_type VARCHAR(100) NOT NULL,
+  shop_domain VARCHAR(255),
+  user_id VARCHAR(100),
+  event_data JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create customer analytics table for tracking customer-specific data
+CREATE TABLE IF NOT EXISTS customer_analytics (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  store_id UUID REFERENCES shopify_stores(id) ON DELETE CASCADE,
+  customer_id VARCHAR(100) NOT NULL,
+  metric_name VARCHAR(100) NOT NULL,
+  metric_value DECIMAL(10,2),
+  metric_data JSONB,
+  date DATE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(store_id, customer_id, metric_name, date)
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_shopify_stores_domain ON shopify_stores(shop_domain);
 CREATE INDEX IF NOT EXISTS idx_shopify_stores_active ON shopify_stores(is_active);
@@ -135,6 +171,11 @@ CREATE INDEX IF NOT EXISTS idx_shopify_orders_created ON shopify_orders(shopify_
 CREATE INDEX IF NOT EXISTS idx_shopify_customers_store ON shopify_customers(store_id);
 CREATE INDEX IF NOT EXISTS idx_shopify_customers_email ON shopify_customers(email);
 CREATE INDEX IF NOT EXISTS idx_shopify_analytics_store_date ON shopify_analytics(store_id, date);
+CREATE INDEX IF NOT EXISTS idx_gdpr_requests_shop ON gdpr_requests(shop_domain);
+CREATE INDEX IF NOT EXISTS idx_gdpr_requests_type ON gdpr_requests(request_type);
+CREATE INDEX IF NOT EXISTS idx_app_events_shop ON app_events(shop_domain);
+CREATE INDEX IF NOT EXISTS idx_app_events_type ON app_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_customer_analytics_store ON customer_analytics(store_id);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -153,6 +194,7 @@ CREATE TRIGGER update_shopify_orders_updated_at BEFORE UPDATE ON shopify_orders 
 CREATE TRIGGER update_shopify_customers_updated_at BEFORE UPDATE ON shopify_customers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_shopify_webhooks_updated_at BEFORE UPDATE ON shopify_webhooks FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_shopify_analytics_updated_at BEFORE UPDATE ON shopify_analytics FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_gdpr_requests_updated_at BEFORE UPDATE ON gdpr_requests FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Insert initial app configuration (you'll need to update these values)
 INSERT INTO app_config (key, value, description) VALUES 
@@ -171,6 +213,9 @@ ALTER TABLE shopify_orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shopify_customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shopify_webhooks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shopify_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE gdpr_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE app_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE customer_analytics ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies (adjust based on your authentication system)
 CREATE POLICY "Allow authenticated users to read app_config" ON app_config
@@ -192,4 +237,13 @@ CREATE POLICY "Allow all operations on shopify_webhooks" ON shopify_webhooks
   FOR ALL USING (true);
 
 CREATE POLICY "Allow all operations on shopify_analytics" ON shopify_analytics
+  FOR ALL USING (true);
+
+CREATE POLICY "Allow all operations on gdpr_requests" ON gdpr_requests
+  FOR ALL USING (true);
+
+CREATE POLICY "Allow all operations on app_events" ON app_events
+  FOR ALL USING (true);
+
+CREATE POLICY "Allow all operations on customer_analytics" ON customer_analytics
   FOR ALL USING (true);
