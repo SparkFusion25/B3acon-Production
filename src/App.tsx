@@ -14,6 +14,7 @@ import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
+import ShopifyAuthCallback from './components/Shopify/ShopifyAuthCallback';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
@@ -30,11 +31,12 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
-      {/* Public Shopify App Routes - Always Available */}
-      <Route path="/shopify" element={<PremiumShopifyLanding />} />
-      <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
-      <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
-      <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+              {/* Public Shopify App Routes - Always Available */}
+        <Route path="/shopify" element={<PremiumShopifyLanding />} />
+        <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
+        <Route path="/shopify/auth/callback" element={<ShopifyAuthCallback />} />
+        <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
+        <Route path="/shopify/admin" element={<ShopifyAdmin />} />
       
       {/* Legacy Routes for Testing */}
       <Route path="/shopify/legacy" element={<ShopifyLanding />} />

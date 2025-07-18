@@ -19,8 +19,11 @@ import {
   Filter,
   Calendar,
   Download,
-  Sparkles
+  Sparkles,
+  RefreshCw,
+  AlertCircle
 } from 'lucide-react';
+import { shopifyApi } from '../../services/shopifyApi';
 import '../../styles/premium-design-system.css';
 
 interface MetricData {
@@ -42,47 +45,94 @@ const PremiumShopifyDashboard = () => {
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [storeData, setStoreData] = useState<any>(null);
+  const [error, setError] = useState<string>('');
+  const [isConnected, setIsConnected] = useState(false);
+  const [storeName, setStoreName] = useState('');
 
   useEffect(() => {
-    // Simulate loading and data fetching
-    setTimeout(() => {
+    loadStoreData();
+  }, []);
+
+  const loadStoreData = async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      // Check if store is connected
+      const connectedStore = localStorage.getItem('shopify_connected_store');
+      
+      if (!connectedStore) {
+        setError('No store connected. Please connect your Shopify store first.');
+        setIsLoading(false);
+        return;
+      }
+
+      setStoreName(connectedStore);
+      
+      // Get store connection from Supabase
+      const store = await shopifyApi.getConnectedStore(connectedStore);
+      
+      if (!store) {
+        setError('Store connection not found. Please reconnect your store.');
+        setIsLoading(false);
+        return;
+      }
+
+      setIsConnected(true);
+      
+      // Fetch analytics data
+      const analytics = await shopifyApi.getStoreAnalytics(store.domain, store.accessToken);
+      setStoreData(analytics);
+
+      // Convert analytics to metrics format
+      const revenue = analytics.totalRevenue || 0;
+      const orders = analytics.totalOrders || 0;
+      const customers = analytics.totalCustomers || 0;
+      const avgOrderValue = analytics.averageOrderValue || 0;
+
       setMetrics([
         {
-          value: '$47,293',
-          change: '+12.5%',
+          value: `$${revenue.toLocaleString()}`,
+          change: '+12.5%', // TODO: Calculate real change from historical data
           trend: 'up',
           icon: TrendingUp,
           color: 'emerald',
           description: 'Total Revenue'
         },
         {
-          value: '94/100',
-          change: '+8 points',
+          value: orders.toLocaleString(),
+          change: `+${Math.round(orders * 0.15)}`, // Rough calculation
+          trend: 'up',
+          icon: ShoppingBag,
+          color: 'blue',
+          description: 'Total Orders'
+        },
+        {
+          value: `$${avgOrderValue.toFixed(2)}`,
+          change: '+$2.50', // Rough calculation
           trend: 'up',
           icon: Target,
-          color: 'blue',
-          description: 'SEO Score'
-        },
-        {
-          value: '4.2%',
-          change: '+0.8%',
-          trend: 'up',
-          icon: Eye,
           color: 'purple',
-          description: 'Conversion Rate'
+          description: 'Avg Order Value'
         },
         {
-          value: '12,847',
-          change: '+1,203',
+          value: customers.toLocaleString(),
+          change: `+${Math.round(customers * 0.12)}`, // Rough calculation
           trend: 'up',
           icon: Users,
           color: 'pink',
-          description: 'Total Visitors'
+          description: 'Total Customers'
         }
       ]);
       setIsLoading(false);
-    }, 1000);
-  }, []);
+
+    } catch (error) {
+      console.error('❌ Error loading store data:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load store data');
+      setIsLoading(false);
+    }
+  };
 
   const revenueData: ChartData[] = [
     { name: 'Mon', value: 4000 },
@@ -204,6 +254,35 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
+            <AlertCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Connection Error</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <div className="space-y-3">
+            <button
+              onClick={loadStoreData}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry Connection
+            </button>
+            <button
+              onClick={() => window.location.href = '/shopify/install'}
+              className="w-full text-gray-600 hover:text-gray-800 transition-colors duration-200"
+            >
+              Reconnect Store
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
       {/* Top Navigation */}
@@ -220,7 +299,9 @@ const PremiumShopifyDashboard = () => {
               
               <div className="hidden md:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
+                <span className="text-emerald-700 text-sm font-medium">
+                  {storeName ? `${storeName}.myshopify.com` : 'Loading...'}
+                </span>
               </div>
             </div>
             

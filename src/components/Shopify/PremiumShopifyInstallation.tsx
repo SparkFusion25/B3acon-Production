@@ -19,6 +19,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
+import { shopifyApi } from '../../services/shopifyApi';
 import '../../styles/premium-design-system.css';
 
 interface InstallationStep {
@@ -36,6 +37,8 @@ const PremiumShopifyInstallation = () => {
   const [selectedPlan, setSelectedPlan] = useState('growth');
   const [storeUrl, setStoreUrl] = useState('');
   const [animationKey, setAnimationKey] = useState(0);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionError, setConnectionError] = useState('');
 
   const installationSteps: InstallationStep[] = [
     {
@@ -133,8 +136,47 @@ const PremiumShopifyInstallation = () => {
     { icon: TrendingUp, text: '247% average revenue increase' },
     { icon: Users, text: 'Join 50,000+ successful stores' },
     { icon: Award, text: 'Shopify App Store Editor\'s Choice' },
-    { icon: Shield, text: 'Enterprise-grade security' }
+    { icon: Shield, text: 'Enterprise-grade security'     }
   ];
+
+  const handleConnectStore = async () => {
+    if (!storeUrl.trim()) {
+      setConnectionError('Please enter your store URL');
+      return;
+    }
+
+    setIsConnecting(true);
+    setConnectionError('');
+
+    try {
+      // Clean the store URL (remove https://, .myshopify.com, etc.)
+      const cleanStoreUrl = storeUrl
+        .replace(/^https?:\/\//, '')
+        .replace(/\.myshopify\.com\/?$/, '')
+        .replace(/\/$/, '');
+
+      // Validate store URL format
+      if (!/^[a-zA-Z0-9-]+$/.test(cleanStoreUrl)) {
+        throw new Error('Invalid store URL format. Please use only letters, numbers, and hyphens.');
+      }
+
+      // Check if Shopify API is configured
+      if (!shopifyApi.isConfigured()) {
+        throw new Error('Shopify API is not configured. Please contact support.');
+      }
+
+      // Generate OAuth URL and redirect
+      const authUrl = shopifyApi.generateAuthUrl(cleanStoreUrl);
+      
+      // Redirect to Shopify OAuth
+      window.location.href = authUrl;
+
+    } catch (error) {
+      console.error('❌ Store connection error:', error);
+      setConnectionError(error instanceof Error ? error.message : 'Failed to connect store');
+      setIsConnecting(false);
+    }
+  };
 
   useEffect(() => {
     if (isInstalling && currentStep < steps.length) {
@@ -218,14 +260,26 @@ const PremiumShopifyInstallation = () => {
               <input
                 type="text"
                 value={storeUrl}
-                onChange={(e) => setStoreUrl(e.target.value)}
-                placeholder="mystore.myshopify.com"
+                onChange={(e) => {
+                  setStoreUrl(e.target.value);
+                  setConnectionError('');
+                }}
+                placeholder="your-store-name"
                 className="input-premium text-center text-lg"
+                disabled={isConnecting}
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <Store className="w-5 h-5 text-gray-400" />
               </div>
+              <div className="absolute right-16 top-1/2 transform -translate-y-1/2 text-indigo-300 text-sm">
+                .myshopify.com
+              </div>
             </div>
+            {connectionError && (
+              <div className="mt-2 p-2 bg-red-500/20 border border-red-500/30 rounded-lg">
+                <p className="text-red-300 text-sm text-center">{connectionError}</p>
+              </div>
+            )}
             <p className="text-xs text-indigo-300 mt-2 text-center">
               We'll securely connect to your store via OAuth
             </p>
@@ -234,13 +288,22 @@ const PremiumShopifyInstallation = () => {
 
         <div className="text-center">
           <button 
-            onClick={startInstallation}
+            onClick={handleConnectStore}
             className="btn-premium btn-primary btn-large mx-auto group"
-            disabled={!storeUrl.trim()}
+            disabled={!storeUrl.trim() || isConnecting}
           >
-            <Shield className="w-5 h-5 mr-2" />
-            <span>Connect Securely</span>
-            <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            {isConnecting ? (
+              <>
+                <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                <span>Connecting...</span>
+              </>
+            ) : (
+              <>
+                <Shield className="w-5 h-5 mr-2" />
+                <span>Connect Securely</span>
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
           
           <p className="text-indigo-300 text-sm mt-4">
