@@ -25,6 +25,7 @@ interface AuthContextType {
   currentClientId: string | null;
   isLoading: boolean;
   login: (email: string, password: string, type: 'agency' | 'client') => Promise<void>;
+  loginDemo: () => Promise<void>;
   signup: (email: string, password: string, name: string, company: string, type: 'agency' | 'client') => Promise<void>;
   loginWithSocial: (provider: SocialProvider, type: 'agency' | 'client') => Promise<void>;
   logout: () => void;
@@ -319,7 +320,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.removeItem('b3acon_user');
       localStorage.removeItem('b3acon_user_type');
       toast.success('Logged out successfully');
-      window.location.href = '/';
+      // Let React Router handle the redirect through ProtectedRoute
     }, 100);
     
     // Store the timeout ID for cleanup
@@ -330,6 +331,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setCurrentClientId(clientId);
     setUserType('client');
     toast.success('Switched to client view');
+  };
+
+  const loginDemo = async () => {
+    try {
+      const demoUser: User = {
+        id: 'demo-user-b3acon',
+        name: 'Demo User',
+        email: 'demo@b3acon.com',
+        role: 'admin',
+        subscription: 'pro',
+        company: 'B3ACON Demo',
+        addOns: ['landing_page_builder', 'ai_assistant'],
+        avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
+      };
+
+      const timeoutId = window.setTimeout(() => {
+        setUser(demoUser);
+        setUserType('agency');
+        setIsAuthenticated(true);
+        
+        // Save to localStorage
+        localStorage.setItem('b3acon_user', JSON.stringify(demoUser));
+        localStorage.setItem('b3acon_user_type', 'agency');
+        toast.success(`Welcome to B3ACON Demo! Full access granted.`);
+      }, 100);
+      
+      // Store the timeout ID for cleanup
+      setAuthTimeouts(prev => [...prev, timeoutId]);
+    } catch (error) {
+      console.error('Demo login error:', error);
+      toast.error('Demo login failed. Please try again.');
+      throw error;
+    }
   };
 
   const switchToAgency = () => {
@@ -352,6 +386,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     currentClientId,
     isLoading,
     login,
+    loginDemo,
     signup,
     loginWithSocial,
     logout,

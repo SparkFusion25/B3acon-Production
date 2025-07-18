@@ -14,7 +14,8 @@ import {
   Award,
   Zap
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/premium-b3acon-design-system.css';
 
 interface FeatureHighlightProps {
@@ -279,6 +280,14 @@ export const PremiumLoginForm: React.FC = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{email?: string; password?: string}>({});
+  const { login, loginDemo, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,11 +306,22 @@ export const PremiumLoginForm: React.FC = () => {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      window.location.href = '/dashboard';
+      await login(credentials.email, credentials.password, 'agency');
+      // Navigation will be handled by the useEffect when isAuthenticated changes
     } catch (error) {
       setErrors({ email: 'Invalid email or password' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setLoading(true);
+    try {
+      await loginDemo();
+      // Navigation will be handled by the useEffect when isAuthenticated changes
+    } catch (error) {
+      setErrors({ email: 'Demo login failed. Please try again.' });
     } finally {
       setLoading(false);
     }
@@ -360,8 +380,27 @@ export const PremiumLoginForm: React.FC = () => {
           <span>Sign In to Dashboard</span>
           <ArrowRight className="w-5 h-5 ml-2" />
         </PremiumButton>
-        
+
         <div className="text-center">
+          <div className="flex items-center my-6">
+            <div className="flex-1 border-t border-gray-600"></div>
+            <span className="px-4 text-gray-400 text-sm">or</span>
+            <div className="flex-1 border-t border-gray-600"></div>
+          </div>
+        </div>
+
+        <PremiumButton 
+          type="button" 
+          onClick={handleDemoLogin}
+          loading={loading}
+          className="w-full"
+          variant="outline"
+          size="large"
+        >
+          <span>🚀 Try Demo Account - Full Access</span>
+        </PremiumButton>
+        
+        <div className="text-center mt-6">
           <p className="text-gray-400">
             Don't have an account?{' '}
             <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
@@ -386,6 +425,14 @@ export const PremiumSignupForm: React.FC = () => {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { signup, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -409,9 +456,9 @@ export const PremiumSignupForm: React.FC = () => {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      window.location.href = '/dashboard';
+      const fullName = `${formData.firstName} ${formData.lastName}`;
+      await signup(formData.email, formData.password, fullName, formData.company || '', 'agency');
+      // Navigation will be handled by the useEffect when isAuthenticated changes
     } catch (error) {
       setErrors({ email: 'An error occurred. Please try again.' });
     } finally {

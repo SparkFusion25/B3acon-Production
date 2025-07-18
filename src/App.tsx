@@ -14,6 +14,7 @@ import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
+import ShopifyAuthCallback from './components/Shopify/ShopifyAuthCallback';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
@@ -30,24 +31,26 @@ const AppRoutes: React.FC = () => {
 
   return (
     <Routes>
-      {/* Public Shopify App Routes - Always Available */}
-      <Route path="/shopify" element={<PremiumShopifyLanding />} />
-      <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
-      <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
-      <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+              {/* Public Shopify App Routes - Always Available */}
+        <Route path="/shopify" element={<PremiumShopifyLanding />} />
+        <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
+        <Route path="/shopify/auth/callback" element={<ShopifyAuthCallback />} />
+        <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
+        <Route path="/shopify/admin" element={<ShopifyAdmin />} />
       
-             {/* Legacy Routes for Testing */}
-       <Route path="/shopify/legacy" element={<ShopifyLanding />} />
-       <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
-       <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
+      {/* Legacy Routes for Testing */}
+      <Route path="/shopify/legacy" element={<ShopifyLanding />} />
+      <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
+      <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
       
-              {/* Premium Auth Routes */}
-        <Route path="/login" element={<PremiumLoginForm />} />
-        <Route path="/signup" element={<PremiumSignupForm />} />
-        
-        {/* Legacy Auth Routes */}
-        <Route path="/auth/legacy-login" element={<LoginPage />} />
-        <Route path="/auth/legacy-signup" element={<LoginPage initialMode="signup" />} />
+      {/* Premium Auth Routes */}
+      <Route path="/login" element={<PremiumLoginForm />} />
+      <Route path="/signup" element={<PremiumSignupForm />} />
+      
+      {/* Legacy Auth Routes */}
+      <Route path="/auth/legacy-login" element={<LoginPage />} />
+      <Route path="/auth/legacy-signup" element={<LoginPage initialMode="signup" />} />
+
       <Route path="/plans" element={<PlanSelectionPage viewOnly={!isAuthenticated} />} />
 
       {/* Conditional Routing Based on Authentication */}

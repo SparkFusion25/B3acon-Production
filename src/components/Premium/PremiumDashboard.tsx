@@ -28,6 +28,20 @@ import {
   Zap
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import SEOIntelligenceView from './SEOIntelligenceView';
+import CRMHubView from './CRMHubView';
+// Import NEW Premium functional components (not old Agency ones)
+import PremiumSEOIntelligence from './PremiumSEOIntelligence';
+import PremiumLeadProspecting from './PremiumLeadProspecting';
+import PremiumSocialMedia from './PremiumSocialMedia';
+import PremiumCRMHub from './PremiumCRMHub';
+import PremiumClientManagement from './PremiumClientManagement';
+import PremiumTeamManagement from './PremiumTeamManagement';
+import PremiumShopifyIntegration from './PremiumShopifyIntegration';
+import GlobalCommerceHub from './GlobalCommerceHub';
+import { 
+  AdminPanelView 
+} from './PlaceholderViews';
 import '../../styles/premium-b3acon-design-system.css';
 
 interface NavigationItem {
@@ -74,9 +88,15 @@ const PremiumButton: React.FC<PremiumButtonProps> = ({
   );
 };
 
-const PremiumSidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = ({ collapsed, onToggle }) => {
+const PremiumSidebar: React.FC<{ 
+  collapsed: boolean; 
+  onToggle: () => void;
+  activeSection: string;
+  activeSubSection: string;
+  setActiveSection: (section: string) => void;
+  setActiveSubSection: (section: string) => void;
+}> = ({ collapsed, onToggle, activeSection, activeSubSection, setActiveSection, setActiveSubSection }) => {
   const [expandedItems, setExpandedItems] = useState<string[]>(['crm', 'global-commerce', 'seo']);
-  const location = useLocation();
 
   const navigationItems: NavigationItem[] = [
     {
@@ -195,15 +215,29 @@ const PremiumSidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = (
   };
 
   const NavigationItem: React.FC<{ item: NavigationItem; level?: number }> = ({ item, level = 0 }) => {
-    const isActive = location.pathname === item.route;
+    const isActive = activeSection === item.id || (activeSubSection && activeSubSection === item.id);
     const isExpanded = expandedItems.includes(item.id);
     const hasChildren = item.children && item.children.length > 0;
 
+    const handleClick = (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (hasChildren) {
+        toggleExpanded(item.id);
+      } else {
+        // Set active section based on whether it's a main section or subsection
+        if (level === 0) {
+          setActiveSection(item.id);
+          setActiveSubSection('');
+        } else {
+          setActiveSubSection(item.id);
+        }
+      }
+    };
+
     return (
       <div>
-        <Link
-          to={item.route}
-          onClick={() => hasChildren ? toggleExpanded(item.id) : undefined}
+        <button
+          onClick={handleClick}
           className={`
             nav-item group w-full text-left
             ${level > 0 ? 'ml-6 text-sm' : ''}
@@ -238,7 +272,7 @@ const PremiumSidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = (
               </>
             )}
           </div>
-        </Link>
+        </button>
         
         {hasChildren && !collapsed && isExpanded && (
           <div className="ml-4 mt-1 space-y-1">
@@ -490,6 +524,8 @@ const QuickActionsDashboard: React.FC = () => {
 const PremiumDashboard: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [metrics, setMetrics] = useState<MetricData[]>([]);
+  const [activeSection, setActiveSection] = useState('dashboard');
+  const [activeSubSection, setActiveSubSection] = useState('');
 
   useEffect(() => {
     // Simulate loading metrics
@@ -529,12 +565,114 @@ const PremiumDashboard: React.FC = () => {
     ]);
   }, []);
 
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return (
+          <>
+            {/* Welcome Section */}
+            <div className="mb-8 animate-fade-in">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Good morning, <span className="text-gradient-primary">Alex! 👋</span>
+                  </h1>
+                  <p className="text-gray-600 text-lg">
+                    Your business is growing <span className="font-semibold text-emerald-600">+23%</span> this month
+                  </p>
+                </div>
+                
+                <div className="flex space-x-3">
+                  <PremiumButton variant="outline" size="medium">
+                    <Download className="w-4 h-4 mr-2" />
+                    Export Report
+                  </PremiumButton>
+                  <PremiumButton variant="primary" size="medium">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add New Client
+                  </PremiumButton>
+                </div>
+              </div>
+            </div>
+
+            {/* Metrics Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {metrics.map((metric, index) => (
+                <MetricCard key={index} metric={metric} index={index} />
+              ))}
+            </div>
+
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              <div className="lg:col-span-2">
+                <PremiumChart 
+                  title="Revenue Analytics"
+                  subtitle="Last 12 months performance"
+                />
+              </div>
+              <div>
+                <PremiumChart 
+                  title="Traffic Sources"
+                  subtitle="This month breakdown"
+                />
+              </div>
+            </div>
+
+            {/* Recent Activity & Quick Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <RecentActivityFeed />
+              <QuickActionsDashboard />
+            </div>
+          </>
+        );
+      
+      case 'seo':
+        return <PremiumSEOIntelligence activeSubSection={activeSubSection} />;
+      
+      case 'crm':
+        return <PremiumCRMHub activeSubSection={activeSubSection} />;
+      
+      case 'global-commerce':
+        return <GlobalCommerceHub activeSubSection={activeSubSection} />;
+      
+      case 'clients':
+        return <PremiumClientManagement />;
+      
+      case 'team':
+        return <PremiumTeamManagement />;
+      
+      case 'social':
+        return <PremiumSocialMedia activeSubSection={activeSubSection} />;
+      
+      case 'lead-prospecting':
+        return <PremiumLeadProspecting />;
+      
+      case 'shopify':
+        return <PremiumShopifyIntegration />;
+      
+      case 'admin':
+        return <AdminPanelView activeSubSection={activeSubSection} />;
+      
+      default:
+        return (
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Feature Coming Soon</h2>
+            <p className="text-gray-600">This feature is currently under development.</p>
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Premium Sidebar - ALWAYS VISIBLE */}
       <PremiumSidebar 
         collapsed={sidebarCollapsed} 
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        activeSection={activeSection}
+        activeSubSection={activeSubSection}
+        setActiveSection={setActiveSection}
+        setActiveSubSection={setActiveSubSection}
       />
       
       {/* Main Content Area */}
@@ -544,59 +682,7 @@ const PremiumDashboard: React.FC = () => {
         
         {/* Dashboard Content */}
         <main className="p-8">
-          {/* Welcome Section */}
-          <div className="mb-8 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                  Good morning, <span className="text-gradient-primary">Alex! 👋</span>
-                </h1>
-                <p className="text-gray-600 text-lg">
-                  Your business is growing <span className="font-semibold text-emerald-600">+23%</span> this month
-                </p>
-              </div>
-              
-              <div className="flex space-x-3">
-                <PremiumButton variant="outline" size="medium">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export Report
-                </PremiumButton>
-                <PremiumButton variant="primary" size="medium">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New Client
-                </PremiumButton>
-              </div>
-            </div>
-          </div>
-
-          {/* Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {metrics.map((metric, index) => (
-              <MetricCard key={index} metric={metric} index={index} />
-            ))}
-          </div>
-
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div className="lg:col-span-2">
-              <PremiumChart 
-                title="Revenue Analytics"
-                subtitle="Last 12 months performance"
-              />
-            </div>
-            <div>
-              <PremiumChart 
-                title="Traffic Sources"
-                subtitle="This month breakdown"
-              />
-            </div>
-          </div>
-
-          {/* Recent Activity & Quick Actions */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <RecentActivityFeed />
-            <QuickActionsDashboard />
-          </div>
+          {renderContent()}
         </main>
       </div>
     </div>
