@@ -17,6 +17,14 @@ import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInsta
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
+import SEOAnalysisPage from './components/Shopify/pages/SEOAnalysisPage';
+import TypewriterPluginPage from './components/Shopify/pages/TypewriterPluginPage';
+import ReviewSystemPage from './components/Shopify/pages/ReviewSystemPage';
+import PluginStorePage from './components/Shopify/pages/PluginStorePage';
+import LoyaltyRewardsPlugin from './components/shopify/plugins/LoyaltyRewardsPlugin';
+import PowerBuyAIButton from './components/shopify/plugins/PowerBuyAIButton';
+import AffiliateMarketingSystem from './components/shopify/plugins/AffiliateMarketingSystem';
+import AffiliatePortal from './components/shopify/plugins/AffiliatePortal';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -32,9 +40,22 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {/* Public Shopify App Routes - Always Available */}
       <Route path="/shopify" element={<PremiumShopifyLanding />} />
+      <Route path="/shopify-app" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+      
+      {/* Shopify Feature Pages */}
+      <Route path="/shopify/seo/analysis" element={<SEOAnalysisPage />} />
+      
+      {/* Shopify Plugin Pages */}
+      <Route path="/shopify/plugins/store" element={<PluginStorePage />} />
+      <Route path="/shopify/plugins/typewriter" element={<TypewriterPluginPage />} />
+      <Route path="/shopify/plugins/reviews" element={<ReviewSystemPage />} />
+      <Route path="/shopify/plugins/loyalty-rewards" element={<LoyaltyRewardsPlugin />} />
+      <Route path="/shopify/plugins/powerbuy-ai" element={<PowerBuyAIButton />} />
+      <Route path="/shopify/plugins/affiliate-marketing" element={<AffiliateMarketingSystem />} />
+      <Route path="/affiliate-portal" element={<AffiliatePortal />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />

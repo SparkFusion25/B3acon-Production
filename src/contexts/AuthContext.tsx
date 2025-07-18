@@ -156,29 +156,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           subscription: 'starter' as const,
           addOns: [],
           avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
+        },
+        'demo@b3acon.com': {
+          id: '550e8400-e29b-41d4-a716-446655440004',
+          name: 'B3ACON Demo User',
+          email: 'demo@b3acon.com',
+          role: 'admin' as UserRole,
+          subscription: 'pro' as const,
+          addOns: ['landing_page_builder', 'ai_assistant', 'loyalty_rewards', 'typewriter_effects'],
+          avatar: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'
         }
       };
 
       const mockUser = mockUsers[email as keyof typeof mockUsers];
       
-      if (mockUser && password === 'password') {
+      if (mockUser && (password === 'password' || password === 'demo123456')) {
         setUser(mockUser);
         setUserType(type);
+        setIsAuthenticated(true);
         
-        // Use a safe setTimeout pattern
-        timeoutId = window.setTimeout(() => {
-          setIsAuthenticated(true);
-          
-          // Save to localStorage
-          localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
-          localStorage.setItem('b3acon_user_type', type);
-          toast.success(`Welcome back, ${mockUser.name}!`);
-        }, 100);
-        
-        // Store the timeout ID for cleanup
-        setAuthTimeouts(prev => [...prev, timeoutId]);
+        // Save to localStorage immediately
+        localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
+        localStorage.setItem('b3acon_user_type', type);
+        toast.success(`Welcome back, ${mockUser.name}!`);
       } else {
-        throw new Error('Invalid credentials. Use demo credentials: sarah@sparkdigital.com / password or john@techcorp.com / password');
+        throw new Error('Invalid credentials. Use demo credentials: demo@b3acon.com / demo123456 or sarah@sparkdigital.com / password');
       }
     } catch (error) {
       console.error('Login error:', error);
