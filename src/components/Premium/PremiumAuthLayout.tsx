@@ -28,15 +28,17 @@ const DemoLoginButton: React.FC = () => {
   const handleDemoLogin = async () => {
     try {
       setLoading(true);
+      console.log('Demo login starting...');
       
       // Use actual authentication system with demo credentials
       await login('demo@b3acon.com', 'demo123456', 'agency');
+      console.log('Demo login successful, navigating to dashboard...');
       
       // Navigate to dashboard after successful login
       navigate('/dashboard');
     } catch (error) {
       console.error('Demo login failed:', error);
-      alert('Demo login temporarily unavailable. Please try again.');
+      alert(`Demo login failed: ${error.message || 'Please try again.'}`);
     } finally {
       setLoading(false);
     }
