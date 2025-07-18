@@ -173,21 +173,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (mockUser && (password === 'password' || password === 'demo123456')) {
         setUser(mockUser);
         setUserType(type);
+        setIsAuthenticated(true);
         
-        // Use a safe setTimeout pattern
-        timeoutId = window.setTimeout(() => {
-          setIsAuthenticated(true);
-          
-          // Save to localStorage
-          localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
-          localStorage.setItem('b3acon_user_type', type);
-          toast.success(`Welcome back, ${mockUser.name}!`);
-        }, 100);
-        
-        // Store the timeout ID for cleanup
-        setAuthTimeouts(prev => [...prev, timeoutId]);
+        // Save to localStorage immediately
+        localStorage.setItem('b3acon_user', JSON.stringify(mockUser));
+        localStorage.setItem('b3acon_user_type', type);
+        toast.success(`Welcome back, ${mockUser.name}!`);
       } else {
-        throw new Error('Invalid credentials. Use demo credentials: sarah@sparkdigital.com / password or john@techcorp.com / password');
+        throw new Error('Invalid credentials. Use demo credentials: demo@b3acon.com / demo123456 or sarah@sparkdigital.com / password');
       }
     } catch (error) {
       console.error('Login error:', error);
