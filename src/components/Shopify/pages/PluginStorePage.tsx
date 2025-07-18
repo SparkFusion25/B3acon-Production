@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Zap, Star, Download, Eye, Settings, Type, Users, ShoppingBag, BarChart3, Mail, Target } from 'lucide-react';
+import { Zap, Star, Download, Eye, Settings, Type, Users, ShoppingBag, BarChart3, Mail, Target, Gift } from 'lucide-react';
 import ShopifyAppLayout from '../ShopifyAppLayout';
 
 interface Plugin {
@@ -46,6 +46,19 @@ const PluginStorePage: React.FC = () => {
       installs: '1.8k',
       price: 'Premium',
       features: ['Auto review requests', 'Multi-platform integration', 'Custom email templates', 'Advanced filtering'],
+      status: 'available'
+    },
+    {
+      id: 'loyalty-rewards',
+      name: 'Loyalty Rewards Program',
+      description: 'Build customer loyalty with automated reward points and incentives',
+      longDescription: 'Complete loyalty program system with customizable reward rates, automated email notifications, and comprehensive analytics to increase customer retention.',
+      icon: Gift,
+      category: 'marketing',
+      rating: 4.9,
+      installs: '2.3k',
+      price: 'Premium',
+      features: ['Custom reward rates', 'Email automation', 'Multi-provider integration', 'Real-time analytics'],
       status: 'available'
     },
     {

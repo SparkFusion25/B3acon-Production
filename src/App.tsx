@@ -21,6 +21,7 @@ import SEOAnalysisPage from './components/Shopify/pages/SEOAnalysisPage';
 import TypewriterPluginPage from './components/Shopify/pages/TypewriterPluginPage';
 import ReviewSystemPage from './components/Shopify/pages/ReviewSystemPage';
 import PluginStorePage from './components/Shopify/pages/PluginStorePage';
+import LoyaltyRewardsPlugin from './components/shopify/plugins/LoyaltyRewardsPlugin';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,6 +48,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify/plugins/store" element={<PluginStorePage />} />
       <Route path="/shopify/plugins/typewriter" element={<TypewriterPluginPage />} />
       <Route path="/shopify/plugins/reviews" element={<ReviewSystemPage />} />
+      <Route path="/shopify/plugins/loyalty-rewards" element={<LoyaltyRewardsPlugin />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />
