@@ -14,32 +14,26 @@ import {
   Award,
   Zap
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/premium-b3acon-design-system.css';
 import '../../styles/auth-layout.css';
 
 // Demo Login Component
 const DemoLoginButton: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleDemoLogin = async () => {
     try {
       setLoading(true);
       
-      // Auto-fill demo credentials
-      const demoCredentials = {
-        email: 'demo@b3acon.com',
-        password: 'demo123456'
-      };
+      // Use actual authentication system with demo credentials
+      await login('demo@b3acon.com', 'demo123456', 'agency');
       
-      // Simulate login process
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // In a real app, you would create the demo account if it doesn't exist
-      // and handle the authentication with your backend
-      
-      // For now, redirect to dashboard
-      window.location.href = '/dashboard';
+      // Navigate to dashboard after successful login
+      navigate('/dashboard');
     } catch (error) {
       console.error('Demo login failed:', error);
       alert('Demo login temporarily unavailable. Please try again.');
