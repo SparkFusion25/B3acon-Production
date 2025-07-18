@@ -8,6 +8,8 @@ import {
   Bell,
   User,
   Store,
+  Users,
+  Star,
   Activity,
   TrendingUp,
   Link2,
@@ -23,6 +25,9 @@ import {
   Globe
 } from 'lucide-react';
 import '../../styles/shopify-app.css';
+import PowerBuyAI from './plugins/PowerBuyAI';
+import AffiliateMarketingSystem from './plugins/AffiliateMarketingSystem';
+import ProductReviewManagement from './plugins/ProductReviewManagement';
 
 interface SEOData {
   score: number;
@@ -43,6 +48,7 @@ interface Plugin {
 const ShopifyDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activePlugin, setActivePlugin] = useState<string | null>(null);
   const [seoData, setSeoData] = useState<SEOData>({
     score: 85,
     pagesScanned: 247,
@@ -98,8 +104,42 @@ const ShopifyDashboard = () => {
       icon: Zap,
       status: 'disabled',
       category: 'Performance'
+    },
+    {
+      id: 'powerbuy-ai',
+      name: 'PowerBuy AI Button',
+      description: 'AI-powered conversion optimization with smart recommendations and one-click checkout',
+      icon: Zap,
+      status: 'active',
+      category: 'Conversion'
+    },
+    {
+      id: 'affiliate-marketing',
+      name: 'Affiliate Marketing System',
+      description: 'Complete affiliate management with tracking, payouts, and performance analytics',
+      icon: Users,
+      status: 'active',
+      category: 'Marketing'
+    },
+    {
+      id: 'review-management',
+      name: 'Product Review Management',
+      description: 'Manage reviews across platforms, respond to customers, and analyze sentiment',
+      icon: Star,
+      status: 'active',
+      category: 'Customer Service'
     }
   ];
+
+  const handlePluginAction = (plugin: Plugin) => {
+    if (plugin.status === 'active') {
+      setActivePlugin(plugin.id);
+      setActiveTab('plugin');
+    } else {
+      // Handle setup or enable actions
+      console.log(`Setting up plugin: ${plugin.name}`);
+    }
+  };
 
   const recentActivity = [
     { action: 'SEO scan completed', page: 'Product: Blue Widgets', time: '2 mins ago', status: 'success' },
@@ -302,6 +342,7 @@ const ShopifyDashboard = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <button 
+                  onClick={() => handlePluginAction(plugin)}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                     plugin.status === 'active' 
                       ? 'bg-gray-100 text-gray-700 hover:bg-gray-200' 
@@ -318,10 +359,67 @@ const ShopifyDashboard = () => {
     </div>
   );
 
+  const renderActivePlugin = () => {
+    if (!activePlugin) return null;
+
+    switch (activePlugin) {
+      case 'powerbuy-ai':
+        return (
+          <div>
+            <div className="flex items-center mb-6">
+              <button 
+                onClick={() => { setActiveTab('plugins'); setActivePlugin(null); }}
+                className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
+              >
+                ← Back to Plugins
+              </button>
+            </div>
+            <PowerBuyAI />
+          </div>
+        );
+      case 'affiliate-marketing':
+        return (
+          <div>
+            <div className="flex items-center mb-6">
+              <button 
+                onClick={() => { setActiveTab('plugins'); setActivePlugin(null); }}
+                className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
+              >
+                ← Back to Plugins
+              </button>
+            </div>
+            <AffiliateMarketingSystem />
+          </div>
+        );
+      case 'review-management':
+        return (
+          <div>
+            <div className="flex items-center mb-6">
+              <button 
+                onClick={() => { setActiveTab('plugins'); setActivePlugin(null); }}
+                className="flex items-center text-gray-600 hover:text-gray-900 mr-4"
+              >
+                ← Back to Plugins
+              </button>
+            </div>
+            <ProductReviewManagement />
+          </div>
+        );
+      default:
+        return (
+          <div className="text-center py-12">
+            <p className="text-gray-500">Plugin not found</p>
+          </div>
+        );
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'plugins':
         return renderPlugins();
+      case 'plugin':
+        return renderActivePlugin();
       case 'seo-reports':
         return (
           <div className="space-y-6">
