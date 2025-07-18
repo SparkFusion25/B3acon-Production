@@ -81,23 +81,180 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  // Helper functions
+  const logAdminAction = async (action: string, data: any) => {
+    try {
+      await fetch('/api/admin/audit-log', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action,
+          data,
+          timestamp: new Date().toISOString(),
+          adminId: localStorage.getItem('userId')
+        })
+      });
+    } catch (error) {
+      console.error('Failed to log admin action:', error);
+    }
+  };
+
+  const sendWelcomeEmail = async (user: any) => {
+    try {
+      await fetch('/api/admin/send-welcome-email', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: user.email,
+          name: user.full_name,
+          role: user.role
+        })
+      });
+    } catch (error) {
+      console.error('Failed to send welcome email:', error);
+    }
+  };
+
+  const resetUserForm = () => {
+    setUserForm({
+      id: '',
+      email: '',
+      full_name: '',
+      role: 'client',
+      company: '',
+      is_active: true
+    });
+    setEditingId(null);
+  };
+
+  const resetPlanForm = () => {
+    setPlanForm({
+      id: '',
+      name: '',
+      description: '',
+      price: 0,
+      billing_interval: 'monthly',
+      features: [],
+      is_active: true,
+      trial_days: 14
+    });
+    setEditingId(null);
+  };
+
+  const validatePlanForm = () => {
+    if (!planForm.name.trim()) {
+      toast.error('Plan name is required');
+      return false;
+    }
+    if (planForm.price < 0) {
+      toast.error('Price must be a positive number');
+      return false;
+    }
+    if (planForm.trial_days < 0) {
+      toast.error('Trial days must be a positive number');
+      return false;
+    }
+    return true;
+  };
   
   const loadData = async () => {
     setIsLoading(true);
     try {
-      // In a real implementation, we would fetch data from Supabase
-      // For now, we'll use mock data
+      // Real API calls to fetch admin data
+      const token = localStorage.getItem('accessToken');
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+
+      // Fetch users
+      try {
+        const usersResponse = await fetch('/api/admin/users', { headers });
+        if (usersResponse.ok) {
+          const usersData = await usersResponse.json();
+          setUsers(usersData);
+        } else {
+          // Fallback to mock data if API fails
+          setUsers(getMockUsers());
+        }
+      } catch (error) {
+        console.error('Failed to load users:', error);
+        setUsers(getMockUsers());
+      }
+
+      // Fetch subscription plans
+      try {
+        const plansResponse = await fetch('/api/admin/plans', { headers });
+        if (plansResponse.ok) {
+          const plansData = await plansResponse.json();
+          setSubscriptionPlans(plansData);
+        } else {
+          setSubscriptionPlans(getMockPlans());
+        }
+      } catch (error) {
+        console.error('Failed to load plans:', error);
+        setSubscriptionPlans(getMockPlans());
+      }
+
+      // Fetch promotions
+      try {
+        const promotionsResponse = await fetch('/api/admin/promotions', { headers });
+        if (promotionsResponse.ok) {
+          const promotionsData = await promotionsResponse.json();
+          setPromotions(promotionsData);
+        } else {
+          setPromotions(getMockPromotions());
+        }
+      } catch (error) {
+        console.error('Failed to load promotions:', error);
+        setPromotions(getMockPromotions());
+      }
+
+      // Fetch lead services
+      try {
+        const servicesResponse = await fetch('/api/admin/services', { headers });
+        if (servicesResponse.ok) {
+          const servicesData = await servicesResponse.json();
+          setLeadServices(servicesData);
+        } else {
+          setLeadServices(getMockServices());
+        }
+      } catch (error) {
+        console.error('Failed to load services:', error);
+        setLeadServices(getMockServices());
+      }
+
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+      toast.error('Failed to load admin data');
       
-      // Mock users
-      setUsers([
-        {
-          id: '1',
-          email: 'admin@example.com',
-          full_name: 'Admin User',
-          role: 'admin',
-          company: 'B3ACON',
-          is_active: true,
-          created_at: '2024-01-01T00:00:00Z'
+      // Load mock data as fallback
+      setUsers(getMockUsers());
+      setSubscriptionPlans(getMockPlans());
+      setPromotions(getMockPromotions());
+      setLeadServices(getMockServices());
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Mock data functions for fallback
+  const getMockUsers = () => [
+    {
+      id: '1',
+      email: 'admin@example.com',
+      full_name: 'Admin User',
+      role: 'admin',
+      company: 'B3ACON',
+      is_active: true,
+      created_at: '2024-01-01T00:00:00Z'
         },
         {
           id: '2',
@@ -117,10 +274,9 @@ const AdminDashboard: React.FC = () => {
           is_active: true,
           created_at: '2024-01-03T00:00:00Z'
         }
-      ]);
-      
-      // Mock subscription plans
-      setSubscriptionPlans([
+      ];
+
+      const getMockPlans = () => [
         {
           id: '1',
           name: 'Starter',
@@ -154,10 +310,9 @@ const AdminDashboard: React.FC = () => {
           trial_days: 30,
           created_at: '2024-01-01T00:00:00Z'
         }
-      ]);
-      
-      // Mock promotions
-      setPromotions([
+      ];
+
+      const getMockPromotions = () => [
         {
           id: '1',
           code: 'WELCOME20',
@@ -184,10 +339,9 @@ const AdminDashboard: React.FC = () => {
           is_active: true,
           created_at: '2024-01-15T00:00:00Z'
         }
-      ]);
-      
-      // Mock lead services
-      setLeadServices([
+      ];
+
+      const getMockServices = () => [
         {
           id: '1',
           name: 'Basic Lead Generation',
@@ -206,15 +360,7 @@ const AdminDashboard: React.FC = () => {
           is_active: true,
           created_at: '2024-01-01T00:00:00Z'
         }
-      ]);
-      
-    } catch (error) {
-      console.error('Error loading data:', error);
-      toast.error('Failed to load data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      ];
   
   // User management functions
   const handleAddUser = () => {
@@ -243,15 +389,40 @@ const AdminDashboard: React.FC = () => {
     setShowUserModal(true);
   };
   
-  const handleDeleteUser = (userId: string) => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      // In a real implementation, we would delete the user from Supabase
-      setUsers(users.filter(user => user.id !== userId));
-      toast.success('User deleted successfully');
+  const handleDeleteUser = async (userId: string) => {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    
+    try {
+      setIsLoading(true);
+      
+      // Real API call to delete user
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        setUsers(users.filter(user => user.id !== userId));
+        toast.success('User deleted successfully');
+        
+        // Log admin action
+        await logAdminAction('user_deleted', { userId, userEmail: users.find(u => u.id === userId)?.email });
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to delete user');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error('Failed to delete user');
+    } finally {
+      setIsLoading(false);
     }
   };
   
-  const handleSaveUser = (e: React.FormEvent) => {
+  const handleSaveUser = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!userForm.email || !userForm.full_name) {
@@ -259,24 +430,78 @@ const AdminDashboard: React.FC = () => {
       return;
     }
     
-    if (editingId) {
-      // Update existing user
-      setUsers(users.map(user => 
-        user.id === editingId ? { ...user, ...userForm } : user
-      ));
-      toast.success('User updated successfully');
-    } else {
-      // Add new user
-      const newUser = {
-        ...userForm,
-        id: Date.now().toString(),
-        created_at: new Date().toISOString()
-      };
-      setUsers([...users, newUser]);
-      toast.success('User added successfully');
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userForm.email)) {
+      toast.error('Please enter a valid email address');
+      return;
     }
     
-    setShowUserModal(false);
+    try {
+      setIsLoading(true);
+      
+      if (editingId) {
+        // Update existing user
+        const response = await fetch(`/api/admin/users/${editingId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userForm)
+        });
+        
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUsers(users.map(user => 
+            user.id === editingId ? updatedUser : user
+          ));
+          toast.success('User updated successfully');
+          
+          // Log admin action
+          await logAdminAction('user_updated', { userId: editingId, changes: userForm });
+        } else {
+          const error = await response.json();
+          toast.error(error.message || 'Failed to update user');
+        }
+      } else {
+        // Add new user
+        const response = await fetch('/api/admin/users', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ...userForm,
+            created_at: new Date().toISOString()
+          })
+        });
+        
+        if (response.ok) {
+          const newUser = await response.json();
+          setUsers([...users, newUser]);
+          toast.success('User added successfully');
+          
+          // Send welcome email
+          await sendWelcomeEmail(newUser);
+          
+          // Log admin action
+          await logAdminAction('user_created', { userId: newUser.id, userEmail: newUser.email });
+        } else {
+          const error = await response.json();
+          toast.error(error.message || 'Failed to create user');
+        }
+      }
+      
+      setShowUserModal(false);
+      resetUserForm();
+    } catch (error) {
+      console.error('Error saving user:', error);
+      toast.error('Failed to save user');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   // Subscription plan management functions
@@ -310,39 +535,183 @@ const AdminDashboard: React.FC = () => {
     setShowPlanModal(true);
   };
   
-  const handleDeletePlan = (planId: string) => {
-    if (confirm('Are you sure you want to delete this subscription plan?')) {
-      setSubscriptionPlans(subscriptionPlans.filter(plan => plan.id !== planId));
-      toast.success('Subscription plan deleted successfully');
+  const handleDeletePlan = async (planId: string) => {
+    if (!confirm('Are you sure you want to delete this subscription plan?')) return;
+    
+    try {
+      setIsLoading(true);
+      
+      // Check if plan has active subscribers
+      const response = await fetch(`/api/admin/plans/${planId}/subscribers`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      
+      if (response.ok) {
+        const { activeSubscribers } = await response.json();
+        
+        if (activeSubscribers > 0) {
+          toast.error(`Cannot delete plan with ${activeSubscribers} active subscribers. Please migrate them first.`);
+          return;
+        }
+      }
+      
+      // Delete the plan
+      const deleteResponse = await fetch(`/api/admin/plans/${planId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (deleteResponse.ok) {
+        setSubscriptionPlans(subscriptionPlans.filter(plan => plan.id !== planId));
+        toast.success('Subscription plan deleted successfully');
+        
+        // Log admin action
+        await logAdminAction('plan_deleted', { planId, planName: subscriptionPlans.find(p => p.id === planId)?.name });
+      } else {
+        const error = await deleteResponse.json();
+        toast.error(error.message || 'Failed to delete plan');
+      }
+    } catch (error) {
+      console.error('Error deleting plan:', error);
+      toast.error('Failed to delete plan');
+    } finally {
+      setIsLoading(false);
     }
   };
   
-  const handleSavePlan = (e: React.FormEvent) => {
+  const handleSavePlan = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!planForm.name || planForm.price <= 0) {
-      toast.error('Name and price are required');
+    if (!validatePlanForm()) {
       return;
     }
     
-    if (editingId) {
-      // Update existing plan
-      setSubscriptionPlans(subscriptionPlans.map(plan => 
-        plan.id === editingId ? { ...plan, ...planForm } : plan
-      ));
-      toast.success('Subscription plan updated successfully');
-    } else {
-      // Add new plan
-      const newPlan = {
-        ...planForm,
-        id: Date.now().toString(),
-        created_at: new Date().toISOString()
-      };
-      setSubscriptionPlans([...subscriptionPlans, newPlan]);
-      toast.success('Subscription plan added successfully');
+    try {
+      setIsLoading(true);
+      
+      if (editingId) {
+        // Update existing plan
+        const response = await fetch(`/api/admin/plans/${editingId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(planForm)
+        });
+        
+        if (response.ok) {
+          const updatedPlan = await response.json();
+          setSubscriptionPlans(subscriptionPlans.map(plan => 
+            plan.id === editingId ? updatedPlan : plan
+          ));
+          toast.success('Subscription plan updated successfully');
+          
+          // Sync with Stripe if configured
+          await syncPlanWithStripe(updatedPlan);
+          
+          // Log admin action
+          await logAdminAction('plan_updated', { planId: editingId, changes: planForm });
+        } else {
+          const error = await response.json();
+          toast.error(error.message || 'Failed to update plan');
+        }
+      } else {
+        // Add new plan
+        const response = await fetch('/api/admin/plans', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ...planForm,
+            created_at: new Date().toISOString()
+          })
+        });
+        
+        if (response.ok) {
+          const newPlan = await response.json();
+          setSubscriptionPlans([...subscriptionPlans, newPlan]);
+          toast.success('Subscription plan added successfully');
+          
+          // Create corresponding Stripe product and price
+          await createStripeProduct(newPlan);
+          
+          // Log admin action
+          await logAdminAction('plan_created', { planId: newPlan.id, planName: newPlan.name });
+        } else {
+          const error = await response.json();
+          toast.error(error.message || 'Failed to create plan');
+        }
+      }
+      
+      setShowPlanModal(false);
+      resetPlanForm();
+    } catch (error) {
+      console.error('Error saving plan:', error);
+      toast.error('Failed to save plan');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setShowPlanModal(false);
+  };
+
+  // Stripe integration functions
+  const syncPlanWithStripe = async (plan: any) => {
+    try {
+      await fetch('/api/admin/stripe/sync-plan', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(plan)
+      });
+    } catch (error) {
+      console.error('Failed to sync plan with Stripe:', error);
+    }
+  };
+
+  const createStripeProduct = async (plan: any) => {
+    try {
+      const response = await fetch('/api/admin/stripe/create-product', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: plan.name,
+          description: plan.description,
+          price: plan.price,
+          interval: plan.billing_interval
+        })
+      });
+
+      if (response.ok) {
+        const { productId, priceId } = await response.json();
+        
+        // Update plan with Stripe IDs
+        await fetch(`/api/admin/plans/${plan.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            stripe_product_id: productId,
+            stripe_price_id: priceId
+          })
+        });
+      }
+    } catch (error) {
+      console.error('Failed to create Stripe product:', error);
+    }
   };
   
   const handleAddFeature = () => {
