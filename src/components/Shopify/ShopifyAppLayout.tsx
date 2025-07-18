@@ -19,7 +19,8 @@ import {
   FileText,
   Users,
   Globe,
-  Star
+  Star,
+  Gift
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -75,6 +76,7 @@ const ShopifyAppLayout: React.FC<ShopifyAppLayoutProps> = ({
         { name: 'Plugin Store', href: '/shopify/plugins/store', icon: ShoppingBag },
         { name: 'Typewriter Effect', href: '/shopify/plugins/typewriter', icon: Target },
         { name: 'Review System', href: '/shopify/plugins/reviews', icon: Star },
+        { name: 'Loyalty Rewards', href: '/shopify/plugins/loyalty-rewards', icon: Gift, badge: 'NEW' },
         { name: 'Installed Plugins', href: '/shopify/plugins/installed', icon: Settings }
       ]
     },

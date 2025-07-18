@@ -13,7 +13,8 @@ import {
   Target,
   Award,
   Shield,
-  Clock
+  Clock,
+  Gift
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -221,10 +222,19 @@ const PremiumShopifyLanding = () => {
             <div className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <button 
                 className="btn-premium btn-primary btn-large group"
-                onClick={() => window.location.href = '/shopify/install'}
+                onClick={() => window.location.href = '/shopify/dashboard'}
               >
-                <span className="relative z-10">Start 14-Day Free Trial</span>
+                <Gift className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                <span className="relative z-10">Enter Demo App</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              
+              <button 
+                className="btn-premium btn-outline btn-large group"
+                onClick={() => window.location.href = '/shopify/plugins/store'}
+              >
+                <Zap className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
+                Browse Plugins
               </button>
               
               <button className="btn-premium btn-outline btn-large group">

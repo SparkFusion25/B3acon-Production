@@ -37,6 +37,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {/* Public Shopify App Routes - Always Available */}
       <Route path="/shopify" element={<PremiumShopifyLanding />} />
+      <Route path="/shopify-app" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
