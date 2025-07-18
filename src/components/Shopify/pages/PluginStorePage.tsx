@@ -75,6 +75,19 @@ const PluginStorePage: React.FC = () => {
       status: 'available'
     },
     {
+      id: 'affiliate-marketing',
+      name: 'Affiliate Marketing System',
+      description: 'Complete affiliate management platform with AI-powered recruitment',
+      longDescription: 'Comprehensive affiliate marketing system with AI-powered affiliate recruitment, automated tracking, commission management, and advanced analytics to scale your business exponentially.',
+      icon: Users,
+      category: 'marketing',
+      rating: 4.9,
+      installs: '1.5k',
+      price: 'Premium',
+      features: ['AI affiliate recruitment', 'Automated tracking', 'Commission management', 'Real-time analytics'],
+      status: 'available'
+    },
+    {
       id: 'analytics',
       name: 'Advanced Analytics Dashboard',
       description: 'Deep insights into customer behavior and sales performance',

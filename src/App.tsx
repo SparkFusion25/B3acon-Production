@@ -23,6 +23,8 @@ import ReviewSystemPage from './components/Shopify/pages/ReviewSystemPage';
 import PluginStorePage from './components/Shopify/pages/PluginStorePage';
 import LoyaltyRewardsPlugin from './components/shopify/plugins/LoyaltyRewardsPlugin';
 import PowerBuyAIButton from './components/shopify/plugins/PowerBuyAIButton';
+import AffiliateMarketingSystem from './components/shopify/plugins/AffiliateMarketingSystem';
+import AffiliatePortal from './components/shopify/plugins/AffiliatePortal';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,6 +54,8 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify/plugins/reviews" element={<ReviewSystemPage />} />
       <Route path="/shopify/plugins/loyalty-rewards" element={<LoyaltyRewardsPlugin />} />
       <Route path="/shopify/plugins/powerbuy-ai" element={<PowerBuyAIButton />} />
+      <Route path="/shopify/plugins/affiliate-marketing" element={<AffiliateMarketingSystem />} />
+      <Route path="/affiliate-portal" element={<AffiliatePortal />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />

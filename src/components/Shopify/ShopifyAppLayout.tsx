@@ -78,6 +78,7 @@ const ShopifyAppLayout: React.FC<ShopifyAppLayoutProps> = ({
         { name: 'Review System', href: '/shopify/plugins/reviews', icon: Star },
         { name: 'Loyalty Rewards', href: '/shopify/plugins/loyalty-rewards', icon: Gift, badge: 'NEW' },
         { name: 'PowerBuy AI Button', href: '/shopify/plugins/powerbuy-ai', icon: Zap, badge: 'NEW' },
+        { name: 'Affiliate Marketing', href: '/shopify/plugins/affiliate-marketing', icon: Users, badge: 'NEW' },
         { name: 'Installed Plugins', href: '/shopify/plugins/installed', icon: Settings }
       ]
     },
