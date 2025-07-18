@@ -28,6 +28,7 @@ import '../../styles/shopify-app.css';
 import PowerBuyAI from './plugins/PowerBuyAI';
 import AffiliateMarketingSystem from './plugins/AffiliateMarketingSystem';
 import ProductReviewManagement from './plugins/ProductReviewManagement';
+import BillingManagement from './BillingManagement';
 
 interface SEOData {
   score: number;
@@ -434,18 +435,7 @@ const ShopifyDashboard = () => {
           </div>
         );
       case 'subscriptions':
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Subscription Management</h2>
-            <div className="b3acon-card">
-              <div className="text-center py-12">
-                <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Subscription Settings</h3>
-                <p className="text-gray-600">Manage your billing and subscription preferences.</p>
-              </div>
-            </div>
-          </div>
-        );
+        return <BillingManagement />;
       case 'settings':
         return (
           <div className="space-y-6">
