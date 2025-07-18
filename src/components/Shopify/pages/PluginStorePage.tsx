@@ -62,6 +62,19 @@ const PluginStorePage: React.FC = () => {
       status: 'available'
     },
     {
+      id: 'powerbuy-ai',
+      name: 'PowerBuy AI Button',
+      description: 'Intelligent buy button with AI-powered conversion optimization',
+      longDescription: 'Revolutionary AI-powered buy button that recognizes customers, recovers abandoned carts, provides smart recommendations, and optimizes conversions in real-time.',
+      icon: Zap,
+      category: 'conversion',
+      rating: 4.9,
+      installs: '1.8k',
+      price: 'Premium',
+      features: ['AI customer recognition', 'Abandoned cart recovery', 'Smart recommendations', 'One-click checkout'],
+      status: 'available'
+    },
+    {
       id: 'analytics',
       name: 'Advanced Analytics Dashboard',
       description: 'Deep insights into customer behavior and sales performance',
