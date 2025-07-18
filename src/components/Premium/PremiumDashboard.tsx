@@ -30,13 +30,17 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import SEOIntelligenceView from './SEOIntelligenceView';
 import CRMHubView from './CRMHubView';
+// Import REAL functional components
+import SEOIntelligenceHub from '../Agency/AgencyModules/SEOIntelligenceHub';
+import LeadProspectingTool from '../Agency/AgencyModules/LeadProspectingTool';
+import SocialMediaCenter from '../Agency/AgencyModules/SocialMediaCenter';
+import EmailMarketing from '../Agency/AgencyModules/EmailMarketing';
+import ShopifyIntegration from '../Agency/AgencyModules/ShopifyIntegration';
+import CRMHub from '../Agency/AgencyModules/CRMHub';
+import ClientManagement from '../Agency/ClientManagement';
+import TeamManagement from '../Agency/TeamManagement';
+import GlobalCommerceHub from './GlobalCommerceHub';
 import { 
-  GlobalCommerceView, 
-  ClientManagementView, 
-  TeamManagementView, 
-  SocialMediaView, 
-  LeadProspectingView, 
-  ShopifyIntegrationView, 
   AdminPanelView 
 } from './PlaceholderViews';
 import '../../styles/premium-b3acon-design-system.css';
@@ -624,28 +628,28 @@ const PremiumDashboard: React.FC = () => {
         );
       
       case 'seo':
-        return <SEOIntelligenceView activeSubSection={activeSubSection} />;
+        return <SEOIntelligenceHub />;
       
       case 'crm':
-        return <CRMHubView activeSubSection={activeSubSection} />;
+        return <CRMHub />;
       
       case 'global-commerce':
-        return <GlobalCommerceView activeSubSection={activeSubSection} />;
+        return <GlobalCommerceHub activeSubSection={activeSubSection} />;
       
       case 'clients':
-        return <ClientManagementView />;
+        return <ClientManagement />;
       
       case 'team':
-        return <TeamManagementView />;
+        return <TeamManagement />;
       
       case 'social':
-        return <SocialMediaView activeSubSection={activeSubSection} />;
+        return <SocialMediaCenter />;
       
       case 'lead-prospecting':
-        return <LeadProspectingView />;
+        return <LeadProspectingTool />;
       
       case 'shopify':
-        return <ShopifyIntegrationView />;
+        return <ShopifyIntegration />;
       
       case 'admin':
         return <AdminPanelView activeSubSection={activeSubSection} />;
