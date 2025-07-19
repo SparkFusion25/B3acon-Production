@@ -962,6 +962,588 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  // CAMPAIGNS SECTION - Marketing Campaign Management
+  const renderCampaignsSection = () => (
+    <div className="space-y-8">
+      {/* Campaign Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-pink-400 to-pink-600 flex items-center justify-center">
+              <Target className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-pink-600 text-sm font-semibold">+5</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Active Campaigns</p>
+            <p className="text-3xl font-bold text-gray-900">12</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">+23%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Conversion Rate</p>
+            <p className="text-3xl font-bold text-gray-900">4.8%</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">+1,247</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Total Clicks</p>
+            <p className="text-3xl font-bold text-gray-900">15.2K</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">+$2,840</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Revenue Generated</p>
+            <p className="text-3xl font-bold text-gray-900">$18.7K</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Campaign Management */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Active Campaigns</h3>
+          <button 
+            onClick={() => alert('Creating new campaign...')}
+            className="btn-premium btn-primary"
+          >
+            <Plus className="w-4 h-4" />
+            Create Campaign
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            { name: 'Black Friday Sale', type: 'Email + SEO', clicks: '3.2K', conversions: '156', revenue: '$7,824', status: 'active' },
+            { name: 'Holiday Collection', type: 'Social Media', clicks: '2.8K', conversions: '89', revenue: '$4,450', status: 'active' },
+            { name: 'New Product Launch', type: 'PPC + SEO', clicks: '1.9K', conversions: '67', revenue: '$3,350', status: 'paused' },
+            { name: 'Customer Retention', type: 'Email', clicks: '4.1K', conversions: '203', revenue: '$10,150', status: 'active' }
+          ].map((campaign, index) => (
+            <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-400 rounded-lg flex items-center justify-center">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{campaign.name}</div>
+                  <div className="text-sm text-gray-600">{campaign.type}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-6">
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{campaign.clicks}</div>
+                  <div className="text-sm text-gray-600">Clicks</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-emerald-600">{campaign.conversions}</div>
+                  <div className="text-sm text-gray-600">Conversions</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{campaign.revenue}</div>
+                  <div className="text-sm text-gray-600">Revenue</div>
+                </div>
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  campaign.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {campaign.status}
+                </span>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => alert(`Editing ${campaign.name}...`)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => alert(`${campaign.status === 'active' ? 'Pausing' : 'Resuming'} ${campaign.name}...`)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    {campaign.status === 'active' ? <PauseCircle className="w-4 h-4" /> : <PlayCircle className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Campaign Templates */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Campaign Templates</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button 
+            onClick={() => alert('Creating SEO campaign...')}
+            className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2"
+          >
+            <Search className="w-8 h-8 text-emerald-600" />
+            <span className="font-medium">SEO Campaign</span>
+            <span className="text-sm text-gray-600">Boost organic rankings</span>
+          </button>
+          
+          <button 
+            onClick={() => alert('Creating email campaign...')}
+            className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2"
+          >
+            <Mail className="w-8 h-8 text-blue-600" />
+            <span className="font-medium">Email Marketing</span>
+            <span className="text-sm text-gray-600">Targeted email campaigns</span>
+          </button>
+          
+          <button 
+            onClick={() => alert('Creating social campaign...')}
+            className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2"
+          >
+            <Users className="w-8 h-8 text-purple-600" />
+            <span className="font-medium">Social Media</span>
+            <span className="text-sm text-gray-600">Social media promotion</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // AUTOMATIONS SECTION - Smart Workflow Automation
+  const renderAutomationsSection = () => (
+    <div className="space-y-8">
+      {/* Automation Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-600 flex items-center justify-center">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-orange-600 text-sm font-semibold">+3</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Active Automations</p>
+            <p className="text-3xl font-bold text-gray-900">8</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <Activity className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">+847</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Tasks Completed</p>
+            <p className="text-3xl font-bold text-gray-900">2.4K</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <Clock className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">-12h</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Time Saved</p>
+            <p className="text-3xl font-bold text-gray-900">156h</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">+$890</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Revenue Impact</p>
+            <p className="text-3xl font-bold text-gray-900">$5.2K</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Active Automations */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Active Automations</h3>
+          <button 
+            onClick={() => alert('Creating new automation...')}
+            className="btn-premium btn-primary"
+          >
+            <Plus className="w-4 h-4" />
+            Create Automation
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            { name: 'Auto SEO Optimization', trigger: 'New Product Added', actions: '5 steps', frequency: 'Real-time', status: 'active' },
+            { name: 'Price Monitoring', trigger: 'Competitor Price Change', actions: '3 steps', frequency: 'Daily', status: 'active' },
+            { name: 'Inventory Alerts', trigger: 'Low Stock', actions: '2 steps', frequency: 'Real-time', status: 'active' },
+            { name: 'Review Follow-up', trigger: 'Order Delivered', actions: '4 steps', frequency: 'Weekly', status: 'paused' }
+          ].map((automation, index) => (
+            <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg flex items-center justify-center">
+                  <Workflow className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{automation.name}</div>
+                  <div className="text-sm text-gray-600">Trigger: {automation.trigger}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-6">
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{automation.actions}</div>
+                  <div className="text-sm text-gray-600">Actions</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-blue-600">{automation.frequency}</div>
+                  <div className="text-sm text-gray-600">Frequency</div>
+                </div>
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  automation.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {automation.status}
+                </span>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => alert(`Editing ${automation.name}...`)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => alert(`${automation.status === 'active' ? 'Pausing' : 'Resuming'} ${automation.name}...`)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    {automation.status === 'active' ? <PauseCircle className="w-4 h-4" /> : <PlayCircle className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Automation Templates */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Automation Templates</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { name: 'SEO Auto-Optimizer', description: 'Automatically optimize new products for SEO', icon: Search, color: 'emerald' },
+            { name: 'Price Tracker', description: 'Monitor competitor prices and adjust accordingly', icon: TrendingUp, color: 'blue' },
+            { name: 'Inventory Manager', description: 'Auto-reorder products when stock is low', icon: ShoppingBag, color: 'purple' },
+            { name: 'Review Collector', description: 'Send automated review requests to customers', icon: Star, color: 'yellow' },
+            { name: 'Email Sequences', description: 'Create automated email marketing campaigns', icon: Mail, color: 'pink' },
+            { name: 'Social Posting', description: 'Auto-post to social media channels', icon: Users, color: 'indigo' }
+          ].map((template, index) => (
+            <div key={index} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                 onClick={() => alert(`Creating ${template.name} automation...`)}>
+              <div className="flex items-center space-x-3 mb-3">
+                <template.icon className={`w-6 h-6 text-${template.color}-600`} />
+                <h4 className="font-semibold text-gray-900">{template.name}</h4>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">{template.description}</p>
+              <button className="btn-premium btn-primary btn-small w-full">Use Template</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // REPORTS SECTION - Advanced Reporting & Analytics
+  const renderReportsSection = () => (
+    <div className="space-y-8">
+      {/* Report Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <FileText className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">+7</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Reports Generated</p>
+            <p className="text-3xl font-bold text-gray-900">24</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <Download className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">+156</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Downloads</p>
+            <p className="text-3xl font-bold text-gray-900">1.2K</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">Daily</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Scheduled Reports</p>
+            <p className="text-3xl font-bold text-gray-900">8</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+              <Mail className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-orange-600 text-sm font-semibold">Auto</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Email Reports</p>
+            <p className="text-3xl font-bold text-gray-900">12</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Report Generation */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Generate Reports</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { name: 'SEO Performance', description: 'Complete SEO metrics and rankings', icon: Search, onClick: () => alert('Generating SEO report...') },
+            { name: 'Revenue Analytics', description: 'Sales performance and trends', icon: DollarSign, onClick: () => alert('Generating revenue report...') },
+            { name: 'Product Performance', description: 'Top performing products analysis', icon: ShoppingBag, onClick: () => alert('Generating product report...') },
+            { name: 'Traffic Analysis', description: 'Website traffic and user behavior', icon: TrendingUp, onClick: () => alert('Generating traffic report...') },
+            { name: 'Conversion Funnel', description: 'Customer journey and conversions', icon: Target, onClick: () => alert('Generating conversion report...') },
+            { name: 'Competitor Analysis', description: 'Market position and competitors', icon: Users, onClick: () => alert('Generating competitor report...') }
+          ].map((report, index) => (
+            <div key={index} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                 onClick={report.onClick}>
+              <div className="flex items-center space-x-3 mb-3">
+                <report.icon className="w-6 h-6 text-indigo-600" />
+                <h4 className="font-semibold text-gray-900">{report.name}</h4>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">{report.description}</p>
+              <button className="btn-premium btn-primary btn-small w-full">Generate Report</button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Reports */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Recent Reports</h3>
+          <button 
+            onClick={() => alert('Viewing all reports...')}
+            className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors"
+          >
+            View All
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            { name: 'Monthly SEO Report', type: 'SEO Performance', generated: '2 hours ago', size: '2.1 MB', status: 'ready' },
+            { name: 'Weekly Sales Report', type: 'Revenue Analytics', generated: '1 day ago', size: '1.8 MB', status: 'ready' },
+            { name: 'Product Analysis Q4', type: 'Product Performance', generated: '3 days ago', size: '3.2 MB', status: 'ready' },
+            { name: 'Traffic Report December', type: 'Traffic Analysis', generated: '1 week ago', size: '1.5 MB', status: 'ready' }
+          ].map((report, index) => (
+            <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{report.name}</div>
+                  <div className="text-sm text-gray-600">{report.type}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-6">
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{report.size}</div>
+                  <div className="text-sm text-gray-600">Size</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-blue-600">{report.generated}</div>
+                  <div className="text-sm text-gray-600">Generated</div>
+                </div>
+                <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                  {report.status}
+                </span>
+                <button 
+                  onClick={() => alert(`Downloading ${report.name}...`)}
+                  className="p-2 text-gray-400 hover:text-gray-600"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // INTEGRATIONS SECTION - Third-party App Connections
+  const renderIntegrationsSection = () => (
+    <div className="space-y-8">
+      {/* Integration Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+              <Link className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-green-600 text-sm font-semibold">+2</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Connected Apps</p>
+            <p className="text-3xl font-bold text-gray-900">6</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <Database className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">Real-time</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Data Synced</p>
+            <p className="text-3xl font-bold text-gray-900">24/7</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <RefreshCw className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">+347</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">API Calls</p>
+            <p className="text-3xl font-bold text-gray-900">12.4K</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+              <CheckSquare className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-orange-600 text-sm font-semibold">99.9%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Uptime</p>
+            <p className="text-3xl font-bold text-gray-900">100%</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Connected Integrations */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Connected Integrations</h3>
+        <div className="space-y-4">
+          {[
+            { name: 'Google Analytics', description: 'Track website traffic and user behavior', status: 'connected', lastSync: '2 minutes ago', icon: '📊' },
+            { name: 'Mailchimp', description: 'Email marketing automation', status: 'connected', lastSync: '5 minutes ago', icon: '📧' },
+            { name: 'Facebook Pixel', description: 'Track conversions and optimize ads', status: 'connected', lastSync: '1 hour ago', icon: '📱' },
+            { name: 'Google Search Console', description: 'Monitor search performance', status: 'connected', lastSync: '3 hours ago', icon: '🔍' },
+            { name: 'Stripe', description: 'Payment processing integration', status: 'connected', lastSync: 'Real-time', icon: '💳' },
+            { name: 'Klaviyo', description: 'Advanced email and SMS marketing', status: 'disconnected', lastSync: 'Never', icon: '📨' }
+          ].map((integration, index) => (
+            <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-400 rounded-lg flex items-center justify-center text-xl">
+                  {integration.icon}
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{integration.name}</div>
+                  <div className="text-sm text-gray-600">{integration.description}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-6">
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{integration.lastSync}</div>
+                  <div className="text-sm text-gray-600">Last Sync</div>
+                </div>
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  integration.status === 'connected' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
+                  {integration.status}
+                </span>
+                <button 
+                  onClick={() => alert(`${integration.status === 'connected' ? 'Disconnecting from' : 'Connecting to'} ${integration.name}...`)}
+                  className={`btn-premium btn-small ${
+                    integration.status === 'connected' ? 'btn-outline' : 'btn-primary'
+                  }`}
+                >
+                  {integration.status === 'connected' ? 'Disconnect' : 'Connect'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Available Integrations */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Available Integrations</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { name: 'Zapier', description: 'Connect with 3000+ apps', icon: '⚡', category: 'Automation' },
+            { name: 'HubSpot', description: 'CRM and marketing automation', icon: '🎯', category: 'CRM' },
+            { name: 'Slack', description: 'Team communication and alerts', icon: '💬', category: 'Communication' },
+            { name: 'Zendesk', description: 'Customer support platform', icon: '🎧', category: 'Support' },
+            { name: 'Salesforce', description: 'Advanced CRM integration', icon: '☁️', category: 'CRM' },
+            { name: 'Shopify Plus', description: 'Enterprise Shopify features', icon: '🛍️', category: 'E-commerce' }
+          ].map((integration, index) => (
+            <div key={index} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                 onClick={() => alert(`Setting up ${integration.name} integration...`)}>
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="text-2xl">{integration.icon}</div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">{integration.name}</h4>
+                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">{integration.category}</span>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 mb-3">{integration.description}</p>
+              <button className="btn-premium btn-primary btn-small w-full">Connect</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   // Feature access control based on plan
   const hasFeatureAccess = (feature: string) => {
     const planFeatures = {
