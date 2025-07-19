@@ -15,6 +15,7 @@ import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
 import PremiumShopifyLogin from './components/Shopify/PremiumShopifyLogin';
+
 import SubscribePage from './components/Shopify/SubscribePage';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';

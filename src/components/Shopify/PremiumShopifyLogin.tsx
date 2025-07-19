@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, AlertCircle, Sparkles } from 'lucide-react';
-import { useShopifyAuth } from '../../contexts/ShopifyAuthContext';
+import { useShopifyAuth, ShopifyAuthProvider } from '../../contexts/ShopifyAuthContext';
 import '../../styles/premium-design-system.css';
 
-const PremiumShopifyLogin: React.FC = () => {
+const LoginContent: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useShopifyAuth();
   const [formData, setFormData] = useState({
@@ -256,6 +256,15 @@ const PremiumShopifyLogin: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Main component with auth provider wrapper
+const PremiumShopifyLogin: React.FC = () => {
+  return (
+    <ShopifyAuthProvider>
+      <LoginContent />
+    </ShopifyAuthProvider>
   );
 };
 

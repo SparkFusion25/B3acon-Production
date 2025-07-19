@@ -59,13 +59,18 @@ const ShopifyAdmin: React.FC = () => {
   const isAdmin = user?.email === 'admin@b3acon.com' || user?.plan === 'enterprise';
 
   useEffect(() => {
+    if (!user) {
+      navigate('/shopify/login');
+      return;
+    }
+    
     if (!isAdmin) {
       setError('Access denied. Admin privileges required.');
       return;
     }
     
     loadAdminData();
-  }, [isAdmin]);
+  }, [user, isAdmin, navigate]);
 
   const loadAdminData = async () => {
     try {
