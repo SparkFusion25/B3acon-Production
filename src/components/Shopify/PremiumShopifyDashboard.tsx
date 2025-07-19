@@ -16,10 +16,18 @@ import {
   ShoppingBag,
   Eye,
   ChevronDown,
+  ChevronRight,
   Filter,
   Calendar,
   Download,
-  Sparkles
+  Sparkles,
+  Menu,
+  X,
+  Home,
+  Globe,
+  Share,
+  Database,
+  Plus
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -38,10 +46,34 @@ interface ChartData {
   fill?: string;
 }
 
+interface NavigationItem {
+  id: string;
+  label: string;
+  icon: React.ComponentType<any>;
+  badge?: string | number;
+}
+
 const PremiumShopifyDashboard = () => {
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Navigation items for the left sidebar
+  const navItems: NavigationItem[] = [
+    { id: 'dashboard', label: 'Dashboard', icon: Home },
+    { id: 'seo-tools', label: 'SEO Tools', icon: Search, badge: 'NEW' },
+    { id: 'social-media', label: 'Social Media', icon: Share },
+    { id: 'email-marketing', label: 'Email Marketing', icon: Mail },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'customers', label: 'Customers', icon: Users, badge: 247 },
+    { id: 'products', label: 'Products', icon: ShoppingBag },
+    { id: 'orders', label: 'Orders', icon: TrendingUp, badge: 12 },
+    { id: 'international', label: 'International', icon: Globe },
+    { id: 'automation', label: 'Automation', icon: Zap },
+    { id: 'settings', label: 'Settings', icon: Settings }
+  ];
 
   useEffect(() => {
     // Simulate loading and data fetching
@@ -204,74 +236,24 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
-      {/* Top Navigation */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold text-gray-900">B3ACON</span>
-              </div>
-              
-              <div className="hidden md:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <Bell className="w-6 h-6" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </button>
-              
-              <div className="flex items-center space-x-3 cursor-pointer group">
-                <div className="text-right hidden sm:block">
-                  <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Sarah Chen</div>
-                  <div className="text-xs text-gray-500">Store Owner</div>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Welcome back, <span className="text-gradient-primary">Sarah! 👋</span>
-              </h1>
-              <p className="text-gray-600 text-lg">Your store is performing 23% better than last month</p>
-            </div>
-            
-            <div className="hidden md:flex items-center space-x-3">
-              <button className="btn-premium btn-outline">
-                <Calendar className="w-4 h-4" />
-                Last 7 days
-              </button>
-              <button className="btn-premium btn-outline">
-                <Download className="w-4 h-4" />
-                Export
-              </button>
-            </div>
+  const renderContent = () => {
+    return (
+      <div className="space-y-8">
+        {/* Welcome Section - Centered */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            Welcome back, <span className="text-gradient-primary">Sarah! 👋</span>
+          </h1>
+          <p className="text-gray-600 text-lg">Your store is performing 23% better than last month</p>
+          
+          <div className="flex items-center justify-center space-x-2 bg-emerald-100 px-4 py-2 rounded-full mt-4 w-fit mx-auto">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
           </div>
         </div>
 
-        {/* Time Frame Selector */}
-        <div className="mb-8">
+        {/* Time Frame Selector - Centered */}
+        <div className="flex justify-center mb-8">
           <div className="flex items-center space-x-2">
             {['24h', '7d', '30d', '90d'].map((timeframe) => (
               <button
@@ -289,142 +271,262 @@ const PremiumShopifyDashboard = () => {
           </div>
         </div>
 
-        {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {isLoading
-            ? [...Array(4)].map((_, i) => <SkeletonMetric key={i} />)
-            : metrics.map((metric, index) => (
-                <MetricCard key={index} metric={metric} index={index} />
-              ))
-          }
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Revenue Chart */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Revenue Analytics</h3>
-              <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                  <Filter className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                  <Download className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="h-64 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
-              <div className="text-center">
-                <BarChart3 className="w-12 h-12 text-indigo-400 mx-auto mb-3" />
-                <p className="text-gray-600">Interactive chart would be rendered here</p>
-                <p className="text-sm text-gray-500">Using Recharts or Chart.js</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Traffic Sources */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Traffic Sources</h3>
-              <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
-                View Details
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {trafficSourcesData.map((source, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-4 h-4 rounded-full"
-                      style={{ backgroundColor: source.fill }}
-                    ></div>
-                    <span className="font-medium text-gray-700">{source.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-gray-900">{source.value}%</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {/* Metrics Cards - Centered */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {isLoading
+              ? [...Array(4)].map((_, i) => <SkeletonMetric key={i} />)
+              : metrics.map((metric, index) => (
+                  <MetricCard key={index} metric={metric} index={index} />
+                ))
+            }
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Activity */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
-                Recent Activity
-              </h3>
-              <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
-                View All
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    activity.type === 'success' 
-                      ? 'bg-emerald-100 text-emerald-600' 
-                      : 'bg-blue-100 text-blue-600'
-                  }`}>
-                    <activity.icon className="w-4 h-4" />
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900">{activity.action}</p>
-                    <p className="text-sm text-gray-600 truncate">{activity.target}</p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Top Products */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                <ShoppingBag className="w-5 h-5 text-purple-500 mr-2" />
-                Top Products
-              </h3>
-              <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
-                View All
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {topProducts.map((product, index) => (
-                <div key={index} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
-                  
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate">{product.name}</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <span className="font-bold text-gray-900">{product.revenue}</span>
-                      <span className="text-emerald-600 text-sm font-semibold">{product.growth}</span>
-                    </div>
-                  </div>
-                  
-                  <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                    <Eye className="w-4 h-4" />
+        {/* Charts Section - Centered */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Revenue Chart */}
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Revenue Analytics</h3>
+                <div className="flex items-center space-x-2">
+                  <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                    <Filter className="w-4 h-4" />
+                  </button>
+                  <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                    <Download className="w-4 h-4" />
                   </button>
                 </div>
-              ))}
+              </div>
+              
+              <div className="h-64 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
+                <div className="text-center">
+                  <BarChart3 className="w-12 h-12 text-indigo-400 mx-auto mb-3" />
+                  <p className="text-gray-600">Interactive chart would be rendered here</p>
+                  <p className="text-sm text-gray-500">Using Recharts or Chart.js</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Traffic Sources */}
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Traffic Sources</h3>
+                <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
+                  View Details
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {trafficSourcesData.map((source, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div 
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: source.fill }}
+                      ></div>
+                      <span className="font-medium text-gray-700">{source.name}</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">{source.value}%</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section - Centered */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Recent Activity */}
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                  <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
+                  Recent Activity
+                </h3>
+                <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
+                  View All
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {recentActivities.map((activity, index) => (
+                  <div key={index} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      activity.type === 'success' 
+                        ? 'bg-emerald-100 text-emerald-600' 
+                        : 'bg-blue-100 text-blue-600'
+                    }`}>
+                      <activity.icon className="w-4 h-4" />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900">{activity.action}</p>
+                      <p className="text-sm text-gray-600 truncate">{activity.target}</p>
+                      <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top Products */}
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                  <ShoppingBag className="w-5 h-5 text-purple-500 mr-2" />
+                  Top Products
+                </h3>
+                <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
+                  View All
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                {topProducts.map((product, index) => (
+                  <div key={index} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                    
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 truncate">{product.name}</p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="font-bold text-gray-900">{product.revenue}</span>
+                        <span className="text-emerald-600 text-sm font-semibold">{product.growth}</span>
+                      </div>
+                    </div>
+                    
+                    <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
+    );
+  };
+
+  return (
+    <div className="b3acon-app min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex font-primary">
+      {/* Left Sidebar Navigation */}
+      <div className={`nav-sidebar ${sidebarCollapsed ? 'collapsed' : ''} fixed lg:relative z-40 bg-white/90 backdrop-blur-xl border-r border-white/20`}>
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              {!sidebarCollapsed && <span className="text-2xl font-bold text-gray-900">B3ACON</span>}
+            </div>
+            <button 
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="lg:hidden text-gray-600 hover:text-gray-900"
+            >
+              {sidebarCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
+            </button>
+          </div>
+
+          <nav className="space-y-2">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`nav-item w-full ${activeTab === item.id ? 'active' : ''} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200`}
+              >
+                <item.icon className="w-5 h-5 flex-shrink-0 mr-3" />
+                {!sidebarCollapsed && (
+                  <>
+                    <span className="flex-1 text-left">{item.label}</span>
+                    {item.badge && (
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ml-2 ${
+                        activeTab === item.id
+                          ? 'bg-white/20 text-white' 
+                          : item.badge === 'NEW' 
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-gray-100 text-gray-600'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                    <ChevronRight className="w-4 h-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </>
+                )}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 lg:ml-0">
+        {/* Top Navigation Bar */}
+        <div className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-30">
+          <div className="px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <button 
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <div className="hidden md:flex items-center space-x-3">
+                  <button className="btn-premium btn-outline btn-small">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Last 7 days
+                  </button>
+                  <button className="btn-premium btn-outline btn-small">
+                    <Download className="w-4 h-4 mr-2" />
+                    Export
+                  </button>
+                </div>
+                
+                <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
+                  <Bell className="w-6 h-6" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                </button>
+                
+                <div className="flex items-center space-x-3 cursor-pointer group">
+                  <div className="text-right hidden sm:block">
+                    <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Sarah Chen</div>
+                    <div className="text-xs text-gray-500">Store Owner</div>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Panel - Centered Content */}
+        <div className="p-6">
+          {renderContent()}
+        </div>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {!sidebarCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setSidebarCollapsed(true)}
+        ></div>
+      )}
     </div>
   );
 };
