@@ -28,9 +28,15 @@ import {
   Package,
   CreditCard,
   HelpCircle,
-  MessageCircle
+  MessageCircle,
+  Lock,
+  MousePointer,
+  LayoutDashboard
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ShopifyAuthProvider, useShopifyAuth } from '../../contexts/ShopifyAuthContext';
+import FeatureGate from '../FeatureGate';
+import { hasAccess } from '../../utils/subscriptionUtils';
 import '../../styles/premium-design-system.css';
 
 interface MetricData {
@@ -48,7 +54,7 @@ interface ChartData {
   fill?: string;
 }
 
-const PremiumShopifyDashboard = () => {
+const DashboardContent = () => {
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,6 +63,7 @@ const PremiumShopifyDashboard = () => {
   const [expandedItems, setExpandedItems] = useState<string[]>(['seo-tools', 'analytics']);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, subscription } = useShopifyAuth();
 
   // Mock data for dashboard
   const trafficSourcesData = [
@@ -119,20 +126,21 @@ const PremiumShopifyDashboard = () => {
     }
   ];
 
-  // Navigation menu items with dropdowns
-  const menuItems = [
+  // Navigation menu items with subscription requirements as specified in SYSTEM_SPECS.md
+  const navigationItems = [
     { 
       id: 'dashboard', 
       label: 'Dashboard', 
-      icon: Home, 
-      gradient: 'from-blue-500 to-indigo-600',
-      route: '/shopify/dashboard'
+      icon: LayoutDashboard, 
+      href: '/shopify/dashboard',
+      requiredPlan: 'trial'
     },
     { 
       id: 'seo-tools', 
       label: 'SEO Tools', 
       icon: Search, 
-      gradient: 'from-green-500 to-emerald-600',
+      href: '/shopify/seo',
+      requiredPlan: 'starter',
       children: [
         { id: 'website-analysis', label: 'Website Analysis', route: '/shopify/seo/website-analysis' },
         { id: 'keyword-research', label: 'Keyword Research', route: '/shopify/seo/keyword-research' },
@@ -144,22 +152,18 @@ const PremiumShopifyDashboard = () => {
       ]
     },
     { 
-      id: 'plugins', 
-      label: 'Plugins', 
-      icon: Package, 
-      gradient: 'from-purple-500 to-pink-600',
-      children: [
-        { id: 'popup-builder', label: 'Popup Builder', route: '/shopify/plugins/popup-builder' },
-        { id: 'review-manager', label: 'Review Manager', route: '/shopify/plugins/review-manager' },
-        { id: 'upsell-engine', label: 'Upsell Engine', route: '/shopify/plugins/upsell-engine' },
-        { id: 'social-proof', label: 'Social Proof', route: '/shopify/plugins/social-proof' }
-      ]
+      id: 'popup-builder', 
+      label: 'Popup Builder', 
+      icon: MousePointer, 
+      href: '/shopify/popups',
+      requiredPlan: 'trial'
     },
     { 
       id: 'analytics', 
       label: 'Analytics', 
       icon: BarChart3, 
-      gradient: 'from-indigo-500 to-purple-600',
+      href: '/shopify/analytics',
+      requiredPlan: 'pro',
       children: [
         { id: 'traffic', label: 'Traffic Analytics', route: '/shopify/analytics/traffic' },
         { id: 'conversions', label: 'Conversion Tracking', route: '/shopify/analytics/conversions' },
@@ -172,7 +176,8 @@ const PremiumShopifyDashboard = () => {
       id: 'automation', 
       label: 'Automation', 
       icon: Zap, 
-      gradient: 'from-orange-500 to-red-600',
+      href: '/shopify/automation',
+      requiredPlan: 'pro',
       children: [
         { id: 'email-campaigns', label: 'Email Campaigns', route: '/shopify/automation/email-campaigns' },
         { id: 'abandoned-cart', label: 'Abandoned Cart', route: '/shopify/automation/abandoned-cart' },
@@ -181,74 +186,95 @@ const PremiumShopifyDashboard = () => {
       ]
     },
     { 
-      id: 'integrations', 
-      label: 'Integrations', 
-      icon: Globe, 
-      gradient: 'from-green-500 to-teal-600',
-      children: [
-        { id: 'amazon', label: 'Amazon Sync', route: '/shopify/integrations/amazon' },
-        { id: 'google-ads', label: 'Google Ads', route: '/shopify/integrations/google-ads' },
-        { id: 'facebook', label: 'Facebook & Instagram', route: '/shopify/integrations/facebook' },
-        { id: 'klaviyo', label: 'Klaviyo Email', route: '/shopify/integrations/klaviyo' },
-        { id: 'mailchimp', label: 'Mailchimp', route: '/shopify/integrations/mailchimp' }
-      ]
-    },
-    { 
-      id: 'subscriptions', 
-      label: 'Subscriptions', 
-      icon: CreditCard, 
-      gradient: 'from-yellow-500 to-orange-600',
-      children: [
-        { id: 'current-plan', label: 'Current Plan', route: '/shopify/plans' },
-        { id: 'billing-history', label: 'Billing History', route: '/shopify/settings/billing' },
-        { id: 'upgrade-plan', label: 'Upgrade Plan', route: '/shopify/plans' },
-        { id: 'usage-analytics', label: 'Usage Analytics', route: '/shopify/analytics/usage' }
-      ]
-    },
-    { 
-      id: 'reports', 
-      label: 'Reports', 
-      icon: BarChart3, 
-      gradient: 'from-blue-500 to-cyan-600',
-      children: [
-        { id: 'performance', label: 'Performance Report', route: '/shopify/reports/performance' },
-        { id: 'seo-audit', label: 'SEO Audit Report', route: '/shopify/reports/seo-audit' },
-        { id: 'competitor', label: 'Competitor Analysis', route: '/shopify/reports/competitor' },
-        { id: 'custom', label: 'Custom Reports', route: '/shopify/reports/custom' }
-      ]
-    },
-    { 
-      id: 'support', 
-      label: 'Support', 
-      icon: HelpCircle, 
-      gradient: 'from-gray-500 to-gray-600',
-      children: [
-        { id: 'help-center', label: 'Help Center', route: '/shopify/support/help-center' },
-        { id: 'contact', label: 'Contact Support', route: '/shopify/support/contact' },
-        { id: 'tutorials', label: 'Video Tutorials', route: '/shopify/support/tutorials' },
-        { id: 'community', label: 'Community Forum', route: '/shopify/support/community' }
-      ]
-    },
-    { 
       id: 'settings', 
       label: 'Settings', 
       icon: Settings, 
-      gradient: 'from-slate-500 to-zinc-600',
-      children: [
-        { id: 'account', label: 'Account Settings', route: '/shopify/settings/account' },
-        { id: 'billing', label: 'Billing Settings', route: '/shopify/settings/billing' },
-        { id: 'notifications', label: 'Notifications', route: '/shopify/settings/notifications' },
-        { id: 'api-keys', label: 'API Keys', route: '/shopify/settings/api-keys' }
-      ]
-    },
-    { 
-      id: 'admin', 
-      label: 'Admin Portal', 
-      icon: MessageCircle, 
-      gradient: 'from-red-500 to-pink-600',
-      route: '/shopify/admin'
+      href: '/shopify/settings',
+      requiredPlan: 'trial'
     }
   ];
+
+  // Navigation component as specified in SYSTEM_SPECS.md
+  const Navigation = () => {
+    const { user, subscription } = useShopifyAuth();
+    const location = useLocation();
+    
+    const isFeatureAccessible = (requiredPlan: string) => {
+      return hasAccess(subscription?.plan || 'trial', requiredPlan);
+    };
+
+    const openUpgradeModal = (requiredPlan: string) => {
+      // Track upgrade prompt interaction
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'upgrade_prompt_shown', {
+          current_plan: subscription?.plan,
+          required_plan: requiredPlan,
+          feature: 'navigation'
+        });
+      }
+      
+      // Navigate to plans page with upgrade parameter
+      navigate(`/shopify/plans?upgrade=${requiredPlan}`);
+    };
+    
+    return (
+      <nav className="premium-navigation space-y-2">
+        {navigationItems.map((item) => {
+          const accessible = isFeatureAccessible(item.requiredPlan);
+          const isActive = location.pathname === item.href || location.pathname.startsWith(item.href);
+          
+          return (
+            <div key={item.id} className="relative">
+              <button
+                onClick={() => {
+                  if (accessible) {
+                    navigate(item.href);
+                    setIsMobileMenuOpen(false);
+                  } else {
+                    openUpgradeModal(item.requiredPlan);
+                  }
+                }}
+                className={`
+                  w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 text-left group
+                  ${isActive && accessible
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' 
+                    : accessible
+                    ? 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    : 'text-gray-400 hover:bg-gray-50 cursor-not-allowed'
+                  }
+                `}
+              >
+                <div className="flex items-center space-x-3">
+                  <item.icon className={`w-5 h-5 flex-shrink-0 ${
+                    isActive && accessible ? 'text-white' : accessible ? 'text-gray-600' : 'text-gray-400'
+                  }`} />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </div>
+                
+                {!accessible && (
+                  <Lock className="w-4 h-4 text-gray-400" />
+                )}
+                
+                {item.children && accessible && (
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                )}
+              </button>
+              
+              {/* Upgrade prompt tooltip for locked features */}
+              {!accessible && (
+                <div className="absolute left-full ml-2 top-0 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
+                    Requires {item.requiredPlan} plan
+                    <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45"></div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+    );
+  };
 
   // Navigation helper functions
   const toggleExpanded = (itemId: string) => {
@@ -458,71 +484,10 @@ const PremiumShopifyDashboard = () => {
             </div>
           </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 space-y-1 overflow-y-auto">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.route || location.pathname.startsWith(`/${item.id}`);
-              const isExpanded = expandedItems.includes(item.id);
-              const hasChildren = item.children && item.children.length > 0;
-              
-              return (
-                <div key={item.id}>
-                  <button
-                    onClick={() => {
-                      if (hasChildren) {
-                        toggleExpanded(item.id);
-                      } else if (item.route) {
-                        handleNavigation(item.route, item.id);
-                      }
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-3 rounded-lg transition-all duration-200 text-left group ${
-                      isActive 
-                        ? 'bg-gradient-to-r ' + item.gradient + ' text-white shadow-lg'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
-                      <span className="font-medium text-sm">{item.label}</span>
-                    </div>
-                    
-                    {hasChildren && (
-                      <ChevronRight 
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          isExpanded ? 'rotate-90' : ''
-                        } ${isActive ? 'text-white' : 'text-gray-400'}`} 
-                      />
-                    )}
-                  </button>
-                  
-                  {hasChildren && isExpanded && (
-                    <div className="ml-4 mt-1 space-y-1">
-                      {item.children.map((child) => {
-                        const childIsActive = location.pathname === child.route;
-                        return (
-                          <button
-                            key={child.id}
-                            onClick={() => handleNavigation(child.route, child.id)}
-                            className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200 text-left text-sm ${
-                              childIsActive
-                                ? 'bg-indigo-100 text-indigo-700 font-medium'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                            }`}
-                          >
-                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                              childIsActive ? 'bg-indigo-500' : 'bg-gray-300'
-                            }`} />
-                            <span>{child.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
+          {/* Functional Navigation with Feature Gating */}
+          <div className="flex-1 overflow-y-auto">
+            <Navigation />
+          </div>
 
           {/* User Profile */}
           <div className="mt-auto pt-4 border-t border-gray-200">
@@ -564,10 +529,28 @@ const PremiumShopifyDashboard = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Welcome back, <span className="text-gradient-primary">Sarah! 👋</span>
-              </h1>
-              <p className="text-gray-600 text-lg">Your store is performing 23% better than last month</p>
+              <div className="flex items-center space-x-4 mb-2">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+                  Welcome back, <span className="text-gradient-primary">{user?.shopUrl?.split('.')[0] || 'Store Owner'}! 👋</span>
+                </h1>
+                <div className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
+                  subscription?.plan === 'trial' 
+                    ? 'bg-yellow-100 text-yellow-800' 
+                    : subscription?.plan === 'enterprise'
+                    ? 'bg-purple-100 text-purple-800'
+                    : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {subscription?.plan} Plan
+                  {subscription?.plan === 'trial' && subscription?.trialEndsAt && (
+                    <span className="ml-1">
+                      • {Math.ceil((subscription.trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days left
+                    </span>
+                  )}
+                </div>
+              </div>
+              <p className="text-gray-600 text-lg">
+                {user?.shopUrl} is performing 23% better than last month
+              </p>
             </div>
             
             <div className="hidden md:flex items-center space-x-3">
@@ -1055,5 +1038,14 @@ const renderSEOKeywordResearch = () => (
     </div>
   </div>
 );
+
+// Main component with auth provider wrapper
+const PremiumShopifyDashboard = () => {
+  return (
+    <ShopifyAuthProvider>
+      <DashboardContent />
+    </ShopifyAuthProvider>
+  );
+};
 
 export default PremiumShopifyDashboard;
