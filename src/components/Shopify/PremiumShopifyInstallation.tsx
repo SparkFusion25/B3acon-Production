@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from 'react';
+
+// Shopify App Bridge for embedded apps
+declare global {
+  interface Window {
+    shopifyAppBridge?: any;
+  }
+}
 import { 
   CheckCircle, 
   Clock, 
@@ -137,6 +144,35 @@ const PremiumShopifyInstallation = () => {
   ];
 
   useEffect(() => {
+    // Check if we're in an embedded Shopify app context
+    const urlParams = new URLSearchParams(window.location.search);
+    const shop = urlParams.get('shop');
+    const host = urlParams.get('host');
+    
+    if (shop && host) {
+      // We're in embedded app mode - set store URL from params
+      setStoreUrl(shop);
+      
+      // Load Shopify App Bridge
+      if (!window.shopifyAppBridge) {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@shopify/app-bridge@3';
+        script.onload = () => {
+          if (window.shopifyAppBridge) {
+            // Initialize App Bridge
+            const app = window.shopifyAppBridge.createApp({
+              apiKey: 'your-api-key', // Replace with actual API key
+              host: host,
+              forceRedirect: true
+            });
+          }
+        };
+        document.head.appendChild(script);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (isInstalling && currentStep < steps.length) {
       const currentStepData = steps[currentStep];
       
@@ -156,11 +192,20 @@ const PremiumShopifyInstallation = () => {
         if (currentStep < steps.length - 1) {
           setCurrentStep(prev => prev + 1);
         } else {
-          // Installation complete - redirect to plan selection
+          // Installation complete - redirect to plan selection WITHIN the embedded app
           setTimeout(() => {
-            // First redirect to plan selection to choose subscription
-            const cleanStoreUrl = storeUrl.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
-            window.location.href = `/shopify/plans?shop=${cleanStoreUrl}`;
+            const urlParams = new URLSearchParams(window.location.search);
+            const shop = urlParams.get('shop');
+            const host = urlParams.get('host');
+            
+            if (shop && host) {
+              // Embedded app navigation
+              window.location.href = `/shopify/plans?shop=${shop}&host=${host}`;
+            } else {
+              // Fallback for non-embedded
+              const cleanStoreUrl = storeUrl.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+              window.location.href = `/shopify/plans?shop=${cleanStoreUrl}`;
+            }
           }, 2000);
         }
       }, currentStepData.duration);

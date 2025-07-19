@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from 'react';
+
+// Shopify App Bridge types
+declare global {
+  interface Window {
+    shopifyAppBridge?: any;
+    AppBridge?: any;
+  }
+}
 import { 
   BarChart3, 
   Search, 
@@ -210,17 +218,36 @@ const PremiumShopifyDashboard = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const shop = urlParams.get('shop');
     const plan = urlParams.get('plan');
+    const host = urlParams.get('host');
+    
+    // Load Shopify App Bridge if we're in embedded context
+    if (shop && host && !window.shopifyAppBridge) {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@shopify/app-bridge@3';
+      script.onload = () => {
+        if (window.shopifyAppBridge) {
+          const app = window.shopifyAppBridge.createApp({
+            apiKey: process.env.REACT_APP_SHOPIFY_API_KEY || 'your-api-key',
+            host: host,
+            forceRedirect: true
+          });
+        }
+      };
+      document.head.appendChild(script);
+    }
     
     // In real implementation, verify this is coming from Shopify admin
     if (!shop) {
       // Redirect to installation if no shop parameter
-      window.location.href = '/shopify/install';
+      const redirectUrl = host ? `/shopify/install?host=${host}` : '/shopify/install';
+      window.location.href = redirectUrl;
       return;
     }
     
     if (!plan) {
       // Redirect to plan selection if no plan
-      window.location.href = `/shopify/plans?shop=${shop}`;
+      const redirectUrl = host ? `/shopify/plans?shop=${shop}&host=${host}` : `/shopify/plans?shop=${shop}`;
+      window.location.href = redirectUrl;
       return;
     }
     

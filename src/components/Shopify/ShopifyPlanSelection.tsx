@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from 'react';
+
+// Shopify App Bridge types
+declare global {
+  interface Window {
+    shopifyAppBridge?: any;
+    AppBridge?: any;
+  }
+}
 import { 
   CheckCircle, 
   Lock, 
@@ -37,6 +45,31 @@ const ShopifyPlanSelection = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    // Get shop and host parameters from URL for embedded app
+    const urlParams = new URLSearchParams(window.location.search);
+    const shopParam = urlParams.get('shop');
+    const hostParam = urlParams.get('host');
+    
+    if (shopParam) {
+      setShop(shopParam);
+    }
+
+    // Load Shopify App Bridge if we're in embedded context
+    if (shopParam && hostParam && !window.shopifyAppBridge) {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@shopify/app-bridge@3';
+      script.onload = () => {
+        if (window.shopifyAppBridge) {
+          const app = window.shopifyAppBridge.createApp({
+            apiKey: process.env.REACT_APP_SHOPIFY_API_KEY || 'your-api-key',
+            host: hostParam,
+            forceRedirect: true
+          });
+        }
+      };
+      document.head.appendChild(script);
+    }
+
     setIsLoaded(true);
   }, []);
 
