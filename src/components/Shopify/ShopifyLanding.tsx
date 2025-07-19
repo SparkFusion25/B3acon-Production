@@ -86,7 +86,7 @@ const ShopifyLanding = () => {
     }
   ];
 
-  // Navigation menu items
+  // Complete navigation menu items with ALL functions
   const navigationItems = [
     { 
       id: 'dashboard', 
@@ -102,10 +102,26 @@ const ShopifyLanding = () => {
       path: '/shopify/seo',
       description: 'Complete SEO optimization suite',
       submenu: [
+        { label: 'SEO Analyzer', path: '/shopify/seo/analyzer' },
         { label: 'Image SEO & Compression', path: '/shopify/seo/image-optimization' },
         { label: 'Broken Links Manager', path: '/shopify/seo/broken-links' },
         { label: 'Schema Markup Generator', path: '/shopify/seo/schema-markup' },
-        { label: 'Buy Button Generator', path: '/shopify/seo/buy-button' }
+        { label: 'Buy Button Generator', path: '/shopify/seo/buy-button' },
+        { label: 'Internal Link Engine', path: '/shopify/seo/internal-links' },
+        { label: 'Rank Tracker', path: '/shopify/seo/rank-tracker' }
+      ]
+    },
+    { 
+      id: 'plugins', 
+      label: 'Plugins', 
+      icon: Package, 
+      path: '/shopify/plugins',
+      description: 'All available plugins and extensions',
+      submenu: [
+        { label: 'Amazon Sync Panel', path: '/shopify/plugins/amazon-sync' },
+        { label: 'Site Speed Monitor', path: '/shopify/plugins/site-speed' },
+        { label: 'Conversion Optimizer', path: '/shopify/plugins/conversion' },
+        { label: 'Customer Journey Mapper', path: '/shopify/plugins/journey-mapper' }
       ]
     },
     { 
@@ -113,35 +129,93 @@ const ShopifyLanding = () => {
       label: 'Analytics', 
       icon: BarChart3, 
       path: '/shopify/analytics',
-      description: 'Performance tracking and insights'
+      description: 'Performance tracking and insights',
+      submenu: [
+        { label: 'SEO Reports', path: '/shopify/analytics/seo-reports' },
+        { label: 'Traffic Analysis', path: '/shopify/analytics/traffic' },
+        { label: 'Conversion Reports', path: '/shopify/analytics/conversions' },
+        { label: 'Customer Insights', path: '/shopify/analytics/customers' },
+        { label: 'Real-time Reporting', path: '/shopify/analytics/realtime' }
+      ]
     },
     { 
       id: 'automation', 
       label: 'Automation', 
       icon: Zap, 
       path: '/shopify/automation',
-      description: 'Internal linking and SEO automation'
+      description: 'Internal linking and SEO automation',
+      submenu: [
+        { label: 'Internal Link Engine', path: '/shopify/automation/internal-links' },
+        { label: 'SEO Tasks Automation', path: '/shopify/automation/seo-tasks' },
+        { label: 'Content Optimization', path: '/shopify/automation/content' },
+        { label: 'Performance Monitoring', path: '/shopify/automation/monitoring' }
+      ]
     },
     { 
       id: 'integrations', 
       label: 'Integrations', 
-      icon: Package, 
+      icon: Globe, 
       path: '/shopify/integrations',
-      description: 'Amazon sync and third-party tools'
+      description: 'Amazon sync and third-party tools',
+      submenu: [
+        { label: 'Amazon Integration', path: '/shopify/integrations/amazon' },
+        { label: 'Google Analytics', path: '/shopify/integrations/google-analytics' },
+        { label: 'Google Search Console', path: '/shopify/integrations/search-console' },
+        { label: 'Social Media', path: '/shopify/integrations/social' },
+        { label: 'Email Marketing', path: '/shopify/integrations/email' }
+      ]
     },
     { 
-      id: 'billing', 
-      label: 'Billing', 
+      id: 'subscriptions', 
+      label: 'Subscriptions', 
       icon: CreditCard, 
       path: '/shopify/plans',
-      description: 'Subscription plans and billing'
+      description: 'Subscription plans and billing',
+      submenu: [
+        { label: 'Plan Selection', path: '/shopify/plans' },
+        { label: 'Billing History', path: '/shopify/billing/history' },
+        { label: 'Payment Methods', path: '/shopify/billing/payment' },
+        { label: 'Usage & Limits', path: '/shopify/billing/usage' }
+      ]
+    },
+    { 
+      id: 'reports', 
+      label: 'Reports', 
+      icon: Users, 
+      path: '/shopify/reports',
+      description: 'Comprehensive reporting dashboard',
+      submenu: [
+        { label: 'SEO Performance Reports', path: '/shopify/reports/seo' },
+        { label: 'Traffic & Conversion Reports', path: '/shopify/reports/traffic' },
+        { label: 'Amazon Sync Reports', path: '/shopify/reports/amazon' },
+        { label: 'Custom Reports', path: '/shopify/reports/custom' }
+      ]
+    },
+    { 
+      id: 'support', 
+      label: 'Support', 
+      icon: HelpCircle, 
+      path: '/shopify/support',
+      description: 'Help center and documentation',
+      submenu: [
+        { label: 'Help Center', path: '/shopify/support/help' },
+        { label: 'Documentation', path: '/shopify/support/docs' },
+        { label: 'Video Tutorials', path: '/shopify/support/tutorials' },
+        { label: 'Contact Support', path: '/shopify/support/contact' }
+      ]
     },
     { 
       id: 'settings', 
       label: 'Settings', 
       icon: Settings, 
       path: '/shopify/settings',
-      description: 'App configuration and preferences'
+      description: 'App configuration and preferences',
+      submenu: [
+        { label: 'General Settings', path: '/shopify/settings/general' },
+        { label: 'SEO Configuration', path: '/shopify/settings/seo' },
+        { label: 'Notification Settings', path: '/shopify/settings/notifications' },
+        { label: 'API Settings', path: '/shopify/settings/api' }
+      ]
     },
     { 
       id: 'admin', 
@@ -228,8 +302,8 @@ const ShopifyLanding = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-8">
-              {navigationItems.slice(0, 6).map((item) => {
+            <div className="hidden lg:flex items-center space-x-4">
+              {navigationItems.slice(0, 8).map((item) => {
                 const Icon = item.icon;
                 return (
                   <div key={item.id} className="relative group">
@@ -265,8 +339,45 @@ const ShopifyLanding = () => {
                 );
               })}
               
-              {/* Admin Portal & Sign In */}
-              <div className="flex items-center space-x-4 border-l border-gray-200 pl-6">
+              {/* Additional Menu Items */}
+              {navigationItems.slice(8, 11).map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.id} className="relative group">
+                    <Link
+                      to={item.path}
+                      className="flex items-center space-x-2 text-gray-600 hover:text-lime-600 transition-colors py-2 px-3 rounded-lg hover:bg-lime-50 group"
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="font-medium">{item.label}</span>
+                      {item.submenu && <ChevronRight className="w-3 h-3 transform group-hover:rotate-90 transition-transform" />}
+                    </Link>
+                    
+                    {/* Dropdown Menu */}
+                    {item.submenu && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div className="p-4">
+                          <div className="text-sm font-medium text-gray-900 mb-2">{item.label}</div>
+                          <div className="space-y-2">
+                            {item.submenu.map((subItem, index) => (
+                              <Link
+                                key={index}
+                                to={subItem.path}
+                                className="block text-sm text-gray-600 hover:text-lime-600 hover:bg-lime-50 px-3 py-2 rounded-lg transition-colors"
+                              >
+                                {subItem.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              
+              {/* Admin Portal & CTA */}
+              <div className="flex items-center space-x-4 border-l border-gray-200 pl-4">
                 <Link
                   to="/shopify/billing-admin"
                   className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors"
@@ -357,7 +468,7 @@ const ShopifyLanding = () => {
 
       {/* Hero Section */}
       <section className="hero-banner">
-        <div className="max-w-4xl mx-auto px-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="mb-6">
             <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               Boost Your{' '}
@@ -417,7 +528,7 @@ const ShopifyLanding = () => {
 
       {/* Feature Blocks */}
       <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto text-center">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-main mb-4">
               Everything You Need to Dominate eCommerce
@@ -448,7 +559,7 @@ const ShopifyLanding = () => {
 
       {/* Pricing Preview */}
       <section id="pricing" className="py-20 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto text-center">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-main mb-4">
               Choose Your Growth Plan
@@ -497,7 +608,7 @@ const ShopifyLanding = () => {
 
       {/* Testimonial Slider */}
       <section className="py-20 px-6 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto text-center">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
               Trusted by 50,000+ Shopify Stores
@@ -554,7 +665,7 @@ const ShopifyLanding = () => {
 
       {/* Installation CTA */}
       <section id="install" className="py-20 px-6 bg-gradient-to-r from-lime-400 to-lime-600">
-        <div className="max-w-4xl mx-auto text-center text-white">
+        <div className="max-w-7xl mx-auto text-center text-white">
           <h2 className="text-4xl font-bold mb-4">
             Ready to Transform Your Store?
           </h2>
@@ -587,7 +698,7 @@ const ShopifyLanding = () => {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-16 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto text-center">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
