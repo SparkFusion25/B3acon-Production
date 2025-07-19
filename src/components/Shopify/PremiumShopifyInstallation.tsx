@@ -156,12 +156,11 @@ const PremiumShopifyInstallation = () => {
         if (currentStep < steps.length - 1) {
           setCurrentStep(prev => prev + 1);
         } else {
-          // Installation complete - redirect to Shopify admin as per Shopify app requirements
+          // Installation complete - redirect to plan selection
           setTimeout(() => {
-            // This should redirect to the actual Shopify admin with proper app integration
-            // Following Shopify app flow, redirect to admin with app context
+            // First redirect to plan selection to choose subscription
             const cleanStoreUrl = storeUrl.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
-            window.location.href = `https://${cleanStoreUrl}/admin/apps/b3acon`;
+            window.location.href = `/shopify/plans?shop=${cleanStoreUrl}`;
           }, 2000);
         }
       }, currentStepData.duration);

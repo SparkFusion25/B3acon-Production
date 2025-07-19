@@ -21,7 +21,9 @@ import {
   Download,
   Sparkles,
   Menu,
-  X
+  X,
+  Lock,
+  Crown
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -45,8 +47,33 @@ const PremiumShopifyDashboard = () => {
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userPlan, setUserPlan] = useState<string>('');
+  const [shopUrl, setShopUrl] = useState<string>('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
+    // Check for proper Shopify authentication and plan
+    const urlParams = new URLSearchParams(window.location.search);
+    const shop = urlParams.get('shop');
+    const plan = urlParams.get('plan');
+    
+    // In real implementation, verify this is coming from Shopify admin
+    if (!shop) {
+      // Redirect to installation if no shop parameter
+      window.location.href = '/shopify/install';
+      return;
+    }
+    
+    if (!plan) {
+      // Redirect to plan selection if no plan
+      window.location.href = `/shopify/plans?shop=${shop}`;
+      return;
+    }
+    
+    setShopUrl(shop);
+    setUserPlan(plan);
+    setIsAuthorized(true);
+    
     // Simulate loading and data fetching
     setTimeout(() => {
       setMetrics([
@@ -207,6 +234,47 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  // Feature access control based on plan
+  const hasFeatureAccess = (feature: string) => {
+    const planFeatures = {
+      starter: ['basic-analytics', 'email-support', 'seo-basic'],
+      growth: ['basic-analytics', 'advanced-analytics', 'email-support', 'priority-support', 'seo-basic', 'seo-advanced', 'ab-testing'],
+      pro: ['basic-analytics', 'advanced-analytics', 'email-support', 'priority-support', 'dedicated-support', 'seo-basic', 'seo-advanced', 'ab-testing', 'api-access', 'white-label']
+    };
+    
+    return planFeatures[userPlan as keyof typeof planFeatures]?.includes(feature) || false;
+  };
+
+  const LockedFeature = ({ title, description, requiredPlan }: { title: string; description: string; requiredPlan: string }) => (
+    <div className="glass-card p-6 relative">
+      <div className="absolute inset-0 bg-gray-50/50 backdrop-blur-sm rounded-lg flex items-center justify-center">
+        <div className="text-center">
+          <Lock className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+          <h3 className="font-semibold text-gray-600 mb-2">{title}</h3>
+          <p className="text-sm text-gray-500 mb-4">{description}</p>
+          <button 
+            onClick={() => window.location.href = `/shopify/plans?shop=${shopUrl}&upgrade=${requiredPlan}`}
+            className="btn-premium btn-primary btn-small"
+          >
+            <Crown className="w-4 h-4" />
+            Upgrade to {requiredPlan}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
       {/* Top Navigation */}
@@ -223,8 +291,13 @@ const PremiumShopifyDashboard = () => {
               
               <div className="hidden sm:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium hidden md:inline">techstore.myshopify.com</span>
+                <span className="text-emerald-700 text-sm font-medium hidden md:inline">{shopUrl}</span>
                 <span className="text-emerald-700 text-sm font-medium md:hidden">Connected</span>
+              </div>
+              
+              <div className="flex items-center space-x-2 bg-indigo-100 px-3 py-1 rounded-full">
+                <Crown className="w-4 h-4 text-indigo-600" />
+                <span className="text-indigo-700 text-sm font-medium capitalize">{userPlan} Plan</span>
               </div>
             </div>
             
