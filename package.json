@@ -22,6 +22,13 @@
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/uuid": "^10.0.0",
     "axios": "^1.10.0",
+    "cheerio": "^1.1.0",
+    "cssnano": "^7.1.0",
+    "htmlparser2": "^10.0.0",
+    "imagemin": "^9.0.1",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^10.0.0",
+    "jsdom": "^26.1.0",
     "klaviyo-sdk": "^20220330.0.0",
     "lucide-react": "^0.303.0",
     "react": "^18.2.0",
@@ -35,6 +42,8 @@
     "recharts": "^3.1.0",
     "sentiment": "^5.0.2",
     "serpapi": "^2.1.0",
+    "sharp": "^0.34.3",
+    "terser": "^5.43.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

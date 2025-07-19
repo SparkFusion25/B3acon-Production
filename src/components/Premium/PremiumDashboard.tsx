@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import '../../styles/premium-b3acon-design-system.css';
+import PremiumSEOIntelligence from './PremiumSEOIntelligence';
 
 interface NavigationItem {
   id: string;
@@ -491,6 +492,74 @@ const PremiumDashboard: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [metrics, setMetrics] = useState<MetricData[]>([]);
 
+  const renderMainContent = () => {
+    const currentPath = location.pathname;
+    
+    // Route to specific components based on path
+    if (currentPath.startsWith('/dashboard/seo')) {
+      return <PremiumSEOIntelligence />;
+    }
+    
+    // Default dashboard view
+    return (
+      <>
+        {/* Welcome Section */}
+        <div className="mb-8 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Good morning, <span className="text-gradient-primary">Alex! 👋</span>
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Your business is growing <span className="font-semibold text-emerald-600">+23%</span> this month
+              </p>
+            </div>
+            
+            <div className="flex space-x-3">
+              <PremiumButton variant="outline" size="medium">
+                <Download className="w-4 h-4 mr-2" />
+                Export Report
+              </PremiumButton>
+              <PremiumButton variant="primary" size="medium">
+                <Plus className="w-4 h-4 mr-2" />
+                Add New Client
+              </PremiumButton>
+            </div>
+          </div>
+        </div>
+
+        {/* Metrics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {metrics.map((metric, index) => (
+            <MetricCard key={index} metric={metric} index={index} />
+          ))}
+        </div>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          <div className="lg:col-span-2">
+            <PremiumChart 
+              title="Revenue Analytics"
+              subtitle="Last 12 months performance"
+            />
+          </div>
+          <div>
+            <PremiumChart 
+              title="Traffic Sources"
+              subtitle="This month breakdown"
+            />
+          </div>
+        </div>
+
+        {/* Recent Activity & Quick Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <RecentActivityFeed />
+          <QuickActionsDashboard />
+        </div>
+      </>
+    );
+  };
+
   useEffect(() => {
     // Simulate loading metrics
     setMetrics([
@@ -544,59 +613,7 @@ const PremiumDashboard: React.FC = () => {
         
         {/* Dashboard Content */}
         <main className="p-8">
-          {/* Welcome Section */}
-          <div className="mb-8 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                  Good morning, <span className="text-gradient-primary">Alex! 👋</span>
-                </h1>
-                <p className="text-gray-600 text-lg">
-                  Your business is growing <span className="font-semibold text-emerald-600">+23%</span> this month
-                </p>
-              </div>
-              
-              <div className="flex space-x-3">
-                <PremiumButton variant="outline" size="medium">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export Report
-                </PremiumButton>
-                <PremiumButton variant="primary" size="medium">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New Client
-                </PremiumButton>
-              </div>
-            </div>
-          </div>
-
-          {/* Metrics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {metrics.map((metric, index) => (
-              <MetricCard key={index} metric={metric} index={index} />
-            ))}
-          </div>
-
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div className="lg:col-span-2">
-              <PremiumChart 
-                title="Revenue Analytics"
-                subtitle="Last 12 months performance"
-              />
-            </div>
-            <div>
-              <PremiumChart 
-                title="Traffic Sources"
-                subtitle="This month breakdown"
-              />
-            </div>
-          </div>
-
-          {/* Recent Activity & Quick Actions */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <RecentActivityFeed />
-            <QuickActionsDashboard />
-          </div>
+          {renderMainContent()}
         </main>
       </div>
     </div>
