@@ -19,6 +19,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import '../../styles/premium-design-system.css';
 
 interface InstallationStep {
@@ -30,10 +31,38 @@ interface InstallationStep {
   duration: number;
 }
 
+// Subscription plans as specified in SYSTEM_SPECS.md
+const SUBSCRIPTION_PLANS = {
+  trial: {
+    name: "14-Day Trial",
+    price: 0,
+    duration: 14,
+    features: ["basic_seo", "popup_builder", "basic_analytics"]
+  },
+  starter: {
+    name: "Starter",
+    price: 29,
+    features: ["basic_seo", "popup_builder", "basic_analytics", "email_capture"]
+  },
+  pro: {
+    name: "Professional", 
+    price: 79,
+    features: ["all_seo_tools", "advanced_popups", "crm_integration", "automation"]
+  },
+  enterprise: {
+    name: "Enterprise",
+    price: 199,
+    features: ["everything", "priority_support", "custom_integrations"]
+  }
+};
+
 const PremiumShopifyInstallation = () => {
+  const [searchParams] = useSearchParams();
+  const planType = searchParams.get('plan') || 'growth';
+  
   const [currentStep, setCurrentStep] = useState(0);
   const [isInstalling, setIsInstalling] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('growth');
+  const [selectedPlan, setSelectedPlan] = useState(planType);
   const [storeUrl, setStoreUrl] = useState('');
   const [animationKey, setAnimationKey] = useState(0);
 
@@ -167,14 +196,50 @@ const PremiumShopifyInstallation = () => {
     }
   }, [currentStep, isInstalling, steps.length]);
 
-  const startInstallation = () => {
-    if (!storeUrl.trim()) {
+  // Shopify connection handler as specified in SYSTEM_SPECS.md
+  const handleShopifyConnect = async (shopUrl: string) => {
+    if (!shopUrl.trim()) {
       alert('Please enter your Shopify store URL');
       return;
     }
+
+    // Validate Shopify URL format
+    const shopifyUrlPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
+    const cleanUrl = shopUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    
+    if (!shopifyUrlPattern.test(cleanUrl)) {
+      alert('Please enter a valid Shopify store URL (e.g., mystore.myshopify.com)');
+      return;
+    }
+
+    // For demo purposes - in production, these would be environment variables
+    const CLIENT_ID = 'your_shopify_app_client_id';
+    const SCOPES = 'read_products,read_orders,read_customers,write_themes';
+    const REDIRECT_URI = `${window.location.origin}/shopify/dashboard`;
+    
+    // Create trial subscription if plan=trial
+    const currentPlan = searchParams.get('plan') || 'starter';
+    
+    // Track conversion
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'shopify_connect_started', {
+        plan: currentPlan,
+        shop_url: cleanUrl
+      });
+    }
+
+    // In production, initiate OAuth flow
+    // const authUrl = `https://${cleanUrl}/admin/oauth/authorize?client_id=${CLIENT_ID}&scope=${SCOPES}&redirect_uri=${REDIRECT_URI}&state=${currentPlan}`;
+    // window.location.href = authUrl;
+    
+    // For demo - simulate installation process
     setIsInstalling(true);
     setCurrentStep(0);
     setAnimationKey(prev => prev + 1);
+  };
+
+  const startInstallation = () => {
+    handleShopifyConnect(storeUrl);
   };
 
   const renderWelcomeScreen = () => (
@@ -186,11 +251,19 @@ const PremiumShopifyInstallation = () => {
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Welcome to <span className="text-gradient-primary">B3ACON</span>
+            {planType === 'trial' ? (
+              <>Start Your <span className="text-gradient-primary">Free Trial</span></>
+            ) : (
+              <>Welcome to <span className="text-gradient-primary">B3ACON</span></>
+            )}
           </h1>
           
           <p className="text-xl text-indigo-200 mb-8 max-w-2xl mx-auto">
-            Transform your Shopify store with AI-powered optimization that increases revenue by 247% on average
+            {planType === 'trial' ? (
+              'Get 14 days of unlimited access to transform your Shopify store with AI-powered optimization'
+            ) : (
+              'Transform your Shopify store with AI-powered optimization that increases revenue by 247% on average'
+            )}
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
@@ -239,12 +312,18 @@ const PremiumShopifyInstallation = () => {
             disabled={!storeUrl.trim()}
           >
             <Shield className="w-5 h-5 mr-2" />
-            <span>Connect Securely</span>
+            <span>
+              {planType === 'trial' ? 'Start Free Trial' : 'Connect Securely'}
+            </span>
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </button>
           
           <p className="text-indigo-300 text-sm mt-4">
-            🔒 Secure OAuth connection • 🚀 Setup takes 2 minutes • ✨ Start optimizing immediately
+            {planType === 'trial' ? (
+              '🚀 14-day free trial • 🔒 Secure connection • ✨ No credit card required'
+            ) : (
+              '🔒 Secure OAuth connection • 🚀 Setup takes 2 minutes • ✨ Start optimizing immediately'
+            )}
           </p>
         </div>
       </div>
