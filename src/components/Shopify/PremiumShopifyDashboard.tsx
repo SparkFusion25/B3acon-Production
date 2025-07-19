@@ -23,7 +23,11 @@ import {
   Menu,
   X,
   Lock,
-  Crown
+  Crown,
+  Globe,
+  Plus,
+  Edit,
+  Save
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -231,6 +235,698 @@ const PremiumShopifyDashboard = () => {
         </div>
         <div className="w-20 h-4 bg-gray-200 rounded mb-2"></div>
         <div className="w-24 h-8 bg-gray-200 rounded"></div>
+      </div>
+    </div>
+  );
+
+  // Render section content based on active section
+  const renderSectionContent = () => {
+    switch (activeSection) {
+      case 'overview':
+        return renderOverviewSection();
+      case 'analytics':
+        return renderAnalyticsSection();
+      case 'products':
+        return renderProductsSection();
+      case 'seo':
+        return renderSEOSection();
+      case 'settings':
+        return renderSettingsSection();
+      default:
+        return renderOverviewSection();
+    }
+  };
+
+  // Overview Section (Original Dashboard Content)
+  const renderOverviewSection = () => (
+    <div>
+      {/* Time Frame Selector */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2">
+          {['24h', '7d', '30d', '90d'].map((timeframe) => (
+            <button
+              key={timeframe}
+              onClick={() => setActiveTimeframe(timeframe)}
+              className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+                activeTimeframe === timeframe
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
+                  : 'bg-white/60 text-gray-600 hover:bg-white/80'
+              }`}
+            >
+              {timeframe}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {isLoading
+          ? [...Array(4)].map((_, i) => <SkeletonMetric key={i} />)
+          : metrics.map((metric, index) => (
+              <MetricCard key={index} metric={metric} index={index} />
+            ))
+        }
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        {/* Revenue Chart */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">Revenue Analytics</h3>
+            <div className="flex items-center space-x-2">
+              <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <Filter className="w-4 h-4" />
+              </button>
+              <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <Download className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="h-64 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
+            <div className="text-center">
+              <BarChart3 className="w-12 h-12 text-indigo-400 mx-auto mb-3" />
+              <p className="text-gray-600">Interactive chart would be rendered here</p>
+              <p className="text-sm text-gray-500">Using Recharts or Chart.js</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Traffic Sources */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900">Traffic Sources</h3>
+            <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
+              View Details
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {trafficSourcesData.map((source, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div 
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: source.fill }}
+                  ></div>
+                  <span className="font-medium text-gray-700">{source.name}</span>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-gray-900">{source.value}%</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Recent Activity */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900 flex items-center">
+              <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
+              Recent Activity
+            </h3>
+            <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
+              View All
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {recentActivities.map((activity, index) => (
+              <div key={index} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                  activity.type === 'success' 
+                    ? 'bg-emerald-100 text-emerald-600' 
+                    : 'bg-blue-100 text-blue-600'
+                }`}>
+                  <activity.icon className="w-4 h-4" />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-gray-900">{activity.action}</p>
+                  <p className="text-sm text-gray-600 truncate">{activity.target}</p>
+                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Top Products */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900 flex items-center">
+              <ShoppingBag className="w-5 h-5 text-purple-500 mr-2" />
+              Top Products
+            </h3>
+            <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
+              View All
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {topProducts.map((product, index) => (
+              <div key={index} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-12 h-12 rounded-lg object-cover"
+                />
+                
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-gray-900 truncate">{product.name}</p>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <span className="font-bold text-gray-900">{product.revenue}</span>
+                    <span className="text-emerald-600 text-sm font-semibold">{product.growth}</span>
+                  </div>
+                </div>
+                
+                <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                  <Eye className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Analytics Section
+  const renderAnalyticsSection = () => (
+    <div className="space-y-8">
+      {/* Advanced Analytics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <BarChart3 className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">+15.3%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Conversion Rate</p>
+            <p className="text-3xl font-bold text-gray-900">3.24%</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <Target className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">+28.7%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">AOV (Average Order Value)</p>
+            <p className="text-3xl font-bold text-gray-900">$127.50</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">+12.1%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Customer Lifetime Value</p>
+            <p className="text-3xl font-bold text-gray-900">$892</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Detailed Analytics Charts */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Performance Trends</h3>
+        <div className="h-80 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
+          <div className="text-center">
+            <TrendingUp className="w-16 h-16 text-indigo-400 mx-auto mb-4" />
+            <p className="text-gray-600 text-lg">Advanced Analytics Dashboard</p>
+            <p className="text-sm text-gray-500">Detailed performance metrics and trends would be displayed here</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Analytics Insights */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Key Insights</h3>
+        <div className="space-y-4">
+          <div className="flex items-start space-x-4 p-4 bg-blue-50 rounded-lg">
+            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900">Revenue Growth</h4>
+              <p className="text-gray-600">Your store's revenue has increased by 23% compared to last month, primarily driven by improved SEO rankings.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-4 p-4 bg-emerald-50 rounded-lg">
+            <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
+              <Target className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900">Conversion Optimization</h4>
+              <p className="text-gray-600">Product page optimizations have resulted in a 15.3% increase in conversion rates.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Products Section
+  const renderProductsSection = () => (
+    <div className="space-y-8">
+      {/* Product Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <ShoppingBag className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">+12</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Total Products</p>
+            <p className="text-3xl font-bold text-gray-900">247</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <Search className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">98%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">SEO Optimized</p>
+            <p className="text-3xl font-bold text-gray-900">242</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">+5.2%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Avg. Rating</p>
+            <p className="text-3xl font-bold text-gray-900">4.8</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-600 flex items-center justify-center">
+              <Target className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-orange-600 text-sm font-semibold">87%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">In Stock</p>
+            <p className="text-3xl font-bold text-gray-900">215</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Product Management Table */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Product Catalog</h3>
+          <div className="flex items-center space-x-2">
+            <button className="btn-premium btn-outline btn-small">
+              <Filter className="w-4 h-4" />
+              Filter
+            </button>
+            <button className="btn-premium btn-primary btn-small">
+              <Plus className="w-4 h-4" />
+              Add Product
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            { name: 'Wireless Bluetooth Headphones', sku: 'WBH-001', price: '$89.99', seo: 95, status: 'active' },
+            { name: 'Smart Fitness Watch', sku: 'SFW-002', price: '$199.99', seo: 88, status: 'active' },
+            { name: 'Portable Phone Charger', sku: 'PPC-003', price: '$24.99', seo: 92, status: 'draft' },
+            { name: 'Premium Coffee Maker', sku: 'PCM-004', price: '$149.99', seo: 78, status: 'active' }
+          ].map((product, index) => (
+            <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-lg flex items-center justify-center">
+                  <ShoppingBag className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{product.name}</div>
+                  <div className="text-sm text-gray-600">SKU: {product.sku}</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-6">
+                <div className="text-right">
+                  <div className="font-semibold text-gray-900">{product.price}</div>
+                  <div className="text-sm text-gray-600">Price</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-emerald-600">{product.seo}%</div>
+                  <div className="text-sm text-gray-600">SEO Score</div>
+                </div>
+                <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                  product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                }`}>
+                  {product.status}
+                </span>
+                <button className="p-2 text-gray-400 hover:text-gray-600">
+                  <Edit className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bulk Actions */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Bulk SEO Optimization</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2">
+            <Search className="w-8 h-8 text-emerald-600" />
+            <span className="font-medium">Optimize All Products</span>
+            <span className="text-sm text-gray-600">Auto-generate SEO content</span>
+          </button>
+          
+          <button className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2">
+            <Target className="w-8 h-8 text-blue-600" />
+            <span className="font-medium">Update Meta Tags</span>
+            <span className="text-sm text-gray-600">Batch update descriptions</span>
+          </button>
+          
+          <button className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2">
+            <BarChart3 className="w-8 h-8 text-purple-600" />
+            <span className="font-medium">Analyze Performance</span>
+            <span className="text-sm text-gray-600">Generate product reports</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  // SEO Section
+  const renderSEOSection = () => (
+    <div className="space-y-8">
+      {/* SEO Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <Search className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">+8 pts</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Overall SEO Score</p>
+            <p className="text-3xl font-bold text-gray-900">94/100</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">+127</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Keywords Ranking</p>
+            <p className="text-3xl font-bold text-gray-900">1,024</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <Target className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">+23%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Organic Traffic</p>
+            <p className="text-3xl font-bold text-gray-900">12.4K</p>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO Tools */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">SEO Tools & Features</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div className="flex items-center space-x-3 mb-3">
+              <Search className="w-6 h-6 text-emerald-600" />
+              <h4 className="font-semibold text-gray-900">Keyword Research</h4>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">Find high-performing keywords for your products</p>
+            <button className="btn-premium btn-primary btn-small">Launch Tool</button>
+          </div>
+
+          <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div className="flex items-center space-x-3 mb-3">
+              <BarChart3 className="w-6 h-6 text-blue-600" />
+              <h4 className="font-semibold text-gray-900">Rank Tracker</h4>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">Monitor your search engine rankings</p>
+            <button className="btn-premium btn-primary btn-small">View Rankings</button>
+          </div>
+
+          <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div className="flex items-center space-x-3 mb-3">
+              <Target className="w-6 h-6 text-purple-600" />
+              <h4 className="font-semibold text-gray-900">Content Optimizer</h4>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">AI-powered content optimization</p>
+            <button className="btn-premium btn-primary btn-small">Optimize Now</button>
+          </div>
+
+          <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div className="flex items-center space-x-3 mb-3">
+              <Globe className="w-6 h-6 text-indigo-600" />
+              <h4 className="font-semibold text-gray-900">Site Audit</h4>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">Complete technical SEO analysis</p>
+            <button className="btn-premium btn-primary btn-small">Run Audit</button>
+          </div>
+
+          <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            <div className="flex items-center space-x-3 mb-3">
+              <Users className="w-6 h-6 text-green-600" />
+              <h4 className="font-semibold text-gray-900">Competitor Analysis</h4>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">Analyze competitor strategies</p>
+            <button className="btn-premium btn-primary btn-small">Analyze</button>
+          </div>
+
+          {!hasFeatureAccess('white-label') && (
+            <LockedFeature 
+              title="Schema Markup" 
+              description="Advanced structured data for better search visibility" 
+              requiredPlan="Pro" 
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Recent SEO Activities */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Recent SEO Activities</h3>
+        <div className="space-y-4">
+          {[
+            { action: 'Keyword ranking improved', keyword: '"wireless headphones"', change: '+5 positions', time: '2 hours ago' },
+            { action: 'Product page optimized', product: 'Smart Fitness Watch', improvement: '+12 SEO score', time: '4 hours ago' },
+            { action: 'New backlink acquired', source: 'tech-reviews.com', authority: 'DA 68', time: '1 day ago' },
+            { action: 'Meta description updated', pages: '15 product pages', status: 'Completed', time: '2 days ago' }
+          ].map((activity, index) => (
+            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
+                  <Search className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <div className="font-medium text-gray-900">{activity.action}</div>
+                  <div className="text-sm text-gray-600">
+                    {activity.keyword && `Keyword: ${activity.keyword}`}
+                    {activity.product && `Product: ${activity.product}`}
+                    {activity.source && `Source: ${activity.source}`}
+                    {activity.pages && `Updated: ${activity.pages}`}
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-semibold text-emerald-600">
+                  {activity.change || activity.improvement || activity.authority || activity.status}
+                </div>
+                <div className="text-sm text-gray-500">{activity.time}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Settings Section
+  const renderSettingsSection = () => (
+    <div className="space-y-8">
+      {/* Account Settings */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Account Settings</h3>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
+              <input 
+                type="text" 
+                defaultValue="TechGear Pro" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Store URL</label>
+              <input 
+                type="text" 
+                defaultValue={shopUrl} 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                disabled
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+            <input 
+              type="email" 
+              defaultValue="admin@techgearpro.com" 
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Subscription Management */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Subscription Plan</h3>
+        <div className="flex items-center justify-between p-4 bg-indigo-50 rounded-lg mb-4">
+          <div className="flex items-center space-x-3">
+            <Crown className="w-8 h-8 text-indigo-600" />
+            <div>
+              <div className="font-semibold text-gray-900 capitalize">{userPlan} Plan</div>
+              <div className="text-sm text-gray-600">Active subscription</div>
+            </div>
+          </div>
+          <button 
+            onClick={() => window.location.href = `/shopify/plans?shop=${shopUrl}&current=${userPlan}`}
+            className="btn-premium btn-primary"
+          >
+            Manage Plan
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="text-center p-4 border border-gray-200 rounded-lg">
+            <div className="text-2xl font-bold text-gray-900">500</div>
+            <div className="text-sm text-gray-600">Products Remaining</div>
+          </div>
+          <div className="text-center p-4 border border-gray-200 rounded-lg">
+            <div className="text-2xl font-bold text-gray-900">14</div>
+            <div className="text-sm text-gray-600">Days Until Renewal</div>
+          </div>
+          <div className="text-center p-4 border border-gray-200 rounded-lg">
+            <div className="text-2xl font-bold text-gray-900">$79</div>
+            <div className="text-sm text-gray-600">Monthly Cost</div>
+          </div>
+        </div>
+      </div>
+
+      {/* App Preferences */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">App Preferences</h3>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium text-gray-900">Email Notifications</div>
+              <div className="text-sm text-gray-600">Receive updates about SEO improvements</div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" defaultChecked className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+            </label>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium text-gray-900">Auto SEO Optimization</div>
+              <div className="text-sm text-gray-600">Automatically optimize new products</div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" defaultChecked className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+            </label>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium text-gray-900">Weekly Reports</div>
+              <div className="text-sm text-gray-600">Receive weekly performance summaries</div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+            </label>
+          </div>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <button className="btn-premium btn-primary">
+            <Save className="w-4 h-4" />
+            Save Settings
+          </button>
+        </div>
+      </div>
+
+      {/* Danger Zone */}
+      <div className="glass-card p-6 border-red-200">
+        <h3 className="text-xl font-bold text-red-600 mb-6">Danger Zone</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg">
+            <div>
+              <div className="font-medium text-gray-900">Reset SEO Data</div>
+              <div className="text-sm text-gray-600">Clear all SEO optimization data and start fresh</div>
+            </div>
+            <button className="btn-premium btn-outline border-red-300 text-red-600 hover:bg-red-50">
+              Reset Data
+            </button>
+          </div>
+          
+          <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg">
+            <div>
+              <div className="font-medium text-gray-900">Uninstall App</div>
+              <div className="text-sm text-gray-600">Permanently remove B3ACON from your store</div>
+            </div>
+            <button className="btn-premium bg-red-600 text-white hover:bg-red-700">
+              Uninstall
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
