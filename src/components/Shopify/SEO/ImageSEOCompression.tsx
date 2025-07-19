@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Image, 
-  Compress, 
+  Minimize2 as Compress, 
   Download, 
   Upload, 
   CheckCircle, 
@@ -11,7 +11,7 @@ import {
   Eye,
   FileText,
   BarChart3,
-  Optimize
+  Sparkles as Optimize
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 

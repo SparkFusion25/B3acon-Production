@@ -11,9 +11,15 @@ import ShopifyLanding from './components/Shopify/ShopifyLanding';
 import ShopifyDashboard from './components/Shopify/ShopifyDashboard';
 import ShopifyInstallation from './components/Shopify/ShopifyInstallation';
 import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
+import ShopifyPlanSelection from './components/Shopify/ShopifyPlanSelection';
+import ShopifyBillingAdmin from './components/Shopify/ShopifyBillingAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
+import ImageSEOCompression from './components/Shopify/SEO/ImageSEOCompression';
+import BrokenLinksManager from './components/Shopify/SEO/BrokenLinksManager';
+import SchemaMarkupGenerator from './components/Shopify/SEO/SchemaMarkupGenerator';
+import BuyButtonGenerator from './components/Shopify/SEO/BuyButtonGenerator';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
@@ -31,15 +37,31 @@ const AppRoutes: React.FC = () => {
   return (
     <Routes>
       {/* Public Shopify App Routes - Always Available */}
-      <Route path="/shopify" element={<PremiumShopifyLanding />} />
+      <Route path="/shopify" element={<ShopifyLanding />} />
+      <Route path="/shopify/premium" element={<PremiumShopifyLanding />} />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+      <Route path="/shopify/plans" element={<ShopifyPlanSelection />} />
+      <Route path="/shopify/billing-admin" element={<ShopifyBillingAdmin />} />
       
-             {/* Legacy Routes for Testing */}
-       <Route path="/shopify/legacy" element={<ShopifyLanding />} />
-       <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
-       <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
+      {/* Shopify SEO Tools Routes */}
+      <Route path="/shopify/seo" element={<ShopifyDashboard />} />
+      <Route path="/shopify/seo/image-optimization" element={<ImageSEOCompression />} />
+      <Route path="/shopify/seo/broken-links" element={<BrokenLinksManager />} />
+      <Route path="/shopify/seo/schema-markup" element={<SchemaMarkupGenerator />} />
+      <Route path="/shopify/seo/buy-button" element={<BuyButtonGenerator />} />
+      
+      {/* Shopify App Pages */}
+      <Route path="/shopify/analytics" element={<ShopifyDashboard />} />
+      <Route path="/shopify/automation" element={<ShopifyDashboard />} />
+      <Route path="/shopify/integrations" element={<ShopifyDashboard />} />
+      <Route path="/shopify/settings" element={<ShopifyAdmin />} />
+      
+      {/* Legacy Routes for Testing */}
+      <Route path="/shopify/legacy" element={<ShopifyLanding />} />
+      <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
+      <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
       
               {/* Premium Auth Routes */}
         <Route path="/login" element={<PremiumLoginForm />} />

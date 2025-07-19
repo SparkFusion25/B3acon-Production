@@ -212,6 +212,149 @@ const ShopifyLanding = () => {
 
   return (
     <div className="b3acon-app min-h-screen bg-gray-50">
+      {/* Navigation Header */}
+      <nav className="bg-white/95 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            {/* Logo */}
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-lime-400 to-lime-600 rounded-xl flex items-center justify-center">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <span className="text-xl font-bold text-gray-900">B3ACON</span>
+                <span className="text-sm text-gray-500 ml-2">for Shopify</span>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-8">
+              {navigationItems.slice(0, 6).map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.id} className="relative group">
+                    <Link
+                      to={item.path}
+                      className="flex items-center space-x-2 text-gray-600 hover:text-lime-600 transition-colors py-2 px-3 rounded-lg hover:bg-lime-50 group"
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="font-medium">{item.label}</span>
+                      {item.submenu && <ChevronRight className="w-3 h-3 transform group-hover:rotate-90 transition-transform" />}
+                    </Link>
+                    
+                    {/* Dropdown Menu for SEO Tools */}
+                    {item.submenu && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div className="p-4">
+                          <div className="text-sm font-medium text-gray-900 mb-2">{item.label}</div>
+                          <div className="space-y-2">
+                            {item.submenu.map((subItem, index) => (
+                              <Link
+                                key={index}
+                                to={subItem.path}
+                                className="block text-sm text-gray-600 hover:text-lime-600 hover:bg-lime-50 px-3 py-2 rounded-lg transition-colors"
+                              >
+                                {subItem.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              
+              {/* Admin Portal & Sign In */}
+              <div className="flex items-center space-x-4 border-l border-gray-200 pl-6">
+                <Link
+                  to="/shopify/billing-admin"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-purple-600 transition-colors"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span className="font-medium">Admin</span>
+                </Link>
+                <Link
+                  to="/shopify/plans"
+                  className="bg-gradient-to-r from-lime-400 to-lime-600 text-white px-6 py-2 rounded-lg hover:from-lime-500 hover:to-lime-700 transition-all duration-200 font-medium"
+                >
+                  Get Started
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                {showMobileMenu ? (
+                  <X className="w-6 h-6 text-gray-600" />
+                ) : (
+                  <Menu className="w-6 h-6 text-gray-600" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        {showMobileMenu && (
+          <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+              <div className="space-y-3">
+                {navigationItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div key={item.id}>
+                      <Link
+                        to={item.path}
+                        onClick={() => setShowMobileMenu(false)}
+                        className="flex items-center space-x-3 text-gray-700 hover:text-lime-600 hover:bg-lime-50 px-4 py-3 rounded-lg transition-all"
+                      >
+                        <Icon className="w-5 h-5" />
+                        <div>
+                          <div className="font-medium">{item.label}</div>
+                          <div className="text-sm text-gray-500">{item.description}</div>
+                        </div>
+                      </Link>
+                      
+                      {/* Mobile Submenu */}
+                      {item.submenu && (
+                        <div className="ml-8 mt-2 space-y-2">
+                          {item.submenu.map((subItem, index) => (
+                            <Link
+                              key={index}
+                              to={subItem.path}
+                              onClick={() => setShowMobileMenu(false)}
+                              className="block text-sm text-gray-600 hover:text-lime-600 hover:bg-lime-50 px-4 py-2 rounded-lg transition-colors"
+                            >
+                              {subItem.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                
+                {/* Mobile CTA */}
+                <div className="pt-4 border-t border-gray-200 mt-4">
+                  <Link
+                    to="/shopify/plans"
+                    onClick={() => setShowMobileMenu(false)}
+                    className="block bg-gradient-to-r from-lime-400 to-lime-600 text-white text-center px-6 py-3 rounded-lg hover:from-lime-500 hover:to-lime-700 transition-all duration-200 font-medium"
+                  >
+                    Get Started Free
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+
       {/* Hero Section */}
       <section className="hero-banner">
         <div className="max-w-4xl mx-auto px-6 text-center">
