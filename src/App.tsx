@@ -15,6 +15,7 @@ import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
 import PremiumShopifyLogin from './components/Shopify/PremiumShopifyLogin';
+import SubscribePage from './components/Shopify/SubscribePage';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
 import PremiumDashboard from './components/Premium/PremiumDashboard';
 import CRMDealsPage from './components/Premium/CRMDealsPage';
@@ -35,6 +36,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify" element={<PremiumShopifyLanding />} />
       <Route path="/shopify/login" element={<PremiumShopifyLogin />} />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
+      <Route path="/shopify/subscribe" element={<SubscribePage />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
       <Route path="/shopify/plans" element={<PlanSelectionPage viewOnly={true} />} />

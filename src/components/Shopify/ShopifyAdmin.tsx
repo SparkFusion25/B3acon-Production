@@ -1,26 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Settings, 
-  DollarSign, 
   Users, 
-  BarChart3, 
-  ToggleLeft, 
-  Save,
-  Plus,
-  Edit,
-  Trash2,
+  TrendingUp, 
+  DollarSign, 
+  ShoppingBag,
+  Settings,
+  BarChart3,
   Eye,
-  Download,
+  Edit3,
+  Trash2,
+  Crown,
+  AlertCircle,
+  CheckCircle,
+  Calendar,
   Mail,
-  Bell,
-  Globe,
   Shield,
-  Zap,
-  Home,
-  Package,
-  CreditCard,
-  TrendingUp,
-  Activity,
+  LogOut,
   Menu,
   X
 } from 'lucide-react';
@@ -29,654 +24,413 @@ import { useShopifyAuth } from '../../contexts/ShopifyAuthContext';
 import { useMobileNavigation } from '../../hooks/useMobileNavigation';
 import '../../styles/premium-design-system.css';
 
-interface PricingPlan {
+interface User {
   id: string;
-  name: string;
-  description: string;
-  price: number;
-  period: string;
-  features: string[];
-  trialDays: number;
-  isActive: boolean;
-}
-
-interface AppMetrics {
-  activeInstalls: number;
-  churnRate: number;
-  apiUsage: number;
+  shopUrl: string;
+  email: string;
+  plan: string;
+  status: string;
+  createdAt: string;
+  lastLogin?: string;
   revenue: number;
-  growth: number;
 }
 
-const ShopifyAdmin = () => {
-  const navigate = useNavigate();
-  const { user, subscription, logout } = useShopifyAuth();
-  const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu, isMobile } = useMobileNavigation();
-  const [activeTab, setActiveTab] = useState('plans');
-  const [showAddPlan, setShowAddPlan] = useState(false);
+interface AdminStats {
+  totalUsers: number;
+  activeSubscriptions: number;
+  monthlyRevenue: number;
+  activeTrials: number;
+  conversionRate: number;
+  churnRate: number;
+}
 
-  // Check if user has admin access
-  React.useEffect(() => {
-    if (!user || user.plan !== 'enterprise') {
-      // Redirect non-admin users to login
+const ShopifyAdmin: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useShopifyAuth();
+  const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useMobileNavigation();
+  
+  const [users, setUsers] = useState<User[]>([]);
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [selectedView, setSelectedView] = useState('overview');
+
+  // Check admin access
+  const isAdmin = user?.email === 'admin@b3acon.com' || user?.plan === 'enterprise';
+
+  useEffect(() => {
+    if (!isAdmin) {
+      setError('Access denied. Admin privileges required.');
+      return;
+    }
+    
+    loadAdminData();
+  }, [isAdmin]);
+
+  const loadAdminData = async () => {
+    try {
+      setLoading(true);
+      
+      // Simulate API calls - replace with real data in production
+      const mockUsers: User[] = [
+        {
+          id: 'user-1',
+          shopUrl: 'fashion-store.myshopify.com',
+          email: 'fashion@store.com',
+          plan: 'pro',
+          status: 'active',
+          createdAt: '2024-01-15',
+          lastLogin: '2025-01-17',
+          revenue: 2340
+        },
+        {
+          id: 'user-2', 
+          shopUrl: 'tech-gadgets.myshopify.com',
+          email: 'tech@gadgets.com',
+          plan: 'starter',
+          status: 'active',
+          createdAt: '2024-02-20',
+          lastLogin: '2025-01-16',
+          revenue: 890
+        },
+        {
+          id: 'user-3',
+          shopUrl: 'home-decor.myshopify.com', 
+          email: 'home@decor.com',
+          plan: 'trial',
+          status: 'trial',
+          createdAt: '2025-01-10',
+          lastLogin: '2025-01-17',
+          revenue: 0
+        },
+        {
+          id: 'user-4',
+          shopUrl: 'fitness-gear.myshopify.com',
+          email: 'fitness@gear.com', 
+          plan: 'enterprise',
+          status: 'active',
+          createdAt: '2023-11-05',
+          lastLogin: '2025-01-17',
+          revenue: 5670
+        }
+      ];
+
+      const mockStats: AdminStats = {
+        totalUsers: mockUsers.length,
+        activeSubscriptions: mockUsers.filter(u => u.status === 'active').length,
+        monthlyRevenue: mockUsers.reduce((sum, u) => sum + u.revenue, 0),
+        activeTrials: mockUsers.filter(u => u.plan === 'trial').length,
+        conversionRate: 73.5,
+        churnRate: 2.1
+      };
+
+      setUsers(mockUsers);
+      setStats(mockStats);
+    } catch (err) {
+      setError('Failed to load admin data');
+      console.error('Admin data loading error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    if (window.confirm('Are you sure you want to sign out?')) {
+      await logout();
       navigate('/shopify/login');
     }
-  }, [user, navigate]);
+  };
 
-  const [metrics] = useState<AppMetrics>({
-    activeInstalls: 12847,
-    churnRate: 2.3,
-    apiUsage: 1250000,
-    revenue: 285000,
-    growth: 15.2
-  });
+  const getPlanColor = (plan: string) => {
+    const colors = {
+      trial: 'bg-yellow-100 text-yellow-800',
+      starter: 'bg-blue-100 text-blue-800',
+      pro: 'bg-green-100 text-green-800', 
+      enterprise: 'bg-purple-100 text-purple-800'
+    };
+    return colors[plan] || 'bg-gray-100 text-gray-800';
+  };
 
-  const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([
-    {
-      id: 'trial',
-      name: 'Free Trial',
-      description: 'Perfect for testing all features',
-      price: 0,
-      period: '14 days',
-      features: [
-        'SEO Analysis for 50 pages',
-        'Basic internal linking',
-        'Shopify integration',
-        'Email support'
-      ],
-      trialDays: 14,
-      isActive: true
-    },
-    {
-      id: 'growth',
-      name: 'Growth Tier',
-      description: 'For growing eCommerce stores',
-      price: 29,
-      period: 'month',
-      features: [
-        'SEO Analysis for 500 pages',
-        'Advanced internal linking',
-        'Amazon + Shopify sync',
-        'Priority support',
-        'Custom reporting'
-      ],
-      trialDays: 14,
-      isActive: true
-    },
-    {
-      id: 'pro',
-      name: 'Pro Agency',
-      description: 'For agencies managing multiple stores',
-      price: 99,
-      period: 'month',
-      features: [
-        'Unlimited page analysis',
-        'White-label reporting',
-        'Multi-store management',
-        'API access',
-        'Dedicated account manager'
-      ],
-      trialDays: 14,
-      isActive: true
-    }
-  ]);
-
-  const [globalSettings, setGlobalSettings] = useState({
-    announcementBar: {
-      enabled: true,
-      message: '🎉 New feature: Amazon sync is now available!',
-      type: 'info' as 'info' | 'warning' | 'success'
-    },
-    features: {
-      seoAnalyzer: true,
-      internalLinking: true,
-      amazonSync: true,
-      siteSpeed: false,
-      rankTracker: true
-    },
-    webhooks: {
-      klaviyo: 'https://api.klaviyo.com/webhooks/b3acon',
-      slack: 'https://hooks.slack.com/services/...'
-    }
-  });
+  const getStatusColor = (status: string) => {
+    const colors = {
+      active: 'bg-green-100 text-green-800',
+      trial: 'bg-yellow-100 text-yellow-800',
+      suspended: 'bg-red-100 text-red-800',
+      cancelled: 'bg-gray-100 text-gray-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
 
   const adminNavItems = [
-    { 
-      id: 'plans', 
-      label: 'Pricing Plans', 
-      icon: CreditCard,
-      href: '/shopify/admin/plans',
-      description: 'Manage subscription plans and pricing'
-    },
-    { 
-      id: 'features', 
-      label: 'Feature Toggles', 
-      icon: ToggleLeft,
-      href: '/shopify/admin/features',
-      description: 'Enable/disable app features'
-    },
-    { 
-      id: 'analytics', 
-      label: 'App Analytics', 
-      icon: Activity,
-      href: '/shopify/admin/analytics', 
-      description: 'View app performance metrics'
-    },
-    { 
-      id: 'settings', 
-      label: 'Global Settings', 
-      icon: Settings,
-      href: '/shopify/admin/settings',
-      description: 'Configure app-wide settings'
-    },
+    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'users', label: 'User Management', icon: Users },
+    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+    { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
-  const handleNavigation = (navItem) => {
-    setActiveTab(navItem.id);
-    closeMobileMenu();
-    // In a real app, you would use react-router here:
-    // navigate(navItem.href);
-  };
-
-  const renderPricingPlans = () => (
-    <div className="space-y-8">
-      <div className="glass-card-dark p-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
-              <CreditCard className="w-6 h-6 mr-3 text-indigo-400" />
-              Pricing Plans Management
-            </h2>
-            <p className="text-indigo-200">Configure subscription plans and pricing for your Shopify app</p>
-          </div>
-          <button 
-            onClick={() => setShowAddPlan(true)}
-            className="btn-premium btn-primary btn-large group"
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+        <div className="glass-card p-8 text-center max-w-md">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
+          <p className="text-gray-600 mb-6">You don't have admin privileges to access this page.</p>
+          <button
+            onClick={() => navigate('/shopify/dashboard')}
+            className="btn-premium btn-primary"
           >
-            <Plus className="w-5 h-5 mr-2" />
-            <span>Add New Plan</span>
+            Go to Dashboard
           </button>
         </div>
+      </div>
+    );
+  }
 
-        <div className="grid gap-6">
-          {pricingPlans.map((plan) => (
-            <div key={plan.id} className="glass-card p-6 border border-white/10 hover:border-indigo-500/30 transition-all duration-200">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <h3 className="text-xl font-semibold text-gray-900">{plan.name}</h3>
-                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      plan.isActive 
-                        ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/30' 
-                        : 'bg-gray-500/20 text-gray-600 border border-gray-500/30'
-                    }`}>
-                      {plan.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </div>
-                  <p className="text-gray-600 mb-6">{plan.description}</p>
-                  
-                  <div className="grid grid-cols-2 gap-6 mb-6">
-                    <div className="space-y-2">
-                      <div className="flex items-baseline space-x-2">
-                        <span className="text-3xl font-bold text-gradient-primary">
-                          ${plan.price}
-                        </span>
-                        <span className="text-gray-500 text-lg">/{plan.period}</span>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <span className="text-sm text-gray-500 font-medium">Trial Period:</span>
-                      <div className="px-3 py-1 bg-indigo-500/20 text-indigo-600 text-sm font-medium rounded-lg inline-block">
-                        {plan.trialDays} days free
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                      <Package className="w-4 h-4 mr-2 text-indigo-500" />
-                      Features:
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {plan.features.map((feature, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-                          <span className="text-sm text-gray-700">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2 ml-6">
-                  <button className="btn-premium btn-ghost btn-small group" title="View Details">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                  <button className="btn-premium btn-ghost btn-small group" title="Edit Plan">
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button className="btn-premium btn-ghost btn-small text-red-600 hover:bg-red-50 group" title="Delete Plan">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="premium-loader w-12 h-12 mx-auto mb-4" />
+          <p className="text-gray-600">Loading admin dashboard...</p>
         </div>
       </div>
-    </div>
-  );
-
-  const renderFeatures = () => (
-    <div className="space-y-8">
-      <div className="glass-card-dark p-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
-            <ToggleLeft className="w-6 h-6 mr-3 text-indigo-400" />
-            Feature Toggle Management
-          </h2>
-          <p className="text-indigo-200">Enable or disable features across all Shopify app installations</p>
-        </div>
-        
-        <div className="glass-card p-6 border border-white/10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-            <Zap className="w-5 h-5 mr-2 text-indigo-500" />
-            SEO Plugins & Tools
-          </h3>
-          <div className="space-y-4">
-            {Object.entries(globalSettings.features).map(([key, enabled]) => (
-              <div key={key} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex-1">
-                  <h4 className="font-semibold text-gray-900 capitalize mb-1">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    {key === 'seoAnalyzer' && 'On-page audit and structured data detection'}
-                    {key === 'internalLinking' && 'AI-powered internal link suggestions'}
-                    {key === 'amazonSync' && 'Cross-platform inventory synchronization'}
-                    {key === 'siteSpeed' && 'Core Web Vitals monitoring'}
-                    {key === 'rankTracker' && 'Keyword position tracking'}
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={enabled}
-                    onChange={(e) => setGlobalSettings(prev => ({
-                      ...prev,
-                      features: {
-                        ...prev.features,
-                        [key]: e.target.checked
-                      }
-                    }))}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
-                </label>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderAnalytics = () => (
-    <div className="space-y-8">
-      <div className="glass-card-dark p-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
-              <Activity className="w-6 h-6 mr-3 text-indigo-400" />
-              App Analytics Dashboard
-            </h2>
-            <p className="text-indigo-200">Real-time performance metrics and insights</p>
-          </div>
-          <button className="btn-premium btn-outline btn-large group">
-            <Download className="w-5 h-5 mr-2" />
-            <span>Export Data</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-2xl font-bold text-gradient-primary mb-1">
-              {metrics.activeInstalls.toLocaleString()}
-            </div>
-            <div className="text-sm text-gray-600">Active Installs</div>
-          </div>
-
-          <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-2xl font-bold text-gradient-primary mb-1">{metrics.churnRate}%</div>
-            <div className="text-sm text-gray-600">Churn Rate</div>
-          </div>
-
-          <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
-              <Globe className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-2xl font-bold text-gradient-primary mb-1">
-              {(metrics.apiUsage / 1000000).toFixed(1)}M
-            </div>
-            <div className="text-sm text-gray-600">API Calls</div>
-          </div>
-
-          <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-2xl font-bold text-gradient-primary mb-1">
-              ${(metrics.revenue / 1000).toFixed(0)}K
-            </div>
-            <div className="text-sm text-gray-600">Monthly Revenue</div>
-          </div>
-
-          <div className="glass-card p-6 text-center">
-            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
-              <BarChart3 className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-2xl font-bold text-gradient-success mb-1">+{metrics.growth}%</div>
-            <div className="text-sm text-gray-600">Growth Rate</div>
-          </div>
-        </div>
-
-        <div className="glass-card p-6 border border-white/10">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-            <CreditCard className="w-5 h-5 mr-2 text-indigo-500" />
-            Revenue Breakdown by Plan
-          </h3>
-          <div className="space-y-4">
-            {pricingPlans.filter(p => p.isActive).map((plan) => (
-              <div key={plan.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
-                <div>
-                  <div className="font-semibold text-gray-900">{plan.name}</div>
-                  <div className="text-sm text-gray-600">${plan.price}/{plan.period}</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-gray-900">
-                    {Math.floor(Math.random() * 1000 + 500)} subscribers
-                  </div>
-                  <div className="text-sm font-medium text-emerald-600">
-                    ${(plan.price * Math.floor(Math.random() * 1000 + 500)).toLocaleString()} revenue
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderSettings = () => (
-    <div className="space-y-8">
-      <div className="glass-card-dark p-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
-            <Settings className="w-6 h-6 mr-3 text-indigo-400" />
-            Global Settings
-          </h2>
-          <p className="text-indigo-200">Configure global app settings and integrations</p>
-        </div>
-
-        <div className="space-y-6">
-          <div className="glass-card p-6 border border-white/10">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-              <Bell className="w-5 h-5 mr-2 text-indigo-500" />
-              Announcement Bar
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                <span className="font-semibold text-gray-900">Enable Announcement</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={globalSettings.announcementBar.enabled}
-                    onChange={(e) => setGlobalSettings(prev => ({
-                      ...prev,
-                      announcementBar: {
-                        ...prev.announcementBar,
-                        enabled: e.target.checked
-                      }
-                    }))}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
-                </label>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Announcement Message
-                </label>
-                <textarea
-                  value={globalSettings.announcementBar.message}
-                  onChange={(e) => setGlobalSettings(prev => ({
-                    ...prev,
-                    announcementBar: {
-                      ...prev.announcementBar,
-                      message: e.target.value
-                    }
-                  }))}
-                  className="input-premium w-full"
-                  rows={3}
-                  placeholder="Enter announcement message..."
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card p-6 border border-white/10">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-              <Mail className="w-5 h-5 mr-2 text-indigo-500" />
-              Webhook Settings
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Klaviyo Webhook URL
-                </label>
-                <input
-                  type="url"
-                  value={globalSettings.webhooks.klaviyo}
-                  onChange={(e) => setGlobalSettings(prev => ({
-                    ...prev,
-                    webhooks: {
-                      ...prev.webhooks,
-                      klaviyo: e.target.value
-                    }
-                  }))}
-                  className="input-premium w-full"
-                  placeholder="https://api.klaviyo.com/webhooks/..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Slack Webhook URL
-                </label>
-                <input
-                  type="url"
-                  value={globalSettings.webhooks.slack}
-                  onChange={(e) => setGlobalSettings(prev => ({
-                    ...prev,
-                    webhooks: {
-                      ...prev.webhooks,
-                      slack: e.target.value
-                    }
-                  }))}
-                  className="input-premium w-full"
-                  placeholder="https://hooks.slack.com/services/..."
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-end">
-            <button className="btn-premium btn-primary btn-large group">
-              <Save className="w-5 h-5 mr-2" />
-              <span>Save All Settings</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'plans':
-        return renderPricingPlans();
-      case 'features':
-        return renderFeatures();
-      case 'analytics':
-        return renderAnalytics();
-      case 'settings':
-        return renderSettings();
-      default:
-        return renderPricingPlans();
-    }
-  };
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-      {/* Mobile Menu Button */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Mobile Navigation Toggle */}
       <button
         onClick={toggleMobileMenu}
-        className="mobile-nav-toggle lg:hidden fixed top-4 left-4 z-50 touch-target"
-        aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+        className="mobile-nav-toggle md:hidden"
       >
-        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
-          className="mobile-overlay active lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={closeMobileMenu}
-        />
+        <div className="mobile-overlay active" onClick={closeMobileMenu} />
       )}
 
-      <div className="flex">
-        {/* Left Sidebar - Like App Dashboard */}
-        <div className={`
-          sidebar w-80 min-h-screen glass-card-dark border-r border-white/10
-          fixed left-0 top-0 z-40 transition-transform duration-300 ease-in-out
-          ${isMobileMenuOpen ? 'open translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}>
-          {/* Admin Header */}
-          <div className="p-6 border-b border-white/10">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
+      <div className="app-container">
+        <div className="main-content">
+          
+          {/* Admin Sidebar */}
+          <div className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
+            <div className="p-6">
+              {/* Logo */}
+              <div className="flex items-center mb-8">
+                <Shield className="w-8 h-8 text-primary-600 mr-3" />
+                <h1 className="text-xl font-bold text-gray-900">B3ACON Admin</h1>
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-white">Admin Portal</h2>
-                <p className="text-xs text-indigo-300">App Management</p>
-              </div>
-            </div>
-          </div>
 
-          {/* Admin Navigation */}
-          <div className="p-6">
-            <div className="mb-4">
-              <h3 className="text-xs font-semibold text-indigo-300 uppercase tracking-wide">
-                Admin Functions
-              </h3>
-            </div>
-            <nav className="space-y-2">
-              {adminNavItems.map((item) => {
-                const isActive = activeTab === item.id;
-                return (
-                                     <button
-                     key={item.id}
-                     onClick={() => handleNavigation(item)}
-                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left group relative touch-target ${
-                       isActive
-                         ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
-                         : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                     }`}
-                     title={item.description}
-                     aria-label={`Navigate to ${item.label}`}
-                   >
-                    <item.icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
-                    <div className="flex-1">
-                      <div className="font-medium text-sm">{item.label}</div>
-                      {!isActive && (
-                        <div className="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {item.description}
-                        </div>
-                      )}
-                    </div>
-                    {isActive && (
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-                     {/* Admin Status */}
-           <div className="mt-auto p-6 border-t border-white/10">
-             <div className="space-y-4">
-               <div className="flex items-center space-x-3 px-4 py-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
-                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                 <div>
-                   <div className="text-sm font-medium text-emerald-300">Admin Access</div>
-                   <div className="text-xs text-emerald-400">{user?.email || 'admin@b3acon.com'}</div>
-                 </div>
-               </div>
-               
-               <button
-                 onClick={() => {
-                   if (window.confirm('Are you sure you want to sign out?')) {
-                     logout();
-                   }
-                 }}
-                 className="w-full btn-premium btn-ghost btn-small text-red-300 hover:bg-red-500/20"
-               >
-                 <span>Sign Out</span>
-               </button>
-             </div>
-           </div>
-        </div>
-
-                 {/* Main Content Area - Like App Dashboard */}
-         <div className="main-content flex-1 lg:ml-80">
-          {/* Top Header */}
-          <div className="glass-card-dark border-b border-white/10 p-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-white">
-                    <span className="text-gradient-primary">B3ACON</span> Admin Dashboard
-                  </h1>
-                  <p className="text-indigo-200">Shopify App Management & Analytics</p>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-indigo-200 text-sm">
-                    {new Date().toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
+              {/* Admin User Info */}
+              <div className="bg-purple-50 p-4 rounded-lg mb-6">
+                <div className="flex items-center">
+                  <Crown className="w-6 h-6 text-purple-600 mr-3" />
+                  <div>
+                    <p className="font-medium text-purple-900">Admin User</p>
+                    <p className="text-sm text-purple-600">{user?.email}</p>
                   </div>
                 </div>
               </div>
+
+              {/* Navigation */}
+              <nav className="space-y-2">
+                {adminNavItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setSelectedView(item.id);
+                      closeMobileMenu();
+                    }}
+                    className={`w-full flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedView === item.id
+                        ? 'bg-primary-100 text-primary-700'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5 mr-3" />
+                    {item.label}
+                  </button>
+                ))}
+              </nav>
+
+              {/* Logout Button */}
+              <div className="mt-auto pt-6">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <LogOut className="w-5 h-5 mr-3" />
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Content Area with Consistent Centering */}
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            {renderContent()}
+          {/* Main Content Area */}
+          <div className="content-area">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="text-gray-600">Manage users, subscriptions, and system settings</p>
+            </div>
+
+            {/* Overview Stats */}
+            {selectedView === 'overview' && stats && (
+              <div className="space-y-6">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="glass-card p-6">
+                    <div className="flex items-center">
+                      <Users className="w-8 h-8 text-blue-600" />
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-600">Total Users</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="glass-card p-6">
+                    <div className="flex items-center">
+                      <CheckCircle className="w-8 h-8 text-green-600" />
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-600">Active Subscriptions</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.activeSubscriptions}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="glass-card p-6">
+                    <div className="flex items-center">
+                      <DollarSign className="w-8 h-8 text-purple-600" />
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
+                        <p className="text-2xl font-bold text-gray-900">${stats.monthlyRevenue.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="glass-card p-6">
+                    <div className="flex items-center">
+                      <Calendar className="w-8 h-8 text-yellow-600" />
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-600">Active Trials</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.activeTrials}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="glass-card p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Conversion Rate</h3>
+                    <div className="flex items-center">
+                      <TrendingUp className="w-6 h-6 text-green-600 mr-2" />
+                      <span className="text-2xl font-bold text-green-600">{stats.conversionRate}%</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">Trial to paid conversion rate</p>
+                  </div>
+
+                  <div className="glass-card p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Churn Rate</h3>
+                    <div className="flex items-center">
+                      <AlertCircle className="w-6 h-6 text-red-600 mr-2" />
+                      <span className="text-2xl font-bold text-red-600">{stats.churnRate}%</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">Monthly customer churn rate</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* User Management */}
+            {selectedView === 'users' && (
+              <div className="glass-card">
+                <div className="p-6 border-b border-gray-200">
+                  <h2 className="text-lg font-semibold text-gray-900">User Management</h2>
+                  <p className="text-gray-600">Manage user accounts and subscriptions</p>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Shop
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Plan
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Revenue
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {users.map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{user.shopUrl}</div>
+                              <div className="text-sm text-gray-500">{user.email}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPlanColor(user.plan)}`}>
+                              {user.plan}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(user.status)}`}>
+                              {user.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${user.revenue.toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                            <button className="text-primary-600 hover:text-primary-900">
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button className="text-blue-600 hover:text-blue-900">
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button className="text-red-600 hover:text-red-900">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* Analytics View */}
+            {selectedView === 'analytics' && (
+              <div className="glass-card p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Analytics Dashboard</h2>
+                <p className="text-gray-600">Detailed analytics and reporting coming soon...</p>
+              </div>
+            )}
+
+            {/* Settings View */}
+            {selectedView === 'settings' && (
+              <div className="glass-card p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">System Settings</h2>
+                <p className="text-gray-600">Admin settings and configuration options coming soon...</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
