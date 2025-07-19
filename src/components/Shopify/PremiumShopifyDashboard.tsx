@@ -19,7 +19,15 @@ import {
   Filter,
   Calendar,
   Download,
-  Sparkles
+  Sparkles,
+  Menu,
+  X,
+  Home,
+  Globe,
+  Package,
+  CreditCard,
+  HelpCircle,
+  MessageCircle
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -42,6 +50,22 @@ const PremiumShopifyDashboard = () => {
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeModule, setActiveModule] = useState('dashboard');
+
+  // Navigation menu items
+  const menuItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: Home, gradient: 'from-blue-500 to-indigo-600' },
+    { id: 'seo-tools', label: 'SEO Tools', icon: Search, gradient: 'from-green-500 to-emerald-600' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, gradient: 'from-purple-500 to-pink-600' },
+    { id: 'products', label: 'Products', icon: Package, gradient: 'from-orange-500 to-red-600' },
+    { id: 'orders', label: 'Orders', icon: ShoppingBag, gradient: 'from-blue-500 to-cyan-600' },
+    { id: 'customers', label: 'Customers', icon: Users, gradient: 'from-indigo-500 to-purple-600' },
+    { id: 'integrations', label: 'Integrations', icon: Globe, gradient: 'from-green-500 to-teal-600' },
+    { id: 'billing', label: 'Billing', icon: CreditCard, gradient: 'from-yellow-500 to-orange-600' },
+    { id: 'support', label: 'Support', icon: HelpCircle, gradient: 'from-gray-500 to-gray-600' },
+    { id: 'settings', label: 'Settings', icon: Settings, gradient: 'from-slate-500 to-zinc-600' }
+  ];
 
   useEffect(() => {
     // Simulate loading and data fetching
@@ -206,47 +230,111 @@ const PremiumShopifyDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
-      {/* Top Navigation */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Zap className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold text-gray-900">B3ACON</span>
-              </div>
-              
-              <div className="hidden md:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
-              </div>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-indigo-600 text-white rounded-lg shadow-lg"
+      >
+        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Left Sidebar */}
+      <div className={`
+        fixed left-0 top-0 z-40 h-full bg-white border-r border-gray-200 shadow-lg
+        transition-transform duration-300 ease-in-out
+        w-64 lg:w-64
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <div className="flex flex-col h-full p-4">
+          {/* Logo */}
+          <div className="flex items-center space-x-3 mb-8 pb-4 border-b border-gray-200">
+            <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <Zap className="w-6 h-6 text-white" />
             </div>
+            <div>
+              <h1 className="text-gray-900 font-bold text-xl">B3ACON</h1>
+              <p className="text-gray-500 text-sm">Shopify Dashboard</p>
+            </div>
+          </div>
+
+          {/* Store Status */}
+          <div className="mb-6 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 space-y-2 overflow-y-auto">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeModule === item.id;
+              
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveModule(item.id);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 text-left group ${
+                    isActive 
+                      ? 'bg-gradient-to-r ' + item.gradient + ' text-white shadow-lg'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* User Profile */}
+          <div className="mt-auto pt-4 border-t border-gray-200">
+            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-gray-900">Sarah Chen</div>
+                <div className="text-xs text-gray-500">Store Owner</div>
+              </div>
+              <button className="p-1 text-gray-400 hover:text-gray-600">
+                <Settings className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="lg:ml-64 min-h-screen">
+        {/* Top Bar */}
+        <div className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1" />
             
             <div className="flex items-center space-x-4">
               <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
                 <Bell className="w-6 h-6" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
               </button>
-              
-              <div className="flex items-center space-x-3 cursor-pointer group">
-                <div className="text-right hidden sm:block">
-                  <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Sarah Chen</div>
-                  <div className="text-xs text-gray-500">Store Owner</div>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
-              </div>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Dashboard Content */}
+        <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -423,6 +511,7 @@ const PremiumShopifyDashboard = () => {
               ))}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

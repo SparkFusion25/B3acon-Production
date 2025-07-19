@@ -55,7 +55,7 @@ const AppRoutes: React.FC = () => {
         <Route path="*" element={<Navigate to="/login" replace />} />
       ) : (
         <>
-          {/* Protected B3ACON Platform Routes */}
+          {/* Protected B3ACON Platform Routes - Use Original Agency Dashboard as Default */}
           <Route 
             path="/" 
             element={
