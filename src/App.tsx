@@ -35,6 +35,60 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+      <Route path="/shopify/plans" element={<PlanSelectionPage viewOnly={true} />} />
+      
+      {/* Shopify SEO Tools Routes */}
+      <Route path="/shopify/seo/website-analysis" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/seo/keyword-research" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/seo/competitor-analysis" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/seo/rank-tracking" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/seo/backlinks" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/seo/technical-audit" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/seo/content-optimizer" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Analytics Routes */}
+      <Route path="/shopify/analytics/traffic" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/analytics/conversions" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/analytics/revenue" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/analytics/customers" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/analytics/products" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Automation Routes */}
+      <Route path="/shopify/automation/email-campaigns" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/automation/abandoned-cart" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/automation/inventory-alerts" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/automation/price-rules" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Integrations Routes */}
+      <Route path="/shopify/integrations/amazon" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/integrations/google-ads" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/integrations/facebook" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/integrations/klaviyo" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/integrations/mailchimp" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Plugins Routes */}
+      <Route path="/shopify/plugins/popup-builder" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/plugins/review-manager" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/plugins/upsell-engine" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/plugins/social-proof" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Reports Routes */}
+      <Route path="/shopify/reports/performance" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/reports/seo-audit" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/reports/competitor" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/reports/custom" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Support Routes */}
+      <Route path="/shopify/support/help-center" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/support/contact" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/support/tutorials" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/support/community" element={<PremiumShopifyDashboard />} />
+      
+      {/* Shopify Settings Routes */}
+      <Route path="/shopify/settings/account" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/settings/billing" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/settings/notifications" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/settings/api-keys" element={<PremiumShopifyDashboard />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />

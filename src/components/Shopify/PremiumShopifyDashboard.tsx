@@ -53,18 +53,135 @@ const PremiumShopifyDashboard = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeModule, setActiveModule] = useState('dashboard');
 
-  // Navigation menu items
+  // Navigation menu items with dropdowns
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home, gradient: 'from-blue-500 to-indigo-600' },
-    { id: 'seo-tools', label: 'SEO Tools', icon: Search, gradient: 'from-green-500 to-emerald-600' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, gradient: 'from-purple-500 to-pink-600' },
-    { id: 'products', label: 'Products', icon: Package, gradient: 'from-orange-500 to-red-600' },
-    { id: 'orders', label: 'Orders', icon: ShoppingBag, gradient: 'from-blue-500 to-cyan-600' },
-    { id: 'customers', label: 'Customers', icon: Users, gradient: 'from-indigo-500 to-purple-600' },
-    { id: 'integrations', label: 'Integrations', icon: Globe, gradient: 'from-green-500 to-teal-600' },
-    { id: 'billing', label: 'Billing', icon: CreditCard, gradient: 'from-yellow-500 to-orange-600' },
-    { id: 'support', label: 'Support', icon: HelpCircle, gradient: 'from-gray-500 to-gray-600' },
-    { id: 'settings', label: 'Settings', icon: Settings, gradient: 'from-slate-500 to-zinc-600' }
+    { 
+      id: 'dashboard', 
+      label: 'Dashboard', 
+      icon: Home, 
+      gradient: 'from-blue-500 to-indigo-600',
+      route: '/shopify/dashboard'
+    },
+    { 
+      id: 'seo-tools', 
+      label: 'SEO Tools', 
+      icon: Search, 
+      gradient: 'from-green-500 to-emerald-600',
+      children: [
+        { id: 'website-analysis', label: 'Website Analysis', route: '/shopify/seo/website-analysis' },
+        { id: 'keyword-research', label: 'Keyword Research', route: '/shopify/seo/keyword-research' },
+        { id: 'competitor-analysis', label: 'Competitor Analysis', route: '/shopify/seo/competitor-analysis' },
+        { id: 'rank-tracking', label: 'Rank Tracking', route: '/shopify/seo/rank-tracking' },
+        { id: 'backlinks', label: 'Backlinks Monitor', route: '/shopify/seo/backlinks' },
+        { id: 'technical-audit', label: 'Technical Audit', route: '/shopify/seo/technical-audit' },
+        { id: 'content-optimizer', label: 'Content Optimizer', route: '/shopify/seo/content-optimizer' }
+      ]
+    },
+    { 
+      id: 'plugins', 
+      label: 'Plugins', 
+      icon: Package, 
+      gradient: 'from-purple-500 to-pink-600',
+      children: [
+        { id: 'popup-builder', label: 'Popup Builder', route: '/shopify/plugins/popup-builder' },
+        { id: 'review-manager', label: 'Review Manager', route: '/shopify/plugins/review-manager' },
+        { id: 'upsell-engine', label: 'Upsell Engine', route: '/shopify/plugins/upsell-engine' },
+        { id: 'social-proof', label: 'Social Proof', route: '/shopify/plugins/social-proof' }
+      ]
+    },
+    { 
+      id: 'analytics', 
+      label: 'Analytics', 
+      icon: BarChart3, 
+      gradient: 'from-indigo-500 to-purple-600',
+      children: [
+        { id: 'traffic', label: 'Traffic Analytics', route: '/shopify/analytics/traffic' },
+        { id: 'conversions', label: 'Conversion Tracking', route: '/shopify/analytics/conversions' },
+        { id: 'revenue', label: 'Revenue Reports', route: '/shopify/analytics/revenue' },
+        { id: 'customers', label: 'Customer Insights', route: '/shopify/analytics/customers' },
+        { id: 'products', label: 'Product Performance', route: '/shopify/analytics/products' }
+      ]
+    },
+    { 
+      id: 'automation', 
+      label: 'Automation', 
+      icon: Zap, 
+      gradient: 'from-orange-500 to-red-600',
+      children: [
+        { id: 'email-campaigns', label: 'Email Campaigns', route: '/shopify/automation/email-campaigns' },
+        { id: 'abandoned-cart', label: 'Abandoned Cart', route: '/shopify/automation/abandoned-cart' },
+        { id: 'inventory-alerts', label: 'Inventory Alerts', route: '/shopify/automation/inventory-alerts' },
+        { id: 'price-rules', label: 'Price Rules', route: '/shopify/automation/price-rules' }
+      ]
+    },
+    { 
+      id: 'integrations', 
+      label: 'Integrations', 
+      icon: Globe, 
+      gradient: 'from-green-500 to-teal-600',
+      children: [
+        { id: 'amazon', label: 'Amazon Sync', route: '/shopify/integrations/amazon' },
+        { id: 'google-ads', label: 'Google Ads', route: '/shopify/integrations/google-ads' },
+        { id: 'facebook', label: 'Facebook & Instagram', route: '/shopify/integrations/facebook' },
+        { id: 'klaviyo', label: 'Klaviyo Email', route: '/shopify/integrations/klaviyo' },
+        { id: 'mailchimp', label: 'Mailchimp', route: '/shopify/integrations/mailchimp' }
+      ]
+    },
+    { 
+      id: 'subscriptions', 
+      label: 'Subscriptions', 
+      icon: CreditCard, 
+      gradient: 'from-yellow-500 to-orange-600',
+      children: [
+        { id: 'current-plan', label: 'Current Plan', route: '/shopify/plans' },
+        { id: 'billing-history', label: 'Billing History', route: '/shopify/settings/billing' },
+        { id: 'upgrade-plan', label: 'Upgrade Plan', route: '/shopify/plans' },
+        { id: 'usage-analytics', label: 'Usage Analytics', route: '/shopify/analytics/usage' }
+      ]
+    },
+    { 
+      id: 'reports', 
+      label: 'Reports', 
+      icon: BarChart3, 
+      gradient: 'from-blue-500 to-cyan-600',
+      children: [
+        { id: 'performance', label: 'Performance Report', route: '/shopify/reports/performance' },
+        { id: 'seo-audit', label: 'SEO Audit Report', route: '/shopify/reports/seo-audit' },
+        { id: 'competitor', label: 'Competitor Analysis', route: '/shopify/reports/competitor' },
+        { id: 'custom', label: 'Custom Reports', route: '/shopify/reports/custom' }
+      ]
+    },
+    { 
+      id: 'support', 
+      label: 'Support', 
+      icon: HelpCircle, 
+      gradient: 'from-gray-500 to-gray-600',
+      children: [
+        { id: 'help-center', label: 'Help Center', route: '/shopify/support/help-center' },
+        { id: 'contact', label: 'Contact Support', route: '/shopify/support/contact' },
+        { id: 'tutorials', label: 'Video Tutorials', route: '/shopify/support/tutorials' },
+        { id: 'community', label: 'Community Forum', route: '/shopify/support/community' }
+      ]
+    },
+    { 
+      id: 'settings', 
+      label: 'Settings', 
+      icon: Settings, 
+      gradient: 'from-slate-500 to-zinc-600',
+      children: [
+        { id: 'account', label: 'Account Settings', route: '/shopify/settings/account' },
+        { id: 'billing', label: 'Billing Settings', route: '/shopify/settings/billing' },
+        { id: 'notifications', label: 'Notifications', route: '/shopify/settings/notifications' },
+        { id: 'api-keys', label: 'API Keys', route: '/shopify/settings/api-keys' }
+      ]
+    },
+    { 
+      id: 'admin', 
+      label: 'Admin Portal', 
+      icon: MessageCircle, 
+      gradient: 'from-red-500 to-pink-600',
+      route: '/shopify/admin'
+    }
   ];
 
   useEffect(() => {
