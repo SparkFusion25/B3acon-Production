@@ -15,6 +15,7 @@ import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
 import ShopifyPremiumLogin from './components/Shopify/ShopifyPremiumLogin';
+import PremiumShopifyAppLogin from './components/Shopify/PremiumShopifyAppLogin';
 
 import SubscribePage from './components/Shopify/SubscribePage';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
@@ -35,7 +36,11 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {/* Public Shopify App Routes - Always Available */}
       <Route path="/shopify" element={<PremiumShopifyLanding />} />
-      <Route path="/shopify/login" element={<ShopifyPremiumLogin />} />
+      <Route path="/shopify/login" element={
+        <ShopifyAuthProvider>
+          <PremiumShopifyAppLogin />
+        </ShopifyAuthProvider>
+      } />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/subscribe" element={<SubscribePage />} />
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
