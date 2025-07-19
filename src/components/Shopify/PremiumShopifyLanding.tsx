@@ -175,7 +175,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Navigation */}
       <nav className="relative z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-ultra-wide">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <div className="flex items-center space-x-3">
@@ -198,8 +198,8 @@ const PremiumShopifyLanding = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-20 pb-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative z-10 hero-ultra-wide">
+        <div className="container-ultra-wide text-scale-ultra">
           <div className="text-center">
             {/* Badge */}
             <div className={`inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-indigo-200 mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
@@ -208,14 +208,14 @@ const PremiumShopifyLanding = () => {
             </div>
 
             {/* Main Headline */}
-            <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold mb-8 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <h1 className={`text-hero-ultra font-bold mb-8 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <span className="text-gradient-primary">Supercharge Your</span>
               <br />
               <span className="text-gray-900">Shopify Store Growth</span>
             </h1>
 
             {/* Subtitle */}
-            <p className={`text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <p className={`text-xl lg:text-2xl xl:text-3xl text-gray-600 mb-12 max-w-5xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               AI-powered SEO optimization, automated marketing workflows, and advanced analytics that 
               <span className="text-gradient-success font-semibold"> increase revenue by 247% on average</span>
             </p>
@@ -237,24 +237,24 @@ const PremiumShopifyLanding = () => {
             </div>
 
             {/* Stats */}
-            <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto transition-all duration-1000 delay-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className={`dashboard-ultra-grid max-w-6xl mx-auto transition-all duration-1000 delay-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-gradient-primary mb-2">
+                <div className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gradient-primary mb-2">
                   {stats.stores.toLocaleString()}+
                 </div>
-                <div className="text-gray-600 font-medium">Successful Stores</div>
+                <div className="text-gray-600 font-medium text-lg">Successful Stores</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-gradient-success mb-2">
+                <div className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gradient-success mb-2">
                   {stats.growth}%
                 </div>
-                <div className="text-gray-600 font-medium">Average Growth</div>
+                <div className="text-gray-600 font-medium text-lg">Average Growth</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-gradient-primary mb-2">
+                <div className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gradient-premium mb-2">
                   ${(stats.revenue / 1000000).toFixed(1)}M+
                 </div>
-                <div className="text-gray-600 font-medium">Revenue Generated</div>
+                <div className="text-gray-600 font-medium text-lg">Revenue Generated</div>
               </div>
             </div>
           </div>

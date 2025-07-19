@@ -718,6 +718,165 @@ body {
   }
 }
 
+/* ===== ULTRA-WIDE SCREEN OPTIMIZATIONS (1200px - 1920px) ===== */
+@media (min-width: 1200px) {
+  .container-ultra-wide {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  
+  .grid-ultra-wide {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+  
+  .text-ultra-large {
+    font-size: 4rem;
+    line-height: 1.1;
+  }
+  
+  .spacing-ultra-wide {
+    padding: 4rem 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container-ultra-wide {
+    max-width: 1600px;
+    padding: 0 3rem;
+  }
+  
+  .dashboard-grid-ultra {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2.5rem;
+  }
+  
+  .hero-ultra-wide {
+    padding: 6rem 0;
+  }
+  
+  .text-hero-ultra {
+    font-size: 5rem;
+    line-height: 1.05;
+  }
+}
+
+@media (min-width: 1920px) {
+  .container-ultra-wide {
+    max-width: 1800px;
+    padding: 0 4rem;
+  }
+  
+  .grid-5-col {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .grid-6-col {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .hero-ultra-wide {
+    padding: 8rem 0;
+  }
+  
+  .text-hero-ultra {
+    font-size: 6rem;
+    line-height: 1.05;
+  }
+  
+  .spacing-massive {
+    padding: 6rem 0;
+  }
+  
+  .gap-ultra {
+    gap: 3rem;
+  }
+}
+
+/* ===== ULTRA-WIDE SPECIFIC LAYOUTS ===== */
+.layout-ultra-wide {
+  display: grid;
+  grid-template-columns: 1fr minmax(auto, 1800px) 1fr;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
+.layout-ultra-wide > * {
+  grid-column: 2;
+}
+
+.layout-ultra-wide .full-width {
+  grid-column: 1 / -1;
+}
+
+/* Enhanced Dashboard Grid for Ultra-Wide */
+.dashboard-ultra-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .dashboard-ultra-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  .dashboard-ultra-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .dashboard-ultra-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3rem;
+  }
+}
+
+/* Ultra-Wide Typography Scaling */
+@media (min-width: 1440px) {
+  .text-scale-ultra h1 {
+    font-size: 4.5rem;
+  }
+  
+  .text-scale-ultra h2 {
+    font-size: 3.5rem;
+  }
+  
+  .text-scale-ultra h3 {
+    font-size: 2.5rem;
+  }
+  
+  .text-scale-ultra p {
+    font-size: 1.25rem;
+    line-height: 1.7;
+  }
+}
+
+@media (min-width: 1920px) {
+  .text-scale-ultra h1 {
+    font-size: 5.5rem;
+  }
+  
+  .text-scale-ultra h2 {
+    font-size: 4rem;
+  }
+  
+  .text-scale-ultra h3 {
+    font-size: 3rem;
+  }
+  
+  .text-scale-ultra p {
+    font-size: 1.375rem;
+    line-height: 1.75;
+  }
+}
+
 /* ===== UTILITY CLASSES ===== */
 .text-gradient-primary {
   background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));

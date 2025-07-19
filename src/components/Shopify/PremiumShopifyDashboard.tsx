@@ -157,7 +157,7 @@ const PremiumShopifyDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-ultra-wide">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
@@ -185,19 +185,19 @@ const PremiumShopifyDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="container-ultra-wide spacing-ultra-wide">
         {/* Welcome Section */}
         <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              <h2 className="text-3xl xl:text-4xl font-bold text-gray-900 mb-2">
                 Welcome back! 👋
               </h2>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-lg xl:text-xl">
                 Here's what's happening with your Shopify store today.
               </p>
             </div>
-            <div className="mt-4 sm:mt-0 flex items-center space-x-3">
+            <div className="mt-4 lg:mt-0 flex items-center space-x-3">
               <div className="flex items-center space-x-2 bg-white rounded-lg px-4 py-2 shadow-sm border">
                 <Calendar className="w-4 h-4 text-gray-400" />
                 <select 
@@ -219,7 +219,7 @@ const PremiumShopifyDashboard = () => {
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="dashboard-ultra-grid mb-8">
           {metrics.map((metric, index) => {
             const IconComponent = metric.icon;
             return (
@@ -243,7 +243,7 @@ const PremiumShopifyDashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</p>
+                  <p className="text-2xl xl:text-3xl font-bold text-gray-900 mb-1">{metric.value}</p>
                   <p className="text-sm text-gray-500">{metric.description}</p>
                 </div>
               </div>
@@ -252,17 +252,17 @@ const PremiumShopifyDashboard = () => {
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8 mb-8">
           {/* Revenue Chart */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="xl:col-span-2 2xl:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Revenue Trend</h3>
+              <h3 className="text-lg xl:text-xl font-semibold text-gray-900">Revenue Trend</h3>
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
                 <span className="text-sm text-gray-600">Revenue</span>
               </div>
             </div>
-            <div className="h-80 flex items-center justify-center bg-gray-50 rounded-lg">
+            <div className="h-80 xl:h-96 flex items-center justify-center bg-gray-50 rounded-lg">
               <div className="text-center">
                 <BarChart3 className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                 <p className="text-gray-500">Chart visualization would be here</p>
@@ -273,7 +273,7 @@ const PremiumShopifyDashboard = () => {
           {/* Traffic Sources */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Traffic Sources</h3>
+              <h3 className="text-lg xl:text-xl font-semibold text-gray-900">Traffic Sources</h3>
               <button className="text-sm text-indigo-600 hover:text-indigo-700">View All</button>
             </div>
             <div className="space-y-4">
@@ -305,11 +305,11 @@ const PremiumShopifyDashboard = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8">
           {/* Recent Activity */}
-          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <div className="xl:col-span-1 2xl:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+              <h3 className="text-lg xl:text-xl font-semibold text-gray-900">Recent Activity</h3>
               <button className="text-sm text-indigo-600 hover:text-indigo-700">View All</button>
             </div>
             <div className="space-y-4">
@@ -334,7 +334,7 @@ const PremiumShopifyDashboard = () => {
           {/* Top Products */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Top Products</h3>
+              <h3 className="text-lg xl:text-xl font-semibold text-gray-900">Top Products</h3>
               <button className="text-sm text-indigo-600 hover:text-indigo-700">View All</button>
             </div>
             <div className="space-y-4">
