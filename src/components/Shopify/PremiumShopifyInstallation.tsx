@@ -158,7 +158,8 @@ const PremiumShopifyInstallation = () => {
         } else {
           // Installation complete
           setTimeout(() => {
-            window.location.href = '/shopify/dashboard';
+            // After installation, redirect to plan selection first
+            window.location.href = '/shopify/plan-selection';
           }, 2000);
         }
       }, currentStepData.duration);
