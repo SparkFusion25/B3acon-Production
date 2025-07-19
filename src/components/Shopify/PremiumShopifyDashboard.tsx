@@ -47,9 +47,10 @@ const PremiumShopifyDashboard = () => {
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [userPlan, setUserPlan] = useState<string>('');
-  const [shopUrl, setShopUrl] = useState<string>('');
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [userPlan, setUserPlan] = useState<string>('growth');
+  const [shopUrl, setShopUrl] = useState<string>('demo-store.myshopify.com');
+  const [isAuthorized, setIsAuthorized] = useState(true);
+  const [activeSection, setActiveSection] = useState('overview');
 
   useEffect(() => {
     // Check for proper Shopify authentication and plan
@@ -312,10 +313,36 @@ const PremiumShopifyDashboard = () => {
               
               {/* Navigation Menu */}
               <div className="hidden lg:flex items-center space-x-6">
-                <a href="#analytics" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Analytics</a>
-                <a href="#products" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Products</a>
-                <a href="#seo" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">SEO Tools</a>
-                <a href="#settings" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Settings</a>
+                <button 
+                  onClick={() => setActiveSection('overview')}
+                  className={`font-medium transition-colors ${activeSection === 'overview' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Overview
+                </button>
+                <button 
+                  onClick={() => setActiveSection('analytics')}
+                  className={`font-medium transition-colors ${activeSection === 'analytics' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Analytics
+                </button>
+                <button 
+                  onClick={() => setActiveSection('products')}
+                  className={`font-medium transition-colors ${activeSection === 'products' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Products
+                </button>
+                <button 
+                  onClick={() => setActiveSection('seo')}
+                  className={`font-medium transition-colors ${activeSection === 'seo' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  SEO Tools
+                </button>
+                <button 
+                  onClick={() => setActiveSection('settings')}
+                  className={`font-medium transition-colors ${activeSection === 'settings' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Settings
+                </button>
               </div>
               
               <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
@@ -355,22 +382,41 @@ const PremiumShopifyDashboard = () => {
               </div>
               
               <nav className="space-y-4">
-                <a href="#analytics" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                <button 
+                  onClick={() => {setActiveSection('overview'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'overview' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
                   <BarChart3 className="w-5 h-5 text-indigo-600" />
+                  <span className="font-medium text-gray-900">Overview</span>
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('analytics'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'analytics' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <TrendingUp className="w-5 h-5 text-indigo-600" />
                   <span className="font-medium text-gray-900">Analytics</span>
-                </a>
-                <a href="#products" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('products'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'products' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
                   <ShoppingBag className="w-5 h-5 text-purple-600" />
                   <span className="font-medium text-gray-900">Products</span>
-                </a>
-                <a href="#seo" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('seo'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'seo' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
                   <Search className="w-5 h-5 text-emerald-600" />
                   <span className="font-medium text-gray-900">SEO Tools</span>
-                </a>
-                <a href="#settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('settings'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'settings' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
                   <Settings className="w-5 h-5 text-gray-600" />
                   <span className="font-medium text-gray-900">Settings</span>
-                </a>
+                </button>
               </nav>
             </div>
           </div>
@@ -379,14 +425,24 @@ const PremiumShopifyDashboard = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl py-8">
-        {/* Welcome Section */}
+        {/* Section Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Welcome back, <span className="text-gradient-primary">Sarah! 👋</span>
+                {activeSection === 'overview' && <>Welcome back, <span className="text-gradient-primary">Sarah! 👋</span></>}
+                {activeSection === 'analytics' && <>Analytics <span className="text-gradient-primary">Dashboard</span></>}
+                {activeSection === 'products' && <>Product <span className="text-gradient-primary">Management</span></>}
+                {activeSection === 'seo' && <>SEO <span className="text-gradient-primary">Tools</span></>}
+                {activeSection === 'settings' && <>Account <span className="text-gradient-primary">Settings</span></>}
               </h1>
-              <p className="text-gray-600 text-base sm:text-lg">Your store is performing 23% better than last month</p>
+              <p className="text-gray-600 text-base sm:text-lg">
+                {activeSection === 'overview' && 'Your store is performing 23% better than last month'}
+                {activeSection === 'analytics' && 'Monitor your store performance and track key metrics'}
+                {activeSection === 'products' && 'Manage your product catalog and SEO optimization'}
+                {activeSection === 'seo' && 'Optimize your store for search engines and boost rankings'}
+                {activeSection === 'settings' && 'Configure your account preferences and app settings'}
+              </p>
             </div>
             
             <div className="flex sm:hidden md:flex items-center space-x-3">
@@ -402,160 +458,8 @@ const PremiumShopifyDashboard = () => {
           </div>
         </div>
 
-        {/* Time Frame Selector */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2">
-            {['24h', '7d', '30d', '90d'].map((timeframe) => (
-              <button
-                key={timeframe}
-                onClick={() => setActiveTimeframe(timeframe)}
-                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap flex-shrink-0 ${
-                  activeTimeframe === timeframe
-                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
-                    : 'bg-white/60 text-gray-600 hover:bg-white/80'
-                }`}
-              >
-                {timeframe}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {isLoading
-            ? [...Array(4)].map((_, i) => <SkeletonMetric key={i} />)
-            : metrics.map((metric, index) => (
-                <MetricCard key={index} metric={metric} index={index} />
-              ))
-          }
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Revenue Chart */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Revenue Analytics</h3>
-              <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                  <Filter className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
-                  <Download className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            
-            <div className="h-64 flex items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl">
-              <div className="text-center">
-                <BarChart3 className="w-12 h-12 text-indigo-400 mx-auto mb-3" />
-                <p className="text-gray-600">Interactive chart would be rendered here</p>
-                <p className="text-sm text-gray-500">Using Recharts or Chart.js</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Traffic Sources */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">Traffic Sources</h3>
-              <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
-                View Details
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {trafficSourcesData.map((source, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-4 h-4 rounded-full"
-                      style={{ backgroundColor: source.fill }}
-                    ></div>
-                    <span className="font-medium text-gray-700">{source.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-gray-900">{source.value}%</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Activity */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
-                Recent Activity
-              </h3>
-              <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
-                View All
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
-                <div key={index} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    activity.type === 'success' 
-                      ? 'bg-emerald-100 text-emerald-600' 
-                      : 'bg-blue-100 text-blue-600'
-                  }`}>
-                    <activity.icon className="w-4 h-4" />
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900">{activity.action}</p>
-                    <p className="text-sm text-gray-600 truncate">{activity.target}</p>
-                    <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Top Products */}
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center">
-                <ShoppingBag className="w-5 h-5 text-purple-500 mr-2" />
-                Top Products
-              </h3>
-              <button className="text-indigo-600 font-semibold text-sm hover:text-indigo-700 transition-colors">
-                View All
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              {topProducts.map((product, index) => (
-                <div key={index} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-12 h-12 rounded-lg object-cover"
-                  />
-                  
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate">{product.name}</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <span className="font-bold text-gray-900">{product.revenue}</span>
-                      <span className="text-emerald-600 text-sm font-semibold">{product.growth}</span>
-                    </div>
-                  </div>
-                  
-                  <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* Section Content */}
+        {renderSectionContent()}
       </div>
     </div>
   );
