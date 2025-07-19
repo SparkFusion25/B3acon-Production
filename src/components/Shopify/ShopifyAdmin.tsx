@@ -15,9 +15,14 @@ import {
   Bell,
   Globe,
   Shield,
-  Zap
+  Zap,
+  Home,
+  Package,
+  CreditCard,
+  TrendingUp,
+  Activity
 } from 'lucide-react';
-import '../../styles/shopify-app.css';
+import '../../styles/premium-design-system.css';
 
 interface PricingPlan {
   id: string;
@@ -127,216 +132,236 @@ const ShopifyAdmin = () => {
   ];
 
   const renderPricingPlans = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Pricing Plans Management</h2>
-        <button 
-          onClick={() => setShowAddPlan(true)}
-          className="btn-primary"
-        >
-          <Plus className="w-4 h-4" />
-          Add New Plan
-        </button>
-      </div>
+    <div className="space-y-8">
+      <div className="glass-card-dark p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+              <CreditCard className="w-6 h-6 mr-3 text-indigo-400" />
+              Pricing Plans Management
+            </h2>
+            <p className="text-indigo-200">Configure subscription plans and pricing for your Shopify app</p>
+          </div>
+          <button 
+            onClick={() => setShowAddPlan(true)}
+            className="btn-premium btn-primary btn-large group"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            <span>Add New Plan</span>
+          </button>
+        </div>
 
-      <div className="grid gap-6">
-        {pricingPlans.map((plan) => (
-          <div key={plan.id} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    plan.isActive 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {plan.isActive ? 'Active' : 'Inactive'}
-                  </span>
-                </div>
-                <p className="text-gray-600 mb-4">{plan.description}</p>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <span className="text-2xl font-bold text-gray-900">
-                      ${plan.price}
+        <div className="grid gap-6">
+          {pricingPlans.map((plan) => (
+            <div key={plan.id} className="glass-card p-6 border border-white/10 hover:border-indigo-500/30 transition-all duration-200">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <h3 className="text-xl font-semibold text-gray-900">{plan.name}</h3>
+                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      plan.isActive 
+                        ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/30' 
+                        : 'bg-gray-500/20 text-gray-600 border border-gray-500/30'
+                    }`}>
+                      {plan.isActive ? 'Active' : 'Inactive'}
                     </span>
-                    <span className="text-gray-600">/{plan.period}</span>
                   </div>
+                  <p className="text-gray-600 mb-6">{plan.description}</p>
+                  
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div className="space-y-2">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-3xl font-bold text-gradient-primary">
+                          ${plan.price}
+                        </span>
+                        <span className="text-gray-500 text-lg">/{plan.period}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <span className="text-sm text-gray-500 font-medium">Trial Period:</span>
+                      <div className="px-3 py-1 bg-indigo-500/20 text-indigo-600 text-sm font-medium rounded-lg inline-block">
+                        {plan.trialDays} days free
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
-                    <span className="text-sm text-gray-600">Trial Period:</span>
-                    <div className="font-medium text-gray-900">{plan.trialDays} days</div>
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                      <Package className="w-4 h-4 mr-2 text-indigo-500" />
+                      Features:
+                    </h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {plan.features.map((feature, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Features:</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
-                    {plan.features.map((feature, index) => (
-                      <li key={index}>• {feature}</li>
-                    ))}
-                  </ul>
+                <div className="flex items-center space-x-2 ml-6">
+                  <button className="btn-premium btn-ghost btn-small group" title="View Details">
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button className="btn-premium btn-ghost btn-small group" title="Edit Plan">
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button className="btn-premium btn-ghost btn-small text-red-600 hover:bg-red-50 group" title="Delete Plan">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-600 hover:text-blue-600 rounded-lg hover:bg-blue-50">
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-600 hover:text-green-600 rounded-lg hover:bg-green-50">
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button className="p-2 text-gray-600 hover:text-red-600 rounded-lg hover:bg-red-50">
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 
   const renderFeatures = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Feature Toggle Management</h2>
-      
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Plugins</h3>
-        <div className="space-y-4">
-          {Object.entries(globalSettings.features).map(([key, enabled]) => (
-            <div key={key} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-              <div>
-                <h4 className="font-medium text-gray-900 capitalize">
-                  {key.replace(/([A-Z])/g, ' $1').trim()}
-                </h4>
-                <p className="text-sm text-gray-600">
-                  {key === 'seoAnalyzer' && 'On-page audit and structured data detection'}
-                  {key === 'internalLinking' && 'AI-powered internal link suggestions'}
-                  {key === 'amazonSync' && 'Cross-platform inventory synchronization'}
-                  {key === 'siteSpeed' && 'Core Web Vitals monitoring'}
-                  {key === 'rankTracker' && 'Keyword position tracking'}
-                </p>
+    <div className="space-y-8">
+      <div className="glass-card-dark p-8">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+            <ToggleLeft className="w-6 h-6 mr-3 text-indigo-400" />
+            Feature Toggle Management
+          </h2>
+          <p className="text-indigo-200">Enable or disable features across all Shopify app installations</p>
+        </div>
+        
+        <div className="glass-card p-6 border border-white/10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+            <Zap className="w-5 h-5 mr-2 text-indigo-500" />
+            SEO Plugins & Tools
+          </h3>
+          <div className="space-y-4">
+            {Object.entries(globalSettings.features).map(([key, enabled]) => (
+              <div key={key} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900 capitalize mb-1">
+                    {key.replace(/([A-Z])/g, ' $1').trim()}
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    {key === 'seoAnalyzer' && 'On-page audit and structured data detection'}
+                    {key === 'internalLinking' && 'AI-powered internal link suggestions'}
+                    {key === 'amazonSync' && 'Cross-platform inventory synchronization'}
+                    {key === 'siteSpeed' && 'Core Web Vitals monitoring'}
+                    {key === 'rankTracker' && 'Keyword position tracking'}
+                  </p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={enabled}
+                    onChange={(e) => setGlobalSettings(prev => ({
+                      ...prev,
+                      features: {
+                        ...prev.features,
+                        [key]: e.target.checked
+                      }
+                    }))}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-500"></div>
+                </label>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={enabled}
-                  onChange={(e) => setGlobalSettings(prev => ({
-                    ...prev,
-                    features: {
-                      ...prev.features,
-                      [key]: e.target.checked
-                    }
-                  }))}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-lime-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-lime-500"></div>
-              </label>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 
   const renderAnalytics = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">App Analytics</h2>
-        <button className="btn-secondary">
-          <Download className="w-4 h-4" />
-          Export Data
-        </button>
-      </div>
+    <div className="space-y-8">
+      <div className="glass-card-dark p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2 flex items-center">
+              <Activity className="w-6 h-6 mr-3 text-indigo-400" />
+              App Analytics Dashboard
+            </h2>
+            <p className="text-indigo-200">Real-time performance metrics and insights</p>
+          </div>
+          <button className="btn-premium btn-outline btn-large group">
+            <Download className="w-5 h-5 mr-2" />
+            <span>Export Data</span>
+          </button>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-        <div className="b3acon-card">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          <div className="glass-card p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
             </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-900 counter-animate">
-                {metrics.activeInstalls.toLocaleString()}
-              </div>
-              <div className="text-sm text-gray-600">Active Installs</div>
+            <div className="text-2xl font-bold text-gradient-primary mb-1">
+              {metrics.activeInstalls.toLocaleString()}
             </div>
+            <div className="text-sm text-gray-600">Active Installs</div>
+          </div>
+
+          <div className="glass-card p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-2xl font-bold text-gradient-primary mb-1">{metrics.churnRate}%</div>
+            <div className="text-sm text-gray-600">Churn Rate</div>
+          </div>
+
+          <div className="glass-card p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <Globe className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-2xl font-bold text-gradient-primary mb-1">
+              {(metrics.apiUsage / 1000000).toFixed(1)}M
+            </div>
+            <div className="text-sm text-gray-600">API Calls</div>
+          </div>
+
+          <div className="glass-card p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-2xl font-bold text-gradient-primary mb-1">
+              ${(metrics.revenue / 1000).toFixed(0)}K
+            </div>
+            <div className="text-sm text-gray-600">Monthly Revenue</div>
+          </div>
+
+          <div className="glass-card p-6 text-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-xl mx-auto mb-4 flex items-center justify-center">
+              <BarChart3 className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-2xl font-bold text-gradient-success mb-1">+{metrics.growth}%</div>
+            <div className="text-sm text-gray-600">Growth Rate</div>
           </div>
         </div>
 
-        <div className="b3acon-card">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-900">{metrics.churnRate}%</div>
-              <div className="text-sm text-gray-600">Churn Rate</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="b3acon-card">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Globe className="w-5 h-5 text-purple-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-900">
-                {(metrics.apiUsage / 1000000).toFixed(1)}M
-              </div>
-              <div className="text-sm text-gray-600">API Calls</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="b3acon-card">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${(metrics.revenue / 1000).toFixed(0)}K
-              </div>
-              <div className="text-sm text-gray-600">Monthly Revenue</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="b3acon-card">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-lime-100 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-lime-600" />
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-gray-900">+{metrics.growth}%</div>
-              <div className="text-sm text-gray-600">Growth Rate</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Revenue Breakdown</h3>
-        <div className="space-y-4">
-          {pricingPlans.filter(p => p.isActive).map((plan) => (
-            <div key={plan.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-              <div>
-                <div className="font-medium text-gray-900">{plan.name}</div>
-                <div className="text-sm text-gray-600">${plan.price}/{plan.period}</div>
-              </div>
-              <div className="text-right">
-                <div className="font-bold text-gray-900">
-                  {Math.floor(Math.random() * 1000 + 500)} subscribers
+        <div className="glass-card p-6 border border-white/10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+            <CreditCard className="w-5 h-5 mr-2 text-indigo-500" />
+            Revenue Breakdown by Plan
+          </h3>
+          <div className="space-y-4">
+            {pricingPlans.filter(p => p.isActive).map((plan) => (
+              <div key={plan.id} className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                <div>
+                  <div className="font-semibold text-gray-900">{plan.name}</div>
+                  <div className="text-sm text-gray-600">${plan.price}/{plan.period}</div>
                 </div>
-                <div className="text-sm text-green-600">
-                  ${(plan.price * Math.floor(Math.random() * 1000 + 500)).toLocaleString()} revenue
+                <div className="text-right">
+                  <div className="font-bold text-gray-900">
+                    {Math.floor(Math.random() * 1000 + 500)} subscribers
+                  </div>
+                  <div className="text-sm font-medium text-emerald-600">
+                    ${(plan.price * Math.floor(Math.random() * 1000 + 500)).toLocaleString()} revenue
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -462,51 +487,60 @@ const ShopifyAdmin = () => {
   };
 
   return (
-    <div className="b3acon-app min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+      {/* Premium Header */}
+      <div className="glass-card-dark border-0 rounded-none">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-lime-400 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-gray-900" />
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center">
+                <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">B3ACON Admin</h1>
-                <p className="text-sm text-gray-600">Shopify App Management</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-white">
+                  <span className="text-gradient-primary">B3ACON</span> Admin Portal
+                </h1>
+                <p className="text-indigo-200">Shopify App Management Dashboard</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Shield className="w-5 h-5 text-green-500" />
-              <span className="text-sm text-green-600 font-medium">Admin Access</span>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <span className="text-emerald-300 text-sm font-medium">Admin Access</span>
+              </div>
+              <div className="text-indigo-200 text-sm">
+                {new Date().toLocaleDateString()}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="border-b border-gray-200 mb-6">
-          <nav className="flex space-x-8">
+      {/* Premium Navigation */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="glass-card-dark p-2 mb-8">
+          <nav className="flex space-x-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`flex items-center space-x-3 py-3 px-6 rounded-lg font-medium text-sm transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'border-lime-500 text-lime-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
+                    : 'text-indigo-200 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
+                <tab.icon className="w-5 h-5" />
                 <span>{tab.label}</span>
               </button>
             ))}
           </nav>
         </div>
 
-        {/* Content */}
-        {renderContent()}
+        {/* Premium Content Container */}
+        <div className="space-y-8">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
