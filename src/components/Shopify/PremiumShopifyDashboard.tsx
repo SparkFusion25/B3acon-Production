@@ -277,6 +277,10 @@ const PremiumShopifyDashboard = () => {
         return renderIntegrationsSection();
       case 'support':
         return renderSupportSection();
+      case 'billing':
+        return renderBillingSection();
+      case 'affiliate':
+        return renderAffiliateSection();
       case 'settings':
         return renderSettingsSection();
       default:
