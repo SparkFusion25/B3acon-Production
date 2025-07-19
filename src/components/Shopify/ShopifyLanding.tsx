@@ -13,13 +13,24 @@ import {
   ExternalLink,
   Users,
   TrendingUp,
-  Globe
+  Globe,
+  Menu,
+  X,
+  Home,
+  Package,
+  DollarSign,
+  Shield,
+  HelpCircle,
+  LogIn,
+  CreditCard
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Typewriter from '../UI/Typewriter';
 import '../../styles/shopify-app.css';
 
 const ShopifyLanding = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Typewriter words for the hero section
   const heroWords = [
@@ -72,6 +83,72 @@ const ShopifyLanding = () => {
       title: "Amazon + Shopify Visibility",
       description: "Sync inventory, track performance, and optimize listings across both platforms from one dashboard.",
       stats: "45% revenue growth"
+    }
+  ];
+
+  // Navigation menu items
+  const navigationItems = [
+    { 
+      id: 'dashboard', 
+      label: 'Dashboard', 
+      icon: Home, 
+      path: '/shopify/dashboard',
+      description: 'Main app dashboard with analytics'
+    },
+    { 
+      id: 'seo-tools', 
+      label: 'SEO Tools', 
+      icon: Search, 
+      path: '/shopify/seo',
+      description: 'Complete SEO optimization suite',
+      submenu: [
+        { label: 'Image SEO & Compression', path: '/shopify/seo/image-optimization' },
+        { label: 'Broken Links Manager', path: '/shopify/seo/broken-links' },
+        { label: 'Schema Markup Generator', path: '/shopify/seo/schema-markup' },
+        { label: 'Buy Button Generator', path: '/shopify/seo/buy-button' }
+      ]
+    },
+    { 
+      id: 'analytics', 
+      label: 'Analytics', 
+      icon: BarChart3, 
+      path: '/shopify/analytics',
+      description: 'Performance tracking and insights'
+    },
+    { 
+      id: 'automation', 
+      label: 'Automation', 
+      icon: Zap, 
+      path: '/shopify/automation',
+      description: 'Internal linking and SEO automation'
+    },
+    { 
+      id: 'integrations', 
+      label: 'Integrations', 
+      icon: Package, 
+      path: '/shopify/integrations',
+      description: 'Amazon sync and third-party tools'
+    },
+    { 
+      id: 'billing', 
+      label: 'Billing', 
+      icon: CreditCard, 
+      path: '/shopify/plans',
+      description: 'Subscription plans and billing'
+    },
+    { 
+      id: 'settings', 
+      label: 'Settings', 
+      icon: Settings, 
+      path: '/shopify/settings',
+      description: 'App configuration and preferences'
+    },
+    { 
+      id: 'admin', 
+      label: 'Admin Portal', 
+      icon: Shield, 
+      path: '/shopify/billing-admin',
+      description: 'Admin management (for store owners)'
     }
   ];
 
