@@ -20,13 +20,6 @@ export default function handler(req, res) {
     return res.status(400).json({ error: 'Missing shop parameter' });
   }
 
-  // In production, you would:
-  // 1. Verify the HMAC signature against your secret
-  // 2. Exchange authorization code for access token
-  // 3. Store the access token securely in your database
-  // 4. Create user session
-  // 5. Redirect to the app with proper embedded context
-
   const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
   
   // If we have an authorization code, this is the OAuth callback
@@ -35,10 +28,9 @@ export default function handler(req, res) {
     // TODO: Exchange code for access token in production
     
     // Redirect to plan selection after successful OAuth
-    const redirectUrl = `${baseUrl}/shopify/plans?shop=${shop}&host=${host}&authorized=true`;
+    const redirectUrl = `${baseUrl}/shopify/plans?shop=${shop}&host=${host || ''}&authorized=true`;
     
-    const html = `
-<!DOCTYPE html>
+    const successHtml = `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -118,22 +110,20 @@ export default function handler(req, res) {
         }
         
         // Redirect to plan selection
-        setTimeout(() => {
+        setTimeout(function() {
             window.location.href = '${redirectUrl}';
         }, 2000);
     </script>
 </body>
 </html>`;
     
-    return res.status(200).send(html);
+    return res.status(200).send(successHtml);
   }
   
   // If no code, this might be initial app load - redirect to installation
-  const installUrl = `${baseUrl}/shopify/install?shop=${shop}&host=${host}`;
+  const installUrl = `${baseUrl}/shopify/install?shop=${shop}&host=${host || ''}`;
   
-  // Create embedded app HTML response for initial load
-  const html = `
-<!DOCTYPE html>
+  const installHtml = `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -176,7 +166,6 @@ export default function handler(req, res) {
     <script>
         console.log('🔗 Shopify OAuth Handler');
         
-        // Initialize App Bridge
         const shop = '${shop}';
         const host = '${host || ''}';
         
@@ -193,23 +182,20 @@ export default function handler(req, res) {
                 
                 console.log('✅ App Bridge initialized');
                 
-                // Redirect to the installation page within the embedded context
-                setTimeout(() => {
-                    window.location.href = '${redirectUrl}';
+                setTimeout(function() {
+                    window.location.href = '${installUrl}';
                 }, 2000);
                 
             } catch (error) {
                 console.error('❌ App Bridge Error:', error);
-                // Fallback redirect
-                window.location.href = '${redirectUrl}';
+                window.location.href = '${installUrl}';
             }
         } else {
-            // Non-embedded fallback
-            window.location.href = '${redirectUrl}';
+            window.location.href = '${installUrl}';
         }
     </script>
 </body>
 </html>`;
 
-  res.status(200).send(html);
+  res.status(200).send(installHtml);
 }
