@@ -104,20 +104,14 @@ const AppRoutes: React.FC = () => {
         <Route path="/auth/legacy-signup" element={<LoginPage initialMode="signup" />} />
       <Route path="/plans" element={<PlanSelectionPage viewOnly={!isAuthenticated} />} />
 
+      {/* Root Route - Always redirect to main software login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
+
       {/* Conditional Routing Based on Authentication */}
       {!isAuthenticated ? (
         <Route path="*" element={<Navigate to="/login" replace />} />
       ) : (
         <>
-          {/* Protected B3ACON Platform Routes - Use Original Agency Dashboard as Default */}
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute>
-                {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}
-              </ProtectedRoute>
-            } 
-          />
           {/* Premium Dashboard Routes */}
           <Route 
             path="/dashboard" 
@@ -132,6 +126,16 @@ const AppRoutes: React.FC = () => {
             element={
               <ProtectedRoute>
                 <CRMDealsPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Default Dashboard Route for Authenticated Users */}
+          <Route 
+            path="/main" 
+            element={
+              <ProtectedRoute>
+                {userType === 'agency' ? <AgencyDashboard /> : <ClientDashboard />}
               </ProtectedRoute>
             } 
           />
