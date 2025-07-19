@@ -1,11 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Typewriter from '../UI/Typewriter';
 
 const LandingPage: React.FC = () => {
+  const [headlines, setHeadlines] = useState<string[]>([
+    'Global Commerce Command Center',
+    'Trade Intelligence Platform',
+    'Freight & Tariff Solutions',
+    'AI-Powered Marketing Hub'
+  ]);
+  const [typewriterSpeed, setTypewriterSpeed] = useState(100);
+
+  // Load admin-configured settings
+  useEffect(() => {
+    const loadAdminSettings = async () => {
+      try {
+        // This would typically fetch from your admin settings API
+        const adminSettings = localStorage.getItem('landingPageSettings');
+        if (adminSettings) {
+          const settings = JSON.parse(adminSettings);
+          if (settings.headlines && settings.headlines.length > 0) {
+            setHeadlines(settings.headlines);
+          }
+        }
+
+        const commerceSettings = localStorage.getItem('globalCommerceSettings');
+        if (commerceSettings) {
+          const settings = JSON.parse(commerceSettings);
+          if (settings.landing_visuals?.typewriter_speed) {
+            setTypewriterSpeed(settings.landing_visuals.typewriter_speed);
+          }
+        }
+      } catch (error) {
+        console.log('Using default typewriter settings');
+      }
+    };
+
+    loadAdminSettings();
+  }, []);
+
   return (
     <div className="landing-page">
       <div className="container">
-        <h1 className="heading">The Global Commerce Command Center</h1>
+        <h1 className="heading">
+          The{' '}
+          <Typewriter
+            words={headlines}
+            speed={typewriterSpeed}
+            deleteSpeed={typewriterSpeed / 2}
+            delayBetweenWords={3000}
+            loop={true}
+            startDelay={1000}
+            cursorChar="|"
+            cursorClassName="animate-pulse text-blue-600"
+          />
+        </h1>
         <p className="subheading">One Command Center. Every Global Trade Advantage.</p>
 
         <div className="plugin-list">
