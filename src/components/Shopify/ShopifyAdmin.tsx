@@ -41,6 +41,7 @@ interface AppMetrics {
 const ShopifyAdmin = () => {
   const [activeTab, setActiveTab] = useState('plans');
   const [showAddPlan, setShowAddPlan] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [metrics] = useState<AppMetrics>({
     activeInstalls: 12847,
@@ -447,17 +448,32 @@ const ShopifyAdmin = () => {
   );
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'plans':
-        return renderPricingPlans();
-      case 'features':
-        return renderFeatures();
-      case 'analytics':
-        return renderAnalytics();
-      case 'settings':
-        return renderSettings();
-      default:
-        return renderPricingPlans();
+    try {
+      switch (activeTab) {
+        case 'plans':
+          return renderPricingPlans();
+        case 'features':
+          return renderFeatures();
+        case 'analytics':
+          return renderAnalytics();
+        case 'settings':
+          return renderSettings();
+        default:
+          return renderPricingPlans();
+      }
+    } catch (error) {
+      console.error('Error rendering content:', error);
+      return (
+        <div className="text-center py-12">
+          <div className="text-red-600 mb-4">Error loading content</div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="btn-primary"
+          >
+            Reload Page
+          </button>
+        </div>
+      );
     }
   };
 
