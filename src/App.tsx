@@ -76,6 +76,12 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify/integrations/klaviyo" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/integrations/mailchimp" element={<PremiumShopifyDashboard />} />
       
+      {/* New Component Routes */}
+      <Route path="/shopify/ai-buy-now" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/typewriter" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/reviews" element={<PremiumShopifyDashboard />} />
+      <Route path="/shopify/affiliate" element={<PremiumShopifyDashboard />} />
+      
       {/* Shopify Plugins Routes */}
       <Route path="/shopify/plugins/popup-builder" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/plugins/review-manager" element={<PremiumShopifyDashboard />} />
