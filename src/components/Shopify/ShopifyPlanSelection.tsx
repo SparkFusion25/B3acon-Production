@@ -67,7 +67,7 @@ const ShopifyPlanSelection = () => {
       name: 'Growth',
       price: 79,
       period: 'month',
-      description: 'For growing stores ready to scale',
+      description: 'For growing stores ready to scale - Pay upfront to start',
       features: [
         'SEO optimization for 2,500 products',
         'Advanced analytics & insights',
@@ -83,14 +83,14 @@ const ShopifyPlanSelection = () => {
         support: 'Priority'
       },
       popular: true,
-      trial: 14
+      trial: 0
     },
     {
       id: 'pro',
       name: 'Pro Agency',
       price: 199,
       period: 'month',
-      description: 'For agencies and large stores',
+      description: 'For agencies and large stores - Pay upfront to start',
       features: [
         'Unlimited SEO optimization',
         'White-label dashboard',

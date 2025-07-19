@@ -98,6 +98,19 @@ const PremiumShopifyDashboard = () => {
   const [sentimentData, setSentimentData] = useState(null);
   const [siteAuditData, setSiteAuditData] = useState(null);
   const [competitorData, setCompetitorData] = useState(null);
+  const [realTimeData, setRealTimeData] = useState({
+    revenue: { current: 24750, change: 12.5, trend: 'up' },
+    orders: { current: 142, change: 8.2, trend: 'up' },
+    visitors: { current: 3247, change: -2.1, trend: 'down' },
+    conversion: { current: 4.38, change: 0.7, trend: 'up' },
+    seoScore: { current: 85, change: 3.2, trend: 'up' },
+    lastUpdated: new Date()
+  });
+  const [competitorList, setCompetitorList] = useState([
+    'example-competitor1.com',
+    'example-competitor2.com', 
+    'example-competitor3.com'
+  ]);
 
   useEffect(() => {
     // Check for proper Shopify authentication and plan
@@ -160,6 +173,44 @@ const PremiumShopifyDashboard = () => {
       ]);
       setIsLoading(false);
     }, 1000);
+  }, []);
+
+  // Real-time data updates
+  useEffect(() => {
+    const updateRealTimeData = () => {
+      setRealTimeData(prev => ({
+        revenue: { 
+          current: Math.max(0, prev.revenue.current + (Math.random() * 200 - 100)),
+          change: +(Math.random() * 4 - 2).toFixed(1),
+          trend: Math.random() > 0.5 ? 'up' : 'down'
+        },
+        orders: { 
+          current: Math.max(0, prev.orders.current + Math.floor(Math.random() * 10 - 5)),
+          change: +(Math.random() * 6 - 3).toFixed(1),
+          trend: Math.random() > 0.5 ? 'up' : 'down'
+        },
+        visitors: { 
+          current: Math.max(0, prev.visitors.current + Math.floor(Math.random() * 100 - 50)),
+          change: +(Math.random() * 8 - 4).toFixed(1),
+          trend: Math.random() > 0.5 ? 'up' : 'down'
+        },
+        conversion: { 
+          current: Math.max(0, +(prev.conversion.current + (Math.random() * 0.4 - 0.2)).toFixed(2)),
+          change: +(Math.random() * 1 - 0.5).toFixed(2),
+          trend: Math.random() > 0.5 ? 'up' : 'down'
+        },
+        seoScore: { 
+          current: Math.min(100, Math.max(0, Math.round(prev.seoScore.current + (Math.random() * 4 - 2)))),
+          change: +(Math.random() * 2 - 1).toFixed(1),
+          trend: Math.random() > 0.5 ? 'up' : 'down'
+        },
+        lastUpdated: new Date()
+      }));
+    };
+
+    // Update every 15 seconds for demo
+    const interval = setInterval(updateRealTimeData, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const revenueData: ChartData[] = [
@@ -318,7 +369,7 @@ const PremiumShopifyDashboard = () => {
 
   // Overview Section (Original Dashboard Content)
   const renderOverviewSection = () => (
-    <div>
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Time Frame Selector */}
       <div className="mb-8">
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
@@ -478,7 +529,7 @@ const PremiumShopifyDashboard = () => {
 
   // Analytics Section
   const renderAnalyticsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Advanced Analytics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-card p-6">
@@ -613,7 +664,7 @@ const PremiumShopifyDashboard = () => {
 
   // Products Section
   const renderProductsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Product Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -784,7 +835,7 @@ const PremiumShopifyDashboard = () => {
 
   // SEO Section
   const renderSEOSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* SEO Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-card p-6">
@@ -1012,12 +1063,20 @@ const PremiumShopifyDashboard = () => {
 
   // Settings Section
   const renderSettingsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Account Settings */}
       <div className="glass-card p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-6">Account Settings</h3>
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+              <input 
+                type="text" 
+                placeholder="Enter your full name" 
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
               <input 
@@ -1201,7 +1260,7 @@ const PremiumShopifyDashboard = () => {
 
   // CAMPAIGNS SECTION - Marketing Campaign Management
   const renderCampaignsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Campaign Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -1362,7 +1421,7 @@ const PremiumShopifyDashboard = () => {
 
   // AUTOMATIONS SECTION - Smart Workflow Automation
   const renderAutomationsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Automation Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -1511,7 +1570,7 @@ const PremiumShopifyDashboard = () => {
 
   // REPORTS SECTION - Advanced Reporting & Analytics
   const renderReportsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Report Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -1654,7 +1713,7 @@ const PremiumShopifyDashboard = () => {
 
   // INTEGRATIONS SECTION - Third-party App Connections
   const renderIntegrationsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Integration Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -1788,7 +1847,7 @@ const PremiumShopifyDashboard = () => {
 
   // SUPPORT SECTION - Help Center & Customer Support
   const renderSupportSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Support Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -1948,7 +2007,7 @@ const PremiumShopifyDashboard = () => {
 
   // BILLING SECTION - Stripe Integration & Subscription Management
   const renderBillingSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Billing Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -2140,7 +2199,7 @@ const PremiumShopifyDashboard = () => {
 
   // AFFILIATE SECTION - Complete Tracking, Payouts & Analytics
   const renderAffiliateSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Affiliate Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
@@ -2311,7 +2370,7 @@ const PremiumShopifyDashboard = () => {
 
   // PRODUCT REVIEWS SECTION - Multi-platform Management with AI Sentiment Analysis
   const renderProductReviewsSection = () => (
-    <div className="space-y-8">
+    <div className="min-h-[calc(100vh-200px)] space-y-8">
       {/* Review Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="glass-card p-6">
