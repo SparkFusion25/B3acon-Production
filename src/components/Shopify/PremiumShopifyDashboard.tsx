@@ -81,6 +81,11 @@ const PremiumShopifyDashboard = () => {
   const [isAuthorized, setIsAuthorized] = useState(true);
   const [activeSection, setActiveSection] = useState('overview');
   const [showPlanModal, setShowPlanModal] = useState(false);
+  const [showSentimentModal, setShowSentimentModal] = useState(false);
+  const [showKeywordModal, setShowKeywordModal] = useState(false);
+  const [showCampaignModal, setShowCampaignModal] = useState(false);
+  const [showAutomationModal, setShowAutomationModal] = useState(false);
+  const [sentimentData, setSentimentData] = useState(null);
 
   useEffect(() => {
     // Check for proper Shopify authentication and plan
@@ -822,16 +827,7 @@ const PremiumShopifyDashboard = () => {
             <p className="text-sm text-gray-600 mb-3">Find high-performing keywords for your products</p>
             <button 
               onClick={() => {
-                const keywords = [
-                  { keyword: 'premium wireless earbuds', volume: 8100, difficulty: 'Medium', cpc: '$2.45' },
-                  { keyword: 'best gaming headset 2024', volume: 12500, difficulty: 'High', cpc: '$3.12' },
-                  { keyword: 'waterproof bluetooth speaker', volume: 6800, difficulty: 'Low', cpc: '$1.89' },
-                  { keyword: 'noise cancelling headphones', volume: 15600, difficulty: 'High', cpc: '$4.23' },
-                  { keyword: 'wireless charging pad', volume: 4200, difficulty: 'Medium', cpc: '$1.67' }
-                ];
-                alert(`🎯 Keyword Research Results:\n\n${keywords.map(k => 
-                  `• ${k.keyword}\n  Volume: ${k.volume}/month | Difficulty: ${k.difficulty} | CPC: ${k.cpc}`
-                ).join('\n\n')}\n\nUse these keywords to optimize your product descriptions!`);
+                setShowKeywordModal(true);
               }}
               className="btn-premium btn-primary btn-small w-full"
             >
@@ -2397,7 +2393,8 @@ const PremiumShopifyDashboard = () => {
                   'Implement faster shipping options'
                 ]
               };
-              alert(`🤖 AI Sentiment Analysis Results\n\n📊 Sentiment Breakdown:\n• Positive: ${aiAnalysis.sentiment.positive}%\n• Neutral: ${aiAnalysis.sentiment.neutral}%\n• Negative: ${aiAnalysis.sentiment.negative}%\n\n🏷️ Top Keywords:\n${aiAnalysis.keywords.map(k => `• ${k}`).join('\n')}\n\n⚠️ Common Issues:\n${aiAnalysis.issues.map(i => `• ${i}`).join('\n')}\n\n💡 AI Suggestions:\n${aiAnalysis.suggestions.map(s => `• ${s}`).join('\n')}`);
+              setSentimentData(aiAnalysis);
+              setShowSentimentModal(true);
             }}
             className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2"
           >
@@ -3098,11 +3095,278 @@ const PremiumShopifyDashboard = () => {
                 </div>
               </div>
             </div>
+                    </div>
+        </div>
+      )}
+
+      {/* AI Sentiment Analysis Modal */}
+      {showSentimentModal && sentimentData && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowSentimentModal(false)} />
+            
+            <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+              <div className="bg-white px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                    <Zap className="w-6 h-6 text-indigo-600 mr-2" />
+                    AI Sentiment Analysis Results
+                  </h3>
+                  <button 
+                    onClick={() => setShowSentimentModal(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Sentiment Breakdown */}
+                  <div className="glass-card p-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                      <BarChart3 className="w-5 h-5 text-blue-600 mr-2" />
+                      Sentiment Breakdown
+                    </h4>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-green-600 font-medium">Positive</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div className="bg-green-500 h-2 rounded-full" style={{ width: `${sentimentData.sentiment.positive}%` }}></div>
+                          </div>
+                          <span className="font-bold text-green-600">{sentimentData.sentiment.positive}%</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 font-medium">Neutral</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div className="bg-gray-400 h-2 rounded-full" style={{ width: `${sentimentData.sentiment.neutral}%` }}></div>
+                          </div>
+                          <span className="font-bold text-gray-600">{sentimentData.sentiment.neutral}%</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-red-600 font-medium">Negative</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-32 bg-gray-200 rounded-full h-2">
+                            <div className="bg-red-500 h-2 rounded-full" style={{ width: `${sentimentData.sentiment.negative}%` }}></div>
+                          </div>
+                          <span className="font-bold text-red-600">{sentimentData.sentiment.negative}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Top Keywords */}
+                  <div className="glass-card p-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                      <Target className="w-5 h-5 text-yellow-600 mr-2" />
+                      Top Keywords
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {sentimentData.keywords.map((keyword, index) => (
+                        <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Common Issues */}
+                  <div className="glass-card p-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                      <AlertTriangle className="w-5 h-5 text-red-600 mr-2" />
+                      Common Issues
+                    </h4>
+                    <ul className="space-y-2">
+                      {sentimentData.issues.map((issue, index) => (
+                        <li key={index} className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          <span className="text-gray-700">{issue}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* AI Suggestions */}
+                  <div className="glass-card p-6">
+                    <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                      <Sparkles className="w-5 h-5 text-purple-600 mr-2" />
+                      AI Suggestions
+                    </h4>
+                    <ul className="space-y-2">
+                      {sentimentData.suggestions.map((suggestion, index) => (
+                        <li key={index} className="flex items-start space-x-2">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-700">{suggestion}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                  <div className="text-sm text-gray-500">
+                    Analysis completed • {new Date().toLocaleDateString()} • 1,247 reviews analyzed
+                  </div>
+                  <div className="flex space-x-3">
+                    <button 
+                      onClick={() => {
+                        alert('📊 Exporting sentiment analysis report as PDF...\n\nReport includes:\n• Detailed sentiment breakdown\n• Keyword frequency analysis\n• Issue identification\n• Actionable recommendations\n\nDownload will start shortly.');
+                      }}
+                      className="btn-premium btn-outline btn-small"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Export Report
+                    </button>
+                    <button 
+                      onClick={() => setShowSentimentModal(false)}
+                      className="btn-premium btn-primary btn-small"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+                    </div>
+        </div>
+      )}
+
+      {/* Keyword Research Modal */}
+      {showKeywordModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowKeywordModal(false)} />
+            
+            <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+              <div className="bg-white px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                    <Target className="w-6 h-6 text-emerald-600 mr-2" />
+                    Keyword Research Results
+                  </h3>
+                  <button 
+                    onClick={() => setShowKeywordModal(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Search Bar */}
+                <div className="mb-6">
+                  <div className="flex space-x-3">
+                    <input 
+                      type="text" 
+                      placeholder="Enter seed keyword (e.g., wireless headphones)" 
+                      className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    />
+                    <button className="btn-premium btn-primary">
+                      <Search className="w-4 h-4 mr-2" />
+                      Research
+                    </button>
+                  </div>
+                </div>
+
+                {/* Keywords Table */}
+                <div className="glass-card overflow-hidden">
+                  <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                    <h4 className="text-lg font-semibold text-gray-900">High-Opportunity Keywords</h4>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keyword</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CPC</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opportunity</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {[
+                          { keyword: 'premium wireless earbuds', volume: 8100, difficulty: 'Medium', cpc: '$2.45', opportunity: 'High' },
+                          { keyword: 'best gaming headset 2024', volume: 12500, difficulty: 'High', cpc: '$3.12', opportunity: 'Medium' },
+                          { keyword: 'waterproof bluetooth speaker', volume: 6800, difficulty: 'Low', cpc: '$1.89', opportunity: 'High' },
+                          { keyword: 'noise cancelling headphones', volume: 15600, difficulty: 'High', cpc: '$4.23', opportunity: 'Low' },
+                          { keyword: 'wireless charging pad', volume: 4200, difficulty: 'Medium', cpc: '$1.67', opportunity: 'High' },
+                          { keyword: 'portable phone charger', volume: 5900, difficulty: 'Low', cpc: '$1.34', opportunity: 'High' },
+                          { keyword: 'smart fitness tracker', volume: 9200, difficulty: 'Medium', cpc: '$2.89', opportunity: 'Medium' }
+                        ].map((row, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="font-medium text-gray-900">{row.keyword}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-gray-900">{row.volume.toLocaleString()}/mo</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                row.difficulty === 'Low' ? 'bg-green-100 text-green-800' :
+                                row.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {row.difficulty}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">{row.cpc}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                row.opportunity === 'High' ? 'bg-emerald-100 text-emerald-800' :
+                                row.opportunity === 'Medium' ? 'bg-blue-100 text-blue-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {row.opportunity}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <button 
+                                onClick={() => alert(`🎯 Adding "${row.keyword}" to optimization queue...\n\nThis keyword will be automatically integrated into:\n• Product titles\n• Meta descriptions\n• Product descriptions\n• Blog content suggestions\n\nOptimization will begin within 24 hours.`)}
+                                className="btn-premium btn-primary btn-small"
+                              >
+                                Use Keyword
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                  <div className="text-sm text-gray-500">
+                    Research completed • {new Date().toLocaleDateString()} • Powered by B3ACON AI
+                  </div>
+                  <div className="flex space-x-3">
+                    <button 
+                      onClick={() => {
+                        alert('📊 Exporting keyword research as CSV...\n\nExport includes:\n• All keyword data\n• Search volumes\n• Difficulty scores\n• CPC estimates\n• Opportunity ratings\n\nDownload will start shortly.');
+                      }}
+                      className="btn-premium btn-outline btn-small"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Export CSV
+                    </button>
+                    <button 
+                      onClick={() => setShowKeywordModal(false)}
+                      className="btn-premium btn-primary btn-small"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
-         </div>
+     </div>
    );
-  };
+   };
 
-  export default PremiumShopifyDashboard;
+   export default PremiumShopifyDashboard;
