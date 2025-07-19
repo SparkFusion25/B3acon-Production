@@ -52,7 +52,12 @@ import {
   ExternalLink,
   DollarSign,
   Monitor,
-  Loader
+  Loader,
+  Code,
+  Info,
+  Lightbulb,
+  Trophy,
+  Megaphone
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -85,7 +90,14 @@ const PremiumShopifyDashboard = () => {
   const [showKeywordModal, setShowKeywordModal] = useState(false);
   const [showCampaignModal, setShowCampaignModal] = useState(false);
   const [showAutomationModal, setShowAutomationModal] = useState(false);
+  const [showSiteAuditModal, setShowSiteAuditModal] = useState(false);
+  const [showCompetitorModal, setShowCompetitorModal] = useState(false);
+  const [showContentOptimizerModal, setShowContentOptimizerModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showIntegrationModal, setShowIntegrationModal] = useState(false);
   const [sentimentData, setSentimentData] = useState(null);
+  const [siteAuditData, setSiteAuditData] = useState(null);
+  const [competitorData, setCompetitorData] = useState(null);
 
   useEffect(() => {
     // Check for proper Shopify authentication and plan
@@ -867,14 +879,7 @@ const PremiumShopifyDashboard = () => {
             <p className="text-sm text-gray-600 mb-3">AI-powered content optimization</p>
             <button 
               onClick={() => {
-                const optimizations = [
-                  'Added 15 high-value keywords to product titles',
-                  'Optimized 23 meta descriptions for better CTR',
-                  'Improved content readability score by 28%',
-                  'Enhanced product descriptions with SEO keywords',
-                  'Updated image alt texts for better accessibility'
-                ];
-                alert(`🤖 AI Content Optimization Complete!\n\n✅ Optimizations Applied:\n${optimizations.map(o => `• ${o}`).join('\n')}\n\nExpected traffic increase: +35% within 30 days`);
+                setShowContentOptimizerModal(true);
               }}
               className="btn-premium btn-primary btn-small w-full"
             >
@@ -901,7 +906,8 @@ const PremiumShopifyDashboard = () => {
                     'Add missing alt tags to images'
                   ]
                 };
-                alert(`🔍 SEO Site Audit Complete!\n\nOverall Score: ${auditResults.score}/100\n\nIssues Found:\n• Critical: ${auditResults.issues.critical}\n• Warning: ${auditResults.issues.warning}\n• Info: ${auditResults.issues.info}\n\nTop Recommendations:\n${auditResults.recommendations.slice(0, 3).map(r => `• ${r}`).join('\n')}`);
+                setSiteAuditData(auditResults);
+                setShowSiteAuditModal(true);
               }}
               className="btn-premium btn-primary btn-small w-full"
             >
@@ -922,9 +928,8 @@ const PremiumShopifyDashboard = () => {
                   { name: 'Electronics Hub', rank: 'Below You', keywords: 890, backlinks: 1650, traffic: '89K/month' },
                   { name: 'Gadget Store', rank: 'Above You', keywords: 1560, backlinks: 3200, traffic: '178K/month' }
                 ];
-                alert(`🏆 Competitor Analysis Results:\n\n${competitors.map(c => 
-                  `• ${c.name} (${c.rank})\n  Keywords: ${c.keywords} | Backlinks: ${c.backlinks} | Traffic: ${c.traffic}`
-                ).join('\n\n')}\n\nOpportunities: Target their weak keywords for quick wins!`);
+                setCompetitorData(competitors);
+                setShowCompetitorModal(true);
               }}
               className="btn-premium btn-primary btn-small w-full"
             >
@@ -1257,7 +1262,7 @@ const PremiumShopifyDashboard = () => {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-gray-900">Active Campaigns</h3>
           <button 
-            onClick={() => alert('Creating new campaign...')}
+            onClick={() => setShowCampaignModal(true)}
             className="btn-premium btn-primary"
           >
             <Plus className="w-4 h-4" />
@@ -1418,7 +1423,7 @@ const PremiumShopifyDashboard = () => {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-gray-900">Active Automations</h3>
           <button 
-            onClick={() => alert('Creating new automation...')}
+            onClick={() => setShowAutomationModal(true)}
             className="btn-premium btn-primary"
           >
             <Plus className="w-4 h-4" />
@@ -1581,7 +1586,12 @@ const PremiumShopifyDashboard = () => {
                 <h4 className="font-semibold text-gray-900">{report.name}</h4>
               </div>
               <p className="text-sm text-gray-600 mb-3">{report.description}</p>
-              <button className="btn-premium btn-primary btn-small w-full">Generate Report</button>
+              <button 
+                onClick={() => setShowReportModal(true)}
+                className="btn-premium btn-primary btn-small w-full"
+              >
+                Generate Report
+              </button>
             </div>
           ))}
         </div>
@@ -1733,7 +1743,7 @@ const PremiumShopifyDashboard = () => {
                   {integration.status}
                 </span>
                 <button 
-                  onClick={() => alert(`${integration.status === 'connected' ? 'Disconnecting from' : 'Connecting to'} ${integration.name}...`)}
+                  onClick={() => setShowIntegrationModal(true)}
                   className={`btn-premium btn-small ${
                     integration.status === 'connected' ? 'btn-outline' : 'btn-primary'
                   }`}
@@ -3362,11 +3372,1005 @@ const PremiumShopifyDashboard = () => {
                 </div>
               </div>
             </div>
+                    </div>
+        </div>
+      )}
+
+      {/* Site Audit Modal */}
+      {showSiteAuditModal && siteAuditData && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowSiteAuditModal(false)} />
+            
+            <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+              <div className="bg-white px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                    <Search className="w-6 h-6 text-indigo-600 mr-2" />
+                    SEO Site Audit Results
+                  </h3>
+                  <button 
+                    onClick={() => setShowSiteAuditModal(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Overall Score */}
+                <div className="mb-6">
+                  <div className="glass-card p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-900 mb-2">Overall SEO Score</h4>
+                        <p className="text-gray-600">Your site's current optimization level</p>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-4xl font-bold text-indigo-600">{siteAuditData.score}/100</div>
+                        <div className="text-sm text-gray-600">Good Progress!</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Issues Breakdown */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                  <div className="glass-card p-6 border-red-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-bold text-red-700 flex items-center">
+                        <AlertCircle className="w-5 h-5 mr-2" />
+                        Critical Issues
+                      </h4>
+                      <span className="text-2xl font-bold text-red-600">{siteAuditData.issues.critical}</span>
+                    </div>
+                    <p className="text-red-600 text-sm">Immediate attention required</p>
+                  </div>
+
+                  <div className="glass-card p-6 border-yellow-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-bold text-yellow-700 flex items-center">
+                        <AlertTriangle className="w-5 h-5 mr-2" />
+                        Warnings
+                      </h4>
+                      <span className="text-2xl font-bold text-yellow-600">{siteAuditData.issues.warning}</span>
+                    </div>
+                    <p className="text-yellow-600 text-sm">Should be addressed soon</p>
+                  </div>
+
+                  <div className="glass-card p-6 border-blue-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-bold text-blue-700 flex items-center">
+                        <Info className="w-5 h-5 mr-2" />
+                        Info Items
+                      </h4>
+                      <span className="text-2xl font-bold text-blue-600">{siteAuditData.issues.info}</span>
+                    </div>
+                    <p className="text-blue-600 text-sm">Optimization opportunities</p>
+                  </div>
+                </div>
+
+                {/* Recommendations */}
+                <div className="glass-card p-6">
+                  <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                    <Lightbulb className="w-5 h-5 text-yellow-500 mr-2" />
+                    Priority Recommendations
+                  </h4>
+                  <div className="space-y-3">
+                    {siteAuditData.recommendations.map((rec, index) => (
+                      <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-gray-800">{rec}</p>
+                        </div>
+                        <button 
+                          onClick={() => alert(`🔧 Auto-fixing: "${rec}"\n\nB3ACON AI will automatically implement this optimization within 24 hours. You'll receive a notification when complete.`)}
+                          className="btn-premium btn-primary btn-small"
+                        >
+                          Auto-Fix
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                  <div className="text-sm text-gray-500">
+                    Audit completed • {new Date().toLocaleDateString()} • Next audit in 7 days
+                  </div>
+                  <div className="flex space-x-3">
+                    <button 
+                      onClick={() => {
+                        alert('📊 Exporting detailed SEO audit report...\n\nReport includes:\n• Full technical analysis\n• Page-by-page breakdown\n• Competitor comparison\n• Action plan timeline\n\nDownload will start shortly.');
+                      }}
+                      className="btn-premium btn-outline btn-small"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Export Report
+                    </button>
+                    <button 
+                      onClick={() => setShowSiteAuditModal(false)}
+                      className="btn-premium btn-primary btn-small"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
-     </div>
-   );
-   };
 
-   export default PremiumShopifyDashboard;
+      {/* Competitor Analysis Modal */}
+      {showCompetitorModal && competitorData && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowCompetitorModal(false)} />
+            
+            <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+              <div className="bg-white px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                    <Trophy className="w-6 h-6 text-yellow-600 mr-2" />
+                    Competitor Analysis Results
+                  </h3>
+                  <button 
+                    onClick={() => setShowCompetitorModal(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                {/* Competitors Table */}
+                <div className="glass-card overflow-hidden">
+                  <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                    <h4 className="text-lg font-semibold text-gray-900">Competitive Landscape</h4>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Competitor</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keywords</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backlinks</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Traffic</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {competitorData.map((competitor, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="font-medium text-gray-900">{competitor.name}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                                competitor.rank === 'Above You' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                              }`}>
+                                {competitor.rank}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">{competitor.keywords.toLocaleString()}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">{competitor.backlinks.toLocaleString()}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-gray-900">{competitor.traffic}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <button 
+                                onClick={() => alert(`🔍 Analyzing ${competitor.name}...\n\nDeep dive analysis includes:\n• Their top-performing keywords\n• Backlink gap analysis\n• Content strategy insights\n• Pricing comparison\n• Social media presence\n\nReport will be ready in 2-3 minutes.`)}
+                                className="btn-premium btn-primary btn-small"
+                              >
+                                Deep Analysis
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Opportunities */}
+                <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="glass-card p-4 bg-green-50 border-green-200">
+                    <h5 className="font-bold text-green-800 mb-2">Quick Wins</h5>
+                    <p className="text-green-700 text-sm">Target 47 low-competition keywords your competitors are missing</p>
+                  </div>
+                  <div className="glass-card p-4 bg-blue-50 border-blue-200">
+                    <h5 className="font-bold text-blue-800 mb-2">Content Gaps</h5>
+                    <p className="text-blue-700 text-sm">12 high-traffic topics where you can outrank competitors</p>
+                  </div>
+                  <div className="glass-card p-4 bg-purple-50 border-purple-200">
+                    <h5 className="font-bold text-purple-800 mb-2">Backlink Opportunities</h5>
+                    <p className="text-purple-700 text-sm">156 potential link sources from competitor analysis</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                  <div className="text-sm text-gray-500">
+                    Analysis completed • {new Date().toLocaleDateString()} • 3 competitors analyzed
+                  </div>
+                  <div className="flex space-x-3">
+                    <button 
+                      onClick={() => {
+                        alert('📊 Exporting competitor analysis report...\n\nReport includes:\n• Complete competitor profiles\n• Keyword gap analysis\n• Backlink opportunities\n• Content strategy recommendations\n\nDownload will start shortly.');
+                      }}
+                      className="btn-premium btn-outline btn-small"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Export Analysis
+                    </button>
+                    <button 
+                      onClick={() => setShowCompetitorModal(false)}
+                      className="btn-premium btn-primary btn-small"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+                 </div>
+       )}
+
+       {/* Content Optimizer Modal */}
+       {showContentOptimizerModal && (
+         <div className="fixed inset-0 z-50 overflow-y-auto">
+           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+             <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowContentOptimizerModal(false)} />
+             
+             <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+               <div className="bg-white px-6 pt-6 pb-4">
+                 <div className="flex items-center justify-between mb-6">
+                   <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                     <Sparkles className="w-6 h-6 text-purple-600 mr-2" />
+                     AI Content Optimizer
+                   </h3>
+                   <button 
+                     onClick={() => setShowContentOptimizerModal(false)}
+                     className="p-2 text-gray-400 hover:text-gray-600"
+                   >
+                     <X className="w-6 h-6" />
+                   </button>
+                 </div>
+
+                 {/* Optimization Progress */}
+                 <div className="mb-6 glass-card p-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+                   <h4 className="text-lg font-bold text-gray-900 mb-4">Optimization in Progress</h4>
+                   <div className="space-y-3">
+                     {[
+                       { task: 'Analyzing existing content', progress: 100, status: 'complete' },
+                       { task: 'Identifying keyword opportunities', progress: 100, status: 'complete' },
+                       { task: 'Optimizing product titles', progress: 75, status: 'active' },
+                       { task: 'Enhancing meta descriptions', progress: 45, status: 'active' },
+                       { task: 'Updating product descriptions', progress: 0, status: 'pending' }
+                     ].map((item, index) => (
+                       <div key={index} className="flex items-center space-x-4">
+                         <div className={`w-4 h-4 rounded-full flex-shrink-0 ${
+                           item.status === 'complete' ? 'bg-green-500' :
+                           item.status === 'active' ? 'bg-blue-500 animate-pulse' :
+                           'bg-gray-300'
+                         }`}></div>
+                         <div className="flex-1">
+                           <div className="text-sm font-medium text-gray-900">{item.task}</div>
+                           <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                             <div 
+                               className={`h-2 rounded-full transition-all duration-500 ${
+                                 item.status === 'complete' ? 'bg-green-500' :
+                                 item.status === 'active' ? 'bg-blue-500' :
+                                 'bg-gray-300'
+                               }`}
+                               style={{ width: `${item.progress}%` }}
+                             ></div>
+                           </div>
+                         </div>
+                         <div className="text-sm font-medium text-gray-600">{item.progress}%</div>
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+
+                 {/* Optimization Results */}
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                   <div className="glass-card p-6">
+                     <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                       <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                       Completed Optimizations
+                     </h4>
+                     <div className="space-y-3">
+                       {[
+                         'Added 15 high-value keywords to product titles',
+                         'Optimized 23 meta descriptions for better CTR',
+                         'Improved content readability score by 28%',
+                         'Enhanced product descriptions with SEO keywords',
+                         'Updated image alt texts for better accessibility'
+                       ].map((opt, index) => (
+                         <div key={index} className="flex items-start space-x-2">
+                           <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                           <span className="text-gray-700 text-sm">{opt}</span>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+
+                   <div className="glass-card p-6">
+                     <h4 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                       <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
+                       Expected Impact
+                     </h4>
+                     <div className="space-y-4">
+                       <div className="flex items-center justify-between">
+                         <span className="text-gray-700">Organic Traffic</span>
+                         <span className="font-bold text-green-600">+35%</span>
+                       </div>
+                       <div className="flex items-center justify-between">
+                         <span className="text-gray-700">Click-Through Rate</span>
+                         <span className="font-bold text-green-600">+22%</span>
+                       </div>
+                       <div className="flex items-center justify-between">
+                         <span className="text-gray-700">Search Rankings</span>
+                         <span className="font-bold text-green-600">+18 positions</span>
+                       </div>
+                       <div className="flex items-center justify-between">
+                         <span className="text-gray-700">Conversion Rate</span>
+                         <span className="font-bold text-green-600">+12%</span>
+                       </div>
+                       <div className="pt-3 border-t border-gray-200">
+                         <div className="flex items-center justify-between">
+                           <span className="font-semibold text-gray-900">Revenue Impact</span>
+                           <span className="font-bold text-lg text-green-600">+$4,250/month</span>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+
+                 <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                   <div className="text-sm text-gray-500">
+                     Optimization started • {new Date().toLocaleDateString()} • ETA: 30 minutes
+                   </div>
+                   <div className="flex space-x-3">
+                     <button 
+                       onClick={() => {
+                         alert('⏸️ Pausing content optimization...\n\nCurrent progress will be saved and optimization can be resumed later. All completed optimizations will remain active.');
+                       }}
+                       className="btn-premium btn-outline btn-small"
+                     >
+                       Pause Process
+                     </button>
+                     <button 
+                       onClick={() => setShowContentOptimizerModal(false)}
+                       className="btn-premium btn-primary btn-small"
+                     >
+                       Continue in Background
+                     </button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       )}
+
+       {/* Campaign Creator Modal */}
+       {showCampaignModal && (
+         <div className="fixed inset-0 z-50 overflow-y-auto">
+           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+             <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowCampaignModal(false)} />
+             
+             <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+               <div className="bg-white px-6 pt-6 pb-4">
+                 <div className="flex items-center justify-between mb-6">
+                   <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                     <Megaphone className="w-6 h-6 text-orange-600 mr-2" />
+                     Create New Campaign
+                   </h3>
+                   <button 
+                     onClick={() => setShowCampaignModal(false)}
+                     className="p-2 text-gray-400 hover:text-gray-600"
+                   >
+                     <X className="w-6 h-6" />
+                   </button>
+                 </div>
+
+                 {/* Campaign Form */}
+                 <form className="space-y-6">
+                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Name</label>
+                       <input 
+                         type="text" 
+                         placeholder="e.g., Holiday Sale 2024"
+                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Type</label>
+                       <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                         <option>Email + SEO</option>
+                         <option>Social Media</option>
+                         <option>Paid Advertising</option>
+                         <option>Content Marketing</option>
+                         <option>Multi-Channel</option>
+                       </select>
+                     </div>
+                   </div>
+
+                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                       <input 
+                         type="date" 
+                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                       />
+                     </div>
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                       <input 
+                         type="date" 
+                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                       />
+                     </div>
+                   </div>
+
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Objective</label>
+                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                       {[
+                         { name: 'Increase Sales', icon: '💰' },
+                         { name: 'Brand Awareness', icon: '🎯' },
+                         { name: 'Lead Generation', icon: '📧' },
+                         { name: 'Customer Retention', icon: '❤️' }
+                       ].map((obj, index) => (
+                         <label key={index} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                           <input type="radio" name="objective" className="text-orange-600" />
+                           <span className="text-lg">{obj.icon}</span>
+                           <span className="text-sm font-medium text-gray-700">{obj.name}</span>
+                         </label>
+                       ))}
+                     </div>
+                   </div>
+
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+                     <textarea 
+                       placeholder="Describe your target audience..."
+                       rows={3}
+                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                     ></textarea>
+                   </div>
+
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-2">Budget</label>
+                     <div className="grid grid-cols-2 gap-4">
+                       <input 
+                         type="number" 
+                         placeholder="1000"
+                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                       />
+                       <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                         <option>USD</option>
+                         <option>EUR</option>
+                         <option>GBP</option>
+                       </select>
+                     </div>
+                   </div>
+                 </form>
+
+                 <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                   <div className="text-sm text-gray-500">
+                     AI will optimize your campaign automatically
+                   </div>
+                   <div className="flex space-x-3">
+                     <button 
+                       onClick={() => setShowCampaignModal(false)}
+                       className="btn-premium btn-outline btn-small"
+                     >
+                       Cancel
+                     </button>
+                     <button 
+                       onClick={() => {
+                         alert('🚀 Creating campaign...\n\nYour campaign is being set up with:\n• AI-optimized content\n• Automated targeting\n• Performance tracking\n• Smart bidding\n\nCampaign will be live in 2-3 minutes!');
+                         setShowCampaignModal(false);
+                       }}
+                       className="btn-premium btn-primary btn-small"
+                     >
+                       Create Campaign
+                     </button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+       )}
+
+       {/* Automation Builder Modal */}
+       {showAutomationModal && (
+         <div className="fixed inset-0 z-50 overflow-y-auto">
+           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+             <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowAutomationModal(false)} />
+             
+             <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+               <div className="bg-white px-6 pt-6 pb-4">
+                 <div className="flex items-center justify-between mb-6">
+                   <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                     <Zap className="w-6 h-6 text-blue-600 mr-2" />
+                     Automation Builder
+                   </h3>
+                   <button 
+                     onClick={() => setShowAutomationModal(false)}
+                     className="p-2 text-gray-400 hover:text-gray-600"
+                   >
+                     <X className="w-6 h-6" />
+                   </button>
+                 </div>
+
+                 {/* Automation Templates */}
+                 <div className="mb-6">
+                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Start Templates</h4>
+                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                     {[
+                       {
+                         name: 'SEO Auto-Optimizer',
+                         description: 'Automatically optimize new products for search engines',
+                         trigger: 'New Product Added',
+                         actions: 5,
+                         icon: '🔍'
+                       },
+                       {
+                         name: 'Price Monitor',
+                         description: 'Track competitor prices and adjust automatically',
+                         trigger: 'Competitor Price Change',
+                         actions: 3,
+                         icon: '💰'
+                       },
+                       {
+                         name: 'Review Collector',
+                         description: 'Send review requests after successful deliveries',
+                         trigger: 'Order Delivered',
+                         actions: 4,
+                         icon: '⭐'
+                       }
+                     ].map((template, index) => (
+                       <div key={index} className="glass-card p-4 hover:shadow-lg transition-shadow cursor-pointer border-2 border-transparent hover:border-blue-200">
+                         <div className="flex items-center justify-between mb-3">
+                           <span className="text-2xl">{template.icon}</span>
+                           <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{template.actions} steps</span>
+                         </div>
+                         <h5 className="font-bold text-gray-900 mb-2">{template.name}</h5>
+                         <p className="text-sm text-gray-600 mb-3">{template.description}</p>
+                         <div className="text-xs text-gray-500 mb-3">
+                           <strong>Trigger:</strong> {template.trigger}
+                         </div>
+                         <button 
+                           onClick={() => {
+                             alert(`🔧 Setting up "${template.name}" automation...\n\nThis automation will:\n• Monitor for: ${template.trigger}\n• Execute ${template.actions} automated actions\n• Run continuously in the background\n\nAutomation will be active in 1 minute!`);
+                           }}
+                           className="btn-premium btn-primary btn-small w-full"
+                         >
+                           Use Template
+                         </button>
+                       </div>
+                     ))}
+                   </div>
+                 </div>
+
+                 {/* Custom Automation Builder */}
+                 <div className="glass-card p-6">
+                   <h4 className="text-lg font-semibold text-gray-900 mb-4">Build Custom Automation</h4>
+                   <div className="space-y-4">
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">Automation Name</label>
+                       <input 
+                         type="text" 
+                         placeholder="e.g., Smart Inventory Management"
+                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       />
+                     </div>
+
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">Trigger Event</label>
+                         <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           <option>Select trigger...</option>
+                           <option>New Product Added</option>
+                           <option>Order Placed</option>
+                           <option>Inventory Low</option>
+                           <option>Price Change Detected</option>
+                           <option>Review Received</option>
+                           <option>Customer Registered</option>
+                         </select>
+                       </div>
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">Run Frequency</label>
+                         <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                           <option>Real-time</option>
+                           <option>Every 5 minutes</option>
+                           <option>Hourly</option>
+                           <option>Daily</option>
+                           <option>Weekly</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">Actions to Perform</label>
+                       <div className="space-y-2">
+                         {[
+                           'Send email notification',
+                           'Update SEO meta tags',
+                           'Adjust pricing',
+                           'Create social media post',
+                           'Update inventory levels',
+                           'Generate report'
+                         ].map((action, index) => (
+                           <label key={index} className="flex items-center space-x-2">
+                             <input type="checkbox" className="text-blue-600" />
+                             <span className="text-sm text-gray-700">{action}</span>
+                           </label>
+                         ))}
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+
+                 <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                   <div className="text-sm text-gray-500">
+                     Automations run 24/7 in the background
+                   </div>
+                   <div className="flex space-x-3">
+                     <button 
+                       onClick={() => setShowAutomationModal(false)}
+                       className="btn-premium btn-outline btn-small"
+                     >
+                       Cancel
+                     </button>
+                     <button 
+                       onClick={() => {
+                         alert('⚡ Creating automation...\n\nYour automation is being configured with:\n• Smart trigger detection\n• Automated action sequences\n• Error handling & retries\n• Performance monitoring\n\nAutomation will be active in 30 seconds!');
+                         setShowAutomationModal(false);
+                       }}
+                       className="btn-premium btn-primary btn-small"
+                     >
+                       Create Automation
+                     </button>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+               )}
+
+        {/* Report Generator Modal */}
+        {showReportModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowReportModal(false)} />
+              
+              <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div className="bg-white px-6 pt-6 pb-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                      <BarChart3 className="w-6 h-6 text-indigo-600 mr-2" />
+                      Custom Report Generator
+                    </h3>
+                    <button 
+                      onClick={() => setShowReportModal(false)}
+                      className="p-2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  {/* Report Configuration */}
+                  <form className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Report Name</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g., Monthly SEO Performance"
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
+                        <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                          <option>Performance Summary</option>
+                          <option>SEO Analysis</option>
+                          <option>Campaign Performance</option>
+                          <option>Revenue Analytics</option>
+                          <option>Custom Report</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                        <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                          <option>Last 7 days</option>
+                          <option>Last 30 days</option>
+                          <option>Last 3 months</option>
+                          <option>Last 6 months</option>
+                          <option>Last year</option>
+                          <option>Custom range</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Format</label>
+                        <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                          <option>PDF Report</option>
+                          <option>Excel Spreadsheet</option>
+                          <option>CSV Data</option>
+                          <option>PowerPoint Presentation</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Include Metrics</label>
+                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+                        {[
+                          { name: 'Revenue & Sales', icon: '💰' },
+                          { name: 'SEO Performance', icon: '🔍' },
+                          { name: 'Traffic Analytics', icon: '📊' },
+                          { name: 'Conversion Rates', icon: '🎯' },
+                          { name: 'Campaign ROI', icon: '📈' },
+                          { name: 'Customer Insights', icon: '👥' }
+                        ].map((metric, index) => (
+                          <label key={index} className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" defaultChecked className="text-indigo-600" />
+                            <span className="text-lg">{metric.icon}</span>
+                            <span className="text-sm font-medium text-gray-700">{metric.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
+                      <textarea 
+                        placeholder="Any specific insights or metrics to highlight..."
+                        rows={3}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">Delivery Options</label>
+                      <div className="space-y-2">
+                        <label className="flex items-center space-x-2">
+                          <input type="radio" name="delivery" className="text-indigo-600" defaultChecked />
+                          <span className="text-sm text-gray-700">Download immediately</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                          <input type="radio" name="delivery" className="text-indigo-600" />
+                          <span className="text-sm text-gray-700">Email to me</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                          <input type="radio" name="delivery" className="text-indigo-600" />
+                          <span className="text-sm text-gray-700">Schedule recurring delivery</span>
+                        </label>
+                      </div>
+                    </div>
+                  </form>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                    <div className="text-sm text-gray-500">
+                      Report will be generated in 2-3 minutes
+                    </div>
+                    <div className="flex space-x-3">
+                      <button 
+                        onClick={() => setShowReportModal(false)}
+                        className="btn-premium btn-outline btn-small"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        onClick={() => {
+                          alert('📊 Generating custom report...\n\nYour report is being created with:\n• Real-time data analysis\n• Professional charts & graphs\n• Executive summary\n• Actionable insights\n• Branded design\n\nReport will be ready for download in 2-3 minutes!');
+                          setShowReportModal(false);
+                        }}
+                        className="btn-premium btn-primary btn-small"
+                      >
+                        Generate Report
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Integration Manager Modal */}
+        {showIntegrationModal && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowIntegrationModal(false)} />
+              
+              <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-5xl sm:w-full">
+                <div className="bg-white px-6 pt-6 pb-4">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                      <Link className="w-6 h-6 text-green-600 mr-2" />
+                      Integration Manager
+                    </h3>
+                    <button 
+                      onClick={() => setShowIntegrationModal(false)}
+                      className="p-2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  {/* Available Integrations */}
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Available Integrations</h4>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {[
+                        {
+                          name: 'Google Analytics 4',
+                          description: 'Advanced website analytics and user behavior tracking',
+                          category: 'Analytics',
+                          status: 'available',
+                          difficulty: 'Easy',
+                          setupTime: '5 minutes',
+                          icon: '📊'
+                        },
+                        {
+                          name: 'Klaviyo',
+                          description: 'Advanced email and SMS marketing automation',
+                          category: 'Marketing',
+                          status: 'available',
+                          difficulty: 'Medium',
+                          setupTime: '10 minutes',
+                          icon: '📨'
+                        },
+                        {
+                          name: 'HubSpot CRM',
+                          description: 'Customer relationship management and sales tracking',
+                          category: 'CRM',
+                          status: 'available',
+                          difficulty: 'Medium',
+                          setupTime: '15 minutes',
+                          icon: '🤝'
+                        },
+                        {
+                          name: 'Zapier',
+                          description: 'Connect B3ACON to 5000+ apps and services',
+                          category: 'Automation',
+                          status: 'available',
+                          difficulty: 'Easy',
+                          setupTime: '3 minutes',
+                          icon: '⚡'
+                        },
+                        {
+                          name: 'Slack',
+                          description: 'Get real-time notifications and alerts in Slack',
+                          category: 'Communication',
+                          status: 'available',
+                          difficulty: 'Easy',
+                          setupTime: '2 minutes',
+                          icon: '💬'
+                        },
+                        {
+                          name: 'Webhooks',
+                          description: 'Custom API endpoints for advanced integrations',
+                          category: 'Developer',
+                          status: 'available',
+                          difficulty: 'Advanced',
+                          setupTime: '30 minutes',
+                          icon: '🔧'
+                        }
+                      ].map((integration, index) => (
+                        <div key={index} className="glass-card p-6 hover:shadow-lg transition-shadow">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-400 rounded-lg flex items-center justify-center text-2xl">
+                                {integration.icon}
+                              </div>
+                              <div>
+                                <h5 className="font-bold text-gray-900">{integration.name}</h5>
+                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{integration.category}</span>
+                              </div>
+                            </div>
+                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                              integration.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
+                              integration.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {integration.difficulty}
+                            </span>
+                          </div>
+                          <p className="text-gray-600 text-sm mb-4">{integration.description}</p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-500">Setup time: {integration.setupTime}</span>
+                            <button 
+                              onClick={() => {
+                                alert(`🔗 Setting up ${integration.name} integration...\n\nThis will:\n• Guide you through the setup process\n• Test the connection\n• Configure data sync settings\n• Provide usage examples\n\nSetup wizard will start in a moment!`);
+                              }}
+                              className="btn-premium btn-primary btn-small"
+                            >
+                              Connect
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Custom Integration */}
+                  <div className="glass-card p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <Code className="w-5 h-5 text-purple-600 mr-2" />
+                      Custom Integration
+                    </h4>
+                    <p className="text-gray-600 mb-4">
+                      Need an integration that's not listed? Our API supports custom connections to any service.
+                    </p>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-3">
+                          📚
+                        </div>
+                        <h5 className="font-semibold text-gray-900 mb-2">API Documentation</h5>
+                        <p className="text-sm text-gray-600 mb-3">Complete guides and examples</p>
+                        <button className="btn-premium btn-outline btn-small w-full">View Docs</button>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-3">
+                          🛠️
+                        </div>
+                        <h5 className="font-semibold text-gray-900 mb-2">Developer Tools</h5>
+                        <p className="text-sm text-gray-600 mb-3">SDKs, testing tools, and sandbox</p>
+                        <button className="btn-premium btn-outline btn-small w-full">Get Tools</button>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-3">
+                          💬
+                        </div>
+                        <h5 className="font-semibold text-gray-900 mb-2">Expert Support</h5>
+                        <p className="text-sm text-gray-600 mb-3">Get help from our integration team</p>
+                        <button className="btn-premium btn-outline btn-small w-full">Contact Support</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
+                    <div className="text-sm text-gray-500">
+                      All integrations include free setup support
+                    </div>
+                    <div className="flex space-x-3">
+                                             <button 
+                         onClick={() => {
+                           alert('📋 Requesting integration...\n\nPlease describe the service you\'d like to integrate and our team will:\n• Assess feasibility\n• Provide timeline estimate\n• Create custom integration if possible\n\nA team member will contact you within 24 hours.');
+                         }}
+                         className="btn-premium btn-outline btn-small"
+                       >
+                        Request Custom Integration
+                      </button>
+                      <button 
+                        onClick={() => setShowIntegrationModal(false)}
+                        className="btn-premium btn-primary btn-small"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        </div>
+      );
+      };
+
+      export default PremiumShopifyDashboard;
