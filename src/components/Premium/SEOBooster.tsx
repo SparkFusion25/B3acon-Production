@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Rocket, Search, AlertCircle, Check, RefreshCw, BarChart3, Target, TrendingUp } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import * as cheerio from 'cheerio';
+import { analyzeSEO, SEOAnalysisResult } from '../../lib/seoUtils';
 
 interface SEOBoostResult {
   score: number;
@@ -15,7 +15,7 @@ interface SEOBoostResult {
 const SEOBooster: React.FC = () => {
   const [url, setUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [results, setResults] = useState<SEOBoostResult | null>(null);
+  const [results, setResults] = useState<SEOAnalysisResult | null>(null);
   const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null);
 
   const runSEOBooster = async () => {
@@ -26,127 +26,10 @@ const SEOBooster: React.FC = () => {
 
     setIsAnalyzing(true);
     try {
-      // Fetch and parse HTML using a CORS proxy
-      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-      const response = await fetch(proxyUrl);
-      const data = await response.json();
-      const $ = cheerio.load(data.contents);
-
-      // Analyze meta tags
-      const title = $('title').text() || '';
-      const description = $('meta[name="description"]').attr('content') || '';
-      const keywords = $('meta[name="keywords"]').attr('content') || '';
-
-      // Analyze heading structure
-      const headings: { tag: string; text: string; issues: string[] }[] = [];
-      $('h1, h2, h3, h4, h5, h6').each((_, element) => {
-        const tag = element.tagName;
-        const text = $(element).text().trim();
-        const issues: string[] = [];
-        
-        if (text.length === 0) issues.push('Empty heading');
-        if (text.length > 60) issues.push('Too long');
-        if (tag === 'h1' && headings.filter(h => h.tag === 'h1').length > 0) {
-          issues.push('Multiple H1 tags');
-        }
-        
-        headings.push({ tag, text, issues });
-      });
-
-      // Analyze internal links
-      const internalLinks: { url: string; anchor: string; score: number }[] = [];
-      const baseUrl = new URL(url);
-      
-      $('a[href]').each((_, element) => {
-        const href = $(element).attr('href') || '';
-        const anchor = $(element).text().trim();
-        
-        if (href.startsWith('/') || href.includes(baseUrl.hostname)) {
-          let score = 100;
-          if (!anchor) score -= 30;
-          if (anchor.length < 3) score -= 20;
-          if (href === '#') score -= 50;
-          
-          internalLinks.push({ url: href, anchor, score: Math.max(0, score) });
-        }
-      });
-
-      // Technical SEO analysis
-      const technicalIssues: SEOBoostResult['technicalIssues'] = [];
-      
-      // Check for missing alt tags
-      const imagesWithoutAlt = $('img:not([alt])').length;
-      if (imagesWithoutAlt > 0) {
-        technicalIssues.push({
-          type: 'Missing Alt Tags',
-          severity: 'medium',
-          description: `${imagesWithoutAlt} images are missing alt attributes`
-        });
-      }
-
-      // Check for inline styles
-      const inlineStyles = $('[style]').length;
-      if (inlineStyles > 5) {
-        technicalIssues.push({
-          type: 'Inline Styles',
-          severity: 'low',
-          description: `${inlineStyles} elements have inline styles - consider moving to CSS`
-        });
-      }
-
-      // Check for missing meta viewport
-      const hasViewport = $('meta[name="viewport"]').length > 0;
-      if (!hasViewport) {
-        technicalIssues.push({
-          type: 'Missing Viewport Meta',
-          severity: 'high',
-          description: 'Missing viewport meta tag for mobile optimization'
-        });
-      }
-
-      // Calculate overall SEO score
-      let score = 100;
-      const improvements: string[] = [];
-
-      if (!title) { score -= 20; improvements.push('Add page title'); }
-      if (title.length > 60) { score -= 10; improvements.push('Shorten page title (under 60 chars)'); }
-      if (title.length < 30) { score -= 5; improvements.push('Title too short (aim for 30-60 chars)'); }
-      
-      if (!description) { score -= 15; improvements.push('Add meta description'); }
-      if (description.length > 160) { score -= 10; improvements.push('Shorten meta description (under 160 chars)'); }
-      if (description.length < 120) { score -= 5; improvements.push('Meta description too short (aim for 120-160 chars)'); }
-      
-      if (headings.filter(h => h.tag === 'h1').length === 0) { 
-        score -= 15; improvements.push('Add H1 heading'); 
-      }
-      if (headings.filter(h => h.tag === 'h1').length > 1) { 
-        score -= 10; improvements.push('Use only one H1 heading per page'); 
-      }
-
-      if (internalLinks.length < 3) {
-        score -= 10; improvements.push('Add more internal links (aim for 3-5 per page)');
-      }
-
-      // Deduct points for technical issues
-      technicalIssues.forEach(issue => {
-        switch (issue.severity) {
-          case 'high': score -= 15; break;
-          case 'medium': score -= 10; break;
-          case 'low': score -= 5; break;
-        }
-      });
-
-      const result: SEOBoostResult = {
-        score: Math.max(0, score),
-        improvements,
-        metaTags: { title, description, keywords },
-        headingStructure: headings,
-        internalLinks: internalLinks.slice(0, 10), // Show first 10
-        technicalIssues
-      };
-
-      setResults(result);
-      toast.success(`SEO analysis complete! Score: ${result.score}/100`);
+      // Use the real SEO analysis utility
+      const analysisResult = await analyzeSEO(url);
+      setResults(analysisResult);
+      toast.success(`SEO analysis complete! Score: ${analysisResult.score}/100`);
     } catch (error) {
       console.error('SEO Booster error:', error);
       toast.error('Failed to analyze website. Please check the URL and try again.');
@@ -246,101 +129,101 @@ const SEOBooster: React.FC = () => {
                 <Target className="h-5 w-5 text-blue-600" />
                 AI-Powered Improvements
               </h3>
-              <div className="space-y-3">
-                {results.improvements.map((improvement, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <AlertCircle className="h-4 w-4 text-yellow-600" />
-                      <span className="text-sm text-gray-900">{improvement}</span>
-                    </div>
-                    <button
-                      onClick={() => applyAIOptimization(improvement)}
-                      disabled={selectedSuggestion === improvement}
-                      className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                    >
-                      {selectedSuggestion === improvement ? (
-                        <RefreshCw className="h-3 w-3 animate-spin" />
-                      ) : (
-                        'Fix'
-                      )}
-                    </button>
-                  </div>
-                ))}
-                {results.improvements.length === 0 && (
-                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                    <Check className="h-4 w-4 text-green-600" />
-                    <span className="text-sm text-green-800">No immediate improvements needed!</span>
-                  </div>
-                )}
-              </div>
+                             <div className="space-y-3">
+                 {results.suggestions.map((suggestion, index) => (
+                   <div key={index} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                     <div className="flex items-center gap-3">
+                       <AlertCircle className="h-4 w-4 text-yellow-600" />
+                       <span className="text-sm text-gray-900">{suggestion}</span>
+                     </div>
+                     <button
+                       onClick={() => applyAIOptimization(suggestion)}
+                       disabled={selectedSuggestion === suggestion}
+                       className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                     >
+                       {selectedSuggestion === suggestion ? (
+                         <RefreshCw className="h-3 w-3 animate-spin" />
+                       ) : (
+                         'Fix'
+                       )}
+                     </button>
+                   </div>
+                 ))}
+                 {results.suggestions.length === 0 && (
+                   <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                     <Check className="h-4 w-4 text-green-600" />
+                     <span className="text-sm text-green-800">No immediate improvements needed!</span>
+                   </div>
+                 )}
+               </div>
             </div>
 
             {/* Meta Tags Analysis */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Meta Tags Analysis</h3>
               <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Title Tag</span>
-                    <span className="text-xs text-gray-500">{results.metaTags.title.length}/60</span>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded text-sm text-gray-900">
-                    {results.metaTags.title || 'Missing title tag'}
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Meta Description</span>
-                    <span className="text-xs text-gray-500">{results.metaTags.description.length}/160</span>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded text-sm text-gray-900">
-                    {results.metaTags.description || 'Missing meta description'}
-                  </div>
-                </div>
-                
-                {results.metaTags.keywords && (
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Keywords</span>
-                    <div className="p-3 bg-gray-50 rounded text-sm text-gray-900 mt-2">
-                      {results.metaTags.keywords}
+                                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Title Tag</span>
+                      <span className="text-xs text-gray-500">{results.title.length}/60</span>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded text-sm text-gray-900">
+                      {results.title || 'Missing title tag'}
                     </div>
                   </div>
-                )}
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Meta Description</span>
+                      <span className="text-xs text-gray-500">{results.description.length}/160</span>
+                    </div>
+                    <div className="p-3 bg-gray-50 rounded text-sm text-gray-900">
+                      {results.description || 'Missing meta description'}
+                    </div>
+                  </div>
+                  
+                  {results.keywords && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">Keywords</span>
+                      <div className="p-3 bg-gray-50 rounded text-sm text-gray-900 mt-2">
+                        {results.keywords}
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
 
             {/* Heading Structure */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Heading Structure</h3>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {results.headingStructure.map((heading, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 border-l-4 border-blue-200 bg-blue-50">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className={`text-xs px-2 py-1 rounded font-medium ${
-                          heading.tag === 'h1' ? 'bg-blue-600 text-white' :
-                          heading.tag === 'h2' ? 'bg-blue-500 text-white' :
-                          'bg-gray-400 text-white'
-                        }`}>
-                          {heading.tag.toUpperCase()}
-                        </span>
-                        <span className="text-sm text-gray-900 truncate">{heading.text}</span>
-                      </div>
-                      {heading.issues.length > 0 && (
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          {heading.issues.map((issue, issueIndex) => (
-                            <span key={issueIndex} className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
-                              {issue}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                         <div className="bg-white rounded-lg shadow-sm border p-6">
+               <h3 className="text-lg font-semibold text-gray-900 mb-4">Heading Structure</h3>
+               <div className="space-y-2 max-h-64 overflow-y-auto">
+                 {results.headings.map((heading, index) => (
+                   <div key={index} className="flex items-center justify-between p-2 border-l-4 border-blue-200 bg-blue-50">
+                     <div className="flex-1">
+                       <div className="flex items-center gap-2">
+                         <span className={`text-xs px-2 py-1 rounded font-medium ${
+                           heading.tag === 'h1' ? 'bg-blue-600 text-white' :
+                           heading.tag === 'h2' ? 'bg-blue-500 text-white' :
+                           'bg-gray-400 text-white'
+                         }`}>
+                           {heading.tag.toUpperCase()}
+                         </span>
+                         <span className="text-sm text-gray-900 truncate">{heading.text}</span>
+                       </div>
+                       {heading.issues.length > 0 && (
+                         <div className="mt-1 flex flex-wrap gap-1">
+                           {heading.issues.map((issue, issueIndex) => (
+                             <span key={issueIndex} className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded">
+                               {issue}
+                             </span>
+                           ))}
+                         </div>
+                       )}
+                     </div>
+                   </div>
+                 ))}
+               </div>
+             </div>
 
             {/* Technical Issues */}
             <div className="bg-white rounded-lg shadow-sm border p-6">
@@ -353,10 +236,11 @@ const SEOBooster: React.FC = () => {
                     'bg-blue-50 border-blue-500'
                   }`}>
                     <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-900">{issue.type}</h4>
-                        <p className="text-xs text-gray-600 mt-1">{issue.description}</p>
-                      </div>
+                                             <div>
+                         <h4 className="text-sm font-medium text-gray-900">{issue.type}</h4>
+                         <p className="text-xs text-gray-600 mt-1">{issue.description}</p>
+                         <p className="text-xs text-blue-600 mt-1">{issue.solution}</p>
+                       </div>
                       <span className={`text-xs px-2 py-1 rounded font-medium ${
                         issue.severity === 'high' ? 'bg-red-100 text-red-700' :
                         issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
@@ -378,11 +262,11 @@ const SEOBooster: React.FC = () => {
           </div>
 
           {/* Internal Links Analysis */}
-          {results.internalLinks.length > 0 && (
+          {results.links.internal.length > 0 && (
             <div className="bg-white rounded-lg shadow-sm border p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Internal Links Quality</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {results.internalLinks.map((link, index) => (
+                {results.links.internal.slice(0, 10).map((link, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex-1 min-w-0">
                       <div className="text-sm text-blue-600 truncate">{link.url}</div>
