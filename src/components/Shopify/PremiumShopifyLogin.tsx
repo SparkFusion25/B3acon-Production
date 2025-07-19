@@ -82,13 +82,34 @@ const PremiumShopifyLogin = () => {
         });
       }
 
-      // Login user with their plan
-      login(user.shopUrl, user.plan);
-      
-      // Navigate to appropriate dashboard
-      if (user.email === 'admin@b3acon.com') {
-        navigate('/shopify/admin');
-      } else {
+      // Check for existing subscription
+      try {
+        const subscriptionResponse = await fetch(`/api/subscriptions/get?email=${user.email}`);
+        let subscription = null;
+        
+        if (subscriptionResponse.ok) {
+          const subData = await subscriptionResponse.json();
+          subscription = subData.subscription;
+        }
+
+        // Login user with their plan and subscription data
+        login(user.shopUrl, user.plan, subscription);
+        
+        // Navigate to appropriate dashboard
+        if (user.email === 'admin@b3acon.com') {
+          navigate('/shopify/admin');
+        } else {
+          // Check if this is a new trial signup
+          const isNewSignup = new URLSearchParams(window.location.search).get('signup') === 'true';
+          const redirectUrl = isNewSignup 
+            ? '/shopify/dashboard?welcome=true' 
+            : '/shopify/dashboard';
+          navigate(redirectUrl);
+        }
+      } catch (error) {
+        console.error('Subscription lookup failed:', error);
+        // Proceed with basic login even if subscription lookup fails
+        login(user.shopUrl, user.plan);
         navigate('/shopify/dashboard');
       }
     } else {
