@@ -1,8 +1,11 @@
 // Shopify OAuth authentication handler - handles callback from Partners OAuth flow
 export default function handler(req, res) {
-  const { shop, host, hmac, timestamp, code, state } = req.query;
+  // Handle both query params and POST body for Shopify compatibility
+  const params = req.method === 'POST' ? req.body : req.query;
+  const { shop, host, hmac, timestamp, code, state } = params;
   
   console.log('🔐 Shopify OAuth Callback:', { 
+    method: req.method,
     shop, 
     host: !!host, 
     hmac: !!hmac, 
@@ -15,8 +18,17 @@ export default function handler(req, res) {
   res.setHeader('Content-Type', 'text/html');
   res.setHeader('X-Frame-Options', 'ALLOWALL');
   res.setHeader('Content-Security-Policy', "frame-ancestors https://*.myshopify.com https://admin.shopify.com;");
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Handle OPTIONS request for CORS
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   
   if (!shop) {
+    console.log('❌ Missing shop parameter');
     return res.status(400).json({ error: 'Missing shop parameter' });
   }
 
