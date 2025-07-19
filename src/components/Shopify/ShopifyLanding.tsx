@@ -15,10 +15,20 @@ import {
   TrendingUp,
   Globe
 } from 'lucide-react';
+import Typewriter from '../UI/Typewriter';
 import '../../styles/shopify-app.css';
 
 const ShopifyLanding = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  // Typewriter words for the hero section
+  const heroWords = [
+    'SEO Performance',
+    'Sales Revenue',
+    'Store Traffic',
+    'Customer Retention',
+    'Marketing ROI'
+  ];
 
   const testimonials = [
     {
@@ -130,7 +140,20 @@ const ShopifyLanding = () => {
         <div className="max-w-4xl mx-auto px-6 text-center">
           <div className="mb-6">
             <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Simplify, Analyze, Grow with B3ACON
+              Boost Your{' '}
+              <span className="block mt-2">
+                <Typewriter
+                  words={heroWords}
+                  speed={120}
+                  deleteSpeed={80}
+                  delayBetweenWords={2500}
+                  loop={true}
+                  startDelay={1000}
+                  cursorChar="|"
+                  cursorClassName="animate-pulse text-blue-400 font-bold"
+                />
+              </span>
+              with B3ACON
             </h1>
             <p className="text-xl text-gray-300 mb-8 leading-relaxed">
               Your Command Center for eCommerce Growth. Automate SEO, optimize internal linking, 

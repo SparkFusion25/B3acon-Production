@@ -80,6 +80,7 @@ const ShopifyBillingAdmin: React.FC = () => {
   const [features, setFeatures] = useState<FeatureControl[]>([]);
   const [editingPlan, setEditingPlan] = useState<SubscriptionPlan | null>(null);
   const [showAddPlan, setShowAddPlan] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Initialize with sample data

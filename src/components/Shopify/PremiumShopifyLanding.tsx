@@ -15,6 +15,7 @@ import {
   Shield,
   Clock
 } from 'lucide-react';
+import Typewriter from '../UI/Typewriter';
 import '../../styles/premium-design-system.css';
 
 const PremiumShopifyLanding = () => {
@@ -25,6 +26,16 @@ const PremiumShopifyLanding = () => {
     revenue: 0,
     growth: 0
   });
+
+  // Typewriter words for dynamic headlines
+  const typewriterWords = [
+    'Shopify Store Growth',
+    'SEO Rankings',
+    'Revenue Streams',
+    'Customer Engagement',
+    'Marketing ROI',
+    'Conversion Rates'
+  ];
 
   useEffect(() => {
     setIsLoaded(true);
@@ -209,7 +220,18 @@ const PremiumShopifyLanding = () => {
             <h1 className={`text-5xl md:text-6xl lg:text-7xl font-bold mb-8 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <span className="text-gradient-primary">Supercharge Your</span>
               <br />
-              <span className="text-gray-900">Shopify Store Growth</span>
+              <span className="text-gray-900">
+                <Typewriter
+                  words={typewriterWords}
+                  speed={150}
+                  deleteSpeed={100}
+                  delayBetweenWords={3000}
+                  loop={true}
+                  startDelay={1500}
+                  cursorChar="_"
+                  cursorClassName="animate-pulse text-blue-600 font-bold"
+                />
+              </span>
             </h1>
 
             {/* Subtitle */}
