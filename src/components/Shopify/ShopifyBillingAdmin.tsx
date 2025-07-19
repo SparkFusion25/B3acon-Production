@@ -20,7 +20,9 @@ import {
   Lock,
   Unlock,
   Eye,
-  Download
+  Download,
+  Menu,
+  RefreshCw
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -609,78 +611,225 @@ const ShopifyBillingAdmin: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Shopify App Admin Portal
-          </h1>
-          <p className="text-gray-600">
-            Manage subscription plans, billing, and feature access for your Shopify app
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      {/* Mobile Header */}
+      <div className="lg:hidden bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <Package className="h-4 w-4 text-white" />
+              </div>
+              <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                B3ACON Admin
+              </h1>
+            </div>
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="p-2 rounded-lg hover:bg-gray-100"
+            >
+              <Menu className="h-5 w-5 text-gray-600" />
+            </button>
+          </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <nav className="flex space-x-8 border-b border-gray-200">
-            {tabs.map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
+        {/* Mobile Navigation */}
+        {showMobileMenu && (
+          <div className="border-t border-gray-200 bg-white">
+            <div className="px-4 py-3 space-y-1">
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      setShowMobileMenu(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm font-medium transition-colors ${
+                      activeTab === tab.id
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
 
-        {/* Tab Content */}
-        <div>
-          {activeTab === 'dashboard' && renderDashboard()}
-          {activeTab === 'plans' && renderPlansManagement()}
-          {activeTab === 'customers' && renderCustomersManagement()}
-          {activeTab === 'features' && renderFeaturesControl()}
-          {activeTab === 'billing' && (
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Billing Settings</h2>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Stripe Secret Key
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="sk_test_..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Webhook Endpoint
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://your-app.com/webhooks/stripe"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                  <Save className="h-4 w-4" />
-                  Save Settings
-                </button>
+      <div className="flex">
+        {/* Desktop Sidebar */}
+        <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:bg-white lg:border-r lg:border-gray-200">
+          <div className="flex flex-col flex-grow pt-6 pb-4 overflow-y-auto">
+            <div className="flex items-center flex-shrink-0 px-6 mb-8">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                <Package className="h-5 w-5 text-white" />
+              </div>
+              <div className="ml-3">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  B3ACON
+                </h1>
+                <p className="text-sm text-gray-500">Admin Portal</p>
               </div>
             </div>
-          )}
+            
+            <nav className="mt-6 flex-1 px-3 space-y-2">
+              {tabs.map(tab => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      activeTab === tab.id
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className={`mr-3 h-5 w-5 ${
+                      activeTab === tab.id ? 'text-white' : 'text-gray-400 group-hover:text-gray-500'
+                    }`} />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Admin Info */}
+            <div className="flex-shrink-0 px-6 py-4 border-t border-gray-200">
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">A</span>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-gray-700">Admin User</p>
+                  <p className="text-xs text-gray-500">admin@b3acon.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:pl-64 flex flex-col flex-1">
+          <main className="flex-1">
+            <div className="py-6 px-4 sm:px-6 lg:px-8">
+              {/* Desktop Header */}
+              <div className="hidden lg:block mb-8">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                        {tabs.find(t => t.id === activeTab)?.label || 'Dashboard'}
+                      </h1>
+                      <p className="text-gray-600">
+                        {activeTab === 'dashboard' && 'Monitor your Shopify app performance and metrics'}
+                        {activeTab === 'plans' && 'Manage subscription plans and pricing'}
+                        {activeTab === 'customers' && 'View and manage your customers'}
+                        {activeTab === 'features' && 'Control feature access for different plans'}
+                        {activeTab === 'billing' && 'Configure billing and payment settings'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">Total Revenue</p>
+                        <p className="text-xl font-bold text-green-600">${metrics.totalMRR * 12}</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center">
+                        <DollarSign className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tab Content */}
+              <div className="space-y-6">
+                {activeTab === 'dashboard' && renderDashboard()}
+                {activeTab === 'plans' && renderPlansManagement()}
+                {activeTab === 'customers' && renderCustomersManagement()}
+                {activeTab === 'features' && renderFeaturesControl()}
+                {activeTab === 'billing' && (
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                        <CreditCard className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-gray-900">Billing Settings</h2>
+                        <p className="text-sm text-gray-600">Configure payment processing and webhooks</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Stripe Secret Key
+                          </label>
+                          <input
+                            type="password"
+                            placeholder="sk_test_..."
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Webhook Endpoint
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="https://your-app.com/webhooks/stripe"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6">
+                        <h3 className="font-semibold text-gray-900 mb-3">Integration Status</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Stripe Connection</span>
+                            <span className="flex items-center gap-1 text-sm text-green-600">
+                              <CheckCircle className="h-4 w-4" />
+                              Active
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Webhooks</span>
+                            <span className="flex items-center gap-1 text-sm text-green-600">
+                              <CheckCircle className="h-4 w-4" />
+                              Configured
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Last Sync</span>
+                            <span className="text-sm text-gray-500">2 minutes ago</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                      <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-purple-700 flex items-center justify-center gap-2 font-medium transition-all">
+                        <Save className="h-4 w-4" />
+                        Save Settings
+                      </button>
+                      <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-50 flex items-center justify-center gap-2 font-medium transition-all">
+                        <RefreshCw className="h-4 w-4" />
+                        Test Connection
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </main>
         </div>
       </div>
     </div>
