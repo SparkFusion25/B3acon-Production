@@ -148,17 +148,21 @@ const PremiumShopifyInstallation = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const shop = urlParams.get('shop');
     const host = urlParams.get('host');
+    const embedded = urlParams.get('embedded');
     
-    console.log('🔍 Installation Context:', { shop, host, isEmbedded: window.top !== window.self });
+    console.log('🔍 Installation Context:', { shop, host, embedded, isEmbedded: window.top !== window.self });
     
     if (shop && host) {
       // We're in embedded app mode - set store URL from params
       setStoreUrl(shop);
       
-      // Auto-start installation for embedded apps
-      setTimeout(() => {
-        setIsInstalling(true);
-      }, 1000);
+      // Don't auto-start installation - let user choose plan first
+      // Only auto-start if explicitly embedded=true
+      if (embedded === 'true') {
+        setTimeout(() => {
+          setIsInstalling(true);
+        }, 1000);
+      }
       
       // Load Shopify App Bridge if not already loaded
       if (!window.AppBridge && !document.querySelector('script[src*="app-bridge"]')) {
@@ -479,7 +483,11 @@ const PremiumShopifyInstallation = () => {
 
         <div className="text-center">
           <button 
-            onClick={() => setIsInstalling(true)}
+            onClick={() => {
+              console.log('🚀 Starting installation with plan:', selectedPlan);
+              setIsInstalling(true);
+              setCurrentStep(0);
+            }}
             className="btn-premium btn-primary btn-large"
           >
             Start {pricingPlans.find(p => p.id === selectedPlan)?.trial}-Day Free Trial
@@ -494,8 +502,18 @@ const PremiumShopifyInstallation = () => {
     </div>
   );
 
+  // Get URL parameters to determine which screen to show
+  const urlParams = new URLSearchParams(window.location.search);
+  const shop = urlParams.get('shop');
+  const host = urlParams.get('host');
+  
   if (isInstalling) {
     return renderInstallationProgress();
+  }
+
+  // If we have shop parameter but not installing, show plan selection
+  if (shop && storeUrl && !isInstalling) {
+    return renderPlanSelection();
   }
 
   return renderWelcomeScreen();
