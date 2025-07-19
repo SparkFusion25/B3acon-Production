@@ -44,7 +44,15 @@ import {
   PauseCircle,
   StopCircle,
   GitBranch,
-  Workflow
+  Workflow,
+  ArrowUp,
+  MessageCircle,
+  Clock,
+  CheckCircle,
+  ExternalLink,
+  DollarSign,
+  Monitor,
+  Loader
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -72,6 +80,7 @@ const PremiumShopifyDashboard = () => {
   const [shopUrl, setShopUrl] = useState<string>('demo-store.myshopify.com');
   const [isAuthorized, setIsAuthorized] = useState(true);
   const [activeSection, setActiveSection] = useState('overview');
+  const [showPlanModal, setShowPlanModal] = useState(false);
 
   useEffect(() => {
     // Check for proper Shopify authentication and plan
