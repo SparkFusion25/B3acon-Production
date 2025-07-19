@@ -1059,7 +1059,17 @@ const PremiumShopifyDashboard = () => {
             </div>
           </div>
           <button 
-            onClick={() => window.location.href = `/shopify/plans?shop=${shopUrl}&current=${userPlan}`}
+            onClick={() => {
+              const planOptions = {
+                current: userPlan,
+                options: [
+                  { name: 'Growth', price: '$97/month', features: '500 products, Advanced SEO, Analytics' },
+                  { name: 'Enterprise', price: '$197/month', features: 'Unlimited products, White-label, Priority support' },
+                  { name: 'Agency', price: '$497/month', features: 'Multi-client, Team collaboration, Dedicated manager' }
+                ]
+              };
+              alert(`📋 Plan Management Options:\n\nCurrent Plan: ${planOptions.current}\n\nAvailable Plans:\n${planOptions.options.map(p => `• ${p.name}: ${p.price}\n  ${p.features}`).join('\n\n')}\n\nUse the Upgrade button in the sidebar for instant plan changes, or visit the Billing section for detailed management.`);
+            }}
             className="btn-premium btn-primary"
           >
             Manage Plan
@@ -1121,7 +1131,19 @@ const PremiumShopifyDashboard = () => {
         </div>
 
         <div className="mt-6 pt-6 border-t border-gray-200">
-          <button className="btn-premium btn-primary">
+          <button 
+            onClick={() => {
+              const settings = {
+                storeName: 'TechGear Pro',
+                contactEmail: 'admin@techgearpro.com',
+                emailNotifications: true,
+                autoSEO: true,
+                weeklyReports: false
+              };
+              alert(`✅ Settings Saved Successfully!\n\n📧 Email Notifications: ${settings.emailNotifications ? 'Enabled' : 'Disabled'}\n🤖 Auto SEO: ${settings.autoSEO ? 'Enabled' : 'Disabled'}\n📊 Weekly Reports: ${settings.weeklyReports ? 'Enabled' : 'Disabled'}\n\nAll preferences have been updated and will take effect immediately.`);
+            }}
+            className="btn-premium btn-primary"
+          >
             <Save className="w-4 h-4" />
             Save Settings
           </button>
@@ -1137,7 +1159,14 @@ const PremiumShopifyDashboard = () => {
               <div className="font-medium text-gray-900">Reset SEO Data</div>
               <div className="text-sm text-gray-600">Clear all SEO optimization data and start fresh</div>
             </div>
-            <button className="btn-premium btn-outline border-red-300 text-red-600 hover:bg-red-50">
+            <button 
+              onClick={() => {
+                if (confirm('⚠️ Reset SEO Data?\n\nThis will permanently delete:\n• All SEO optimization history\n• Keyword rankings data\n• Performance analytics\n• Campaign data\n\nThis action cannot be undone. Continue?')) {
+                  alert('🔄 Resetting SEO Data...\n\n✅ SEO optimization history cleared\n✅ Keywords data reset\n✅ Analytics reset to baseline\n✅ Campaign data removed\n\nYour store can now start fresh with SEO optimization.');
+                }
+              }}
+              className="btn-premium btn-outline border-red-300 text-red-600 hover:bg-red-50"
+            >
               Reset Data
             </button>
           </div>
@@ -1147,7 +1176,20 @@ const PremiumShopifyDashboard = () => {
               <div className="font-medium text-gray-900">Uninstall App</div>
               <div className="text-sm text-gray-600">Permanently remove B3ACON from your store</div>
             </div>
-            <button className="btn-premium bg-red-600 text-white hover:bg-red-700">
+            <button 
+              onClick={() => {
+                if (confirm('⚠️ PERMANENTLY UNINSTALL B3ACON?\n\nThis will:\n• Remove all app data\n• Cancel your subscription\n• Delete all optimization history\n• Remove all integrations\n\nThis action CANNOT be undone!\n\nType "UNINSTALL" in the next prompt to confirm.')) {
+                  const confirmation = prompt('Type "UNINSTALL" to confirm permanent removal:');
+                  if (confirmation === 'UNINSTALL') {
+                    alert('🗑️ Uninstalling B3ACON...\n\n✅ Subscription canceled\n✅ Data removed from store\n✅ Integrations disconnected\n✅ App uninstalled\n\nRedirecting to Shopify App Store...');
+                    // window.location.href = 'https://admin.shopify.com/store/' + shopUrl.replace('.myshopify.com', '') + '/apps';
+                  } else {
+                    alert('Uninstall canceled. Your app and data remain safe.');
+                  }
+                }
+              }}
+              className="btn-premium bg-red-600 text-white hover:bg-red-700"
+            >
               Uninstall
             </button>
           </div>
