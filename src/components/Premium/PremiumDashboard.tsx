@@ -29,7 +29,6 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import '../../styles/premium-b3acon-design-system.css';
-import PremiumSEOIntelligence from './PremiumSEOIntelligence';
 
 interface NavigationItem {
   id: string;
@@ -137,6 +136,14 @@ const PremiumSidebar: React.FC<{ collapsed: boolean; onToggle: () => void }> = (
       permissions: [],
       children: [
         { id: 'website-analysis', label: 'Website Analysis', route: '/dashboard/seo/analysis', icon: BarChart3, permissions: [] },
+        { id: 'seo-booster', label: 'SEO Booster & AI Optimizer', route: '/dashboard/seo/booster', icon: Zap, permissions: [] },
+        { id: 'page-speed', label: 'Page Speed Optimizer', route: '/dashboard/seo/speed', icon: TrendingUp, permissions: [] },
+        { id: 'image-seo', label: 'Image SEO & Compression', route: '/dashboard/seo/images', icon: Database, permissions: [] },
+        { id: 'broken-links', label: 'Broken Links & Redirects', route: '/dashboard/seo/links', icon: Globe, permissions: [] },
+        { id: 'json-schema', label: 'JSON-LD & Schema', route: '/dashboard/seo/schema', icon: Settings, permissions: [] },
+        { id: 'ai-meta', label: 'AI Meta Generator', route: '/dashboard/seo/meta', icon: User, permissions: [] },
+        { id: 'index-now', label: 'Index Now (Bing)', route: '/dashboard/seo/indexnow', icon: Globe, permissions: [] },
+        { id: 'script-control', label: 'Script Control', route: '/dashboard/seo/scripts', icon: Settings, permissions: [] },
         { id: 'keyword-research', label: 'Keyword Research', route: '/dashboard/seo/keywords', icon: Search, permissions: [] },
         { id: 'competitor-analysis', label: 'Competitor Analysis', route: '/dashboard/seo/competitors', icon: Target, permissions: [] },
         { id: 'rank-tracking', label: 'Rank Tracking', route: '/dashboard/seo/rankings', icon: TrendingUp, permissions: [] },
