@@ -36,19 +36,21 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
       
-             {/* Legacy Routes for Testing */}
-       <Route path="/shopify/legacy" element={<ShopifyLanding />} />
-       <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
-       <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
+      {/* Legacy Routes for Testing */}
+      <Route path="/shopify/legacy" element={<ShopifyLanding />} />
+      <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
+      <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
       
-              {/* Premium Auth Routes */}
-        <Route path="/login" element={<PremiumLoginForm />} />
-        <Route path="/signup" element={<PremiumSignupForm />} />
-        
-        {/* Legacy Auth Routes */}
-        <Route path="/auth/legacy-login" element={<LoginPage />} />
-        <Route path="/auth/legacy-signup" element={<LoginPage initialMode="signup" />} />
+      {/* Premium Auth Routes */}
+      <Route path="/login" element={<PremiumLoginForm />} />
+      <Route path="/signup" element={<PremiumSignupForm />} />
+      
+      {/* Plan Selection Route */}
       <Route path="/plans" element={<PlanSelectionPage viewOnly={!isAuthenticated} />} />
+      
+      {/* Legacy Auth Routes */}
+      <Route path="/auth/legacy-login" element={<LoginPage />} />
+      <Route path="/auth/legacy-signup" element={<LoginPage initialMode="signup" />} />
 
       {/* Conditional Routing Based on Authentication */}
       {!isAuthenticated ? (

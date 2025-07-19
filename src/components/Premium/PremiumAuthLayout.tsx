@@ -14,7 +14,7 @@ import {
   Award,
   Zap
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/premium-b3acon-design-system.css';
 
 interface FeatureHighlightProps {
@@ -183,8 +183,8 @@ const PremiumAuthLayout: React.FC<PremiumAuthLayoutProps> = ({ children, type = 
       
       <div className="relative z-10 flex min-h-screen">
         {/* Left Side - Branding & Features */}
-        <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-16">
-          <div className="max-w-lg">
+        <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 flex-col justify-center p-8 xl:p-16">
+          <div className="max-w-lg xl:max-w-xl mx-auto w-full">
             {/* Logo */}
             <div className={`mb-12 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="flex items-center space-x-3 mb-4">
@@ -198,7 +198,7 @@ const PremiumAuthLayout: React.FC<PremiumAuthLayoutProps> = ({ children, type = 
             
             {/* Value Proposition */}
             <div className={`mb-12 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <h2 className="text-3xl font-bold text-white mb-6 leading-tight">
+              <h2 className="text-3xl xl:text-4xl font-bold text-white mb-6 leading-tight">
                 The Complete Business Intelligence Platform
               </h2>
               <p className="text-xl text-gray-300 leading-relaxed">
@@ -245,17 +245,17 @@ const PremiumAuthLayout: React.FC<PremiumAuthLayoutProps> = ({ children, type = 
         </div>
         
         {/* Right Side - Auth Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-          <div className="w-full max-w-md">
+        <div className="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+          <div className="w-full max-w-md mx-auto">
             {/* Glass Card */}
-            <div className={`card-glass-dark p-8 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className={`card-glass-dark p-6 sm:p-8 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               {children}
             </div>
             
             {/* Social Proof */}
             <div className={`mt-8 text-center transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <p className="text-gray-400 text-sm mb-4">Trusted by industry leaders</p>
-              <div className="flex justify-center space-x-6 opacity-60">
+              <div className="flex justify-center space-x-4 sm:space-x-6 opacity-60">
                 <CompanyLogo name="techstars" />
                 <CompanyLogo name="y combinator" />
                 <CompanyLogo name="forbes" />
@@ -376,6 +376,7 @@ export const PremiumLoginForm: React.FC = () => {
 
 // Premium Signup Form Component
 export const PremiumSignupForm: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -411,7 +412,8 @@ export const PremiumSignupForm: React.FC = () => {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      window.location.href = '/dashboard';
+      // Redirect to plan selection page after successful signup
+      navigate('/plans');
     } catch (error) {
       setErrors({ email: 'An error occurred. Please try again.' });
     } finally {

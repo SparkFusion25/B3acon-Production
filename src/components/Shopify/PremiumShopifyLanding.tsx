@@ -15,6 +15,7 @@ import {
   Shield,
   Clock
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import '../../styles/premium-design-system.css';
 
 const PremiumShopifyLanding = () => {
@@ -173,9 +174,10 @@ const PremiumShopifyLanding = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-10 bg-white/80 backdrop-blur-lg border-b border-white/20">
+      <nav className="relative z-20 bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
                 <Zap className="w-6 h-6 text-white" />
@@ -187,9 +189,9 @@ const PremiumShopifyLanding = () => {
               <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
               <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
               <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">Reviews</a>
-              <button className="btn-premium btn-outline">
+              <Link to="/login" className="btn-premium btn-outline">
                 Sign In
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -220,13 +222,13 @@ const PremiumShopifyLanding = () => {
 
             {/* CTA Buttons */}
             <div className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              <button 
+              <Link 
+                to="/signup"
                 className="btn-premium btn-primary btn-large group"
-                onClick={() => window.location.href = '/shopify/install'}
               >
                 <span className="relative z-10">Start 14-Day Free Trial</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
               
               <button className="btn-premium btn-outline btn-large group">
                 <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
