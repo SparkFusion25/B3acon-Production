@@ -22,6 +22,8 @@ import {
   TrendingUp,
   Activity
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useShopifyAuth } from '../../contexts/ShopifyAuthContext';
 import '../../styles/premium-design-system.css';
 
 interface PricingPlan {
@@ -44,8 +46,18 @@ interface AppMetrics {
 }
 
 const ShopifyAdmin = () => {
+  const navigate = useNavigate();
+  const { user, subscription, logout } = useShopifyAuth();
   const [activeTab, setActiveTab] = useState('plans');
   const [showAddPlan, setShowAddPlan] = useState(false);
+
+  // Check if user has admin access
+  React.useEffect(() => {
+    if (!user || user.plan !== 'enterprise') {
+      // Redirect non-admin users to login
+      navigate('/shopify/login');
+    }
+  }, [user, navigate]);
 
   const [metrics] = useState<AppMetrics>({
     activeInstalls: 12847,
@@ -584,16 +596,29 @@ const ShopifyAdmin = () => {
             </nav>
           </div>
 
-          {/* Admin Status */}
-          <div className="mt-auto p-6 border-t border-white/10">
-            <div className="flex items-center space-x-3 px-4 py-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <div>
-                <div className="text-sm font-medium text-emerald-300">Admin Access</div>
-                <div className="text-xs text-emerald-400">{new Date().toLocaleDateString()}</div>
-              </div>
-            </div>
-          </div>
+                     {/* Admin Status */}
+           <div className="mt-auto p-6 border-t border-white/10">
+             <div className="space-y-4">
+               <div className="flex items-center space-x-3 px-4 py-3 bg-emerald-500/20 rounded-lg border border-emerald-500/30">
+                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                 <div>
+                   <div className="text-sm font-medium text-emerald-300">Admin Access</div>
+                   <div className="text-xs text-emerald-400">{user?.email || 'admin@b3acon.com'}</div>
+                 </div>
+               </div>
+               
+               <button
+                 onClick={() => {
+                   if (window.confirm('Are you sure you want to sign out?')) {
+                     logout();
+                   }
+                 }}
+                 className="w-full btn-premium btn-ghost btn-small text-red-300 hover:bg-red-500/20"
+               >
+                 <span>Sign Out</span>
+               </button>
+             </div>
+           </div>
         </div>
 
         {/* Main Content Area - Like App Dashboard */}

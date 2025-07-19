@@ -63,7 +63,7 @@ const DashboardContent = () => {
   const [expandedItems, setExpandedItems] = useState<string[]>(['seo-tools', 'analytics']);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, subscription } = useShopifyAuth();
+  const { user, subscription, logout } = useShopifyAuth();
 
   // Mock data for dashboard
   const trafficSourcesData = [
@@ -491,16 +491,33 @@ const DashboardContent = () => {
 
           {/* User Profile */}
           <div className="mt-auto pt-4 border-t border-gray-200">
-            <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
+                  <User className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900">
+                    {user?.shopUrl?.split('.')[0] || 'Store Owner'}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {subscription?.plan === 'trial' ? 'Trial User' : 'Subscriber'}
+                  </div>
+                </div>
+                <button className="p-1 text-gray-400 hover:text-gray-600">
+                  <Settings className="w-4 h-4" />
+                </button>
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-gray-900">Sarah Chen</div>
-                <div className="text-xs text-gray-500">Store Owner</div>
-              </div>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
-                <Settings className="w-4 h-4" />
+              
+              <button
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to sign out?')) {
+                    logout();
+                  }
+                }}
+                className="w-full btn-premium btn-ghost btn-small text-red-600 hover:bg-red-50"
+              >
+                <span>Sign Out</span>
               </button>
             </div>
           </div>

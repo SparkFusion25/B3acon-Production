@@ -124,9 +124,19 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const logout = () => {
+    // Track logout event
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'logout', {
+        user_plan: user?.plan
+      });
+    }
+    
     setUser(null);
     setSubscription(null);
     localStorage.removeItem('shopify_demo_user');
+    
+    // Redirect to login page
+    window.location.href = '/shopify/login';
   };
 
   const upgradePlan = (newPlan: string) => {
