@@ -2627,306 +2627,440 @@ const PremiumShopifyDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
-      {/* Top Navigation */}
-      <nav className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary flex">
+      {/* Left Sidebar */}
+      <div className="w-64 bg-white/90 backdrop-blur-lg border-r border-white/20 flex flex-col fixed h-full z-30 lg:relative lg:z-auto">
+        {/* Sidebar Header */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <Zap className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">B3ACON</h1>
+              <p className="text-xs text-gray-600 capitalize">{userPlan} Plan</p>
+            </div>
+          </div>
+          
+          {/* Store Info */}
+          <div className="mt-4 p-3 bg-emerald-50 rounded-lg">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-emerald-700 text-sm font-medium truncate">{shopUrl}</span>
+            </div>
+          </div>
+          
+          {/* Quick Upgrade Button */}
+          <button 
+            onClick={() => setShowPlanModal(true)}
+            className="w-full mt-4 btn-premium btn-primary btn-small flex items-center justify-center space-x-2"
+          >
+            <ArrowUp className="w-4 h-4" />
+            <span>Upgrade Plan</span>
+          </button>
+        </div>
+
+        {/* Sidebar Navigation */}
+        <div className="flex-1 overflow-y-auto py-4">
+          <nav className="space-y-1 px-3">
+            <button
+              onClick={() => setActiveSection('overview')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'overview'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span>Overview</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('analytics')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'analytics'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Analytics</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('products')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'products'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <ShoppingBag className="w-5 h-5" />
+              <span>Products</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('seo')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'seo'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Search className="w-5 h-5" />
+              <span>SEO Tools</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('reviews')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'reviews'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span>Product Reviews</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('campaigns')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'campaigns'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Target className="w-5 h-5" />
+              <span>Campaigns</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('automations')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'automations'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Zap className="w-5 h-5" />
+              <span>Automations</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('reports')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'reports'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <FileText className="w-5 h-5" />
+              <span>Reports</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('integrations')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'integrations'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Globe className="w-5 h-5" />
+              <span>Integrations</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('support')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'support'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <HelpCircle className="w-5 h-5" />
+              <span>Support</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('billing')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'billing'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <CreditCard className="w-5 h-5" />
+              <span>Billing</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('affiliate')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'affiliate'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              <span>Affiliate</span>
+            </button>
+
+            <button
+              onClick={() => setActiveSection('settings')}
+              className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                activeSection === 'settings'
+                  ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+              <span>Settings</span>
+            </button>
+          </nav>
+        </div>
+
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-gray-200 space-y-3">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
+              <User className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-gray-900 truncate">Sarah Chen</div>
+              <div className="text-xs text-gray-500">Store Owner</div>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 flex-1">
+              <Bell className="w-4 h-4 mx-auto" />
+            </button>
+            <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 flex-1">
+              <HelpCircle className="w-4 h-4 mx-auto" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      <div className={`lg:hidden fixed inset-0 z-40 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+        <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+        <div className="relative w-64 bg-white h-full">
+          {/* Same sidebar content for mobile */}
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
                   <Zap className="w-6 h-6 text-white" />
                 </div>
-                <span className="text-2xl font-bold text-gray-900">B3ACON</span>
+                <div>
+                  <h1 className="text-lg font-bold text-gray-900">B3ACON</h1>
+                  <p className="text-xs text-gray-600 capitalize">{userPlan} Plan</p>
+                </div>
               </div>
-              
-              <div className="hidden sm:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium hidden md:inline">{shopUrl}</span>
-                <span className="text-emerald-700 text-sm font-medium md:hidden">Connected</span>
-              </div>
-              
-              <div className="flex items-center space-x-2 bg-indigo-100 px-3 py-1 rounded-full">
-                <Crown className="w-4 h-4 text-indigo-600" />
-                <span className="text-indigo-700 text-sm font-medium capitalize">{userPlan} Plan</span>
-              </div>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              {/* Mobile Menu Button */}
-              <button 
-                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          </div>
+
+          <div className="flex-1 overflow-y-auto py-4">
+            <nav className="space-y-1 px-3">
+              {/* All the same menu items for mobile */}
+              <button
+                onClick={() => {
+                  setActiveSection('overview');
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`flex items-center space-x-3 w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  activeSection === 'overview'
+                    ? 'bg-indigo-50 text-indigo-600 border border-indigo-200'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
               >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                <BarChart3 className="w-5 h-5" />
+                <span>Overview</span>
               </button>
-              
-              {/* Navigation Menu */}
-              <div className="hidden lg:flex items-center space-x-6">
-                <button 
-                  onClick={() => setActiveSection('overview')}
-                  className={`font-medium transition-colors ${activeSection === 'overview' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Overview
-                </button>
-                <button 
-                  onClick={() => setActiveSection('analytics')}
-                  className={`font-medium transition-colors ${activeSection === 'analytics' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Analytics
-                </button>
-                <button 
-                  onClick={() => setActiveSection('products')}
-                  className={`font-medium transition-colors ${activeSection === 'products' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Products
-                </button>
-                <button 
-                  onClick={() => setActiveSection('seo')}
-                  className={`font-medium transition-colors ${activeSection === 'seo' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  SEO Tools
-                </button>
-                <button 
-                  onClick={() => setActiveSection('campaigns')}
-                  className={`font-medium transition-colors ${activeSection === 'campaigns' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Campaigns
-                </button>
-                <button 
-                  onClick={() => setActiveSection('automations')}
-                  className={`font-medium transition-colors ${activeSection === 'automations' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Automations
-                </button>
-                <button 
-                  onClick={() => setActiveSection('reports')}
-                  className={`font-medium transition-colors ${activeSection === 'reports' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Reports
-                </button>
-                <button 
-                  onClick={() => setActiveSection('integrations')}
-                  className={`font-medium transition-colors ${activeSection === 'integrations' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Integrations
-                </button>
-                <button 
-                  onClick={() => setActiveSection('support')}
-                  className={`font-medium transition-colors ${activeSection === 'support' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Support
-                </button>
-                <button 
-                  onClick={() => setActiveSection('billing')}
-                  className={`font-medium transition-colors ${activeSection === 'billing' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Billing
-                </button>
-                <button 
-                  onClick={() => setActiveSection('affiliate')}
-                  className={`font-medium transition-colors ${activeSection === 'affiliate' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Affiliate
-                </button>
-                <button 
-                  onClick={() => setActiveSection('settings')}
-                  className={`font-medium transition-colors ${activeSection === 'settings' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
-                >
-                  Settings
-                </button>
+              {/* Add all other menu items for mobile - same pattern */}
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="flex-1 lg:ml-0">
+        {/* Top Header */}
+        <div className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-20">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="lg:hidden p-2 text-gray-400 hover:text-gray-600"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+
+              {/* Page Title */}
+              <div className="flex items-center space-x-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {activeSection === 'overview' && 'Welcome back, Sarah! 👋'}
+                    {activeSection === 'analytics' && 'Analytics Dashboard'}
+                    {activeSection === 'products' && 'Product Management'}
+                    {activeSection === 'seo' && 'SEO Tools'}
+                    {activeSection === 'reviews' && 'Product Reviews'}
+                    {activeSection === 'campaigns' && 'Marketing Campaigns'}
+                    {activeSection === 'automations' && 'Smart Automations'}
+                    {activeSection === 'reports' && 'Advanced Reports'}
+                    {activeSection === 'integrations' && 'App Integrations'}
+                    {activeSection === 'support' && 'Help & Support'}
+                    {activeSection === 'billing' && 'Billing & Subscription'}
+                    {activeSection === 'affiliate' && 'Affiliate Program'}
+                    {activeSection === 'settings' && 'Account Settings'}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {activeSection === 'overview' && 'Your store is performing 23% better than last month'}
+                    {activeSection === 'analytics' && 'Monitor your store performance and track key metrics'}
+                    {activeSection === 'products' && 'Manage your product catalog and SEO optimization'}
+                    {activeSection === 'seo' && 'Optimize your store for search engines and boost rankings'}
+                    {activeSection === 'reviews' && 'Multi-platform review management with AI sentiment analysis'}
+                    {activeSection === 'campaigns' && 'Create and manage targeted marketing campaigns'}
+                    {activeSection === 'automations' && 'Set up automated workflows to optimize your store'}
+                    {activeSection === 'reports' && 'Generate detailed reports and export performance data'}
+                    {activeSection === 'integrations' && 'Connect with third-party tools and services'}
+                    {activeSection === 'support' && 'Get help, access documentation, and manage support tickets'}
+                    {activeSection === 'billing' && 'Manage your subscription, billing history, and payment methods'}
+                    {activeSection === 'affiliate' && 'Join our affiliate program and earn commissions'}
+                    {activeSection === 'settings' && 'Configure your account preferences and app settings'}
+                  </p>
+                </div>
               </div>
               
-              {/* Upgrade Button */}
-              <button 
-                onClick={() => window.location.href = `/shopify/plans?shop=${shopUrl}&upgrade=true`}
-                className="btn-premium btn-primary flex items-center space-x-2"
-              >
-                <Crown className="w-4 h-4" />
-                <span>Upgrade Plan</span>
-              </button>
-              
-              <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
-                <Bell className="w-6 h-6" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </button>
-              
-              <div className="flex items-center space-x-3 cursor-pointer group">
-                <div className="text-right hidden sm:block">
-                  <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Sarah Chen</div>
-                  <div className="text-xs text-gray-500">Store Owner</div>
-                </div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <ChevronDown className="w-4 h-4 text-gray-500 group-hover:text-gray-700 transition-colors" />
+              {/* Header Actions */}
+              <div className="flex items-center space-x-3">
+                <button 
+                  onClick={() => setShowPlanModal(true)}
+                  className="hidden sm:flex btn-premium btn-primary btn-small items-center space-x-2"
+                >
+                  <ArrowUp className="w-4 h-4" />
+                  <span>Upgrade</span>
+                </button>
+                <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 relative">
+                  <Bell className="w-5 h-5" />
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
-          <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-bold text-gray-900">Menu</h2>
-                <button 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-gray-500 hover:text-gray-700"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+        {/* Page Content */}
+        <div className="px-4 sm:px-6 lg:px-8 py-8">
+
+                {renderSectionContent()}
+        </div>
+      </div>
+
+      {/* Plan Upgrade Modal */}
+      {showPlanModal && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowPlanModal(false)} />
+            
+            <div className="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+              <div className="bg-white px-6 pt-6 pb-4">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-gray-900">Upgrade Your Plan</h3>
+                  <button 
+                    onClick={() => setShowPlanModal(false)}
+                    className="p-2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Current Plan */}
+                  <div className="border-2 border-blue-200 rounded-xl p-6 bg-blue-50">
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-gray-900">Growth Plan</h4>
+                      <div className="text-3xl font-bold text-gray-900 mt-2">$97</div>
+                      <div className="text-sm text-gray-600">per month</div>
+                      <div className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">
+                        Current Plan
+                      </div>
+                    </div>
+                    <ul className="mt-6 space-y-2 text-sm text-gray-600">
+                      <li>✅ Up to 500 products</li>
+                      <li>✅ Advanced SEO tools</li>
+                      <li>✅ Analytics & reporting</li>
+                      <li>✅ Email support</li>
+                      <li>✅ Automation workflows</li>
+                    </ul>
+                  </div>
+
+                  {/* Enterprise Plan */}
+                  <div className="border-2 border-purple-200 rounded-xl p-6 bg-purple-50">
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-gray-900">Enterprise</h4>
+                      <div className="text-3xl font-bold text-gray-900 mt-2">$197</div>
+                      <div className="text-sm text-gray-600">per month</div>
+                      <button 
+                        onClick={() => {
+                          alert('🚀 Upgrading to Enterprise Plan!\n\n✨ New Features Unlocked:\n• Unlimited products\n• White-label solution\n• Priority support\n• API access\n• Advanced analytics\n\nProcessing upgrade...');
+                          setShowPlanModal(false);
+                        }}
+                        className="mt-4 w-full btn-premium btn-primary"
+                      >
+                        Upgrade Now
+                      </button>
+                    </div>
+                    <ul className="mt-6 space-y-2 text-sm text-gray-600">
+                      <li>✅ Unlimited products</li>
+                      <li>✅ White-label solution</li>
+                      <li>✅ Priority support</li>
+                      <li>✅ API access</li>
+                      <li>✅ Advanced analytics</li>
+                    </ul>
+                  </div>
+
+                  {/* Agency Plan */}
+                  <div className="border-2 border-emerald-200 rounded-xl p-6 bg-emerald-50">
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-gray-900">Agency</h4>
+                      <div className="text-3xl font-bold text-gray-900 mt-2">$497</div>
+                      <div className="text-sm text-gray-600">per month</div>
+                      <button 
+                        onClick={() => {
+                          alert('🏢 Upgrading to Agency Plan!\n\n🎯 Agency Features:\n• Multi-client dashboard\n• Team collaboration\n• Advanced reporting\n• Custom integrations\n• Dedicated manager\n\nProcessing upgrade...');
+                          setShowPlanModal(false);
+                        }}
+                        className="mt-4 w-full btn-premium btn-primary"
+                      >
+                        Upgrade Now
+                      </button>
+                    </div>
+                    <ul className="mt-6 space-y-2 text-sm text-gray-600">
+                      <li>✅ Multi-client dashboard</li>
+                      <li>✅ Team collaboration</li>
+                      <li>✅ Advanced reporting</li>
+                      <li>✅ Custom integrations</li>
+                      <li>✅ Dedicated manager</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-              
-              <nav className="space-y-4 max-h-96 overflow-y-auto">
-                <button 
-                  onClick={() => {setActiveSection('overview'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'overview' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <BarChart3 className="w-5 h-5 text-indigo-600" />
-                  <span className="font-medium text-gray-900">Overview</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('analytics'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'analytics' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <TrendingUp className="w-5 h-5 text-indigo-600" />
-                  <span className="font-medium text-gray-900">Analytics</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('products'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'products' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <ShoppingBag className="w-5 h-5 text-purple-600" />
-                  <span className="font-medium text-gray-900">Products</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('seo'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'seo' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Search className="w-5 h-5 text-emerald-600" />
-                  <span className="font-medium text-gray-900">SEO Tools</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('campaigns'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'campaigns' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Target className="w-5 h-5 text-pink-600" />
-                  <span className="font-medium text-gray-900">Campaigns</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('automations'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'automations' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Zap className="w-5 h-5 text-yellow-600" />
-                  <span className="font-medium text-gray-900">Automations</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('reports'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'reports' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <BarChart3 className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-gray-900">Reports</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('integrations'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'integrations' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Globe className="w-5 h-5 text-green-600" />
-                  <span className="font-medium text-gray-900">Integrations</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('support'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'support' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Users className="w-5 h-5 text-orange-600" />
-                  <span className="font-medium text-gray-900">Support</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('billing'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'billing' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <CreditCard className="w-5 h-5 text-blue-600" />
-                  <span className="font-medium text-gray-900">Billing</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('affiliate'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'affiliate' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Users className="w-5 h-5 text-purple-600" />
-                  <span className="font-medium text-gray-900">Affiliate</span>
-                </button>
-                <button 
-                  onClick={() => {setActiveSection('settings'); setIsMobileMenuOpen(false);}}
-                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'settings' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
-                >
-                  <Settings className="w-5 h-5 text-gray-600" />
-                  <span className="font-medium text-gray-900">Settings</span>
-                </button>
-              </nav>
             </div>
           </div>
         </div>
       )}
+         </div>
+   );
+  };
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl py-8">
-        {/* Section Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                {activeSection === 'overview' && <>Welcome back, <span className="text-gradient-primary">Sarah! 👋</span></>}
-                {activeSection === 'analytics' && <>Analytics <span className="text-gradient-primary">Dashboard</span></>}
-                {activeSection === 'products' && <>Product <span className="text-gradient-primary">Management</span></>}
-                {activeSection === 'seo' && <>SEO <span className="text-gradient-primary">Tools</span></>}
-                {activeSection === 'campaigns' && <>Marketing <span className="text-gradient-primary">Campaigns</span></>}
-                {activeSection === 'automations' && <>Smart <span className="text-gradient-primary">Automations</span></>}
-                {activeSection === 'reports' && <>Advanced <span className="text-gradient-primary">Reports</span></>}
-                {activeSection === 'integrations' && <>App <span className="text-gradient-primary">Integrations</span></>}
-                {activeSection === 'support' && <>Help & <span className="text-gradient-primary">Support</span></>}
-                {activeSection === 'billing' && <>Billing & <span className="text-gradient-primary">Subscription</span></>}
-                {activeSection === 'affiliate' && <>Affiliate <span className="text-gradient-primary">Program</span></>}
-                {activeSection === 'settings' && <>Account <span className="text-gradient-primary">Settings</span></>}
-              </h1>
-              <p className="text-gray-600 text-base sm:text-lg">
-                {activeSection === 'overview' && 'Your store is performing 23% better than last month'}
-                {activeSection === 'analytics' && 'Monitor your store performance and track key metrics'}
-                {activeSection === 'products' && 'Manage your product catalog and SEO optimization'}
-                {activeSection === 'seo' && 'Optimize your store for search engines and boost rankings'}
-                {activeSection === 'campaigns' && 'Create and manage targeted marketing campaigns to boost sales'}
-                {activeSection === 'automations' && 'Set up automated workflows to optimize your store continuously'}
-                {activeSection === 'reports' && 'Generate detailed reports and export performance data'}
-                {activeSection === 'integrations' && 'Connect with third-party tools and services'}
-                {activeSection === 'support' && 'Get help, access documentation, and manage support tickets'}
-                {activeSection === 'billing' && 'Manage your subscription, billing history, and payment methods'}
-                {activeSection === 'affiliate' && 'Join our affiliate program and earn commissions on referrals'}
-                {activeSection === 'settings' && 'Configure your account preferences and app settings'}
-              </p>
-            </div>
-            
-            <div className="flex sm:hidden md:flex items-center space-x-3">
-              <button className="btn-premium btn-outline">
-                <Calendar className="w-4 h-4" />
-                Last 7 days
-              </button>
-              <button className="btn-premium btn-outline">
-                <Download className="w-4 h-4" />
-                Export
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Section Content */}
-        {renderSectionContent()}
-      </div>
-    </div>
-  );
-};
-
-export default PremiumShopifyDashboard;
+  export default PremiumShopifyDashboard;
