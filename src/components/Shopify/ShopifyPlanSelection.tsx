@@ -49,22 +49,30 @@ const ShopifyPlanSelection = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const shopParam = urlParams.get('shop');
     const hostParam = urlParams.get('host');
+    const authorized = urlParams.get('authorized');
+    
+    console.log('📋 Plan Selection Context:', { shop: shopParam, host: hostParam, authorized });
     
     if (shopParam) {
       setShop(shopParam);
     }
 
     // Load Shopify App Bridge if we're in embedded context
-    if (shopParam && hostParam && !window.shopifyAppBridge) {
+    if (shopParam && hostParam && !window.AppBridge) {
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/@shopify/app-bridge@3';
       script.onload = () => {
-        if (window.shopifyAppBridge) {
-          const app = window.shopifyAppBridge.createApp({
-            apiKey: process.env.REACT_APP_SHOPIFY_API_KEY || 'your-api-key',
-            host: hostParam,
-            forceRedirect: true
-          });
+        if (window.AppBridge) {
+          try {
+            const app = window.AppBridge.createApp({
+              apiKey: process.env.REACT_APP_SHOPIFY_API_KEY || 'your-api-key',
+              host: hostParam,
+              forceRedirect: true
+            });
+            console.log('✅ App Bridge initialized in plan selection');
+          } catch (error) {
+            console.error('❌ App Bridge Error:', error);
+          }
         }
       };
       document.head.appendChild(script);
