@@ -284,6 +284,8 @@ const PremiumShopifyDashboard = () => {
         return renderReportsSection();
       case 'integrations':
         return renderIntegrationsSection();
+      case 'reviews':
+        return renderProductReviewsSection();
       case 'support':
         return renderSupportSection();
       case 'billing':
@@ -2254,6 +2256,330 @@ const PremiumShopifyDashboard = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // PRODUCT REVIEWS SECTION - Multi-platform Management with AI Sentiment Analysis
+  const renderProductReviewsSection = () => (
+    <div className="space-y-8">
+      {/* Review Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-yellow-400 to-orange-600 flex items-center justify-center">
+              <MessageCircle className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-orange-600 text-sm font-semibold">+23</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Total Reviews</p>
+            <p className="text-3xl font-bold text-gray-900">1,247</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-emerald-600 text-sm font-semibold">4.8</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Average Rating</p>
+            <p className="text-3xl font-bold text-gray-900">4.6/5</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-blue-600 text-sm font-semibold">+89%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Response Rate</p>
+            <p className="text-3xl font-bold text-gray-900">94%</p>
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-400 to-purple-600 flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-purple-600 text-sm font-semibold">87%</div>
+          </div>
+          <div>
+            <p className="text-gray-600 text-sm font-medium mb-1">Positive Sentiment</p>
+            <p className="text-3xl font-bold text-gray-900">92%</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Review Management Tools */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Review Management Tools</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <button 
+            onClick={() => {
+              const platforms = [
+                { name: 'Google Reviews', count: 347, rating: 4.7, sync: 'Connected' },
+                { name: 'Facebook Reviews', count: 189, rating: 4.6, sync: 'Connected' },
+                { name: 'Shopify Reviews', count: 523, rating: 4.8, sync: 'Active' },
+                { name: 'Trustpilot', count: 124, rating: 4.5, sync: 'Connected' },
+                { name: 'Yelp', count: 64, rating: 4.4, sync: 'Pending' }
+              ];
+              alert(`🌐 Multi-Platform Review Sync\n\n${platforms.map(p => 
+                `• ${p.name}: ${p.count} reviews (${p.rating}⭐) - ${p.sync}`
+              ).join('\n')}\n\nTotal: 1,247 reviews across all platforms\nAuto-sync every 15 minutes`);
+            }}
+            className="btn-premium btn-primary p-4 h-auto flex flex-col items-center space-y-2"
+          >
+            <Globe className="w-8 h-8" />
+            <span className="font-medium">Multi-Platform Sync</span>
+            <span className="text-sm opacity-80">Google, Facebook, Shopify+</span>
+          </button>
+          
+          <button 
+            onClick={() => {
+              const aiAnalysis = {
+                sentiment: { positive: 87, neutral: 9, negative: 4 },
+                keywords: ['quality', 'fast shipping', 'excellent service', 'value', 'recommended'],
+                issues: ['shipping delays', 'size confusion', 'color variation'],
+                suggestions: [
+                  'Add more size charts to product pages',
+                  'Include color accuracy disclaimer',
+                  'Implement faster shipping options'
+                ]
+              };
+              alert(`🤖 AI Sentiment Analysis Results\n\n📊 Sentiment Breakdown:\n• Positive: ${aiAnalysis.sentiment.positive}%\n• Neutral: ${aiAnalysis.sentiment.neutral}%\n• Negative: ${aiAnalysis.sentiment.negative}%\n\n🏷️ Top Keywords:\n${aiAnalysis.keywords.map(k => `• ${k}`).join('\n')}\n\n⚠️ Common Issues:\n${aiAnalysis.issues.map(i => `• ${i}`).join('\n')}\n\n💡 AI Suggestions:\n${aiAnalysis.suggestions.map(s => `• ${s}`).join('\n')}`);
+            }}
+            className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2"
+          >
+            <Zap className="w-8 h-8" />
+            <span className="font-medium">AI Sentiment Analysis</span>
+            <span className="text-sm opacity-80">Smart insights & trends</span>
+          </button>
+          
+          <button 
+            onClick={() => {
+              const automation = {
+                features: [
+                  'Auto-respond to positive reviews with thank you',
+                  'Flag negative reviews for immediate attention',
+                  'Send follow-up emails for review requests',
+                  'Generate AI-powered response suggestions',
+                  'Schedule review campaigns for recent customers'
+                ],
+                stats: { automated: 847, manual: 156, responseTime: '< 2 hours' }
+              };
+              alert(`⚡ Review Automation Active\n\n🤖 Automated Features:\n${automation.features.map(f => `• ${f}`).join('\n')}\n\n📊 This Month:\n• Automated Responses: ${automation.stats.automated}\n• Manual Reviews: ${automation.stats.manual}\n• Avg Response Time: ${automation.stats.responseTime}\n\nAutomation is handling 84% of review management!`);
+            }}
+            className="btn-premium btn-outline p-4 h-auto flex flex-col items-center space-y-2"
+          >
+            <Activity className="w-8 h-8" />
+            <span className="font-medium">Auto-Response</span>
+            <span className="text-sm opacity-80">Smart reply automation</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Recent Reviews */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Recent Reviews</h3>
+          <div className="flex items-center space-x-2">
+            <button 
+              onClick={() => {
+                const filters = ['All Platforms', '5 Stars Only', '1-2 Stars Only', 'Unresponded', 'This Week', 'Needs Attention'];
+                alert(`🔍 Review Filters:\n\n${filters.map(f => `• ${f}`).join('\n')}\n\nSelect filters to refine your review view.\nCurrent: Showing all recent reviews`);
+              }}
+              className="btn-premium btn-outline btn-small"
+            >
+              <Filter className="w-4 h-4" />
+              Filter
+            </button>
+            <button 
+              onClick={() => {
+                const exportData = {
+                  reviews: 1247,
+                  period: 'Last 30 days',
+                  formats: ['CSV', 'Excel', 'PDF Report'],
+                  includes: ['Review text', 'Ratings', 'Sentiment scores', 'Platform source', 'Response status']
+                };
+                alert(`📊 Export Reviews Data\n\nExport Details:\n• Total Reviews: ${exportData.reviews}\n• Period: ${exportData.period}\n• Available Formats: ${exportData.formats.join(', ')}\n\nData Includes:\n${exportData.includes.map(i => `• ${i}`).join('\n')}\n\nPreparing export...`);
+              }}
+              className="btn-premium btn-primary btn-small"
+            >
+              <Download className="w-4 h-4" />
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {[
+            { 
+              customer: 'Sarah Johnson', 
+              product: 'Wireless Bluetooth Headphones', 
+              rating: 5, 
+              platform: 'Shopify', 
+              sentiment: 'positive', 
+              preview: 'Amazing quality! The sound is crystal clear and battery life is excellent...', 
+              time: '2 hours ago',
+              responded: false
+            },
+            { 
+              customer: 'Mike Rodriguez', 
+              product: 'Smart Fitness Watch', 
+              rating: 4, 
+              platform: 'Google', 
+              sentiment: 'positive', 
+              preview: 'Great watch overall. The fitness tracking is accurate, only wish the...', 
+              time: '5 hours ago',
+              responded: true
+            },
+            { 
+              customer: 'Emma Thompson', 
+              product: 'Premium Coffee Maker', 
+              rating: 2, 
+              platform: 'Facebook', 
+              sentiment: 'negative', 
+              preview: 'Had issues with the brewing temperature. Customer service was...', 
+              time: '1 day ago',
+              responded: false
+            },
+            { 
+              customer: 'David Chen', 
+              product: 'Wireless Charging Pad', 
+              rating: 5, 
+              platform: 'Trustpilot', 
+              sentiment: 'positive', 
+              preview: 'Works perfectly with my iPhone. Fast charging and sleek design...', 
+              time: '2 days ago',
+              responded: true
+            }
+          ].map((review, index) => (
+            <div key={index} className="flex items-start justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className="flex items-start space-x-4 flex-1">
+                <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg flex items-center justify-center">
+                  <MessageCircle className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="font-medium text-gray-900">{review.customer}</div>
+                    <div className="flex items-center">
+                      {[...Array(5)].map((_, i) => (
+                        <span key={i} className={`text-sm ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}>⭐</span>
+                      ))}
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      review.platform === 'Shopify' ? 'bg-green-100 text-green-800' :
+                      review.platform === 'Google' ? 'bg-blue-100 text-blue-800' :
+                      review.platform === 'Facebook' ? 'bg-indigo-100 text-indigo-800' :
+                      'bg-purple-100 text-purple-800'
+                    }`}>
+                      {review.platform}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-600 mb-2">{review.product}</div>
+                  <div className="text-sm text-gray-700 mb-2">{review.preview}</div>
+                  <div className="flex items-center space-x-4">
+                    <span className="text-xs text-gray-500">{review.time}</span>
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      review.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
+                      review.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {review.sentiment}
+                    </span>
+                    {review.responded && (
+                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                        Responded
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => alert(`📝 Responding to ${review.customer}'s review...\n\nAI Suggested Response:\n"Thank you for your ${review.rating}-star review! We appreciate your feedback about the ${review.product}. ${review.sentiment === 'negative' ? 'We\'d like to resolve any issues you experienced. Please contact our support team.' : 'We\'re delighted you\'re happy with your purchase!'}"\n\nCustomize response before sending.`)}
+                  className="p-2 text-gray-400 hover:text-gray-600"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => alert(`👁️ Full Review Details:\n\nCustomer: ${review.customer}\nProduct: ${review.product}\nRating: ${review.rating}/5 stars\nPlatform: ${review.platform}\nSentiment: ${review.sentiment}\nPosted: ${review.time}\n\nFull Review Text:\n"${review.preview}..."\n\nResponse Status: ${review.responded ? 'Responded' : 'Awaiting Response'}`)}
+                  className="p-2 text-gray-400 hover:text-gray-600"
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Review Analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="glass-card p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Rating Distribution</h3>
+          <div className="space-y-3">
+            {[
+              { stars: 5, count: 687, percentage: 55 },
+              { stars: 4, count: 312, percentage: 25 },
+              { stars: 3, count: 149, percentage: 12 },
+              { stars: 2, count: 62, percentage: 5 },
+              { stars: 1, count: 37, percentage: 3 }
+            ].map((rating, index) => (
+              <div key={index} className="flex items-center space-x-4">
+                <div className="flex items-center space-x-1 w-16">
+                  <span className="text-sm font-medium">{rating.stars}</span>
+                  <span className="text-yellow-400">⭐</span>
+                </div>
+                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full" 
+                    style={{ width: `${rating.percentage}%` }}
+                  ></div>
+                </div>
+                <div className="text-sm text-gray-600 w-16 text-right">{rating.count}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="glass-card p-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Platform Performance</h3>
+          <div className="space-y-4">
+            {[
+              { platform: 'Shopify Reviews', rating: 4.8, count: 523, color: 'green' },
+              { platform: 'Google Reviews', rating: 4.7, count: 347, color: 'blue' },
+              { platform: 'Facebook Reviews', rating: 4.6, count: 189, color: 'indigo' },
+              { platform: 'Trustpilot', rating: 4.5, count: 124, color: 'purple' },
+              { platform: 'Yelp', rating: 4.4, count: 64, color: 'red' }
+            ].map((platform, index) => (
+              <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-3 h-3 rounded-full bg-${platform.color}-500`}></div>
+                  <span className="font-medium text-gray-900">{platform.platform}</span>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <div className="text-center">
+                    <div className="font-semibold text-gray-900">{platform.rating}</div>
+                    <div className="text-xs text-gray-600">Rating</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-semibold text-gray-900">{platform.count}</div>
+                    <div className="text-xs text-gray-600">Reviews</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
