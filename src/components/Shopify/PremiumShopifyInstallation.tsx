@@ -179,7 +179,7 @@ const PremiumShopifyInstallation = () => {
 
   const renderWelcomeScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
-      <div className="glass-card-dark p-8 md:p-12 max-w-4xl w-full">
+      <div className="glass-card-dark p-8 md:p-12 max-w-4xl w-full mx-auto">
         <div className="text-center mb-12">
           <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center">
             <Zap className="w-10 h-10 text-white" />
@@ -253,7 +253,7 @@ const PremiumShopifyInstallation = () => {
 
   const renderInstallationProgress = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4">
-      <div className="max-w-4xl mx-auto pt-20">
+      <div className="container-centered pt-20">
         {/* Progress Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -347,7 +347,7 @@ const PremiumShopifyInstallation = () => {
 
   const renderPlanSelection = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
-      <div className="max-w-7xl mx-auto pt-20">
+      <div className="container-centered pt-20">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Choose Your <span className="text-gradient-primary">Growth Plan</span>
