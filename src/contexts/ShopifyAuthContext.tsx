@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 
 interface ShopifyUser {
   id: string;
+  userId: string;
   shopUrl: string;
   email: string;
   plan: 'trial' | 'starter' | 'pro' | 'enterprise';
@@ -11,6 +12,8 @@ interface ShopifyUser {
 }
 
 interface ShopifySubscription {
+  userId: string;
+  shopUrl: string;
   plan: 'trial' | 'starter' | 'pro' | 'enterprise';
   status: 'active' | 'expired' | 'cancelled';
   trialEndsAt?: Date;
@@ -22,7 +25,7 @@ interface ShopifyAuthContextType {
   user: ShopifyUser | null;
   subscription: ShopifySubscription | null;
   isAuthenticated: boolean;
-  login: (shopUrl: string, plan?: string) => void;
+  login: (shopUrl: string, plan?: string, subscription?: any) => void;
   logout: () => void;
   upgradePlan: (newPlan: string) => void;
 }
@@ -43,6 +46,8 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const userData = JSON.parse(storedUser);
       setUser(userData);
       setSubscription({
+        userId: userData.id || 'demo-user',
+        shopUrl: userData.shopUrl,
         plan: userData.plan,
         status: 'active',
         trialEndsAt: userData.trialEndsAt ? new Date(userData.trialEndsAt) : undefined,
@@ -52,6 +57,7 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       // Create demo user from URL plan parameter
       const demoUser: ShopifyUser = {
         id: 'demo-user-123',
+        userId: 'demo-user-123',
         shopUrl: 'demo-store.myshopify.com',
         email: 'demo@example.com',
         plan: planFromUrl as any,
@@ -61,6 +67,8 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       
       setUser(demoUser);
       setSubscription({
+        userId: demoUser.userId,
+        shopUrl: demoUser.shopUrl,
         plan: demoUser.plan,
         status: 'active',
         trialEndsAt: demoUser.trialEndsAt,
@@ -72,6 +80,7 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       // Default trial user for demo
       const defaultUser: ShopifyUser = {
         id: 'demo-user-123',
+        userId: 'demo-user-123',
         shopUrl: 'demo-store.myshopify.com',
         email: 'demo@example.com',
         plan: 'trial',
@@ -81,6 +90,8 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       
       setUser(defaultUser);
       setSubscription({
+        userId: defaultUser.userId,
+        shopUrl: defaultUser.shopUrl,
         plan: 'trial',
         status: 'active',
         trialEndsAt: defaultUser.trialEndsAt,
@@ -99,12 +110,13 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       enterprise: ['everything', 'priority_support', 'custom_integrations']
     };
     
-    return planFeatures[plan] || planFeatures.trial;
+    return planFeatures[plan as keyof typeof planFeatures] || planFeatures.trial;
   };
 
-  const login = (shopUrl: string, plan: string = 'trial') => {
+  const login = (shopUrl: string, plan: string = 'trial', subscriptionData?: any) => {
     const newUser: ShopifyUser = {
       id: 'user-' + Date.now(),
+      userId: 'user-' + Date.now(),
       shopUrl,
       email: `user@${shopUrl}`,
       plan: plan as any,
@@ -114,6 +126,8 @@ export const ShopifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     
     setUser(newUser);
     setSubscription({
+      userId: newUser.userId,
+      shopUrl: newUser.shopUrl,
       plan: newUser.plan,
       status: 'active',
       trialEndsAt: newUser.trialEndsAt,

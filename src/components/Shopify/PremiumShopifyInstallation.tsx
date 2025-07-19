@@ -64,6 +64,7 @@ const PremiumShopifyInstallation = () => {
   const [isInstalling, setIsInstalling] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(planType);
   const [storeUrl, setStoreUrl] = useState('');
+  const [shopifyError, setShopifyError] = useState('');
   const [animationKey, setAnimationKey] = useState(0);
 
   const installationSteps: InstallationStep[] = [
@@ -197,15 +198,16 @@ const PremiumShopifyInstallation = () => {
   }, [currentStep, isInstalling, steps.length]);
 
   // Complete Shopify installation flow with subscription management
-  const handleShopifyConnect = async () => {
-    if (!storeUrl.trim()) {
+  const handleShopifyConnect = async (inputStoreUrl?: string) => {
+    const urlToConnect = inputStoreUrl || storeUrl;
+    if (!urlToConnect.trim()) {
       setShopifyError('Please enter your Shopify store URL');
       return;
     }
 
     // Validate Shopify URL format
     const shopifyUrlPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
-    const cleanUrl = storeUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    const cleanUrl = urlToConnect.replace(/^https?:\/\//, '').replace(/\/$/, '');
     
     if (!shopifyUrlPattern.test(cleanUrl)) {
       setShopifyError('Please enter a valid Shopify store URL (e.g., mystore.myshopify.com)');

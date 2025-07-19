@@ -53,7 +53,7 @@ const SubscribePage: React.FC = () => {
       subscription = {
         ...subscription,
         plan: planId,
-        planData: enhancedPlans[planId],
+        planData: enhancedPlans[planId as keyof typeof enhancedPlans],
         billingCycle,
         updatedAt: new Date().toISOString()
       };
@@ -85,7 +85,7 @@ const SubscribePage: React.FC = () => {
   };
 
   const getPrice = (planId: string) => {
-    const plan = enhancedPlans[planId];
+    const plan = enhancedPlans[planId as keyof typeof enhancedPlans];
     if (planId === 'trial') return 0;
     
     const monthlyPrice = plan.price;
@@ -101,7 +101,7 @@ const SubscribePage: React.FC = () => {
       purple: 'border-purple-200 bg-purple-50',
       gold: 'border-yellow-200 bg-yellow-50'
     };
-    return colors[color] || 'border-gray-200 bg-gray-50';
+    return colors[color as keyof typeof colors] || 'border-gray-200 bg-gray-50';
   };
 
   const getBadgeColor = (color: string) => {
@@ -111,7 +111,7 @@ const SubscribePage: React.FC = () => {
       purple: 'bg-purple-100 text-purple-800', 
       gold: 'bg-yellow-100 text-yellow-800'
     };
-    return colors[color] || 'bg-gray-100 text-gray-800';
+    return colors[color as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
   return (

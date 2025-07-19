@@ -31,7 +31,9 @@ import {
   MessageCircle,
   Lock,
   MousePointer,
-  LayoutDashboard
+  LayoutDashboard,
+  AlertCircle,
+  CheckCircle
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ShopifyAuthProvider, useShopifyAuth } from '../../contexts/ShopifyAuthContext';
@@ -1056,6 +1058,168 @@ const renderSEOKeywordResearch = () => (
         </table>
       </div>
     </div>
+  </div>
+);
+
+// Missing render functions for SEO tools
+const renderSEOCompetitorAnalysis = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Competitor Analysis
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Analyze your competitors' SEO strategies and find opportunities.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderSEORankTracking = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Rank Tracking
+    </h2>
+    <FeatureGate 
+      requiredPlan="starter" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Track your keyword rankings across search engines.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderSEOBacklinks = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Backlink Analysis
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Analyze your backlink profile and discover new opportunities.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderSEOTechnicalAudit = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Technical SEO Audit
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Comprehensive technical SEO analysis of your store.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderSEOContentOptimizer = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Content Optimizer
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Optimize your content for better search rankings.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+// Analytics render functions
+const renderAnalyticsTraffic = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Traffic Analytics
+    </h2>
+    <FeatureGate 
+      requiredPlan="starter" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Detailed traffic analytics and insights.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderAnalyticsConversions = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Conversion Analytics
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Track and optimize your conversion rates.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderAnalyticsRevenue = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Revenue Analytics
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Comprehensive revenue tracking and forecasting.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderAnalyticsCustomers = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Customer Analytics
+    </h2>
+    <FeatureGate 
+      requiredPlan="pro" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Deep insights into customer behavior and segments.</p>
+      </div>
+    </FeatureGate>
+  </div>
+);
+
+const renderAnalyticsProducts = () => (
+  <div className="premium-dashboard-content">
+    <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
+      Product Analytics
+    </h2>
+    <FeatureGate 
+      requiredPlan="starter" 
+      lockType="overlay"
+    >
+      <div className="glass-card p-6">
+        <p className="text-gray-600">Analyze product performance and optimization opportunities.</p>
+      </div>
+    </FeatureGate>
   </div>
 );
 
