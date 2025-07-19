@@ -99,18 +99,111 @@ const PremiumShopifyDashboard = () => {
   const [siteAuditData, setSiteAuditData] = useState(null);
   const [competitorData, setCompetitorData] = useState(null);
   const [realTimeData, setRealTimeData] = useState({
-    revenue: { current: 24750, change: 12.5, trend: 'up' },
-    orders: { current: 142, change: 8.2, trend: 'up' },
-    visitors: { current: 3247, change: -2.1, trend: 'down' },
-    conversion: { current: 4.38, change: 0.7, trend: 'up' },
-    seoScore: { current: 85, change: 3.2, trend: 'up' },
+    revenue: { current: 0, change: 0, trend: 'up' },
+    orders: { current: 0, change: 0, trend: 'up' },
+    visitors: { current: 0, change: 0, trend: 'up' },
+    conversion: { current: 0, change: 0, trend: 'up' },
+    seoScore: { current: 0, change: 0, trend: 'up' },
     lastUpdated: new Date()
   });
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [competitorList, setCompetitorList] = useState([
     'example-competitor1.com',
     'example-competitor2.com', 
     'example-competitor3.com'
   ]);
+
+  // Function to fetch real Shopify store data
+  const fetchShopifyData = async (shopDomain: string) => {
+    try {
+      setIsLoadingData(true);
+      
+      // Fetch real data from our APIs
+      const responses = await Promise.all([
+        fetch(`/api/shopify/analytics?shop=${shopDomain}`),
+        fetch(`/api/shopify/seo-score?shop=${shopDomain}`),
+        fetch(`/api/shopify/conversion?shop=${shopDomain}`),
+        fetch(`/api/shopify/visitors?shop=${shopDomain}`)
+      ]);
+
+      const [analyticsRes, seoRes, conversionRes, visitorsRes] = await Promise.all(
+        responses.map(res => res.json())
+      );
+
+      // Extract real data from API responses
+      const realShopifyData = {
+        revenue: { 
+          current: analyticsRes.data?.revenue?.current || 0,
+          change: +analyticsRes.data?.revenue?.change || 0,
+          trend: analyticsRes.data?.revenue?.trend || 'up'
+        },
+        orders: { 
+          current: analyticsRes.data?.orders?.current || 0,
+          change: +analyticsRes.data?.orders?.change || 0,
+          trend: analyticsRes.data?.orders?.trend || 'up'
+        },
+        visitors: { 
+          current: visitorsRes.data?.total_visitors || 0,
+          change: +visitorsRes.data?.change || 0,
+          trend: visitorsRes.data?.trend || 'up'
+        },
+        conversion: { 
+          current: +conversionRes.data?.rate || 0,
+          change: +conversionRes.data?.change || 0,
+          trend: conversionRes.data?.trend || 'up'
+        },
+        seoScore: { 
+          current: seoRes.data?.overall_score || 0,
+          change: +seoRes.data?.change || 0,
+          trend: seoRes.data?.trend || 'up'
+        },
+        lastUpdated: new Date()
+      };
+
+      setRealTimeData(realShopifyData);
+      
+      // Update metrics with real data
+      setMetrics([
+        {
+          value: `$${realShopifyData.revenue.current.toLocaleString()}`,
+          change: `${realShopifyData.revenue.change > 0 ? '+' : ''}${realShopifyData.revenue.change}%`,
+          trend: realShopifyData.revenue.trend,
+          icon: TrendingUp,
+          color: 'emerald',
+          description: 'Total Revenue'
+        },
+        {
+          value: `${realShopifyData.seoScore.current}/100`,
+          change: `${realShopifyData.seoScore.change > 0 ? '+' : ''}${realShopifyData.seoScore.change} points`,
+          trend: realShopifyData.seoScore.trend,
+          icon: Target,
+          color: 'blue',
+          description: 'SEO Score'
+        },
+        {
+          value: `${realShopifyData.conversion.current.toFixed(1)}%`,
+          change: `${realShopifyData.conversion.change > 0 ? '+' : ''}${realShopifyData.conversion.change.toFixed(1)}%`,
+          trend: realShopifyData.conversion.trend,
+          icon: Eye,
+          color: 'purple',
+          description: 'Conversion Rate'
+        },
+        {
+          value: `${realShopifyData.visitors.current.toLocaleString()}`,
+          change: `${realShopifyData.visitors.change > 0 ? '+' : ''}${realShopifyData.visitors.change}%`,
+          trend: realShopifyData.visitors.trend,
+          icon: Users,
+          color: 'pink',
+          description: 'Total Visitors'
+        }
+      ]);
+
+      setIsLoadingData(false);
+    } catch (error) {
+      console.error('Error fetching Shopify data:', error);
+      setIsLoadingData(false);
+    }
+  };
 
   useEffect(() => {
     // Check for proper Shopify authentication and plan
@@ -134,45 +227,14 @@ const PremiumShopifyDashboard = () => {
     setShopUrl(shop);
     setUserPlan(plan);
     setIsAuthorized(true);
+
+    // Fetch real store data
+    fetchShopifyData(shop);
     
-    // Simulate loading and data fetching
+    // Set loading false after data fetch
     setTimeout(() => {
-      setMetrics([
-        {
-          value: '$47,293',
-          change: '+12.5%',
-          trend: 'up',
-          icon: TrendingUp,
-          color: 'emerald',
-          description: 'Total Revenue'
-        },
-        {
-          value: '94/100',
-          change: '+8 points',
-          trend: 'up',
-          icon: Target,
-          color: 'blue',
-          description: 'SEO Score'
-        },
-        {
-          value: '4.2%',
-          change: '+0.8%',
-          trend: 'up',
-          icon: Eye,
-          color: 'purple',
-          description: 'Conversion Rate'
-        },
-        {
-          value: '12,847',
-          change: '+1,203',
-          trend: 'up',
-          icon: Users,
-          color: 'pink',
-          description: 'Total Visitors'
-        }
-      ]);
       setIsLoading(false);
-    }, 1000);
+    }, 2000);
   }, []);
 
   // Real-time data updates
