@@ -174,7 +174,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Navigation */}
       <nav className="relative z-10 bg-white/80 backdrop-blur-lg border-b border-white/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
@@ -197,7 +197,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Hero Section */}
       <section className="relative z-10 pt-20 pb-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="text-center">
             {/* Badge */}
             <div className={`inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-6 py-3 border border-indigo-200 mb-8 transition-all duration-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
@@ -261,7 +261,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Trust Indicators */}
       <section className="relative z-10 py-16 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="text-center mb-12">
             <p className="text-gray-600 mb-8">Trusted by leading Shopify stores worldwide</p>
             <div className="flex items-center justify-center space-x-2 mb-4">
@@ -295,7 +295,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Interactive Features */}
       <section id="features" className="relative z-10 py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Everything You Need to <span className="text-gradient-primary">Dominate</span>
@@ -341,7 +341,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Social Proof */}
       <section id="testimonials" className="relative z-10 py-32 bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Loved by <span className="text-gradient-primary">50,000+</span> Store Owners
@@ -390,7 +390,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Pricing */}
       <section id="pricing" className="relative z-10 py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Choose Your <span className="text-gradient-primary">Growth Plan</span>
@@ -454,7 +454,7 @@ const PremiumShopifyLanding = () => {
 
       {/* Final CTA */}
       <section className="relative z-10 py-32 bg-gradient-to-r from-indigo-600 to-purple-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-6xl text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Transform Your Store?
           </h2>

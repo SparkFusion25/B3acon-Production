@@ -19,7 +19,9 @@ import {
   Filter,
   Calendar,
   Download,
-  Sparkles
+  Sparkles,
+  Menu,
+  X
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -42,6 +44,7 @@ const PremiumShopifyDashboard = () => {
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     // Simulate loading and data fetching
@@ -208,7 +211,7 @@ const PremiumShopifyDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
       {/* Top Navigation */}
       <nav className="bg-white/80 backdrop-blur-lg border-b border-white/20 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
@@ -218,13 +221,30 @@ const PremiumShopifyDashboard = () => {
                 <span className="text-2xl font-bold text-gray-900">B3ACON</span>
               </div>
               
-              <div className="hidden md:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
+              <div className="hidden sm:flex items-center space-x-2 bg-emerald-100 px-3 py-1 rounded-full">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span className="text-emerald-700 text-sm font-medium">techstore.myshopify.com</span>
+                <span className="text-emerald-700 text-sm font-medium hidden md:inline">techstore.myshopify.com</span>
+                <span className="text-emerald-700 text-sm font-medium md:hidden">Connected</span>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
+              {/* Mobile Menu Button */}
+              <button 
+                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+              
+              {/* Navigation Menu */}
+              <div className="hidden lg:flex items-center space-x-6">
+                <a href="#analytics" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Analytics</a>
+                <a href="#products" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Products</a>
+                <a href="#seo" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">SEO Tools</a>
+                <a href="#settings" className="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Settings</a>
+              </div>
+              
               <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
                 <Bell className="w-6 h-6" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
@@ -245,19 +265,58 @@ const PremiumShopifyDashboard = () => {
         </div>
       </nav>
 
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl transform transition-transform">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-bold text-gray-900">Menu</h2>
+                <button 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <nav className="space-y-4">
+                <a href="#analytics" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                  <BarChart3 className="w-5 h-5 text-indigo-600" />
+                  <span className="font-medium text-gray-900">Analytics</span>
+                </a>
+                <a href="#products" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                  <ShoppingBag className="w-5 h-5 text-purple-600" />
+                  <span className="font-medium text-gray-900">Products</span>
+                </a>
+                <a href="#seo" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                  <Search className="w-5 h-5 text-emerald-600" />
+                  <span className="font-medium text-gray-900">SEO Tools</span>
+                </a>
+                <a href="#settings" className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                  <Settings className="w-5 h-5 text-gray-600" />
+                  <span className="font-medium text-gray-900">Settings</span>
+                </a>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:max-w-8xl py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">
                 Welcome back, <span className="text-gradient-primary">Sarah! 👋</span>
               </h1>
-              <p className="text-gray-600 text-lg">Your store is performing 23% better than last month</p>
+              <p className="text-gray-600 text-base sm:text-lg">Your store is performing 23% better than last month</p>
             </div>
             
-            <div className="hidden md:flex items-center space-x-3">
+            <div className="flex sm:hidden md:flex items-center space-x-3">
               <button className="btn-premium btn-outline">
                 <Calendar className="w-4 h-4" />
                 Last 7 days
@@ -272,12 +331,12 @@ const PremiumShopifyDashboard = () => {
 
         {/* Time Frame Selector */}
         <div className="mb-8">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2">
             {['24h', '7d', '30d', '90d'].map((timeframe) => (
               <button
                 key={timeframe}
                 onClick={() => setActiveTimeframe(timeframe)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap flex-shrink-0 ${
                   activeTimeframe === timeframe
                     ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
                     : 'bg-white/60 text-gray-600 hover:bg-white/80'
