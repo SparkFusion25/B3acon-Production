@@ -116,10 +116,10 @@ const PremiumShopifyLogin = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
       {/* Login Container */}
-      <div className={`w-full max-w-md transition-all duration-1000 ${isAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className={`login-container w-full max-w-md transition-all duration-1000 ${isAnimated ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {/* Logo Section */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center">
+          <div className="login-logo w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center">
             <Shield className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
@@ -129,7 +129,7 @@ const PremiumShopifyLogin = () => {
         </div>
 
         {/* Login Form */}
-        <div className="glass-card-dark p-8 mb-6">
+        <div className="login-card glass-card-dark p-8 mb-6">
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div>
@@ -185,7 +185,7 @@ const PremiumShopifyLogin = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-premium btn-primary btn-large w-full group"
+              className="mobile-button btn-premium btn-primary btn-large w-full group touch-target"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -213,7 +213,7 @@ const PremiumShopifyLogin = () => {
               <button
                 key={index}
                 onClick={() => fillDemoCredentials(user.email.split('@')[0])}
-                className="w-full p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all duration-200 text-left"
+                className="w-full p-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all duration-200 text-left touch-target"
               >
                 <div className="flex items-center justify-between">
                   <div>

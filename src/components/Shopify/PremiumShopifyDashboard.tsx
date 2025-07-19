@@ -37,6 +37,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ShopifyAuthProvider, useShopifyAuth } from '../../contexts/ShopifyAuthContext';
 import FeatureGate from '../FeatureGate';
 import { hasAccess } from '../../utils/subscriptionUtils';
+import { useMobileNavigation } from '../../hooks/useMobileNavigation';
 import '../../styles/premium-design-system.css';
 
 interface MetricData {
@@ -58,12 +59,12 @@ const DashboardContent = () => {
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
   const [metrics, setMetrics] = useState<MetricData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeModule, setActiveModule] = useState('dashboard');
   const [expandedItems, setExpandedItems] = useState<string[]>(['seo-tools', 'analytics']);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, subscription, logout } = useShopifyAuth();
+  const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu, isMobile } = useMobileNavigation();
 
   // Mock data for dashboard
   const trafficSourcesData = [
@@ -229,13 +230,13 @@ const DashboardContent = () => {
                 onClick={() => {
                   if (accessible) {
                     navigate(item.href);
-                    setIsMobileMenuOpen(false);
+                    closeMobileMenu();
                   } else {
                     openUpgradeModal(item.requiredPlan);
                   }
                 }}
                 className={`
-                  w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 text-left group
+                  w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200 text-left group touch-target
                   ${isActive && accessible
                     ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg' 
                     : accessible
@@ -243,6 +244,7 @@ const DashboardContent = () => {
                     : 'text-gray-400 hover:bg-gray-50 cursor-not-allowed'
                   }
                 `}
+                aria-label={`Navigate to ${item.label}`}
               >
                 <div className="flex items-center space-x-3">
                   <item.icon className={`w-5 h-5 flex-shrink-0 ${
@@ -292,7 +294,7 @@ const DashboardContent = () => {
     if (itemId) {
       setActiveModule(itemId);
     }
-    setIsMobileMenuOpen(false);
+    closeMobileMenu();
   };
 
   // Function to render different content based on current route
@@ -443,8 +445,9 @@ const DashboardContent = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 font-primary">
       {/* Mobile Menu Button */}
       <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-indigo-600 text-white rounded-lg shadow-lg"
+        onClick={toggleMobileMenu}
+        className="mobile-nav-toggle lg:hidden fixed top-4 left-4 z-50 touch-target"
+        aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
       >
         {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
@@ -452,17 +455,17 @@ const DashboardContent = () => {
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsMobileMenuOpen(false)}
+          className="mobile-overlay active lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={closeMobileMenu}
         />
       )}
 
       {/* Left Sidebar */}
       <div className={`
-        fixed left-0 top-0 z-40 h-full bg-white border-r border-gray-200 shadow-lg
+        sidebar fixed left-0 top-0 z-40 h-full bg-white border-r border-gray-200 shadow-lg
         transition-transform duration-300 ease-in-out
         w-64 lg:w-64
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        ${isMobileMenuOpen ? 'open translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         <div className="flex flex-col h-full p-4">
           {/* Logo */}
@@ -525,9 +528,9 @@ const DashboardContent = () => {
       </div>
 
       {/* Main Content */}
-      <div className="lg:ml-64 min-h-screen">
+      <div className="main-content lg:ml-64 min-h-screen">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="desktop-header bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex-1" />
             

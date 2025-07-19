@@ -20,10 +20,13 @@ import {
   Package,
   CreditCard,
   TrendingUp,
-  Activity
+  Activity,
+  Menu,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShopifyAuth } from '../../contexts/ShopifyAuthContext';
+import { useMobileNavigation } from '../../hooks/useMobileNavigation';
 import '../../styles/premium-design-system.css';
 
 interface PricingPlan {
@@ -48,6 +51,7 @@ interface AppMetrics {
 const ShopifyAdmin = () => {
   const navigate = useNavigate();
   const { user, subscription, logout } = useShopifyAuth();
+  const { isMobileMenuOpen, toggleMobileMenu, closeMobileMenu, isMobile } = useMobileNavigation();
   const [activeTab, setActiveTab] = useState('plans');
   const [showAddPlan, setShowAddPlan] = useState(false);
 
@@ -169,6 +173,7 @@ const ShopifyAdmin = () => {
 
   const handleNavigation = (navItem) => {
     setActiveTab(navItem.id);
+    closeMobileMenu();
     // In a real app, you would use react-router here:
     // navigate(navItem.href);
   };
@@ -541,9 +546,30 @@ const ShopifyAdmin = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={toggleMobileMenu}
+        className="mobile-nav-toggle lg:hidden fixed top-4 left-4 z-50 touch-target"
+        aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+      >
+        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="mobile-overlay active lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={closeMobileMenu}
+        />
+      )}
+
       <div className="flex">
         {/* Left Sidebar - Like App Dashboard */}
-        <div className="w-80 min-h-screen glass-card-dark border-r border-white/10">
+        <div className={`
+          sidebar w-80 min-h-screen glass-card-dark border-r border-white/10
+          fixed left-0 top-0 z-40 transition-transform duration-300 ease-in-out
+          ${isMobileMenuOpen ? 'open translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}>
           {/* Admin Header */}
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center space-x-3">
@@ -568,16 +594,17 @@ const ShopifyAdmin = () => {
               {adminNavItems.map((item) => {
                 const isActive = activeTab === item.id;
                 return (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavigation(item)}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left group relative ${
-                      isActive
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
-                        : 'text-indigo-200 hover:bg-white/10 hover:text-white'
-                    }`}
-                    title={item.description}
-                  >
+                                     <button
+                     key={item.id}
+                     onClick={() => handleNavigation(item)}
+                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 text-left group relative touch-target ${
+                       isActive
+                         ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg'
+                         : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                     }`}
+                     title={item.description}
+                     aria-label={`Navigate to ${item.label}`}
+                   >
                     <item.icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'animate-pulse' : ''}`} />
                     <div className="flex-1">
                       <div className="font-medium text-sm">{item.label}</div>
@@ -621,8 +648,8 @@ const ShopifyAdmin = () => {
            </div>
         </div>
 
-        {/* Main Content Area - Like App Dashboard */}
-        <div className="flex-1">
+                 {/* Main Content Area - Like App Dashboard */}
+         <div className="main-content flex-1 lg:ml-80">
           {/* Top Header */}
           <div className="glass-card-dark border-b border-white/10 p-6">
             <div className="max-w-7xl mx-auto">
