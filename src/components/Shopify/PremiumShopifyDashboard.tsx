@@ -1091,12 +1091,33 @@ const PremiumShopifyDashboard = () => {
                   Support
                 </button>
                 <button 
+                  onClick={() => setActiveSection('billing')}
+                  className={`font-medium transition-colors ${activeSection === 'billing' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Billing
+                </button>
+                <button 
+                  onClick={() => setActiveSection('affiliate')}
+                  className={`font-medium transition-colors ${activeSection === 'affiliate' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Affiliate
+                </button>
+                <button 
                   onClick={() => setActiveSection('settings')}
                   className={`font-medium transition-colors ${activeSection === 'settings' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
                 >
                   Settings
                 </button>
               </div>
+              
+              {/* Upgrade Button */}
+              <button 
+                onClick={() => window.location.href = `/shopify/plans?shop=${shopUrl}&upgrade=true`}
+                className="btn-premium btn-primary flex items-center space-x-2"
+              >
+                <Crown className="w-4 h-4" />
+                <span>Upgrade Plan</span>
+              </button>
               
               <button className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors">
                 <Bell className="w-6 h-6" />
@@ -1199,6 +1220,20 @@ const PremiumShopifyDashboard = () => {
                   <span className="font-medium text-gray-900">Support</span>
                 </button>
                 <button 
+                  onClick={() => {setActiveSection('billing'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'billing' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <CreditCard className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-gray-900">Billing</span>
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('affiliate'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'affiliate' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <Users className="w-5 h-5 text-purple-600" />
+                  <span className="font-medium text-gray-900">Affiliate</span>
+                </button>
+                <button 
                   onClick={() => {setActiveSection('settings'); setIsMobileMenuOpen(false);}}
                   className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'settings' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
                 >
@@ -1227,6 +1262,8 @@ const PremiumShopifyDashboard = () => {
                 {activeSection === 'reports' && <>Advanced <span className="text-gradient-primary">Reports</span></>}
                 {activeSection === 'integrations' && <>App <span className="text-gradient-primary">Integrations</span></>}
                 {activeSection === 'support' && <>Help & <span className="text-gradient-primary">Support</span></>}
+                {activeSection === 'billing' && <>Billing & <span className="text-gradient-primary">Subscription</span></>}
+                {activeSection === 'affiliate' && <>Affiliate <span className="text-gradient-primary">Program</span></>}
                 {activeSection === 'settings' && <>Account <span className="text-gradient-primary">Settings</span></>}
               </h1>
               <p className="text-gray-600 text-base sm:text-lg">
@@ -1239,6 +1276,8 @@ const PremiumShopifyDashboard = () => {
                 {activeSection === 'reports' && 'Generate detailed reports and export performance data'}
                 {activeSection === 'integrations' && 'Connect with third-party tools and services'}
                 {activeSection === 'support' && 'Get help, access documentation, and manage support tickets'}
+                {activeSection === 'billing' && 'Manage your subscription, billing history, and payment methods'}
+                {activeSection === 'affiliate' && 'Join our affiliate program and earn commissions on referrals'}
                 {activeSection === 'settings' && 'Configure your account preferences and app settings'}
               </p>
             </div>
