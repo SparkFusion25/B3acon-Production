@@ -35,7 +35,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ShopifyAuthProvider, useShopifyAuth } from '../../contexts/ShopifyAuthContext';
-import FeatureGate from '../FeatureGate';
+import FeatureGate from '../Common/FeatureGate';
 import { hasAccess } from '../../utils/subscriptionUtils';
 import { useMobileNavigation } from '../../hooks/useMobileNavigation';
 import '../../styles/premium-design-system.css';
