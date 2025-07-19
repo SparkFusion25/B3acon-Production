@@ -149,22 +149,34 @@ const PremiumShopifyInstallation = () => {
     const shop = urlParams.get('shop');
     const host = urlParams.get('host');
     
+    console.log('🔍 Installation Context:', { shop, host, isEmbedded: window.top !== window.self });
+    
     if (shop && host) {
       // We're in embedded app mode - set store URL from params
       setStoreUrl(shop);
       
-      // Load Shopify App Bridge
-      if (!window.shopifyAppBridge) {
+      // Auto-start installation for embedded apps
+      setTimeout(() => {
+        setIsInstalling(true);
+      }, 1000);
+      
+      // Load Shopify App Bridge if not already loaded
+      if (!window.AppBridge && !document.querySelector('script[src*="app-bridge"]')) {
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/@shopify/app-bridge@3';
         script.onload = () => {
-          if (window.shopifyAppBridge) {
-            // Initialize App Bridge
-            const app = window.shopifyAppBridge.createApp({
-              apiKey: 'your-api-key', // Replace with actual API key
-              host: host,
-              forceRedirect: true
-            });
+          if (window.AppBridge) {
+            try {
+              // Initialize App Bridge
+              const app = window.AppBridge.createApp({
+                apiKey: process.env.REACT_APP_SHOPIFY_API_KEY || 'your-api-key',
+                host: host,
+                forceRedirect: true
+              });
+              console.log('✅ App Bridge initialized in installation');
+            } catch (error) {
+              console.error('❌ App Bridge Error:', error);
+            }
           }
         };
         document.head.appendChild(script);
