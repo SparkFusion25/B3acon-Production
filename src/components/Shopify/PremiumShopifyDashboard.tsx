@@ -27,7 +27,24 @@ import {
   Globe,
   Plus,
   Edit,
-  Save
+  Save,
+  CreditCard,
+  FileText,
+  HelpCircle,
+  MessageSquare,
+  Bookmark,
+  Activity,
+  RefreshCw,
+  Database,
+  Link,
+  Clipboard,
+  CheckSquare,
+  AlertTriangle,
+  PlayCircle,
+  PauseCircle,
+  StopCircle,
+  GitBranch,
+  Workflow
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -250,6 +267,16 @@ const PremiumShopifyDashboard = () => {
         return renderProductsSection();
       case 'seo':
         return renderSEOSection();
+      case 'campaigns':
+        return renderCampaignsSection();
+      case 'automations':
+        return renderAutomationsSection();
+      case 'reports':
+        return renderReportsSection();
+      case 'integrations':
+        return renderIntegrationsSection();
+      case 'support':
+        return renderSupportSection();
       case 'settings':
         return renderSettingsSection();
       default:
@@ -1034,6 +1061,36 @@ const PremiumShopifyDashboard = () => {
                   SEO Tools
                 </button>
                 <button 
+                  onClick={() => setActiveSection('campaigns')}
+                  className={`font-medium transition-colors ${activeSection === 'campaigns' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Campaigns
+                </button>
+                <button 
+                  onClick={() => setActiveSection('automations')}
+                  className={`font-medium transition-colors ${activeSection === 'automations' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Automations
+                </button>
+                <button 
+                  onClick={() => setActiveSection('reports')}
+                  className={`font-medium transition-colors ${activeSection === 'reports' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Reports
+                </button>
+                <button 
+                  onClick={() => setActiveSection('integrations')}
+                  className={`font-medium transition-colors ${activeSection === 'integrations' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Integrations
+                </button>
+                <button 
+                  onClick={() => setActiveSection('support')}
+                  className={`font-medium transition-colors ${activeSection === 'support' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
+                >
+                  Support
+                </button>
+                <button 
                   onClick={() => setActiveSection('settings')}
                   className={`font-medium transition-colors ${activeSection === 'settings' ? 'text-indigo-600' : 'text-gray-600 hover:text-indigo-600'}`}
                 >
@@ -1077,7 +1134,7 @@ const PremiumShopifyDashboard = () => {
                 </button>
               </div>
               
-              <nav className="space-y-4">
+              <nav className="space-y-4 max-h-96 overflow-y-auto">
                 <button 
                   onClick={() => {setActiveSection('overview'); setIsMobileMenuOpen(false);}}
                   className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'overview' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
@@ -1107,6 +1164,41 @@ const PremiumShopifyDashboard = () => {
                   <span className="font-medium text-gray-900">SEO Tools</span>
                 </button>
                 <button 
+                  onClick={() => {setActiveSection('campaigns'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'campaigns' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <Target className="w-5 h-5 text-pink-600" />
+                  <span className="font-medium text-gray-900">Campaigns</span>
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('automations'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'automations' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <Zap className="w-5 h-5 text-yellow-600" />
+                  <span className="font-medium text-gray-900">Automations</span>
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('reports'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'reports' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <BarChart3 className="w-5 h-5 text-blue-600" />
+                  <span className="font-medium text-gray-900">Reports</span>
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('integrations'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'integrations' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <Globe className="w-5 h-5 text-green-600" />
+                  <span className="font-medium text-gray-900">Integrations</span>
+                </button>
+                <button 
+                  onClick={() => {setActiveSection('support'); setIsMobileMenuOpen(false);}}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'support' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
+                >
+                  <Users className="w-5 h-5 text-orange-600" />
+                  <span className="font-medium text-gray-900">Support</span>
+                </button>
+                <button 
                   onClick={() => {setActiveSection('settings'); setIsMobileMenuOpen(false);}}
                   className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeSection === 'settings' ? 'bg-indigo-100 text-indigo-600' : 'hover:bg-gray-100'}`}
                 >
@@ -1130,6 +1222,11 @@ const PremiumShopifyDashboard = () => {
                 {activeSection === 'analytics' && <>Analytics <span className="text-gradient-primary">Dashboard</span></>}
                 {activeSection === 'products' && <>Product <span className="text-gradient-primary">Management</span></>}
                 {activeSection === 'seo' && <>SEO <span className="text-gradient-primary">Tools</span></>}
+                {activeSection === 'campaigns' && <>Marketing <span className="text-gradient-primary">Campaigns</span></>}
+                {activeSection === 'automations' && <>Smart <span className="text-gradient-primary">Automations</span></>}
+                {activeSection === 'reports' && <>Advanced <span className="text-gradient-primary">Reports</span></>}
+                {activeSection === 'integrations' && <>App <span className="text-gradient-primary">Integrations</span></>}
+                {activeSection === 'support' && <>Help & <span className="text-gradient-primary">Support</span></>}
                 {activeSection === 'settings' && <>Account <span className="text-gradient-primary">Settings</span></>}
               </h1>
               <p className="text-gray-600 text-base sm:text-lg">
@@ -1137,6 +1234,11 @@ const PremiumShopifyDashboard = () => {
                 {activeSection === 'analytics' && 'Monitor your store performance and track key metrics'}
                 {activeSection === 'products' && 'Manage your product catalog and SEO optimization'}
                 {activeSection === 'seo' && 'Optimize your store for search engines and boost rankings'}
+                {activeSection === 'campaigns' && 'Create and manage targeted marketing campaigns to boost sales'}
+                {activeSection === 'automations' && 'Set up automated workflows to optimize your store continuously'}
+                {activeSection === 'reports' && 'Generate detailed reports and export performance data'}
+                {activeSection === 'integrations' && 'Connect with third-party tools and services'}
+                {activeSection === 'support' && 'Get help, access documentation, and manage support tickets'}
                 {activeSection === 'settings' && 'Configure your account preferences and app settings'}
               </p>
             </div>
