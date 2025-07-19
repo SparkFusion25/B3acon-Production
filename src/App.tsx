@@ -13,6 +13,7 @@ import ShopifyInstallation from './components/Shopify/ShopifyInstallation';
 import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
 import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
+import AdminBillingSystem from './components/Admin/AdminBillingSystem';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
 import ShopifyPlanSelection from './components/Shopify/ShopifyPlanSelection';
 import { PremiumLoginForm, PremiumSignupForm } from './components/Premium/PremiumAuthLayout';
@@ -35,8 +36,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/shopify" element={<PremiumShopifyLanding />} />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
       <Route path="/shopify/plans" element={<ShopifyPlanSelection />} />
-      <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
-      <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+              <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
+        <Route path="/shopify/admin" element={<ShopifyAdmin />} />
+        <Route path="/admin/billing" element={<AdminBillingSystem />} />
       
              {/* Legacy Routes for Testing */}
        <Route path="/shopify/legacy" element={<ShopifyLanding />} />
