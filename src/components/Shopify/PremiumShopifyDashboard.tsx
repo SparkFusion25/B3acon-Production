@@ -203,6 +203,20 @@ const PremiumShopifyDashboard = () => {
     location: 'United States',
     device: 'desktop'
   });
+  const [keywordResearchForm, setKeywordResearchForm] = useState({
+    seedKeyword: '',
+    location: 'United States',
+    language: 'English'
+  });
+  const [siteSpeedForm, setSiteSpeedForm] = useState({
+    url: '',
+    device: 'desktop'
+  });
+  const [schemaForm, setSchemaForm] = useState({
+    type: 'Product',
+    title: '',
+    description: ''
+  });
   const [seoReports, setSeoReports] = useState([
     {
       id: '1',
@@ -269,6 +283,49 @@ const PremiumShopifyDashboard = () => {
       location: 'United States',
       device: 'desktop',
       lastUpdate: '2024-01-16'
+    }
+  ]);
+  const [keywordSuggestions, setKeywordSuggestions] = useState([
+    {
+      id: '1',
+      keyword: 'wireless bluetooth headphones',
+      volume: 22100,
+      difficulty: 'Medium',
+      cpc: '$1.25',
+      competition: 'High',
+      trend: 'up'
+    },
+    {
+      id: '2',
+      keyword: 'noise cancelling headphones',
+      volume: 18300,
+      difficulty: 'Hard',
+      cpc: '$2.10',
+      competition: 'High',
+      trend: 'stable'
+    }
+  ]);
+  const [speedReports, setSpeedReports] = useState([
+    {
+      id: '1',
+      url: 'https://techstore.myshopify.com',
+      device: 'desktop',
+      score: 87,
+      fcp: '1.2s',
+      lcp: '2.1s',
+      cls: '0.05',
+      status: 'completed',
+      createdAt: '2024-01-16'
+    }
+  ]);
+  const [schemaMarkups, setSchemaMarkups] = useState([
+    {
+      id: '1',
+      type: 'Product',
+      title: 'Wireless Bluetooth Headphones',
+      status: 'active',
+      pages: 15,
+      createdAt: '2024-01-15'
     }
   ]);
 
@@ -785,6 +842,83 @@ const PremiumShopifyDashboard = () => {
     }
   };
 
+  const handleKeywordResearch = () => {
+    if (!keywordResearchForm.seedKeyword.trim()) {
+      alert('Please enter a seed keyword');
+      return;
+    }
+
+    const suggestions = [
+      `${keywordResearchForm.seedKeyword} reviews`,
+      `best ${keywordResearchForm.seedKeyword}`,
+      `${keywordResearchForm.seedKeyword} price`,
+      `${keywordResearchForm.seedKeyword} comparison`,
+      `buy ${keywordResearchForm.seedKeyword}`
+    ].map((keyword, index) => ({
+      id: Date.now().toString() + index,
+      keyword,
+      volume: Math.floor(Math.random() * 50000) + 1000,
+      difficulty: ['Easy', 'Medium', 'Hard'][Math.floor(Math.random() * 3)],
+      cpc: `$${(Math.random() * 3 + 0.5).toFixed(2)}`,
+      competition: ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)],
+      trend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)]
+    }));
+
+    setKeywordSuggestions([...suggestions, ...keywordSuggestions]);
+    setKeywordResearchForm({ seedKeyword: '', location: 'United States', language: 'English' });
+    alert(`✅ Found ${suggestions.length} keyword suggestions for "${keywordResearchForm.seedKeyword}"`);
+  };
+
+  const handleSiteSpeedTest = () => {
+    if (!siteSpeedForm.url.trim()) {
+      alert('Please enter a URL to test');
+      return;
+    }
+
+    const newReport = {
+      id: Date.now().toString(),
+      url: siteSpeedForm.url,
+      device: siteSpeedForm.device,
+      score: Math.floor(Math.random() * 30) + 70,
+      fcp: `${(Math.random() * 2 + 0.8).toFixed(1)}s`,
+      lcp: `${(Math.random() * 3 + 1.5).toFixed(1)}s`,
+      cls: `${(Math.random() * 0.1).toFixed(2)}`,
+      status: 'testing' as const,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setSpeedReports([newReport, ...speedReports]);
+    
+    setTimeout(() => {
+      setSpeedReports(prev => prev.map(r => 
+        r.id === newReport.id ? { ...r, status: 'completed' } : r
+      ));
+    }, 3000);
+
+    setSiteSpeedForm({ url: '', device: 'desktop' });
+    alert(`✅ Speed test started for "${newReport.url}"! Results in a few seconds.`);
+  };
+
+  const handleGenerateSchema = () => {
+    if (!schemaForm.title.trim()) {
+      alert('Please enter a title for the schema markup');
+      return;
+    }
+
+    const newSchema = {
+      id: Date.now().toString(),
+      type: schemaForm.type,
+      title: schemaForm.title,
+      status: 'active' as const,
+      pages: 1,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setSchemaMarkups([newSchema, ...schemaMarkups]);
+    setSchemaForm({ type: 'Product', title: '', description: '' });
+    alert(`✅ ${schemaForm.type} schema markup generated for "${newSchema.title}"`);
+  };
+
   // SEO Tools render functions (moved outside for React compatibility)
   const renderSEOAnalyzer = () => (
       <div className="space-y-8">
@@ -1133,12 +1267,287 @@ const PremiumShopifyDashboard = () => {
       </div>
     );
 
+  const renderKeywordResearch = () => (
+    <div className="space-y-8">
+      {/* Keyword Research Form */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Keyword Research</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Seed Keyword *</label>
+              <input
+                type="text"
+                value={keywordResearchForm.seedKeyword}
+                onChange={(e) => setKeywordResearchForm({...keywordResearchForm, seedKeyword: e.target.value})}
+                placeholder="wireless headphones"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <select
+                  value={keywordResearchForm.location}
+                  onChange={(e) => setKeywordResearchForm({...keywordResearchForm, location: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                >
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="Australia">Australia</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <select
+                  value={keywordResearchForm.language}
+                  onChange={(e) => setKeywordResearchForm({...keywordResearchForm, language: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                >
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                  <option value="German">German</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center">
+            <button
+              onClick={handleKeywordResearch}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-3 px-6 rounded-lg hover:from-orange-600 hover:to-red-700 transition-all flex items-center justify-center space-x-2"
+            >
+              <Target className="w-5 h-5" />
+              <span className="font-medium">Research Keywords</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Keyword Suggestions */}
+      <div className="glass-card p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Keyword Suggestions</h4>
+        
+        <div className="space-y-4">
+          {keywordSuggestions.map((keyword) => (
+            <div key={keyword.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h6 className="font-medium text-gray-900">{keyword.keyword}</h6>
+                  <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                    <span>Volume: {keyword.volume.toLocaleString()}</span>
+                    <span>CPC: {keyword.cpc}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      keyword.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
+                      keyword.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {keyword.difficulty}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSiteSpeedMonitor = () => (
+    <div className="space-y-8">
+      {/* Speed Test Form */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Site Speed Test</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Website URL *</label>
+              <input
+                type="url"
+                value={siteSpeedForm.url}
+                onChange={(e) => setSiteSpeedForm({...siteSpeedForm, url: e.target.value})}
+                placeholder="https://yourstore.myshopify.com"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Device Type</label>
+              <select
+                value={siteSpeedForm.device}
+                onChange={(e) => setSiteSpeedForm({...siteSpeedForm, device: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              >
+                <option value="desktop">Desktop</option>
+                <option value="mobile">Mobile</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center">
+            <button
+              onClick={handleSiteSpeedTest}
+              className="w-full bg-gradient-to-r from-red-500 to-pink-600 text-white py-3 px-6 rounded-lg hover:from-red-600 hover:to-pink-700 transition-all flex items-center justify-center space-x-2"
+            >
+              <Activity className="w-5 h-5" />
+              <span className="font-medium">Run Speed Test</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Speed Reports */}
+      <div className="glass-card p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Speed Test Results</h4>
+        
+        <div className="space-y-4">
+          {speedReports.map((report) => (
+            <div key={report.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h6 className="font-medium text-gray-900">{report.url}</h6>
+                  <p className="text-sm text-gray-600">{report.device} • {report.createdAt}</p>
+                </div>
+                <div className="text-right">
+                  <div className={`text-2xl font-bold ${
+                    report.score >= 90 ? 'text-green-600' : 
+                    report.score >= 50 ? 'text-yellow-600' : 'text-red-600'
+                  }`}>{report.score}</div>
+                  <p className="text-xs text-gray-600">Performance Score</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{report.fcp}</div>
+                  <p className="text-xs text-gray-600">First Contentful Paint</p>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{report.lcp}</div>
+                  <p className="text-xs text-gray-600">Largest Contentful Paint</p>
+                </div>
+                <div className="text-center">
+                  <div className="font-semibold text-gray-900">{report.cls}</div>
+                  <p className="text-xs text-gray-600">Cumulative Layout Shift</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSchemaMarkupGenerator = () => (
+    <div className="space-y-8">
+      {/* Schema Generation Form */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Generate Schema Markup</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Schema Type</label>
+              <select
+                value={schemaForm.type}
+                onChange={(e) => setSchemaForm({...schemaForm, type: e.target.value})}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              >
+                <option value="Product">Product</option>
+                <option value="Article">Article</option>
+                <option value="Organization">Organization</option>
+                <option value="LocalBusiness">Local Business</option>
+                <option value="Review">Review</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+              <input
+                type="text"
+                value={schemaForm.title}
+                onChange={(e) => setSchemaForm({...schemaForm, title: e.target.value})}
+                placeholder="Product/Article/Business name"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <textarea
+                value={schemaForm.description}
+                onChange={(e) => setSchemaForm({...schemaForm, description: e.target.value})}
+                placeholder="Brief description for the schema markup"
+                rows={3}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center">
+            <button
+              onClick={handleGenerateSchema}
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-indigo-600 hover:to-purple-700 transition-all flex items-center justify-center space-x-2"
+            >
+              <Settings className="w-5 h-5" />
+              <span className="font-medium">Generate Schema</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Generated Schema Markups */}
+      <div className="glass-card p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Generated Schema Markups</h4>
+        
+        <div className="space-y-4">
+          {schemaMarkups.map((schema) => (
+            <div key={schema.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-800">
+                      {schema.type}
+                    </span>
+                    <h6 className="font-medium text-gray-900">{schema.title}</h6>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    {schema.pages} pages • Created {schema.createdAt}
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => alert(`📋 Schema markup code for "${schema.title}" would be displayed here`)}
+                    className="text-blue-600 hover:text-blue-800 transition-colors"
+                    title="View Schema Code"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   // SEO Tools main function (placed after sub-functions for proper hoisting)
   const renderSEOTools = () => {
     const seoToolTabs = [
       { id: 'seo-analyzer', label: 'SEO Analyzer', icon: Search },
       { id: 'internal-links', label: 'Internal Link Engine', icon: Globe },
-      { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp }
+      { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp },
+      { id: 'keyword-research', label: 'Keyword Research', icon: Target },
+      { id: 'site-speed', label: 'Site Speed Monitor', icon: Activity },
+      { id: 'schema-markup', label: 'Schema Markup Generator', icon: Settings }
     ];
 
     return (
@@ -1165,6 +1574,9 @@ const PremiumShopifyDashboard = () => {
         {activeSEOTab === 'seo-analyzer' && renderSEOAnalyzer()}
         {activeSEOTab === 'internal-links' && renderInternalLinks()}
         {activeSEOTab === 'rank-tracker' && renderRankTracker()}
+        {activeSEOTab === 'keyword-research' && renderKeywordResearch()}
+        {activeSEOTab === 'site-speed' && renderSiteSpeedMonitor()}
+        {activeSEOTab === 'schema-markup' && renderSchemaMarkupGenerator()}
       </div>
     );
   };
