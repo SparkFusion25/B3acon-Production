@@ -106,6 +106,7 @@ const PremiumShopifyDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTimeframe, setActiveTimeframe] = useState('7d');
   const [isLoading, setIsLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Real-time dashboard state
   const [metrics, setMetrics] = useState<MetricData[]>([]);
@@ -714,7 +715,7 @@ const PremiumShopifyDashboard = () => {
       </div>
 
       {/* Main Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {metrics.map((metric, index) => (
           <div key={index} className="glass-card p-6">
             <div className="flex items-center justify-between mb-4">
@@ -752,7 +753,7 @@ const PremiumShopifyDashboard = () => {
           </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {realtimeMetrics.map((metric) => (
             <div key={metric.id} className="border rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
@@ -1231,7 +1232,7 @@ const PremiumShopifyDashboard = () => {
   const renderReviewDashboard = () => (
     <div className="space-y-8">
       {/* Review Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
         {[
           { label: 'Total Reviews', value: reviewStats.totalReviews.toLocaleString(), icon: MessageCircle, color: 'blue' },
           { label: 'Average Rating', value: `${reviewStats.averageRating}/5`, icon: Star, color: 'yellow' },
@@ -1329,7 +1330,7 @@ const PremiumShopifyDashboard = () => {
       {/* Filters */}
       <div className="glass-card p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-6">Filter Reviews</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
             <select
@@ -1548,7 +1549,7 @@ const PremiumShopifyDashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveReviewTab(tab.id)}
-              className={`px-4 py-2 rounded-t-lg font-medium transition-colors flex items-center space-x-2 ${
+              className={`px-4 py-3 rounded-t-lg font-medium transition-colors flex items-center space-x-2 touch-manipulation ${
                 activeReviewTab === tab.id
                   ? 'bg-yellow-50 text-yellow-700 border-b-2 border-yellow-500'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -2655,7 +2656,7 @@ const PremiumShopifyDashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveSocialTab(tab.id)}
-              className={`px-4 py-2 rounded-t-lg font-medium transition-colors flex items-center space-x-2 ${
+              className={`px-4 py-3 rounded-t-lg font-medium transition-colors flex items-center space-x-2 touch-manipulation ${
                 activeSocialTab === tab.id
                   ? 'bg-pink-50 text-pink-700 border-b-2 border-pink-500'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -2701,7 +2702,7 @@ const PremiumShopifyDashboard = () => {
             <button
               key={tab.id}
               onClick={() => setActiveSEOTab(tab.id)}
-              className={`px-4 py-2 rounded-t-lg font-medium transition-colors flex items-center space-x-2 ${
+              className={`px-4 py-3 rounded-t-lg font-medium transition-colors flex items-center space-x-2 touch-manipulation ${
                 activeSEOTab === tab.id
                   ? 'bg-green-50 text-green-700 border-b-2 border-green-500'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -3845,8 +3846,17 @@ const PremiumShopifyDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+      {/* Mobile Navigation Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
+      )}
+
       {/* Sidebar Navigation */}
-      <div className={`${sidebarCollapsed ? 'w-16' : 'w-72'} bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0`}>
+      <div className={`${
+        sidebarCollapsed ? 'w-16' : 'w-72'
+      } bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${
+        mobileMenuOpen ? 'fixed inset-y-0 left-0 z-50 lg:relative' : 'hidden lg:block'
+      }`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
@@ -3861,8 +3871,13 @@ const PremiumShopifyDashboard = () => {
               )}
             </div>
             <button 
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1 text-gray-500 hover:text-gray-700"
+              onClick={() => {
+                setSidebarCollapsed(!sidebarCollapsed);
+                if (window.innerWidth < 1024) {
+                  setMobileMenuOpen(false);
+                }
+              }}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
             >
               {sidebarCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
             </button>
@@ -3872,8 +3887,13 @@ const PremiumShopifyDashboard = () => {
             {navigationTabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all ${
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  if (window.innerWidth < 1024) {
+                    setMobileMenuOpen(false);
+                  }
+                }}
+                className={`w-full flex items-center space-x-3 px-4 py-4 rounded-lg transition-all touch-manipulation ${
                   activeTab === tab.id
                     ? 'bg-indigo-100 text-indigo-700 border border-indigo-200'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
@@ -3899,10 +3919,10 @@ const PremiumShopifyDashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button 
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="lg:hidden p-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-6 h-6" />
               </button>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">
@@ -3915,27 +3935,27 @@ const PremiumShopifyDashboard = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="hidden sm:flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full" />
                 <span className="text-sm text-gray-700">techstore.myshopify.com</span>
               </div>
               
-              <button className="relative p-2 text-gray-600 hover:text-gray-900">
+              <button className="relative p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation">
                 <Bell className="w-5 h-5" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
               </button>
               
-              <button className="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-900">
+              <button className="flex items-center space-x-2 p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation">
                 <User className="w-5 h-5" />
-                <span className="hidden sm:block text-sm">Sarah Chen</span>
+                <span className="hidden md:block text-sm">Sarah Chen</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-6 overflow-auto">
+        <div className="flex-1 p-4 sm:p-6 overflow-auto">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
               <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
