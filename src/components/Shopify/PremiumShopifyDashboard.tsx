@@ -4347,7 +4347,25 @@ const PremiumShopifyDashboard = () => {
       case 'review-management':
         return renderReviewManagement();
       case 'email-marketing':
-        return renderEmailMarketing();
+        console.log('🔴 EMAIL MARKETING DEBUG: Email marketing case reached!');
+        try {
+          return renderEmailMarketing();
+        } catch (error) {
+          console.error('🔴 EMAIL MARKETING ERROR:', error);
+          return (
+            <div className="glass-card p-6 text-center">
+              <h3 className="text-xl font-semibold text-red-600 mb-2">🔴 EMAIL MARKETING ERROR</h3>
+              <p className="text-gray-600">renderEmailMarketing() function failed!</p>
+              <p className="text-sm text-red-500 mt-2">Error: {error.message}</p>
+              <button 
+                onClick={() => console.log('Error details:', error)}
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Show Error Stack
+              </button>
+            </div>
+          );
+        }
       case 'content-creation':
         return renderPlaceholderSection('Content Creation', PenTool, 'Content creation tools and typewriter plugins');
       case 'product-research':
