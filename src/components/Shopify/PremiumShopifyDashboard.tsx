@@ -42,7 +42,8 @@ import {
   AlertCircle,
   Clock,
   Menu,
-  X
+  X,
+  Image
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -217,6 +218,13 @@ const PremiumShopifyDashboard = () => {
     title: '',
     description: ''
   });
+  const [imageCompressionForm, setImageCompressionForm] = useState({
+    selectedFiles: [],
+    quality: 80,
+    format: 'JPEG',
+    maxWidth: 1920,
+    maxHeight: 1080
+  });
   const [seoReports, setSeoReports] = useState([
     {
       id: '1',
@@ -325,6 +333,28 @@ const PremiumShopifyDashboard = () => {
       title: 'Wireless Bluetooth Headphones',
       status: 'active',
       pages: 15,
+      createdAt: '2024-01-15'
+    }
+  ]);
+  const [imageCompressions, setImageCompressions] = useState([
+    {
+      id: '1',
+      fileName: 'product-images-batch-1.jpg',
+      originalSize: 3420,
+      compressedSize: 1240,
+      quality: 85,
+      format: 'JPEG',
+      status: 'completed',
+      createdAt: '2024-01-16'
+    },
+    {
+      id: '2',
+      fileName: 'hero-banner-collection.png',
+      originalSize: 5680,
+      compressedSize: 2100,
+      quality: 80,
+      format: 'WebP',
+      status: 'completed',
       createdAt: '2024-01-15'
     }
   ]);
@@ -917,6 +947,43 @@ const PremiumShopifyDashboard = () => {
     setSchemaMarkups([newSchema, ...schemaMarkups]);
     setSchemaForm({ type: 'Product', title: '', description: '' });
     alert(`✅ ${schemaForm.type} schema markup generated for "${newSchema.title}"`);
+  };
+
+  const handleImageCompression = () => {
+    if (!imageCompressionForm.selectedFiles.length) {
+      alert('Please select images to compress');
+      return;
+    }
+
+    const newCompression = {
+      id: Date.now().toString(),
+      fileName: `${imageCompressionForm.selectedFiles.length} images`,
+      originalSize: Math.floor(Math.random() * 5000) + 1000,
+      compressedSize: Math.floor(Math.random() * 2000) + 300,
+      quality: imageCompressionForm.quality,
+      format: imageCompressionForm.format,
+      status: 'processing' as const,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setImageCompressions([newCompression, ...imageCompressions]);
+    
+    setTimeout(() => {
+      setImageCompressions(prev => prev.map(r => 
+        r.id === newCompression.id ? { ...r, status: 'completed' } : r
+      ));
+    }, 3000);
+
+    setImageCompressionForm({
+      selectedFiles: [],
+      quality: 80,
+      format: 'JPEG',
+      maxWidth: 1920,
+      maxHeight: 1080
+    });
+    
+    const savings = ((newCompression.originalSize - newCompression.compressedSize) / newCompression.originalSize * 100).toFixed(1);
+    alert(`✅ Image compression started! Expected savings: ${savings}%`);
   };
 
   // SEO Tools render functions (moved outside for React compatibility)
@@ -1539,6 +1606,163 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  const renderImageCompression = () => (
+    <div className="space-y-8">
+      {/* Image Compression Form */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Image Compression Tool</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Upload Images</label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
+                <Image className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-gray-600 mb-2">Click to upload or drag and drop</p>
+                <p className="text-sm text-gray-500">PNG, JPG, WebP up to 10MB each</p>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    setImageCompressionForm({...imageCompressionForm, selectedFiles: files});
+                  }}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label htmlFor="image-upload" className="inline-block mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors">
+                  Choose Files
+                </label>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Quality (%)</label>
+                <input
+                  type="range"
+                  min="10"
+                  max="100"
+                  value={imageCompressionForm.quality}
+                  onChange={(e) => setImageCompressionForm({...imageCompressionForm, quality: parseInt(e.target.value)})}
+                  className="w-full"
+                />
+                <span className="text-sm text-gray-600">{imageCompressionForm.quality}%</span>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <select
+                  value={imageCompressionForm.format}
+                  onChange={(e) => setImageCompressionForm({...imageCompressionForm, format: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                >
+                  <option value="JPEG">JPEG</option>
+                  <option value="PNG">PNG</option>
+                  <option value="WebP">WebP</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Max Width (px)</label>
+                <input
+                  type="number"
+                  value={imageCompressionForm.maxWidth}
+                  onChange={(e) => setImageCompressionForm({...imageCompressionForm, maxWidth: parseInt(e.target.value)})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Max Height (px)</label>
+                <input
+                  type="number"
+                  value={imageCompressionForm.maxHeight}
+                  onChange={(e) => setImageCompressionForm({...imageCompressionForm, maxHeight: parseInt(e.target.value)})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center space-y-4">
+            {imageCompressionForm.selectedFiles.length > 0 && (
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h5 className="font-medium text-blue-900 mb-2">Selected Files</h5>
+                <p className="text-sm text-blue-700">{imageCompressionForm.selectedFiles.length} images selected</p>
+                <ul className="text-xs text-blue-600 mt-2 space-y-1">
+                  {imageCompressionForm.selectedFiles.slice(0, 3).map((file, index) => (
+                    <li key={index} className="truncate">{file.name}</li>
+                  ))}
+                  {imageCompressionForm.selectedFiles.length > 3 && (
+                    <li>...and {imageCompressionForm.selectedFiles.length - 3} more</li>
+                  )}
+                </ul>
+              </div>
+            )}
+            
+            <button
+              onClick={handleImageCompression}
+              disabled={!imageCompressionForm.selectedFiles.length}
+              className="w-full bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-green-600 hover:to-blue-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Image className="w-5 h-5" />
+              <span className="font-medium">Compress Images</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Compression History */}
+      <div className="glass-card p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Compression History</h4>
+        
+        <div className="space-y-4">
+          {imageCompressions.map((compression) => {
+            const savings = ((compression.originalSize - compression.compressedSize) / compression.originalSize * 100).toFixed(1);
+            return (
+              <div key={compression.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <span className={`px-2 py-1 text-xs rounded-full ${
+                        compression.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        compression.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {compression.status}
+                      </span>
+                      <h6 className="font-medium text-gray-900">{compression.fileName}</h6>
+                    </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
+                      <p>Original: {compression.originalSize}KB</p>
+                      <p>Compressed: {compression.compressedSize}KB</p>
+                      <p className="text-green-600 font-medium">Saved: {savings}%</p>
+                      <p>Quality: {compression.quality}% | {compression.format}</p>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Created {compression.createdAt}</p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button 
+                      onClick={() => alert(`💾 Downloading compressed ${compression.fileName}...`)}
+                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      title="Download Compressed Image"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+
   // SEO Tools main function (placed after sub-functions for proper hoisting)
   const renderSEOTools = () => {
     const seoToolTabs = [
@@ -1547,7 +1771,8 @@ const PremiumShopifyDashboard = () => {
       { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp },
       { id: 'keyword-research', label: 'Keyword Research', icon: Target },
       { id: 'site-speed', label: 'Site Speed Monitor', icon: Activity },
-      { id: 'schema-markup', label: 'Schema Markup Generator', icon: Settings }
+      { id: 'schema-markup', label: 'Schema Markup Generator', icon: Settings },
+      { id: 'image-compression', label: 'Image Compression', icon: Image }
     ];
 
     return (
@@ -1577,6 +1802,7 @@ const PremiumShopifyDashboard = () => {
         {activeSEOTab === 'keyword-research' && renderKeywordResearch()}
         {activeSEOTab === 'site-speed' && renderSiteSpeedMonitor()}
         {activeSEOTab === 'schema-markup' && renderSchemaMarkupGenerator()}
+        {activeSEOTab === 'image-compression' && renderImageCompression()}
       </div>
     );
   };
