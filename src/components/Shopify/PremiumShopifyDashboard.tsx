@@ -717,7 +717,7 @@ const PremiumShopifyDashboard = () => {
       {/* Main Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {metrics.map((metric, index) => (
-          <div key={index} className="glass-card p-6">
+          <div key={index} className="glass-card p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4">
               <div className={`w-12 h-12 bg-${metric.color}-100 rounded-lg flex items-center justify-center`}>
                 <metric.icon className={`w-6 h-6 text-${metric.color}-600`} />
@@ -3845,18 +3845,53 @@ const PremiumShopifyDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50">
       {/* Mobile Navigation Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
 
-      {/* Sidebar Navigation */}
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 lg:hidden">
+        <div className="grid grid-cols-5 gap-1">
+          {navigationTabs.slice(0, 4).map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setMobileMenuOpen(false);
+              }}
+              className={`flex flex-col items-center py-2 px-1 text-xs transition-colors ${
+                activeTab === tab.id
+                  ? 'text-indigo-600 bg-indigo-50'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <tab.icon className="w-5 h-5 mb-1" />
+              <span className="truncate">{tab.label.split(' ')[0]}</span>
+            </button>
+          ))}
+          {/* More Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`flex flex-col items-center py-2 px-1 text-xs transition-colors ${
+              mobileMenuOpen
+                ? 'text-indigo-600 bg-indigo-50'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Menu className="w-5 h-5 mb-1" />
+            <span className="truncate">More</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Sidebar Navigation */}
       <div className={`${
         sidebarCollapsed ? 'w-16' : 'w-72'
       } bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${
-        mobileMenuOpen ? 'fixed inset-y-0 left-0 z-50 lg:relative' : 'hidden lg:block'
-      }`}>
+        mobileMenuOpen ? 'fixed inset-y-0 left-0 z-50' : 'hidden'
+      } lg:block lg:relative`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
@@ -3913,27 +3948,23 @@ const PremiumShopifyDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {navigationTabs.find(tab => tab.id === activeTab)?.label}
-                </h2>
-                <p className="text-sm text-gray-600">
-                  {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
-                   `Manage your ${navigationTabs.find(tab => tab.id === activeTab)?.label.toLowerCase()}`}
-                </p>
+      <div className="lg:flex lg:flex-1">
+        <div className="flex-1 flex flex-col lg:ml-0"
+             style={{ marginLeft: typeof window !== 'undefined' && window.innerWidth >= 1024 ? (sidebarCollapsed ? '64px' : '288px') : '0' }}>
+                  {/* Top Header */}
+          <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+                    {navigationTabs.find(tab => tab.id === activeTab)?.label}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">
+                    {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
+                     `Manage your ${navigationTabs.find(tab => tab.id === activeTab)?.label.toLowerCase()}`}
+                  </p>
+                </div>
               </div>
-            </div>
             
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="hidden sm:flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
@@ -3954,17 +3985,45 @@ const PremiumShopifyDashboard = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 p-4 sm:p-6 overflow-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-            </div>
-          ) : (
-            renderContent()
-          )}
+          {/* Main Content Area */}
+          <div className="flex-1 p-4 sm:p-6 overflow-auto pb-20 lg:pb-6">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
+              </div>
+            ) : (
+              renderContent()
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Mobile More Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-0 bottom-16 bg-white border-t border-gray-200 z-40 lg:hidden">
+          <div className="max-h-64 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-2 p-4">
+                             {navigationTabs.slice(4).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
