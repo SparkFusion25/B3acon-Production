@@ -1030,13 +1030,17 @@ const PremiumShopifyDashboard = () => {
 
   // SEO Tools main function (placed after sub-functions for proper hoisting)
   const renderSEOTools = () => {
+    console.log('🔍 renderSEOTools called', { activeSEOTab });
+    
     const seoToolTabs = [
       { id: 'seo-analyzer', label: 'SEO Analyzer', icon: Search },
       { id: 'internal-links', label: 'Internal Link Engine', icon: Globe },
       { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp }
     ];
 
-    return (
+    console.log('🔍 seoToolTabs created', seoToolTabs);
+
+    const result = (
       <div className="space-y-8">
         {/* SEO Tools Navigation */}
         <div className="flex flex-wrap gap-2 border-b border-gray-200">
@@ -1062,6 +1066,9 @@ const PremiumShopifyDashboard = () => {
         {activeSEOTab === 'rank-tracker' && renderRankTracker()}
       </div>
     );
+
+    console.log('🔍 renderSEOTools result created', result);
+    return result;
   };
 
   // Placeholder sections for other tabs (will be implemented in subsequent steps)
@@ -2259,20 +2266,22 @@ const PremiumShopifyDashboard = () => {
       case 'ai-tools':
         return renderAITools();
       case 'seo-tools':
-        return (
-          <div className="p-8 bg-red-100 border-2 border-red-500 rounded-lg">
-            <h2 className="text-2xl font-bold text-red-800">🔴 SEO TOOLS DEBUG TEST</h2>
-            <p className="text-red-700 mt-4">If you see this, the seo-tools case IS being reached!</p>
-            <p className="text-red-600 mt-2">activeTab value: {activeTab}</p>
-            <p className="text-red-600 mt-2">activeSEOTab value: {activeSEOTab}</p>
-            <button 
-              onClick={() => console.log('SEO Tools clicked', { activeTab, activeSEOTab })}
-              className="mt-4 bg-red-600 text-white px-4 py-2 rounded"
-            >
-              Log Debug Info
-            </button>
-          </div>
-        );
+        try {
+          return renderSEOTools();
+        } catch (error) {
+          console.error('SEO Tools render error:', error);
+          return (
+            <div className="p-8 bg-yellow-100 border-2 border-yellow-500 rounded-lg">
+              <h2 className="text-2xl font-bold text-yellow-800">⚠️ SEO TOOLS ERROR</h2>
+              <p className="text-yellow-700 mt-4">renderSEOTools() function failed!</p>
+              <p className="text-yellow-600 mt-2">Error: {error?.message || 'Unknown error'}</p>
+              <details className="mt-4">
+                <summary className="cursor-pointer text-yellow-700">Show Error Stack</summary>
+                <pre className="mt-2 text-xs text-yellow-600 overflow-auto">{error?.stack}</pre>
+              </details>
+            </div>
+          );
+        }
       case 'social-media':
         return renderPlaceholderSection('Social Media', MessageSquare, 'Social media management and scheduling platform');
       case 'review-management':
