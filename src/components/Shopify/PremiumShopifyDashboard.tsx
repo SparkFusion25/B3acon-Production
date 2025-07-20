@@ -593,16 +593,8 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
-  // SEO Tools Section - Fully Functional Implementation
-  const renderSEOTools = () => {
-    const seoToolTabs = [
-      { id: 'seo-analyzer', label: 'SEO Analyzer', icon: Search },
-      { id: 'internal-links', label: 'Internal Link Engine', icon: Globe },
-      { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp }
-    ];
-
-    // SEO Analyzer
-    const renderSEOAnalyzer = () => (
+  // SEO Tools render functions (moved outside for React compatibility)
+  const renderSEOAnalyzer = () => (
       <div className="space-y-8">
         {/* SEO Analysis Form */}
         <div className="glass-card p-6">
@@ -734,8 +726,7 @@ const PremiumShopifyDashboard = () => {
       </div>
     );
 
-    // Internal Link Engine
-    const renderInternalLinks = () => (
+  const renderInternalLinks = () => (
       <div className="space-y-8">
         {/* Link Creation Form */}
         <div className="glass-card p-6">
@@ -839,8 +830,7 @@ const PremiumShopifyDashboard = () => {
       </div>
     );
 
-    // Rank Tracker
-    const renderRankTracker = () => (
+  const renderRankTracker = () => (
       <div className="space-y-8">
         {/* Keyword Tracking Form */}
         <div className="glass-card p-6">
@@ -950,6 +940,14 @@ const PremiumShopifyDashboard = () => {
         </div>
       </div>
     );
+
+  // SEO Tools main function
+  const renderSEOTools = () => {
+    const seoToolTabs = [
+      { id: 'seo-analyzer', label: 'SEO Analyzer', icon: Search },
+      { id: 'internal-links', label: 'Internal Link Engine', icon: Globe },
+      { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp }
+    ];
 
     return (
       <div className="space-y-8">
