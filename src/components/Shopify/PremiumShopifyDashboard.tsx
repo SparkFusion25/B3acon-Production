@@ -185,6 +185,93 @@ const PremiumShopifyDashboard = () => {
     }
   ]);
 
+  // SEO Tools state (moved to proper location at top of component)
+  const [activeSEOTab, setActiveSEOTab] = useState('seo-analyzer');
+  const [seoAnalysisForm, setSeoAnalysisForm] = useState({
+    url: '',
+    keyword: '',
+    competitor: ''
+  });
+  const [linkBuildingForm, setLinkBuildingForm] = useState({
+    sourceUrl: '',
+    targetUrl: '',
+    anchorText: '',
+    linkType: 'internal'
+  });
+  const [rankTrackerForm, setRankTrackerForm] = useState({
+    keyword: '',
+    location: 'United States',
+    device: 'desktop'
+  });
+  const [seoReports, setSeoReports] = useState([
+    {
+      id: '1',
+      url: 'https://techstore.myshopify.com',
+      keyword: 'wireless headphones',
+      score: 87,
+      status: 'completed',
+      issues: 3,
+      suggestions: 8,
+      createdAt: '2024-01-16'
+    },
+    {
+      id: '2',
+      url: 'https://techstore.myshopify.com/products/bluetooth-speakers',
+      keyword: 'bluetooth speakers',
+      score: 92,
+      status: 'completed',
+      issues: 1,
+      suggestions: 4,
+      createdAt: '2024-01-15'
+    }
+  ]);
+  const [internalLinks, setInternalLinks] = useState([
+    {
+      id: '1',
+      sourceUrl: '/products/headphones',
+      targetUrl: '/collections/audio',
+      anchorText: 'audio collection',
+      linkType: 'internal',
+      status: 'active',
+      clicks: 234,
+      createdAt: '2024-01-15'
+    },
+    {
+      id: '2',
+      sourceUrl: '/blog/tech-trends',
+      targetUrl: '/products/wireless-speakers',
+      anchorText: 'wireless speakers',
+      linkType: 'internal',
+      status: 'active',
+      clicks: 156,
+      createdAt: '2024-01-14'
+    }
+  ]);
+  const [trackedKeywords, setTrackedKeywords] = useState([
+    {
+      id: '1',
+      keyword: 'wireless headphones',
+      position: 3,
+      previousPosition: 5,
+      volume: 18100,
+      difficulty: 'Medium',
+      location: 'United States',
+      device: 'desktop',
+      lastUpdate: '2024-01-16'
+    },
+    {
+      id: '2',
+      keyword: 'bluetooth speakers',
+      position: 7,
+      previousPosition: 8,
+      volume: 12300,
+      difficulty: 'High',
+      location: 'United States',
+      device: 'desktop',
+      lastUpdate: '2024-01-16'
+    }
+  ]);
+
   // Comprehensive Navigation Structure
   const navigationTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, color: 'blue' },
@@ -1018,93 +1105,6 @@ const PremiumShopifyDashboard = () => {
     dimensions: '1200x1200',
     quality: 'High'
   });
-
-  // SEO Tools state
-  const [activeSEOTab, setActiveSEOTab] = useState('seo-analyzer');
-  const [seoAnalysisForm, setSeoAnalysisForm] = useState({
-    url: '',
-    keyword: '',
-    competitor: ''
-  });
-  const [linkBuildingForm, setLinkBuildingForm] = useState({
-    sourceUrl: '',
-    targetUrl: '',
-    anchorText: '',
-    linkType: 'internal'
-  });
-  const [rankTrackerForm, setRankTrackerForm] = useState({
-    keyword: '',
-    location: 'United States',
-    device: 'desktop'
-  });
-  const [seoReports, setSeoReports] = useState([
-    {
-      id: '1',
-      url: 'https://techstore.myshopify.com',
-      keyword: 'wireless headphones',
-      score: 87,
-      status: 'completed',
-      issues: 3,
-      suggestions: 8,
-      createdAt: '2024-01-16'
-    },
-    {
-      id: '2',
-      url: 'https://techstore.myshopify.com/products/bluetooth-speakers',
-      keyword: 'bluetooth speakers',
-      score: 92,
-      status: 'completed',
-      issues: 1,
-      suggestions: 4,
-      createdAt: '2024-01-15'
-    }
-  ]);
-  const [internalLinks, setInternalLinks] = useState([
-    {
-      id: '1',
-      sourceUrl: '/products/headphones',
-      targetUrl: '/collections/audio',
-      anchorText: 'audio collection',
-      linkType: 'internal',
-      status: 'active',
-      clicks: 234,
-      createdAt: '2024-01-15'
-    },
-    {
-      id: '2',
-      sourceUrl: '/blog/tech-trends',
-      targetUrl: '/products/wireless-speakers',
-      anchorText: 'wireless speakers',
-      linkType: 'internal',
-      status: 'active',
-      clicks: 156,
-      createdAt: '2024-01-14'
-    }
-  ]);
-  const [trackedKeywords, setTrackedKeywords] = useState([
-    {
-      id: '1',
-      keyword: 'wireless headphones',
-      position: 3,
-      previousPosition: 5,
-      volume: 18100,
-      difficulty: 'Medium',
-      location: 'United States',
-      device: 'desktop',
-      lastUpdate: '2024-01-16'
-    },
-    {
-      id: '2',
-      keyword: 'bluetooth speakers',
-      position: 7,
-      previousPosition: 8,
-      volume: 12300,
-      difficulty: 'High',
-      location: 'United States',
-      device: 'desktop',
-      lastUpdate: '2024-01-16'
-    }
-  ]);
 
   // AI Tools Section - Fully Functional Implementation
   const renderAITools = () => {
