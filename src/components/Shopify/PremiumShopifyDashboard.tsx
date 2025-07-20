@@ -99,6 +99,92 @@ const PremiumShopifyDashboard = () => {
   const [activeCampaigns, setActiveCampaigns] = useState<ActiveCampaign[]>([]);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
 
+  // AI Tools state
+  const [activeAITab, setActiveAITab] = useState('popup-generator');
+  const [popupCampaigns, setPopupCampaigns] = useState([
+    {
+      id: '1',
+      name: 'Holiday Exit Intent',
+      character: 'Maya',
+      trigger: 'Exit Intent',
+      status: 'active',
+      performance: { impressions: 15420, clicks: 1854, conversions: 234, revenue: 12847 },
+      createdAt: '2024-01-15'
+    },
+    {
+      id: '2',
+      name: 'Welcome Popup',
+      character: 'Alex',
+      trigger: 'Time Based',
+      status: 'active',
+      performance: { impressions: 8930, clicks: 892, conversions: 134, revenue: 7456 },
+      createdAt: '2024-01-12'
+    }
+  ]);
+
+  const [contentProjects, setContentProjects] = useState([
+    {
+      id: '1',
+      type: 'Blog Post',
+      title: 'Top 10 Holiday Gift Ideas for Tech Lovers',
+      status: 'completed',
+      wordCount: 1247,
+      seoScore: 94,
+      createdAt: '2024-01-16'
+    },
+    {
+      id: '2',
+      type: 'Product Description',
+      title: 'Wireless Bluetooth Headphones',
+      status: 'in-progress',
+      wordCount: 156,
+      seoScore: 87,
+      createdAt: '2024-01-16'
+    }
+  ]);
+
+  const [chatAssistants, setChatAssistants] = useState([
+    {
+      id: '1',
+      name: 'Customer Support Bot',
+      type: 'Support',
+      status: 'active',
+      conversations: 1247,
+      satisfaction: 4.8,
+      responseTime: '2.3s'
+    },
+    {
+      id: '2',
+      name: 'Lead Qualification Bot',
+      type: 'Sales',
+      status: 'active',
+      conversations: 892,
+      satisfaction: 4.6,
+      responseTime: '1.8s'
+    }
+  ]);
+
+  const [imageProjects, setImageProjects] = useState([
+    {
+      id: '1',
+      type: 'Product Image',
+      title: 'Headphones Product Shot',
+      status: 'completed',
+      dimensions: '1200x1200',
+      style: 'Professional',
+      createdAt: '2024-01-16'
+    },
+    {
+      id: '2',
+      type: 'Social Media',
+      title: 'Instagram Story Template',
+      status: 'generating',
+      dimensions: '1080x1920',
+      style: 'Modern',
+      createdAt: '2024-01-16'
+    }
+  ]);
+
   // Comprehensive Navigation Structure
   const navigationTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, color: 'blue' },
@@ -521,91 +607,6 @@ const PremiumShopifyDashboard = () => {
 
   // AI Tools Section - Fully Functional Implementation
   const renderAITools = () => {
-    const [activeAITab, setActiveAITab] = useState('popup-generator');
-    const [popupCampaigns, setPopupCampaigns] = useState([
-      {
-        id: '1',
-        name: 'Holiday Exit Intent',
-        character: 'Maya',
-        trigger: 'Exit Intent',
-        status: 'active',
-        performance: { impressions: 15420, clicks: 1854, conversions: 234, revenue: 12847 },
-        createdAt: '2024-01-15'
-      },
-      {
-        id: '2',
-        name: 'Welcome Popup',
-        character: 'Alex',
-        trigger: 'Time Based',
-        status: 'active',
-        performance: { impressions: 8930, clicks: 892, conversions: 134, revenue: 7456 },
-        createdAt: '2024-01-12'
-      }
-    ]);
-
-    const [contentProjects, setContentProjects] = useState([
-      {
-        id: '1',
-        type: 'Blog Post',
-        title: 'Top 10 Holiday Gift Ideas for Tech Lovers',
-        status: 'completed',
-        wordCount: 1247,
-        seoScore: 94,
-        createdAt: '2024-01-16'
-      },
-      {
-        id: '2',
-        type: 'Product Description',
-        title: 'Wireless Bluetooth Headphones',
-        status: 'in-progress',
-        wordCount: 156,
-        seoScore: 87,
-        createdAt: '2024-01-16'
-      }
-    ]);
-
-    const [chatAssistants, setChatAssistants] = useState([
-      {
-        id: '1',
-        name: 'Customer Support Bot',
-        type: 'Support',
-        status: 'active',
-        conversations: 1247,
-        satisfaction: 4.8,
-        responseTime: '2.3s'
-      },
-      {
-        id: '2',
-        name: 'Lead Qualification Bot',
-        type: 'Sales',
-        status: 'active',
-        conversations: 892,
-        satisfaction: 4.6,
-        responseTime: '1.8s'
-      }
-    ]);
-
-    const [imageProjects, setImageProjects] = useState([
-      {
-        id: '1',
-        type: 'Product Image',
-        title: 'Headphones Product Shot',
-        status: 'completed',
-        dimensions: '1200x1200',
-        style: 'Professional',
-        createdAt: '2024-01-16'
-      },
-      {
-        id: '2',
-        type: 'Social Media',
-        title: 'Instagram Story Template',
-        status: 'generating',
-        dimensions: '1080x1920',
-        style: 'Modern',
-        createdAt: '2024-01-16'
-      }
-    ]);
-
     const aiToolTabs = [
       { id: 'popup-generator', label: 'AI Popup Generator', icon: Bot },
       { id: 'content-writer', label: 'AI Content Writer', icon: PenTool },
