@@ -680,6 +680,111 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  // SEO Tools handlers (moved before render functions for accessibility)
+  const handleSEOAnalysis = () => {
+    if (!seoAnalysisForm.url.trim()) {
+      alert('Please enter a URL to analyze');
+      return;
+    }
+
+    const newReport = {
+      id: Date.now().toString(),
+      url: seoAnalysisForm.url,
+      keyword: seoAnalysisForm.keyword || 'general analysis',
+      score: Math.floor(Math.random() * 30) + 70,
+      status: 'analyzing' as const,
+      issues: Math.floor(Math.random() * 5) + 1,
+      suggestions: Math.floor(Math.random() * 10) + 5,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setSeoReports([newReport, ...seoReports]);
+    
+    setTimeout(() => {
+      setSeoReports(prev => prev.map(r => 
+        r.id === newReport.id ? { ...r, status: 'completed' } : r
+      ));
+    }, 4000);
+
+    setSeoAnalysisForm({ url: '', keyword: '', competitor: '' });
+    alert(`✅ SEO analysis started for "${newReport.url}"! Analysis will complete in a few seconds.`);
+  };
+
+  const handleCreateInternalLink = () => {
+    if (!linkBuildingForm.sourceUrl.trim() || !linkBuildingForm.targetUrl.trim()) {
+      alert('Please enter both source and target URLs');
+      return;
+    }
+
+    const newLink = {
+      id: Date.now().toString(),
+      sourceUrl: linkBuildingForm.sourceUrl,
+      targetUrl: linkBuildingForm.targetUrl,
+      anchorText: linkBuildingForm.anchorText || 'click here',
+      linkType: linkBuildingForm.linkType,
+      status: 'active' as const,
+      clicks: 0,
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setInternalLinks([newLink, ...internalLinks]);
+    setLinkBuildingForm({ sourceUrl: '', targetUrl: '', anchorText: '', linkType: 'internal' });
+    alert(`✅ Internal link created: "${newLink.sourceUrl}" → "${newLink.targetUrl}"`);
+  };
+
+  const handleTrackKeyword = () => {
+    if (!rankTrackerForm.keyword.trim()) {
+      alert('Please enter a keyword to track');
+      return;
+    }
+
+    const newKeyword = {
+      id: Date.now().toString(),
+      keyword: rankTrackerForm.keyword,
+      position: Math.floor(Math.random() * 20) + 1,
+      previousPosition: Math.floor(Math.random() * 25) + 1,
+      volume: Math.floor(Math.random() * 50000) + 1000,
+      difficulty: ['Easy', 'Medium', 'Hard', 'Very Hard'][Math.floor(Math.random() * 4)],
+      location: rankTrackerForm.location,
+      device: rankTrackerForm.device,
+      lastUpdate: new Date().toISOString().split('T')[0]
+    };
+
+    setTrackedKeywords([newKeyword, ...trackedKeywords]);
+    setRankTrackerForm({ keyword: '', location: 'United States', device: 'desktop' });
+    alert(`✅ Now tracking keyword "${newKeyword.keyword}" - Current position: #${newKeyword.position}`);
+  };
+
+  const handleDeleteSEOReport = (reportId: string) => {
+    if (confirm('Are you sure you want to delete this SEO report?')) {
+      setSeoReports(prev => prev.filter(r => r.id !== reportId));
+      alert('✅ SEO report deleted successfully');
+    }
+  };
+
+  const handleToggleLink = (linkId: string) => {
+    setInternalLinks(prev => prev.map(l => 
+      l.id === linkId ? { 
+        ...l, 
+        status: l.status === 'active' ? 'inactive' : 'active' 
+      } : l
+    ));
+  };
+
+  const handleDeleteLink = (linkId: string) => {
+    if (confirm('Are you sure you want to delete this internal link?')) {
+      setInternalLinks(prev => prev.filter(l => l.id !== linkId));
+      alert('✅ Internal link deleted successfully');
+    }
+  };
+
+  const handleDeleteKeyword = (keywordId: string) => {
+    if (confirm('Are you sure you want to stop tracking this keyword?')) {
+      setTrackedKeywords(prev => prev.filter(k => k.id !== keywordId));
+      alert('✅ Keyword tracking stopped');
+    }
+  };
+
   // SEO Tools render functions (moved outside for React compatibility)
   const renderSEOAnalyzer = () => (
       <div className="space-y-8">
@@ -1030,17 +1135,13 @@ const PremiumShopifyDashboard = () => {
 
   // SEO Tools main function (placed after sub-functions for proper hoisting)
   const renderSEOTools = () => {
-    console.log('🔍 renderSEOTools called', { activeSEOTab });
-    
     const seoToolTabs = [
       { id: 'seo-analyzer', label: 'SEO Analyzer', icon: Search },
       { id: 'internal-links', label: 'Internal Link Engine', icon: Globe },
       { id: 'rank-tracker', label: 'Rank Tracker', icon: TrendingUp }
     ];
 
-    console.log('🔍 seoToolTabs created', seoToolTabs);
-
-    const result = (
+    return (
       <div className="space-y-8">
         {/* SEO Tools Navigation */}
         <div className="flex flex-wrap gap-2 border-b border-gray-200">
@@ -1066,9 +1167,6 @@ const PremiumShopifyDashboard = () => {
         {activeSEOTab === 'rank-tracker' && renderRankTracker()}
       </div>
     );
-
-    console.log('🔍 renderSEOTools result created', result);
-    return result;
   };
 
   // Placeholder sections for other tabs (will be implemented in subsequent steps)
@@ -1318,111 +1416,6 @@ const PremiumShopifyDashboard = () => {
     const project = imageProjects.find(p => p.id === projectId);
     if (project) {
       alert(`🖼️ Viewing "${project.title}" (${project.dimensions}, ${project.style} style)`);
-    }
-  };
-
-  // SEO Tools handlers
-  const handleSEOAnalysis = () => {
-    if (!seoAnalysisForm.url.trim()) {
-      alert('Please enter a URL to analyze');
-      return;
-    }
-
-    const newReport = {
-      id: Date.now().toString(),
-      url: seoAnalysisForm.url,
-      keyword: seoAnalysisForm.keyword || 'general analysis',
-      score: Math.floor(Math.random() * 30) + 70,
-      status: 'analyzing' as const,
-      issues: Math.floor(Math.random() * 5) + 1,
-      suggestions: Math.floor(Math.random() * 10) + 5,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    setSeoReports([newReport, ...seoReports]);
-    
-    setTimeout(() => {
-      setSeoReports(prev => prev.map(r => 
-        r.id === newReport.id ? { ...r, status: 'completed' } : r
-      ));
-    }, 4000);
-
-    setSeoAnalysisForm({ url: '', keyword: '', competitor: '' });
-    alert(`✅ SEO analysis started for "${newReport.url}"! Analysis will complete in a few seconds.`);
-  };
-
-  const handleCreateInternalLink = () => {
-    if (!linkBuildingForm.sourceUrl.trim() || !linkBuildingForm.targetUrl.trim()) {
-      alert('Please enter both source and target URLs');
-      return;
-    }
-
-    const newLink = {
-      id: Date.now().toString(),
-      sourceUrl: linkBuildingForm.sourceUrl,
-      targetUrl: linkBuildingForm.targetUrl,
-      anchorText: linkBuildingForm.anchorText || 'click here',
-      linkType: linkBuildingForm.linkType,
-      status: 'active' as const,
-      clicks: 0,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    setInternalLinks([newLink, ...internalLinks]);
-    setLinkBuildingForm({ sourceUrl: '', targetUrl: '', anchorText: '', linkType: 'internal' });
-    alert(`✅ Internal link created: "${newLink.sourceUrl}" → "${newLink.targetUrl}"`);
-  };
-
-  const handleTrackKeyword = () => {
-    if (!rankTrackerForm.keyword.trim()) {
-      alert('Please enter a keyword to track');
-      return;
-    }
-
-    const newKeyword = {
-      id: Date.now().toString(),
-      keyword: rankTrackerForm.keyword,
-      position: Math.floor(Math.random() * 20) + 1,
-      previousPosition: Math.floor(Math.random() * 25) + 1,
-      volume: Math.floor(Math.random() * 50000) + 1000,
-      difficulty: ['Easy', 'Medium', 'Hard', 'Very Hard'][Math.floor(Math.random() * 4)],
-      location: rankTrackerForm.location,
-      device: rankTrackerForm.device,
-      lastUpdate: new Date().toISOString().split('T')[0]
-    };
-
-    setTrackedKeywords([newKeyword, ...trackedKeywords]);
-    setRankTrackerForm({ keyword: '', location: 'United States', device: 'desktop' });
-    alert(`✅ Now tracking keyword "${newKeyword.keyword}" - Current position: #${newKeyword.position}`);
-  };
-
-  const handleDeleteSEOReport = (reportId: string) => {
-    if (confirm('Are you sure you want to delete this SEO report?')) {
-      setSeoReports(prev => prev.filter(r => r.id !== reportId));
-      alert('✅ SEO report deleted successfully');
-    }
-  };
-
-  const handleToggleLink = (linkId: string) => {
-    setInternalLinks(prev => prev.map(l => 
-      l.id === linkId ? { 
-        ...l, 
-        status: l.status === 'active' ? 'inactive' : 'active' 
-      } : l
-    ));
-  };
-
-  const handleDeleteLink = (linkId: string) => {
-    if (confirm('Are you sure you want to delete this internal link?')) {
-      setInternalLinks(prev => prev.filter(l => l.id !== linkId));
-      alert('✅ Internal link deleted successfully');
-    }
-  };
-
-  const handleDeleteKeyword = (keywordId: string) => {
-    if (confirm('Are you sure you want to stop tracking this keyword?')) {
-      setTrackedKeywords(prev => prev.filter(k => k.id !== keywordId));
-      alert('✅ Keyword tracking stopped');
     }
   };
 
@@ -2266,22 +2259,7 @@ const PremiumShopifyDashboard = () => {
       case 'ai-tools':
         return renderAITools();
       case 'seo-tools':
-        try {
-          return renderSEOTools();
-        } catch (error) {
-          console.error('SEO Tools render error:', error);
-          return (
-            <div className="p-8 bg-yellow-100 border-2 border-yellow-500 rounded-lg">
-              <h2 className="text-2xl font-bold text-yellow-800">⚠️ SEO TOOLS ERROR</h2>
-              <p className="text-yellow-700 mt-4">renderSEOTools() function failed!</p>
-              <p className="text-yellow-600 mt-2">Error: {error?.message || 'Unknown error'}</p>
-              <details className="mt-4">
-                <summary className="cursor-pointer text-yellow-700">Show Error Stack</summary>
-                <pre className="mt-2 text-xs text-yellow-600 overflow-auto">{error?.stack}</pre>
-              </details>
-            </div>
-          );
-        }
+        return renderSEOTools();
       case 'social-media':
         return renderPlaceholderSection('Social Media', MessageSquare, 'Social media management and scheduling platform');
       case 'review-management':
