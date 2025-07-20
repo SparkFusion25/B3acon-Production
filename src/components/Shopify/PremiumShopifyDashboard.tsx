@@ -605,37 +605,38 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  // AI Tools state for actual functionality (moved to component level)
+  const [selectedCharacter, setSelectedCharacter] = useState('maya');
+  const [selectedTrigger, setSelectedTrigger] = useState('exit-intent');
+  const [popupForm, setPopupForm] = useState({
+    name: '',
+    message: '',
+    buttonText: 'Get Started',
+    discount: '',
+    delay: 5
+  });
+  const [contentForm, setContentForm] = useState({
+    type: 'Blog Post',
+    topic: '',
+    keywords: '',
+    tone: 'Professional',
+    length: 'Medium'
+  });
+  const [assistantForm, setAssistantForm] = useState({
+    name: '',
+    type: 'Support',
+    greeting: 'Hi! How can I help you today?',
+    language: 'English'
+  });
+  const [imageForm, setImageForm] = useState({
+    prompt: '',
+    style: 'Professional',
+    dimensions: '1200x1200',
+    quality: 'High'
+  });
+
   // AI Tools Section - Fully Functional Implementation
   const renderAITools = () => {
-    // AI Tools state for actual functionality
-    const [selectedCharacter, setSelectedCharacter] = useState('maya');
-    const [selectedTrigger, setSelectedTrigger] = useState('exit-intent');
-    const [popupForm, setPopupForm] = useState({
-      name: '',
-      message: '',
-      buttonText: 'Get Started',
-      discount: '',
-      delay: 5
-    });
-    const [contentForm, setContentForm] = useState({
-      type: 'Blog Post',
-      topic: '',
-      keywords: '',
-      tone: 'Professional',
-      length: 'Medium'
-    });
-    const [assistantForm, setAssistantForm] = useState({
-      name: '',
-      type: 'Support',
-      greeting: 'Hi! How can I help you today?',
-      language: 'English'
-    });
-    const [imageForm, setImageForm] = useState({
-      prompt: '',
-      style: 'Professional',
-      dimensions: '1200x1200',
-      quality: 'High'
-    });
 
     const aiToolTabs = [
       { id: 'popup-generator', label: 'AI Popup Generator', icon: Bot },
@@ -658,182 +659,189 @@ const PremiumShopifyDashboard = () => {
       { id: 'cart-abandonment', name: 'Cart Abandonment', description: 'Show when items added but not purchased', icon: '🛒' }
     ];
 
-    // Functional handlers for actual processing
-    const handleCreatePopup = () => {
-      if (!popupForm.name.trim()) {
-        alert('Please enter a popup name');
-        return;
+  // Functional handlers for actual processing (moved to component level)
+  const handleCreatePopup = () => {
+    if (!popupForm.name.trim()) {
+      alert('Please enter a popup name');
+      return;
+    }
+    
+    const aiCharacters = [
+      { id: 'alex', name: 'Alex', personality: 'Professional', avatar: '👔', description: 'Business-focused, clear communication' },
+      { id: 'maya', name: 'Maya', personality: 'Friendly', avatar: '😊', description: 'Warm, approachable, conversational' },
+      { id: 'zoe', name: 'Zoe', personality: 'Playful', avatar: '🎨', description: 'Creative, fun, engaging' },
+      { id: 'sage', name: 'Sage', personality: 'Helpful', avatar: '🤓', description: 'Knowledgeable, supportive, detailed' }
+    ];
+    
+    const newCampaign = {
+      id: Date.now().toString(),
+      name: popupForm.name,
+      character: selectedCharacter,
+      trigger: selectedTrigger,
+      status: 'active' as const,
+      performance: { 
+        impressions: Math.floor(Math.random() * 1000) + 100, 
+        clicks: Math.floor(Math.random() * 100) + 10, 
+        conversions: Math.floor(Math.random() * 20) + 2, 
+        revenue: Math.floor(Math.random() * 1000) + 100 
+      },
+      createdAt: new Date().toISOString().split('T')[0],
+      config: {
+        message: popupForm.message,
+        buttonText: popupForm.buttonText,
+        discount: popupForm.discount,
+        delay: popupForm.delay
       }
-      
-      const newCampaign = {
-        id: Date.now().toString(),
-        name: popupForm.name,
-        character: selectedCharacter,
-        trigger: selectedTrigger,
-        status: 'active' as const,
-        performance: { 
-          impressions: Math.floor(Math.random() * 1000) + 100, 
-          clicks: Math.floor(Math.random() * 100) + 10, 
-          conversions: Math.floor(Math.random() * 20) + 2, 
-          revenue: Math.floor(Math.random() * 1000) + 100 
-        },
-        createdAt: new Date().toISOString().split('T')[0],
-        config: {
-          message: popupForm.message,
-          buttonText: popupForm.buttonText,
-          discount: popupForm.discount,
-          delay: popupForm.delay
-        }
-      };
-      
-      setPopupCampaigns([...popupCampaigns, newCampaign]);
-      setPopupForm({ name: '', message: '', buttonText: 'Get Started', discount: '', delay: 5 });
-      alert(`✅ Popup "${newCampaign.name}" created successfully! Character: ${aiCharacters.find(c => c.id === selectedCharacter)?.name}`);
     };
+    
+    setPopupCampaigns([...popupCampaigns, newCampaign]);
+    setPopupForm({ name: '', message: '', buttonText: 'Get Started', discount: '', delay: 5 });
+    alert(`✅ Popup "${newCampaign.name}" created successfully! Character: ${aiCharacters.find(c => c.id === selectedCharacter)?.name}`);
+  };
 
-    const handleGenerateContent = () => {
-      if (!contentForm.topic.trim()) {
-        alert('Please enter a content topic');
-        return;
-      }
+  const handleGenerateContent = () => {
+    if (!contentForm.topic.trim()) {
+      alert('Please enter a content topic');
+      return;
+    }
 
-      const newProject = {
-        id: Date.now().toString(),
-        type: contentForm.type,
-        title: contentForm.topic,
-        status: 'in-progress' as const,
-        wordCount: Math.floor(Math.random() * 1500) + 500,
-        seoScore: Math.floor(Math.random() * 30) + 70,
-        createdAt: new Date().toISOString().split('T')[0],
-        config: {
-          keywords: contentForm.keywords,
-          tone: contentForm.tone,
-          length: contentForm.length
-        }
-      };
-
-      setContentProjects([...contentProjects, newProject]);
-      
-      // Simulate content generation progress
-      setTimeout(() => {
-        setContentProjects(prev => prev.map(p => 
-          p.id === newProject.id ? { ...p, status: 'completed' } : p
-        ));
-      }, 3000);
-
-      setContentForm({ type: 'Blog Post', topic: '', keywords: '', tone: 'Professional', length: 'Medium' });
-      alert(`✅ Content generation started for "${newProject.title}"! It will be ready in a few seconds.`);
-    };
-
-    const handleCreateAssistant = () => {
-      if (!assistantForm.name.trim()) {
-        alert('Please enter an assistant name');
-        return;
-      }
-
-      const newAssistant = {
-        id: Date.now().toString(),
-        name: assistantForm.name,
-        type: assistantForm.type,
-        status: 'active' as const,
-        conversations: 0,
-        satisfaction: 0,
-        responseTime: '0s',
-        config: {
-          greeting: assistantForm.greeting,
-          language: assistantForm.language
-        }
-      };
-
-      setChatAssistants([...chatAssistants, newAssistant]);
-      setAssistantForm({ name: '', type: 'Support', greeting: 'Hi! How can I help you today?', language: 'English' });
-      alert(`✅ Chat Assistant "${newAssistant.name}" created and activated!`);
-    };
-
-    const handleGenerateImage = () => {
-      if (!imageForm.prompt.trim()) {
-        alert('Please enter an image description');
-        return;
-      }
-
-      const newProject = {
-        id: Date.now().toString(),
-        type: 'Generated Image',
-        title: imageForm.prompt,
-        status: 'generating' as const,
-        dimensions: imageForm.dimensions,
-        style: imageForm.style,
-        createdAt: new Date().toISOString().split('T')[0],
-        config: {
-          prompt: imageForm.prompt,
-          quality: imageForm.quality
-        }
-      };
-
-      setImageProjects([...imageProjects, newProject]);
-      
-      // Simulate image generation
-      setTimeout(() => {
-        setImageProjects(prev => prev.map(p => 
-          p.id === newProject.id ? { ...p, status: 'completed' } : p
-        ));
-      }, 5000);
-
-      setImageForm({ prompt: '', style: 'Professional', dimensions: '1200x1200', quality: 'High' });
-      alert(`✅ Image generation started! "${newProject.title}" will be ready in a few seconds.`);
-    };
-
-    const handleEditCampaign = (campaignId: string) => {
-      const campaign = popupCampaigns.find(c => c.id === campaignId);
-      if (campaign) {
-        const newName = prompt('Enter new popup name:', campaign.name);
-        if (newName && newName.trim()) {
-          setPopupCampaigns(prev => prev.map(c => 
-            c.id === campaignId ? { ...c, name: newName.trim() } : c
-          ));
-          alert(`✅ Campaign updated to "${newName.trim()}"`);
-        }
+    const newProject = {
+      id: Date.now().toString(),
+      type: contentForm.type,
+      title: contentForm.topic,
+      status: 'in-progress' as const,
+      wordCount: Math.floor(Math.random() * 1500) + 500,
+      seoScore: Math.floor(Math.random() * 30) + 70,
+      createdAt: new Date().toISOString().split('T')[0],
+      config: {
+        keywords: contentForm.keywords,
+        tone: contentForm.tone,
+        length: contentForm.length
       }
     };
 
-    const handleToggleCampaign = (campaignId: string) => {
-      setPopupCampaigns(prev => prev.map(c => 
-        c.id === campaignId ? { 
-          ...c, 
-          status: c.status === 'active' ? 'paused' : 'active' 
-        } : c
+    setContentProjects([...contentProjects, newProject]);
+    
+    // Simulate content generation progress
+    setTimeout(() => {
+      setContentProjects(prev => prev.map(p => 
+        p.id === newProject.id ? { ...p, status: 'completed' } : p
       ));
-    };
+    }, 3000);
 
-    const handleDeleteCampaign = (campaignId: string) => {
-      if (confirm('Are you sure you want to delete this campaign?')) {
-        setPopupCampaigns(prev => prev.filter(c => c.id !== campaignId));
-        alert('✅ Campaign deleted successfully');
+    setContentForm({ type: 'Blog Post', topic: '', keywords: '', tone: 'Professional', length: 'Medium' });
+    alert(`✅ Content generation started for "${newProject.title}"! It will be ready in a few seconds.`);
+  };
+
+  const handleCreateAssistant = () => {
+    if (!assistantForm.name.trim()) {
+      alert('Please enter an assistant name');
+      return;
+    }
+
+    const newAssistant = {
+      id: Date.now().toString(),
+      name: assistantForm.name,
+      type: assistantForm.type,
+      status: 'active' as const,
+      conversations: 0,
+      satisfaction: 0,
+      responseTime: '0s',
+      config: {
+        greeting: assistantForm.greeting,
+        language: assistantForm.language
       }
     };
 
-    const handleToggleAssistant = (assistantId: string) => {
-      setChatAssistants(prev => prev.map(a => 
-        a.id === assistantId ? { 
-          ...a, 
-          status: a.status === 'active' ? 'inactive' : 'active' 
-        } : a
+    setChatAssistants([...chatAssistants, newAssistant]);
+    setAssistantForm({ name: '', type: 'Support', greeting: 'Hi! How can I help you today?', language: 'English' });
+    alert(`✅ Chat Assistant "${newAssistant.name}" created and activated!`);
+  };
+
+  const handleGenerateImage = () => {
+    if (!imageForm.prompt.trim()) {
+      alert('Please enter an image description');
+      return;
+    }
+
+    const newProject = {
+      id: Date.now().toString(),
+      type: 'Generated Image',
+      title: imageForm.prompt,
+      status: 'generating' as const,
+      dimensions: imageForm.dimensions,
+      style: imageForm.style,
+      createdAt: new Date().toISOString().split('T')[0],
+      config: {
+        prompt: imageForm.prompt,
+        quality: imageForm.quality
+      }
+    };
+
+    setImageProjects([...imageProjects, newProject]);
+    
+    // Simulate image generation
+    setTimeout(() => {
+      setImageProjects(prev => prev.map(p => 
+        p.id === newProject.id ? { ...p, status: 'completed' } : p
       ));
-    };
+    }, 5000);
 
-    const handleDownloadContent = (projectId: string) => {
-      const project = contentProjects.find(p => p.id === projectId);
-      if (project) {
-        alert(`📥 Downloading "${project.title}" (${project.wordCount} words, SEO Score: ${project.seoScore})`);
-      }
-    };
+    setImageForm({ prompt: '', style: 'Professional', dimensions: '1200x1200', quality: 'High' });
+    alert(`✅ Image generation started! "${newProject.title}" will be ready in a few seconds.`);
+  };
 
-    const handleViewImage = (projectId: string) => {
-      const project = imageProjects.find(p => p.id === projectId);
-      if (project) {
-        alert(`🖼️ Viewing "${project.title}" (${project.dimensions}, ${project.style} style)`);
+  const handleEditCampaign = (campaignId: string) => {
+    const campaign = popupCampaigns.find(c => c.id === campaignId);
+    if (campaign) {
+      const newName = prompt('Enter new popup name:', campaign.name);
+      if (newName && newName.trim()) {
+        setPopupCampaigns(prev => prev.map(c => 
+          c.id === campaignId ? { ...c, name: newName.trim() } : c
+        ));
+        alert(`✅ Campaign updated to "${newName.trim()}"`);
       }
-    };
+    }
+  };
+
+  const handleToggleCampaign = (campaignId: string) => {
+    setPopupCampaigns(prev => prev.map(c => 
+      c.id === campaignId ? { 
+        ...c, 
+        status: c.status === 'active' ? 'paused' : 'active' 
+      } : c
+    ));
+  };
+
+  const handleDeleteCampaign = (campaignId: string) => {
+    if (confirm('Are you sure you want to delete this campaign?')) {
+      setPopupCampaigns(prev => prev.filter(c => c.id !== campaignId));
+      alert('✅ Campaign deleted successfully');
+    }
+  };
+
+  const handleToggleAssistant = (assistantId: string) => {
+    setChatAssistants(prev => prev.map(a => 
+      a.id === assistantId ? { 
+        ...a, 
+        status: a.status === 'active' ? 'inactive' : 'active' 
+      } : a
+    ));
+  };
+
+  const handleDownloadContent = (projectId: string) => {
+    const project = contentProjects.find(p => p.id === projectId);
+    if (project) {
+      alert(`📥 Downloading "${project.title}" (${project.wordCount} words, SEO Score: ${project.seoScore})`);
+    }
+  };
+
+  const handleViewImage = (projectId: string) => {
+    const project = imageProjects.find(p => p.id === projectId);
+    if (project) {
+      alert(`🖼️ Viewing "${project.title}" (${project.dimensions}, ${project.style} style)`);
+    }
+  };
 
     // AI Popup Generator
     const renderPopupGenerator = () => (
