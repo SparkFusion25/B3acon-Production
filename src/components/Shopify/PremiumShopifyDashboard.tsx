@@ -50,7 +50,13 @@ import {
   Calendar,
   Hash,
   BarChart,
-  Send
+  Send,
+  MessageCircle,
+  ThumbsUp,
+  ThumbsDown,
+  AlertTriangle,
+  Reply,
+  Filter
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -424,6 +430,74 @@ const PremiumShopifyDashboard = () => {
     scheduledTime: '',
     hashtags: '',
     mediaType: 'image'
+  });
+
+  // Review Management state
+  const [activeReviewTab, setActiveReviewTab] = useState('dashboard');
+  const [reviews, setReviews] = useState([
+    {
+      id: '1',
+      customerName: 'Sarah Johnson',
+      customerEmail: 'sarah.j@email.com',
+      rating: 5,
+      title: 'Amazing wireless headphones!',
+      content: 'These headphones exceeded my expectations. Great sound quality and comfortable fit. Highly recommend!',
+      product: 'Wireless Bluetooth Headphones',
+      platform: 'Shopify',
+      date: '2024-01-16',
+      status: 'published',
+      response: '',
+      helpful: 12,
+      verified: true
+    },
+    {
+      id: '2',
+      customerName: 'Mike Chen',
+      customerEmail: 'mike.chen@email.com',
+      rating: 4,
+      title: 'Good speakers, fast delivery',
+      content: 'Sound quality is excellent and delivery was super fast. Only minor issue is the bass could be slightly stronger.',
+      product: 'Bluetooth Speaker Pro',
+      platform: 'Google',
+      date: '2024-01-15',
+      status: 'published',
+      response: 'Thank you for your feedback! We\'re glad you enjoyed the fast delivery. We\'ll consider your bass feedback for future models.',
+      helpful: 8,
+      verified: true
+    },
+    {
+      id: '3',
+      customerName: 'Anonymous User',
+      customerEmail: 'user@email.com',
+      rating: 2,
+      title: 'Not as described',
+      content: 'Product arrived damaged and customer service was slow to respond. Disappointed with the experience.',
+      product: 'USB-C Cable',
+      platform: 'Amazon',
+      date: '2024-01-14',
+      status: 'pending',
+      response: '',
+      helpful: 3,
+      verified: false
+    }
+  ]);
+  const [reviewStats, setReviewStats] = useState({
+    totalReviews: 847,
+    averageRating: 4.3,
+    responseRate: 89,
+    pendingReviews: 23,
+    thisMonth: 156
+  });
+  const [responseForm, setResponseForm] = useState({
+    reviewId: '',
+    message: '',
+    template: ''
+  });
+  const [reviewFilters, setReviewFilters] = useState({
+    rating: 'all',
+    platform: 'all',
+    status: 'all',
+    verified: 'all'
   });
 
   // Comprehensive Navigation Structure
@@ -1099,6 +1173,405 @@ const PremiumShopifyDashboard = () => {
       post.id === postId ? { ...post, status: 'published' } : post
     ));
     alert('✅ Post published successfully!');
+  };
+
+  // Review Management handlers
+  const handleRespondToReview = () => {
+    if (!responseForm.message.trim()) {
+      alert('Please enter a response message');
+      return;
+    }
+
+    const updatedReviews = reviews.map(review => 
+      review.id === responseForm.reviewId 
+        ? { ...review, response: responseForm.message, status: 'published' }
+        : review
+    );
+
+    setReviews(updatedReviews);
+    setResponseForm({ reviewId: '', message: '', template: '' });
+    alert('✅ Response posted successfully!');
+  };
+
+  const handleDeleteReview = (reviewId) => {
+    setReviews(reviews.filter(review => review.id !== reviewId));
+    alert('✅ Review deleted successfully!');
+  };
+
+  const handleFlagReview = (reviewId) => {
+    const updatedReviews = reviews.map(review => 
+      review.id === reviewId 
+        ? { ...review, status: 'flagged' }
+        : review
+    );
+    setReviews(updatedReviews);
+    alert('🚩 Review flagged for moderation!');
+  };
+
+  const handleMarkHelpful = (reviewId) => {
+    const updatedReviews = reviews.map(review => 
+      review.id === reviewId 
+        ? { ...review, helpful: review.helpful + 1 }
+        : review
+    );
+    setReviews(updatedReviews);
+  };
+
+  const getFilteredReviews = () => {
+    return reviews.filter(review => {
+      if (reviewFilters.rating !== 'all' && review.rating.toString() !== reviewFilters.rating) return false;
+      if (reviewFilters.platform !== 'all' && review.platform.toLowerCase() !== reviewFilters.platform) return false;
+      if (reviewFilters.status !== 'all' && review.status !== reviewFilters.status) return false;
+      if (reviewFilters.verified !== 'all' && review.verified.toString() !== reviewFilters.verified) return false;
+      return true;
+    });
+  };
+
+  // Review Management render functions
+  const renderReviewDashboard = () => (
+    <div className="space-y-8">
+      {/* Review Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+        {[
+          { label: 'Total Reviews', value: reviewStats.totalReviews.toLocaleString(), icon: MessageCircle, color: 'blue' },
+          { label: 'Average Rating', value: `${reviewStats.averageRating}/5`, icon: Star, color: 'yellow' },
+          { label: 'Response Rate', value: `${reviewStats.responseRate}%`, icon: Reply, color: 'green' },
+          { label: 'Pending Reviews', value: reviewStats.pendingReviews, icon: AlertTriangle, color: 'orange' },
+          { label: 'This Month', value: reviewStats.thisMonth, icon: Calendar, color: 'purple' }
+        ].map((stat) => (
+          <div key={stat.label} className="glass-card p-6 text-center">
+            <stat.icon className={`w-8 h-8 mx-auto mb-3 text-${stat.color}-600`} />
+            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <p className="text-sm text-gray-600">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Rating Distribution */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Rating Distribution</h3>
+        <div className="space-y-4">
+          {[5, 4, 3, 2, 1].map((rating) => {
+            const percentage = Math.floor(Math.random() * 40) + (6 - rating) * 10;
+            return (
+              <div key={rating} className="flex items-center space-x-4">
+                <div className="flex items-center space-x-1 w-16">
+                  <span className="text-sm font-medium">{rating}</span>
+                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                </div>
+                <div className="flex-1 bg-gray-200 rounded-full h-3">
+                  <div 
+                    className="bg-yellow-400 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+                <span className="text-sm text-gray-600 w-12">{percentage}%</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recent Reviews Preview */}
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-bold text-gray-900">Recent Reviews</h3>
+          <button 
+            onClick={() => setActiveReviewTab('reviews')}
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            View All Reviews →
+          </button>
+        </div>
+        
+        <div className="space-y-4">
+          {reviews.slice(0, 3).map((review) => (
+            <div key={review.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star 
+                          key={i} 
+                          className={`w-4 h-4 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm font-medium">{review.customerName}</span>
+                    {review.verified && <CheckCircle className="w-4 h-4 text-green-500" />}
+                  </div>
+                  <h6 className="font-medium text-gray-900 mb-1">{review.title}</h6>
+                  <p className="text-sm text-gray-600 mb-2">{review.content.substring(0, 100)}...</p>
+                  <div className="flex items-center space-x-4 text-xs text-gray-500">
+                    <span>{review.product}</span>
+                    <span>{review.platform}</span>
+                    <span>{review.date}</span>
+                  </div>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded-full ${
+                  review.status === 'published' ? 'bg-green-100 text-green-800' :
+                  review.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-red-100 text-red-800'
+                }`}>
+                  {review.status}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderReviewList = () => (
+    <div className="space-y-8">
+      {/* Filters */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Filter Reviews</h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <select
+              value={reviewFilters.rating}
+              onChange={(e) => setReviewFilters({...reviewFilters, rating: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            >
+              <option value="all">All Ratings</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Platform</label>
+            <select
+              value={reviewFilters.platform}
+              onChange={(e) => setReviewFilters({...reviewFilters, platform: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            >
+              <option value="all">All Platforms</option>
+              <option value="shopify">Shopify</option>
+              <option value="google">Google</option>
+              <option value="amazon">Amazon</option>
+              <option value="facebook">Facebook</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select
+              value={reviewFilters.status}
+              onChange={(e) => setReviewFilters({...reviewFilters, status: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            >
+              <option value="all">All Status</option>
+              <option value="published">Published</option>
+              <option value="pending">Pending</option>
+              <option value="flagged">Flagged</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Verified</label>
+            <select
+              value={reviewFilters.verified}
+              onChange={(e) => setReviewFilters({...reviewFilters, verified: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+            >
+              <option value="all">All Reviews</option>
+              <option value="true">Verified Only</option>
+              <option value="false">Unverified Only</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Reviews List */}
+      <div className="space-y-6">
+        {getFilteredReviews().map((review) => (
+          <div key={review.id} className="glass-card p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`w-5 h-5 ${i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                      />
+                    ))}
+                  </div>
+                  <span className="font-medium text-gray-900">{review.customerName}</span>
+                  {review.verified && <CheckCircle className="w-5 h-5 text-green-500" />}
+                  <span className={`px-2 py-1 text-xs rounded-full ${
+                    review.status === 'published' ? 'bg-green-100 text-green-800' :
+                    review.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {review.status}
+                  </span>
+                </div>
+                
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">{review.title}</h4>
+                <p className="text-gray-700 mb-3">{review.content}</p>
+                
+                <div className="flex items-center space-x-6 text-sm text-gray-500 mb-4">
+                  <span>Product: {review.product}</span>
+                  <span>Platform: {review.platform}</span>
+                  <span>Date: {review.date}</span>
+                  <span className="flex items-center space-x-1">
+                    <ThumbsUp className="w-4 h-4" />
+                    <span>{review.helpful} helpful</span>
+                  </span>
+                </div>
+
+                {review.response && (
+                  <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                    <p className="text-sm font-medium text-blue-900 mb-1">Your Response:</p>
+                    <p className="text-blue-800">{review.response}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col space-y-2 ml-4">
+                <button 
+                  onClick={() => setResponseForm({...responseForm, reviewId: review.id})}
+                  className="text-blue-600 hover:text-blue-800 transition-colors p-2"
+                  title="Respond"
+                >
+                  <Reply className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => handleMarkHelpful(review.id)}
+                  className="text-green-600 hover:text-green-800 transition-colors p-2"
+                  title="Mark Helpful"
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => handleFlagReview(review.id)}
+                  className="text-orange-600 hover:text-orange-800 transition-colors p-2"
+                  title="Flag Review"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => handleDeleteReview(review.id)}
+                  className="text-red-600 hover:text-red-800 transition-colors p-2"
+                  title="Delete Review"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Response Form */}
+            {responseForm.reviewId === review.id && (
+              <div className="border-t pt-4">
+                <h5 className="font-medium text-gray-900 mb-3">Respond to Review</h5>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Response Template</label>
+                    <select
+                      value={responseForm.template}
+                      onChange={(e) => {
+                        const templates = {
+                          'thank-you': 'Thank you for your wonderful review! We\'re thrilled to hear you\'re happy with your purchase.',
+                          'apologize': 'We sincerely apologize for the inconvenience. Please contact our support team so we can make this right.',
+                          'feedback': 'Thank you for your feedback! We appreciate all input as it helps us improve our products and services.'
+                        };
+                        setResponseForm({
+                          ...responseForm, 
+                          template: e.target.value,
+                          message: templates[e.target.value] || ''
+                        });
+                      }}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    >
+                      <option value="">Select Template</option>
+                      <option value="thank-you">Thank You Response</option>
+                      <option value="apologize">Apologetic Response</option>
+                      <option value="feedback">Feedback Acknowledgment</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Your Response</label>
+                    <textarea
+                      value={responseForm.message}
+                      onChange={(e) => setResponseForm({...responseForm, message: e.target.value})}
+                      placeholder="Write your response to this review..."
+                      rows={3}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={handleRespondToReview}
+                      className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white py-2 px-4 rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all"
+                    >
+                      Post Response
+                    </button>
+                    <button
+                      onClick={() => setResponseForm({reviewId: '', message: '', template: ''})}
+                      className="text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderReviewManagement = () => {
+    const reviewTabs = [
+      { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+      { id: 'reviews', label: 'All Reviews', icon: MessageCircle },
+      { id: 'analytics', label: 'Analytics', icon: TrendingUp }
+    ];
+
+    return (
+      <div className="space-y-8">
+        {/* Review Management Navigation */}
+        <div className="flex flex-wrap gap-2 border-b border-gray-200">
+          {reviewTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveReviewTab(tab.id)}
+              className={`px-4 py-2 rounded-t-lg font-medium transition-colors flex items-center space-x-2 ${
+                activeReviewTab === tab.id
+                  ? 'bg-yellow-50 text-yellow-700 border-b-2 border-yellow-500'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span className="hidden sm:block">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Review Management Content */}
+        {activeReviewTab === 'dashboard' && renderReviewDashboard()}
+        {activeReviewTab === 'reviews' && renderReviewList()}
+        {activeReviewTab === 'analytics' && (
+          <div className="glass-card p-6 text-center">
+            <TrendingUp className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Advanced Review Analytics</h3>
+            <p className="text-gray-600">Detailed review trends, sentiment analysis, and performance metrics coming soon!</p>
+          </div>
+        )}
+      </div>
+    );
   };
 
   // SEO Tools render functions (moved outside for React compatibility)
@@ -3346,7 +3819,7 @@ const PremiumShopifyDashboard = () => {
       case 'social-media':
         return renderSocialMedia();
       case 'review-management':
-        return renderPlaceholderSection('Review Management', Star, 'Multi-platform review management system');
+        return renderReviewManagement();
       case 'email-marketing':
         return renderPlaceholderSection('Email Marketing', Mail, 'Advanced email campaigns and automation');
       case 'content-creation':
