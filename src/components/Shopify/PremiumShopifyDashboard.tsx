@@ -1028,7 +1028,7 @@ const PremiumShopifyDashboard = () => {
       </div>
     );
 
-  // SEO Tools main function
+  // SEO Tools main function (placed after sub-functions for proper hoisting)
   const renderSEOTools = () => {
     const seoToolTabs = [
       { id: 'seo-analyzer', label: 'SEO Analyzer', icon: Search },
