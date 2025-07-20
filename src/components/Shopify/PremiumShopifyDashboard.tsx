@@ -3344,7 +3344,25 @@ const PremiumShopifyDashboard = () => {
       case 'seo-tools':
         return renderSEOTools();
       case 'social-media':
-        return renderSocialMedia();
+        console.log('🔴 SOCIAL MEDIA DEBUG: Social media case reached!');
+        try {
+          return renderSocialMedia();
+        } catch (error) {
+          console.error('🔴 SOCIAL MEDIA ERROR:', error);
+          return (
+            <div className="glass-card p-6 text-center">
+              <h3 className="text-xl font-semibold text-red-600 mb-2">🔴 SOCIAL MEDIA ERROR</h3>
+              <p className="text-gray-600">renderSocialMedia() function failed!</p>
+              <p className="text-sm text-red-500 mt-2">Error: {error.message}</p>
+              <button 
+                onClick={() => console.log('Error details:', error)}
+                className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Show Error Stack
+              </button>
+            </div>
+          );
+        }
       case 'review-management':
         return renderPlaceholderSection('Review Management', Star, 'Multi-platform review management system');
       case 'email-marketing':
