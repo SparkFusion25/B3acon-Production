@@ -19,6 +19,7 @@ import {
   Users,
   TrendingUp
 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import '../../styles/premium-design-system.css';
 
 interface InstallationStep {
@@ -30,11 +31,40 @@ interface InstallationStep {
   duration: number;
 }
 
+// Subscription plans as specified in SYSTEM_SPECS.md
+const SUBSCRIPTION_PLANS = {
+  trial: {
+    name: "14-Day Trial",
+    price: 0,
+    duration: 14,
+    features: ["basic_seo", "popup_builder", "basic_analytics"]
+  },
+  starter: {
+    name: "Starter",
+    price: 29,
+    features: ["basic_seo", "popup_builder", "basic_analytics", "email_capture"]
+  },
+  pro: {
+    name: "Professional", 
+    price: 79,
+    features: ["all_seo_tools", "advanced_popups", "crm_integration", "automation"]
+  },
+  enterprise: {
+    name: "Enterprise",
+    price: 199,
+    features: ["everything", "priority_support", "custom_integrations"]
+  }
+};
+
 const PremiumShopifyInstallation = () => {
+  const [searchParams] = useSearchParams();
+  const planType = searchParams.get('plan') || 'growth';
+  
   const [currentStep, setCurrentStep] = useState(0);
   const [isInstalling, setIsInstalling] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('growth');
+  const [selectedPlan, setSelectedPlan] = useState(planType);
   const [storeUrl, setStoreUrl] = useState('');
+  const [shopifyError, setShopifyError] = useState('');
   const [animationKey, setAnimationKey] = useState(0);
 
   const installationSteps: InstallationStep[] = [
@@ -167,30 +197,104 @@ const PremiumShopifyInstallation = () => {
     }
   }, [currentStep, isInstalling, steps.length]);
 
-  const startInstallation = () => {
-    if (!storeUrl.trim()) {
-      alert('Please enter your Shopify store URL');
+  // Complete Shopify installation flow with subscription management
+  const handleShopifyConnect = async (inputStoreUrl?: string) => {
+    const urlToConnect = inputStoreUrl || storeUrl;
+    if (!urlToConnect.trim()) {
+      setShopifyError('Please enter your Shopify store URL');
       return;
     }
-    setIsInstalling(true);
-    setCurrentStep(0);
-    setAnimationKey(prev => prev + 1);
+
+    // Validate Shopify URL format
+    const shopifyUrlPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]*\.myshopify\.com$/;
+    const cleanUrl = urlToConnect.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    
+    if (!shopifyUrlPattern.test(cleanUrl)) {
+      setShopifyError('Please enter a valid Shopify store URL (e.g., mystore.myshopify.com)');
+      return;
+    }
+
+    const currentPlan = searchParams.get('plan') || 'trial';
+    
+    try {
+      setIsInstalling(true);
+      setCurrentStep(0);
+      setShopifyError('');
+      setAnimationKey(prev => prev + 1);
+
+      // Simulate installation steps
+      await simulateInstallationSteps();
+
+      // Create subscription and redirect to plan selection
+      const subscription = {
+        id: `sub_${cleanUrl.split('.')[0]}`,
+        userId: `user_${cleanUrl.split('.')[0]}`,
+        shopUrl: cleanUrl,
+        plan: currentPlan,
+        status: 'active',
+        email: `${cleanUrl.split('.')[0]}@demo.com`,
+        storeName: cleanUrl.split('.')[0].replace(/-/g, ' ').toUpperCase(),
+        trialEndsAt: currentPlan === 'trial' ? new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() : null,
+        createdAt: new Date().toISOString()
+      };
+
+      // Save to localStorage for demo
+      localStorage.setItem('shopify_subscription', JSON.stringify(subscription));
+
+      // Track successful installation
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'shopify_install_completed', {
+          plan: currentPlan,
+          shop_url: cleanUrl,
+          subscription_id: subscription.id
+        });
+      }
+
+      // Redirect to plan selection page
+      window.location.href = `/shopify/subscribe?shop=${cleanUrl}&plan=${currentPlan}`;
+      
+    } catch (error) {
+      console.error('Shopify connection error:', error);
+      setShopifyError(`Connection failed: ${error.message}`);
+      setIsInstalling(false);
+    }
+  };
+
+  // Simulate installation steps for better UX
+  const simulateInstallationSteps = async () => {
+    const steps = installationSteps;
+    for (let i = 0; i < steps.length; i++) {
+      setCurrentStep(i);
+      await new Promise(resolve => setTimeout(resolve, 1200));
+    }
+  };
+
+  const startInstallation = () => {
+    handleShopifyConnect(storeUrl);
   };
 
   const renderWelcomeScreen = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
-      <div className="glass-card-dark p-8 md:p-12 max-w-4xl w-full">
+      <div className="glass-card-dark p-8 md:p-12 max-w-4xl w-full mx-auto">
         <div className="text-center mb-12">
           <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center">
             <Zap className="w-10 h-10 text-white" />
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Welcome to <span className="text-gradient-primary">B3ACON</span>
+            {planType === 'trial' ? (
+              <>Start Your <span className="text-gradient-primary">Free Trial</span></>
+            ) : (
+              <>Welcome to <span className="text-gradient-primary">B3ACON</span></>
+            )}
           </h1>
           
           <p className="text-xl text-indigo-200 mb-8 max-w-2xl mx-auto">
-            Transform your Shopify store with AI-powered optimization that increases revenue by 247% on average
+            {planType === 'trial' ? (
+              'Get 14 days of unlimited access to transform your Shopify store with AI-powered optimization'
+            ) : (
+              'Transform your Shopify store with AI-powered optimization that increases revenue by 247% on average'
+            )}
           </p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
@@ -239,12 +343,18 @@ const PremiumShopifyInstallation = () => {
             disabled={!storeUrl.trim()}
           >
             <Shield className="w-5 h-5 mr-2" />
-            <span>Connect Securely</span>
+            <span>
+              {planType === 'trial' ? 'Start Free Trial' : 'Connect Securely'}
+            </span>
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
           </button>
           
           <p className="text-indigo-300 text-sm mt-4">
-            🔒 Secure OAuth connection • 🚀 Setup takes 2 minutes • ✨ Start optimizing immediately
+            {planType === 'trial' ? (
+              '🚀 14-day free trial • 🔒 Secure connection • ✨ No credit card required'
+            ) : (
+              '🔒 Secure OAuth connection • 🚀 Setup takes 2 minutes • ✨ Start optimizing immediately'
+            )}
           </p>
         </div>
       </div>
@@ -253,7 +363,7 @@ const PremiumShopifyInstallation = () => {
 
   const renderInstallationProgress = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4">
-      <div className="max-w-4xl mx-auto pt-20">
+      <div className="container-centered pt-20">
         {/* Progress Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -347,7 +457,7 @@ const PremiumShopifyInstallation = () => {
 
   const renderPlanSelection = () => (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4">
-      <div className="max-w-7xl mx-auto pt-20">
+      <div className="container-centered pt-20">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Choose Your <span className="text-gradient-primary">Growth Plan</span>

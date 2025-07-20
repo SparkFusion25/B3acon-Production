@@ -544,7 +544,8 @@ const PremiumDashboard: React.FC = () => {
         
         {/* Dashboard Content */}
         <main className="p-8">
-          {/* Welcome Section */}
+          <div className="max-w-7xl mx-auto">
+            {/* Welcome Section */}
           <div className="mb-8 animate-fade-in">
             <div className="flex items-center justify-between">
               <div>
@@ -592,10 +593,11 @@ const PremiumDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Recent Activity & Quick Actions */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <RecentActivityFeed />
-            <QuickActionsDashboard />
+            {/* Recent Activity & Quick Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <RecentActivityFeed />
+              <QuickActionsDashboard />
+            </div>
           </div>
         </main>
       </div>

@@ -15,9 +15,11 @@ import {
   Shield,
   Clock
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/premium-design-system.css';
 
 const PremiumShopifyLanding = () => {
+  const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentFeature, setCurrentFeature] = useState(0);
   const [stats, setStats] = useState({
@@ -25,6 +27,20 @@ const PremiumShopifyLanding = () => {
     revenue: 0,
     growth: 0
   });
+
+  // Trial signup click handler as specified in SYSTEM_SPECS.md
+  const handleTrialClick = () => {
+    // Track conversion event
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'trial_started', { 
+        source: 'landing_cta',
+        plan: 'trial'
+      });
+    }
+    
+    // Redirect to Shopify store connection with trial plan parameter
+    navigate('/shopify/install?plan=trial');
+  };
 
   useEffect(() => {
     setIsLoaded(true);
@@ -187,7 +203,10 @@ const PremiumShopifyLanding = () => {
               <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
               <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
               <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">Reviews</a>
-              <button className="btn-premium btn-outline">
+              <button 
+                className="btn-premium btn-outline"
+                onClick={() => navigate('/shopify/login')}
+              >
                 Sign In
               </button>
             </div>
@@ -222,7 +241,7 @@ const PremiumShopifyLanding = () => {
             <div className={`flex flex-col sm:flex-row gap-6 justify-center mb-16 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <button 
                 className="btn-premium btn-primary btn-large group"
-                onClick={() => window.location.href = '/shopify/install'}
+                onClick={handleTrialClick}
               >
                 <span className="relative z-10">Start 14-Day Free Trial</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

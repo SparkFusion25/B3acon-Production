@@ -118,7 +118,9 @@ const AgencyDashboard: React.FC = () => {
         </div>
       </div>
       <main className="transition-all duration-300 lg:ml-56 xl:ml-64 p-4 lg:p-6 pt-16 md:pt-4">
-        {renderModule()}
+        <div className="max-w-7xl mx-auto">
+          {renderModule()}
+        </div>
       </main>
       
       {/* Interactive Guide */}
