@@ -43,7 +43,14 @@ import {
   Clock,
   Menu,
   X,
-  Image
+  Image,
+  Facebook,
+  Instagram,
+  Twitter,
+  Calendar,
+  Hash,
+  BarChart,
+  Send
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -358,6 +365,66 @@ const PremiumShopifyDashboard = () => {
       createdAt: '2024-01-15'
     }
   ]);
+
+  // Social Media state
+  const [activeSocialTab, setActiveSocialTab] = useState('scheduler');
+  const [socialPosts, setSocialPosts] = useState([
+    {
+      id: '1',
+      content: 'Check out our new wireless headphones! 🎧 Perfect for music lovers',
+      platforms: ['instagram', 'facebook', 'twitter'],
+      scheduledTime: '2024-01-17T10:00:00Z',
+      status: 'scheduled',
+      hashtags: '#music #headphones #tech',
+      mediaType: 'image',
+      engagement: { likes: 234, shares: 45, comments: 23 },
+      createdAt: '2024-01-16'
+    },
+    {
+      id: '2',
+      content: 'Flash sale this weekend! 50% off all bluetooth speakers 🔥',
+      platforms: ['instagram', 'facebook'],
+      scheduledTime: '2024-01-18T14:30:00Z',
+      status: 'published',
+      hashtags: '#sale #speakers #discount',
+      mediaType: 'video',
+      engagement: { likes: 567, shares: 123, comments: 89 },
+      createdAt: '2024-01-15'
+    }
+  ]);
+  const [socialAnalytics, setSocialAnalytics] = useState([
+    {
+      platform: 'Instagram',
+      followers: 12340,
+      engagement: 4.8,
+      reach: 45230,
+      posts: 156,
+      growth: '+12%'
+    },
+    {
+      platform: 'Facebook',
+      followers: 8920,
+      engagement: 3.2,
+      reach: 23450,
+      posts: 89,
+      growth: '+8%'
+    },
+    {
+      platform: 'Twitter',
+      followers: 5670,
+      engagement: 2.1,
+      reach: 12340,
+      posts: 234,
+      growth: '+5%'
+    }
+  ]);
+  const [postForm, setPostForm] = useState({
+    content: '',
+    platforms: [],
+    scheduledTime: '',
+    hashtags: '',
+    mediaType: 'image'
+  });
 
   // Comprehensive Navigation Structure
   const navigationTabs = [
@@ -984,6 +1051,54 @@ const PremiumShopifyDashboard = () => {
     
     const savings = ((newCompression.originalSize - newCompression.compressedSize) / newCompression.originalSize * 100).toFixed(1);
     alert(`✅ Image compression started! Expected savings: ${savings}%`);
+  };
+
+  // Social Media handlers
+  const handleCreatePost = () => {
+    if (!postForm.content.trim()) {
+      alert('Please enter post content');
+      return;
+    }
+    if (!postForm.platforms.length) {
+      alert('Please select at least one platform');
+      return;
+    }
+
+    const newPost = {
+      id: Date.now().toString(),
+      content: postForm.content,
+      platforms: postForm.platforms,
+      scheduledTime: postForm.scheduledTime || new Date().toISOString(),
+      status: postForm.scheduledTime ? 'scheduled' : 'published',
+      hashtags: postForm.hashtags,
+      mediaType: postForm.mediaType,
+      engagement: { likes: 0, shares: 0, comments: 0 },
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setSocialPosts([newPost, ...socialPosts]);
+    setPostForm({
+      content: '',
+      platforms: [],
+      scheduledTime: '',
+      hashtags: '',
+      mediaType: 'image'
+    });
+
+    const platforms = newPost.platforms.join(', ');
+    alert(`✅ Post ${newPost.status} successfully on ${platforms}!`);
+  };
+
+  const handleDeletePost = (postId) => {
+    setSocialPosts(socialPosts.filter(post => post.id !== postId));
+    alert('✅ Post deleted successfully!');
+  };
+
+  const handlePublishPost = (postId) => {
+    setSocialPosts(socialPosts.map(post => 
+      post.id === postId ? { ...post, status: 'published' } : post
+    ));
+    alert('✅ Post published successfully!');
   };
 
   // SEO Tools render functions (moved outside for React compatibility)
@@ -1762,6 +1877,336 @@ const PremiumShopifyDashboard = () => {
       </div>
     </div>
   );
+
+  // Social Media render functions
+  const renderSocialScheduler = () => (
+    <div className="space-y-8">
+      {/* Post Creation Form */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Create Social Media Post</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Post Content *</label>
+              <textarea
+                value={postForm.content}
+                onChange={(e) => setPostForm({...postForm, content: e.target.value})}
+                placeholder="What's happening? Share your thoughts..."
+                rows={4}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              />
+              <p className="text-sm text-gray-500 mt-1">{postForm.content.length}/280 characters</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Platforms *</label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'pink' },
+                  { id: 'facebook', name: 'Facebook', icon: Facebook, color: 'blue' },
+                  { id: 'twitter', name: 'Twitter', icon: Twitter, color: 'cyan' }
+                ].map((platform) => (
+                  <button
+                    key={platform.id}
+                    onClick={() => {
+                      const platforms = postForm.platforms.includes(platform.id)
+                        ? postForm.platforms.filter(p => p !== platform.id)
+                        : [...postForm.platforms, platform.id];
+                      setPostForm({...postForm, platforms});
+                    }}
+                    className={`p-3 rounded-lg border-2 transition-all flex flex-col items-center space-y-2 ${
+                      postForm.platforms.includes(platform.id)
+                        ? `border-${platform.color}-500 bg-${platform.color}-50`
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <platform.icon className={`w-6 h-6 ${
+                      postForm.platforms.includes(platform.id) ? `text-${platform.color}-600` : 'text-gray-500'
+                    }`} />
+                    <span className="text-sm font-medium">{platform.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Hashtags</label>
+              <input
+                type="text"
+                value={postForm.hashtags}
+                onChange={(e) => setPostForm({...postForm, hashtags: e.target.value})}
+                placeholder="#socialmedia #marketing #shopify"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Media Type</label>
+                <select
+                  value={postForm.mediaType}
+                  onChange={(e) => setPostForm({...postForm, mediaType: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                >
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                  <option value="carousel">Carousel</option>
+                  <option value="story">Story</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Schedule (Optional)</label>
+                <input
+                  type="datetime-local"
+                  value={postForm.scheduledTime}
+                  onChange={(e) => setPostForm({...postForm, scheduledTime: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center space-y-4">
+            <div className="bg-pink-50 p-4 rounded-lg">
+              <h5 className="font-medium text-pink-900 mb-2">Post Preview</h5>
+              <div className="bg-white p-3 rounded border">
+                <p className="text-sm text-gray-800">{postForm.content || 'Your post content will appear here...'}</p>
+                {postForm.hashtags && (
+                  <p className="text-sm text-blue-600 mt-2">{postForm.hashtags}</p>
+                )}
+              </div>
+              <p className="text-xs text-pink-600 mt-2">
+                Will post to: {postForm.platforms.length ? postForm.platforms.join(', ') : 'No platforms selected'}
+              </p>
+            </div>
+
+            <button
+              onClick={handleCreatePost}
+              disabled={!postForm.content.trim() || !postForm.platforms.length}
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-pink-600 hover:to-purple-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Send className="w-5 h-5" />
+              <span className="font-medium">
+                {postForm.scheduledTime ? 'Schedule Post' : 'Publish Now'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Scheduled Posts */}
+      <div className="glass-card p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Recent Posts</h4>
+        
+        <div className="space-y-4">
+          {socialPosts.map((post) => (
+            <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      post.status === 'published' ? 'bg-green-100 text-green-800' :
+                      post.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {post.status}
+                    </span>
+                    <div className="flex space-x-1">
+                      {post.platforms.map((platform) => {
+                        const PlatformIcon = platform === 'instagram' ? Instagram : 
+                                           platform === 'facebook' ? Facebook : Twitter;
+                        return (
+                          <PlatformIcon key={platform} className="w-4 h-4 text-gray-500" />
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <p className="text-gray-800 mb-2">{post.content}</p>
+                  {post.hashtags && (
+                    <p className="text-sm text-blue-600 mb-2">{post.hashtags}</p>
+                  )}
+                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <span>{post.engagement.likes} likes</span>
+                    <span>{post.engagement.shares} shares</span>
+                    <span>{post.engagement.comments} comments</span>
+                    <span>Created {post.createdAt}</span>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {post.status === 'scheduled' && (
+                    <button 
+                      onClick={() => handlePublishPost(post.id)}
+                      className="text-green-600 hover:text-green-800 transition-colors"
+                      title="Publish Now"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => handleDeletePost(post.id)}
+                    className="text-red-600 hover:text-red-800 transition-colors"
+                    title="Delete Post"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSocialAnalytics = () => (
+    <div className="space-y-8">
+      {/* Platform Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {socialAnalytics.map((platform) => {
+          const PlatformIcon = platform.platform === 'Instagram' ? Instagram : 
+                             platform.platform === 'Facebook' ? Facebook : Twitter;
+          return (
+            <div key={platform.platform} className="glass-card p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-3">
+                  <PlatformIcon className="w-8 h-8 text-gray-700" />
+                  <h3 className="text-lg font-semibold">{platform.platform}</h3>
+                </div>
+                <span className={`text-sm font-medium ${
+                  platform.growth.startsWith('+') ? 'text-green-600' : 'text-red-600'
+                }`}>
+                  {platform.growth}
+                </span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Followers</span>
+                  <span className="font-medium">{platform.followers.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Engagement</span>
+                  <span className="font-medium">{platform.engagement}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Reach</span>
+                  <span className="font-medium">{platform.reach.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Posts</span>
+                  <span className="font-medium">{platform.posts}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Engagement Metrics */}
+      <div className="glass-card p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Engagement Overview</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[
+            { label: 'Total Followers', value: '26,930', change: '+8.5%', icon: Users },
+            { label: 'Avg Engagement', value: '3.4%', change: '+0.3%', icon: BarChart },
+            { label: 'Total Reach', value: '81,020', change: '+12%', icon: Eye },
+            { label: 'Posts This Month', value: '479', change: '+15%', icon: Calendar }
+          ].map((metric) => (
+            <div key={metric.label} className="text-center p-4 bg-gray-50 rounded-lg">
+              <metric.icon className="w-8 h-8 mx-auto text-gray-600 mb-2" />
+              <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+              <p className="text-sm text-gray-600">{metric.label}</p>
+              <p className={`text-sm font-medium ${
+                metric.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {metric.change}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Best Performing Posts */}
+      <div className="glass-card p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Top Performing Posts</h4>
+        
+        <div className="space-y-4">
+          {socialPosts.filter(post => post.status === 'published').map((post) => (
+            <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-gray-800 mb-2">{post.content}</p>
+                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                    <span className="flex items-center space-x-1">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>{post.engagement.likes} likes</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <RefreshCw className="w-4 h-4" />
+                      <span>{post.engagement.shares} shares</span>
+                    </span>
+                    <span className="flex items-center space-x-1">
+                      <MessageSquare className="w-4 h-4" />
+                      <span>{post.engagement.comments} comments</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-green-600">
+                    {((post.engagement.likes + post.engagement.shares + post.engagement.comments) / 100 * 3.2).toFixed(1)}% engagement
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSocialMedia = () => {
+    const socialTabs = [
+      { id: 'scheduler', label: 'Post Scheduler', icon: Calendar },
+      { id: 'analytics', label: 'Analytics', icon: BarChart },
+      { id: 'hashtags', label: 'Hashtag Research', icon: Hash }
+    ];
+
+    return (
+      <div className="space-y-8">
+        {/* Social Media Navigation */}
+        <div className="flex flex-wrap gap-2 border-b border-gray-200">
+          {socialTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveSocialTab(tab.id)}
+              className={`px-4 py-2 rounded-t-lg font-medium transition-colors flex items-center space-x-2 ${
+                activeSocialTab === tab.id
+                  ? 'bg-pink-50 text-pink-700 border-b-2 border-pink-500'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span className="hidden sm:block">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Social Media Content */}
+        {activeSocialTab === 'scheduler' && renderSocialScheduler()}
+        {activeSocialTab === 'analytics' && renderSocialAnalytics()}
+        {activeSocialTab === 'hashtags' && (
+          <div className="glass-card p-6 text-center">
+            <Hash className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Hashtag Research Tool</h3>
+            <p className="text-gray-600">Advanced hashtag analytics and trending research coming soon!</p>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   // SEO Tools main function (placed after sub-functions for proper hoisting)
   const renderSEOTools = () => {
@@ -2899,7 +3344,7 @@ const PremiumShopifyDashboard = () => {
       case 'seo-tools':
         return renderSEOTools();
       case 'social-media':
-        return renderPlaceholderSection('Social Media', MessageSquare, 'Social media management and scheduling platform');
+        return renderSocialMedia();
       case 'review-management':
         return renderPlaceholderSection('Review Management', Star, 'Multi-platform review management system');
       case 'email-marketing':
