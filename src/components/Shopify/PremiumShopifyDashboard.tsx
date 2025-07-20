@@ -2259,7 +2259,20 @@ const PremiumShopifyDashboard = () => {
       case 'ai-tools':
         return renderAITools();
       case 'seo-tools':
-        return renderSEOTools();
+        return (
+          <div className="p-8 bg-red-100 border-2 border-red-500 rounded-lg">
+            <h2 className="text-2xl font-bold text-red-800">🔴 SEO TOOLS DEBUG TEST</h2>
+            <p className="text-red-700 mt-4">If you see this, the seo-tools case IS being reached!</p>
+            <p className="text-red-600 mt-2">activeTab value: {activeTab}</p>
+            <p className="text-red-600 mt-2">activeSEOTab value: {activeSEOTab}</p>
+            <button 
+              onClick={() => console.log('SEO Tools clicked', { activeTab, activeSEOTab })}
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded"
+            >
+              Log Debug Info
+            </button>
+          </div>
+        );
       case 'social-media':
         return renderPlaceholderSection('Social Media', MessageSquare, 'Social media management and scheduling platform');
       case 'review-management':
