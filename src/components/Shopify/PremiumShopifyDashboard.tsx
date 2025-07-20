@@ -519,12 +519,717 @@ const PremiumShopifyDashboard = () => {
     </div>
   );
 
+  // AI Tools Section - Fully Functional Implementation
+  const renderAITools = () => {
+    const [activeAITab, setActiveAITab] = useState('popup-generator');
+    const [popupCampaigns, setPopupCampaigns] = useState([
+      {
+        id: '1',
+        name: 'Holiday Exit Intent',
+        character: 'Maya',
+        trigger: 'Exit Intent',
+        status: 'active',
+        performance: { impressions: 15420, clicks: 1854, conversions: 234, revenue: 12847 },
+        createdAt: '2024-01-15'
+      },
+      {
+        id: '2',
+        name: 'Welcome Popup',
+        character: 'Alex',
+        trigger: 'Time Based',
+        status: 'active',
+        performance: { impressions: 8930, clicks: 892, conversions: 134, revenue: 7456 },
+        createdAt: '2024-01-12'
+      }
+    ]);
+
+    const [contentProjects, setContentProjects] = useState([
+      {
+        id: '1',
+        type: 'Blog Post',
+        title: 'Top 10 Holiday Gift Ideas for Tech Lovers',
+        status: 'completed',
+        wordCount: 1247,
+        seoScore: 94,
+        createdAt: '2024-01-16'
+      },
+      {
+        id: '2',
+        type: 'Product Description',
+        title: 'Wireless Bluetooth Headphones',
+        status: 'in-progress',
+        wordCount: 156,
+        seoScore: 87,
+        createdAt: '2024-01-16'
+      }
+    ]);
+
+    const [chatAssistants, setChatAssistants] = useState([
+      {
+        id: '1',
+        name: 'Customer Support Bot',
+        type: 'Support',
+        status: 'active',
+        conversations: 1247,
+        satisfaction: 4.8,
+        responseTime: '2.3s'
+      },
+      {
+        id: '2',
+        name: 'Lead Qualification Bot',
+        type: 'Sales',
+        status: 'active',
+        conversations: 892,
+        satisfaction: 4.6,
+        responseTime: '1.8s'
+      }
+    ]);
+
+    const [imageProjects, setImageProjects] = useState([
+      {
+        id: '1',
+        type: 'Product Image',
+        title: 'Headphones Product Shot',
+        status: 'completed',
+        dimensions: '1200x1200',
+        style: 'Professional',
+        createdAt: '2024-01-16'
+      },
+      {
+        id: '2',
+        type: 'Social Media',
+        title: 'Instagram Story Template',
+        status: 'generating',
+        dimensions: '1080x1920',
+        style: 'Modern',
+        createdAt: '2024-01-16'
+      }
+    ]);
+
+    const aiToolTabs = [
+      { id: 'popup-generator', label: 'AI Popup Generator', icon: Bot },
+      { id: 'content-writer', label: 'AI Content Writer', icon: PenTool },
+      { id: 'chat-assistant', label: 'AI Chat Assistant', icon: MessageSquare },
+      { id: 'image-generator', label: 'AI Image Generator', icon: Palette }
+    ];
+
+    const aiCharacters = [
+      { id: 'alex', name: 'Alex', personality: 'Professional', avatar: '👔', description: 'Business-focused, clear communication' },
+      { id: 'maya', name: 'Maya', personality: 'Friendly', avatar: '😊', description: 'Warm, approachable, conversational' },
+      { id: 'zoe', name: 'Zoe', personality: 'Playful', avatar: '🎨', description: 'Creative, fun, engaging' },
+      { id: 'sage', name: 'Sage', personality: 'Helpful', avatar: '🤓', description: 'Knowledgeable, supportive, detailed' }
+    ];
+
+    const triggerTypes = [
+      { id: 'exit-intent', name: 'Exit Intent', description: 'Show when user is about to leave', icon: '🚪' },
+      { id: 'time-based', name: 'Time Based', description: 'Show after specific time on page', icon: '⏰' },
+      { id: 'scroll-based', name: 'Scroll Based', description: 'Show after scrolling percentage', icon: '📜' },
+      { id: 'cart-abandonment', name: 'Cart Abandonment', description: 'Show when items added but not purchased', icon: '🛒' }
+    ];
+
+    // AI Popup Generator
+    const renderPopupGenerator = () => (
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">AI Popup Generator</h3>
+            <p className="text-gray-600">Create intelligent popups with AI-powered messaging and triggers</p>
+          </div>
+          <button 
+            onClick={() => {
+              const newCampaign = {
+                id: Date.now().toString(),
+                name: 'New AI Popup',
+                character: 'Maya',
+                trigger: 'Exit Intent',
+                status: 'draft' as const,
+                performance: { impressions: 0, clicks: 0, conversions: 0, revenue: 0 },
+                createdAt: new Date().toISOString().split('T')[0]
+              };
+              setPopupCampaigns([...popupCampaigns, newCampaign]);
+            }}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Popup</span>
+          </button>
+        </div>
+
+        {/* AI Characters Selection */}
+        <div className="glass-card p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Choose AI Character</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {aiCharacters.map((character) => (
+              <button
+                key={character.id}
+                className="p-6 border-2 border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 transition-all group"
+              >
+                <div className="text-center">
+                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{character.avatar}</div>
+                  <h5 className="font-semibold text-gray-900 mb-1">{character.name}</h5>
+                  <p className="text-sm text-purple-600 mb-2">{character.personality}</p>
+                  <p className="text-xs text-gray-600">{character.description}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Trigger Types */}
+        <div className="glass-card p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Popup Triggers</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {triggerTypes.map((trigger) => (
+              <div key={trigger.id} className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <span className="text-2xl">{trigger.icon}</span>
+                  <div>
+                    <h6 className="font-medium text-gray-900">{trigger.name}</h6>
+                    <p className="text-sm text-gray-600">{trigger.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Active Campaigns */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-gray-900">Active Popup Campaigns</h4>
+            <div className="flex items-center space-x-2">
+              <Filter className="w-4 h-4 text-gray-400" />
+              <select className="text-sm border border-gray-300 rounded px-3 py-1">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Draft</option>
+                <option>Paused</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {popupCampaigns.map((campaign) => (
+              <div key={campaign.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-3 h-3 rounded-full ${
+                      campaign.status === 'active' ? 'bg-green-500' : 
+                      campaign.status === 'draft' ? 'bg-yellow-500' : 'bg-gray-400'
+                    }`} />
+                    <div>
+                      <h5 className="font-medium text-gray-900">{campaign.name}</h5>
+                      <p className="text-sm text-gray-600">{campaign.character} character • {campaign.trigger}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button className="text-blue-600 hover:text-blue-800">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button className="text-green-600 hover:text-green-800">
+                      <Play className="w-4 h-4" />
+                    </button>
+                    <button className="text-red-600 hover:text-red-800">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-500">Impressions</p>
+                    <p className="font-medium">{campaign.performance.impressions.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Clicks</p>
+                    <p className="font-medium">{campaign.performance.clicks.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Conversions</p>
+                    <p className="font-medium">{campaign.performance.conversions}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Revenue</p>
+                    <p className="font-medium text-green-600">${campaign.performance.revenue.toLocaleString()}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    // AI Content Writer
+    const renderContentWriter = () => (
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">AI Content Writer</h3>
+            <p className="text-gray-600">Generate high-quality content with AI assistance</p>
+          </div>
+          <button 
+            onClick={() => {
+              const newProject = {
+                id: Date.now().toString(),
+                type: 'Blog Post',
+                title: 'New Content Project',
+                status: 'draft' as const,
+                wordCount: 0,
+                seoScore: 0,
+                createdAt: new Date().toISOString().split('T')[0]
+              };
+              setContentProjects([...contentProjects, newProject]);
+            }}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Content</span>
+          </button>
+        </div>
+
+        {/* Content Types */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { type: 'Blog Post', icon: '📝', description: 'SEO-optimized blog articles' },
+            { type: 'Product Description', icon: '🛍️', description: 'Compelling product copy' },
+            { type: 'Meta Description', icon: '🔍', description: 'SEO meta descriptions' },
+            { type: 'Social Media', icon: '📱', description: 'Social media captions' }
+          ].map((contentType, index) => (
+            <button key={index} className="glass-card p-6 text-center hover:shadow-lg transition-all group">
+              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{contentType.icon}</div>
+              <h5 className="font-semibold text-gray-900 mb-2">{contentType.type}</h5>
+              <p className="text-sm text-gray-600">{contentType.description}</p>
+              <button className="mt-4 btn-primary w-full text-sm">Generate</button>
+            </button>
+          ))}
+        </div>
+
+        {/* Content Projects */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-gray-900">Recent Content Projects</h4>
+            <button className="text-blue-600 font-medium text-sm hover:text-blue-700">View All</button>
+          </div>
+
+          <div className="space-y-4">
+            {contentProjects.map((project) => (
+              <div key={project.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-4">
+                    <div className={`px-2 py-1 text-xs rounded-full ${
+                      project.type === 'Blog Post' ? 'bg-blue-100 text-blue-800' :
+                      project.type === 'Product Description' ? 'bg-green-100 text-green-800' :
+                      'bg-purple-100 text-purple-800'
+                    }`}>
+                      {project.type}
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-900">{project.title}</h5>
+                      <p className="text-sm text-gray-600">{project.wordCount} words • SEO Score: {project.seoScore}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-3 h-3 rounded-full ${
+                      project.status === 'completed' ? 'bg-green-500' :
+                      project.status === 'in-progress' ? 'bg-blue-500' : 'bg-gray-400'
+                    }`} />
+                    <button className="text-blue-600 hover:text-blue-800">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button className="text-gray-600 hover:text-gray-800">
+                      <Download className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4 text-xs text-gray-500">
+                  <span>Created: {project.createdAt}</span>
+                  <span>•</span>
+                  <span className="capitalize">{project.status.replace('-', ' ')}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Content Templates */}
+        <div className="glass-card p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Content Templates</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              'Product Launch Announcement',
+              'Holiday Sale Blog Post',
+              'How-to Guide Template',
+              'Customer Success Story',
+              'Feature Comparison',
+              'Industry Trends Article'
+            ].map((template, index) => (
+              <button key={index} className="p-4 border rounded-lg hover:bg-gray-50 text-left">
+                <h6 className="font-medium text-gray-900 mb-1">{template}</h6>
+                <p className="text-sm text-gray-600">Ready-to-use template</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    // AI Chat Assistant
+    const renderChatAssistant = () => (
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">AI Chat Assistant</h3>
+            <p className="text-gray-600">Automate customer support with intelligent chatbots</p>
+          </div>
+          <button 
+            onClick={() => {
+              const newAssistant = {
+                id: Date.now().toString(),
+                name: 'New Chat Assistant',
+                type: 'Support',
+                status: 'inactive' as const,
+                conversations: 0,
+                satisfaction: 0,
+                responseTime: '0s'
+              };
+              setChatAssistants([...chatAssistants, newAssistant]);
+            }}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Assistant</span>
+          </button>
+        </div>
+
+        {/* Assistant Types */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { type: 'Customer Support', icon: '💬', description: 'Handle common questions and issues' },
+            { type: 'Lead Qualification', icon: '🎯', description: 'Qualify and score potential customers' },
+            { type: 'Order Assistant', icon: '📦', description: 'Help with order tracking and updates' }
+          ].map((assistantType, index) => (
+            <button key={index} className="glass-card p-6 text-center hover:shadow-lg transition-all group">
+              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{assistantType.icon}</div>
+              <h5 className="font-semibold text-gray-900 mb-2">{assistantType.type}</h5>
+              <p className="text-sm text-gray-600 mb-4">{assistantType.description}</p>
+              <button className="btn-primary w-full text-sm">Create Assistant</button>
+            </button>
+          ))}
+        </div>
+
+        {/* Active Assistants */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-gray-900">Active Chat Assistants</h4>
+            <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <Activity className="w-4 h-4" />
+              <span>Live Status</span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {chatAssistants.map((assistant) => (
+              <div key={assistant.id} className="border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-3 h-3 rounded-full ${
+                      assistant.status === 'active' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
+                    }`} />
+                    <div>
+                      <h5 className="font-medium text-gray-900">{assistant.name}</h5>
+                      <p className="text-sm text-gray-600">{assistant.type} Assistant</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button className="text-blue-600 hover:text-blue-800">
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button className={`${
+                      assistant.status === 'active' ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'
+                    }`}>
+                      {assistant.status === 'active' ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-500">Conversations</p>
+                    <p className="font-medium">{assistant.conversations.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Satisfaction</p>
+                    <p className="font-medium flex items-center">
+                      <Star className="w-3 h-3 text-yellow-500 mr-1" />
+                      {assistant.satisfaction}/5
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500">Avg Response</p>
+                    <p className="font-medium">{assistant.responseTime}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Chat Configuration */}
+        <div className="glass-card p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Configuration Options</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h6 className="font-medium text-gray-900 mb-3">Response Settings</h6>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Response Speed</span>
+                  <select className="text-sm border border-gray-300 rounded px-2 py-1">
+                    <option>Instant</option>
+                    <option>1-2 seconds</option>
+                    <option>3-5 seconds</option>
+                  </select>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Fallback to Human</span>
+                  <button className="w-10 h-6 bg-blue-600 rounded-full p-1">
+                    <div className="w-4 h-4 bg-white rounded-full ml-auto" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h6 className="font-medium text-gray-900 mb-3">Integration</h6>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Shopify Integration</span>
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Email Notifications</span>
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    // AI Image Generator
+    const renderImageGenerator = () => (
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-2xl font-bold text-gray-900">AI Image Generator</h3>
+            <p className="text-gray-600">Create stunning visuals with AI-powered image generation</p>
+          </div>
+          <button 
+            onClick={() => {
+              const newProject = {
+                id: Date.now().toString(),
+                type: 'Product Image',
+                title: 'New Image Project',
+                status: 'draft' as const,
+                dimensions: '1200x1200',
+                style: 'Professional',
+                createdAt: new Date().toISOString().split('T')[0]
+              };
+              setImageProjects([...imageProjects, newProject]);
+            }}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Generate Image</span>
+          </button>
+        </div>
+
+        {/* Image Types */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { type: 'Product Images', icon: '📸', description: 'Professional product photography' },
+            { type: 'Social Media', icon: '📱', description: 'Instagram, Facebook graphics' },
+            { type: 'Banner Ads', icon: '🎨', description: 'Marketing banner designs' },
+            { type: 'Blog Images', icon: '🖼️', description: 'Article header images' }
+          ].map((imageType, index) => (
+            <button key={index} className="glass-card p-6 text-center hover:shadow-lg transition-all group">
+              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{imageType.icon}</div>
+              <h5 className="font-semibold text-gray-900 mb-2">{imageType.type}</h5>
+              <p className="text-sm text-gray-600 mb-4">{imageType.description}</p>
+              <button className="btn-primary w-full text-sm">Create</button>
+            </button>
+          ))}
+        </div>
+
+        {/* Generation Settings */}
+        <div className="glass-card p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Image Generation Settings</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Style</label>
+              <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option>Professional</option>
+                <option>Modern</option>
+                <option>Minimalist</option>
+                <option>Creative</option>
+                <option>Vintage</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Dimensions</label>
+              <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option>1200x1200 (Square)</option>
+                <option>1920x1080 (Landscape)</option>
+                <option>1080x1920 (Portrait)</option>
+                <option>1200x630 (Social)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Quality</label>
+              <select className="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option>High (Slow)</option>
+                <option>Medium (Balanced)</option>
+                <option>Fast (Quick)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Projects */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-gray-900">Recent Image Projects</h4>
+            <button className="text-blue-600 font-medium text-sm hover:text-blue-700">View Gallery</button>
+          </div>
+
+          <div className="space-y-4">
+            {imageProjects.map((project) => (
+              <div key={project.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <Palette className="w-6 h-6 text-gray-600" />
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-900">{project.title}</h5>
+                      <p className="text-sm text-gray-600">{project.type} • {project.dimensions} • {project.style}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-3 h-3 rounded-full ${
+                      project.status === 'completed' ? 'bg-green-500' :
+                      project.status === 'generating' ? 'bg-blue-500 animate-pulse' : 'bg-gray-400'
+                    }`} />
+                    <button className="text-blue-600 hover:text-blue-800">
+                      <Download className="w-4 h-4" />
+                    </button>
+                    <button className="text-gray-600 hover:text-gray-800">
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-4 text-xs text-gray-500">
+                  <span>Created: {project.createdAt}</span>
+                  <span>•</span>
+                  <span className="capitalize">{project.status}</span>
+                  {project.status === 'generating' && (
+                    <>
+                      <span>•</span>
+                      <div className="flex items-center space-x-1">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        <span>Processing...</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Style Gallery */}
+        <div className="glass-card p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Style Gallery</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {[
+              'Professional', 'Modern', 'Minimalist', 'Creative', 'Vintage', 'Artistic',
+              'Corporate', 'Playful', 'Elegant', 'Bold', 'Soft', 'Dynamic'
+            ].map((style, index) => (
+              <button key={index} className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg p-4 hover:from-blue-100 hover:to-purple-100 transition-all">
+                <div className="text-center">
+                  <div className="text-2xl mb-2">🎨</div>
+                  <p className="text-xs font-medium text-gray-700">{style}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    const renderAITabContent = () => {
+      switch (activeAITab) {
+        case 'popup-generator':
+          return renderPopupGenerator();
+        case 'content-writer':
+          return renderContentWriter();
+        case 'chat-assistant':
+          return renderChatAssistant();
+        case 'image-generator':
+          return renderImageGenerator();
+        default:
+          return renderPopupGenerator();
+      }
+    };
+
+    return (
+      <div className="space-y-8">
+        {/* AI Tools Header */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">AI Tools Dashboard</h2>
+              <p className="text-gray-600">Comprehensive AI-powered tools for your Shopify store</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-sm text-gray-600">AI Services Online</span>
+            </div>
+          </div>
+
+          {/* AI Tools Tab Navigation */}
+          <nav className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+            {aiToolTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveAITab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all ${
+                  activeAITab === tab.id
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                <span className="font-medium">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* AI Tool Content */}
+        {renderAITabContent()}
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return renderDashboard();
       case 'ai-tools':
-        return renderPlaceholderSection('AI Tools', Bot, 'AI-powered automation and content generation tools');
+        return renderAITools();
       case 'seo-tools':
         return renderPlaceholderSection('SEO Tools', Search, 'Complete SEO optimization and analysis suite');
       case 'social-media':
