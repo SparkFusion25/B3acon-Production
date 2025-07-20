@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ShopifyLanding from './components/Shopify/ShopifyLanding';
-import ShopifyDashboard from './components/Shopify/ShopifyDashboard';
 import ShopifyInstallation from './components/Shopify/ShopifyInstallation';
 import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
@@ -21,7 +20,6 @@ const AppRoutes: React.FC = () => {
       
       {/* Legacy Routes for Testing/Comparison */}
       <Route path="/shopify/legacy" element={<ShopifyLanding />} />
-      <Route path="/shopify/legacy-dashboard" element={<ShopifyDashboard />} />
       <Route path="/shopify/legacy-install" element={<ShopifyInstallation />} />
       
       {/* Default Route - Redirect to main Shopify landing */}
