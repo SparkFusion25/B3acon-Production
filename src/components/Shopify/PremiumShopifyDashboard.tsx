@@ -4347,25 +4347,40 @@ const PremiumShopifyDashboard = () => {
       case 'review-management':
         return renderReviewManagement();
       case 'email-marketing':
-        console.log('🔴 EMAIL MARKETING DEBUG: Email marketing case reached!');
-        try {
-          return renderEmailMarketing();
-        } catch (error) {
-          console.error('🔴 EMAIL MARKETING ERROR:', error);
-          return (
-            <div className="glass-card p-6 text-center">
-              <h3 className="text-xl font-semibold text-red-600 mb-2">🔴 EMAIL MARKETING ERROR</h3>
-              <p className="text-gray-600">renderEmailMarketing() function failed!</p>
-              <p className="text-sm text-red-500 mt-2">Error: {error.message}</p>
+        console.log('🔴 EMAIL MARKETING DEBUG: Case reached, testing renderEmailMarketing...');
+        console.log('🔴 activeEmailTab:', activeEmailTab);
+        console.log('🔴 renderEmailCampaigns exists:', typeof renderEmailCampaigns);
+        console.log('🔴 renderEmailAutomation exists:', typeof renderEmailAutomation);
+        console.log('🔴 renderEmailAnalytics exists:', typeof renderEmailAnalytics);
+        
+        return (
+          <div className="space-y-8">
+            <div className="glass-card p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">🔴 EMAIL MARKETING DEBUG MODE</h2>
+              <div className="space-y-2 text-sm">
+                <p>✅ Email Marketing case reached successfully</p>
+                <p>✅ activeEmailTab: {activeEmailTab}</p>
+                <p>✅ renderEmailCampaigns: {typeof renderEmailCampaigns}</p>
+                <p>✅ renderEmailAutomation: {typeof renderEmailAutomation}</p>
+                <p>✅ renderEmailAnalytics: {typeof renderEmailAnalytics}</p>
+              </div>
               <button 
-                onClick={() => console.log('Error details:', error)}
-                className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                onClick={() => {
+                  console.log('🔴 Testing renderEmailMarketing directly...');
+                  try {
+                    const result = renderEmailMarketing();
+                    console.log('🔴 renderEmailMarketing result:', result);
+                  } catch (e) {
+                    console.error('🔴 renderEmailMarketing error:', e);
+                  }
+                }}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
               >
-                Show Error Stack
+                Test renderEmailMarketing()
               </button>
             </div>
-          );
-        }
+          </div>
+        );
       case 'content-creation':
         return renderPlaceholderSection('Content Creation', PenTool, 'Content creation tools and typewriter plugins');
       case 'product-research':
