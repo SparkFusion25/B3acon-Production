@@ -1,0 +1,14 @@
+# Clean up git objects and history
+git gc --prune=now --aggressive
+
+# Remove git pack files
+rm -rf .git/objects/pack/*.pack
+
+# Clean git reflog
+git reflog expire --expire=now --all
+
+# Remove untracked files
+git clean -fdx
+
+# Reset git index
+rm -f .git/index
