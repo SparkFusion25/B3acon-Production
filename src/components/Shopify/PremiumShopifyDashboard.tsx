@@ -56,7 +56,16 @@ import {
   ThumbsDown,
   AlertTriangle,
   Reply,
-  Filter
+  Filter,
+  AtSign,
+  Zap,
+  Users,
+  BarChart2,
+  FileText,
+  Clock,
+  CheckCircle2,
+  Gift,
+  MousePointer
 } from 'lucide-react';
 import '../../styles/premium-design-system.css';
 
@@ -501,6 +510,94 @@ const PremiumShopifyDashboard = () => {
     verified: 'all'
   });
 
+  // Email Marketing state
+  const [activeEmailTab, setActiveEmailTab] = useState('campaigns');
+  const [emailCampaigns, setEmailCampaigns] = useState([
+    {
+      id: '1',
+      name: 'Black Friday Sale 2024',
+      subject: '🔥 50% Off Everything - Limited Time!',
+      type: 'promotional',
+      status: 'sent',
+      recipients: 12547,
+      openRate: 24.3,
+      clickRate: 3.8,
+      revenue: 23450,
+      sentDate: '2024-01-15',
+      template: 'sale-template'
+    },
+    {
+      id: '2',
+      name: 'Welcome Series - Email 1',
+      subject: 'Welcome to TechStore! Here\'s 10% off your first order',
+      type: 'automation',
+      status: 'active',
+      recipients: 890,
+      openRate: 42.1,
+      clickRate: 8.7,
+      revenue: 5420,
+      sentDate: '2024-01-16',
+      template: 'welcome-template'
+    },
+    {
+      id: '3',
+      name: 'Product Launch - Wireless Earbuds',
+      subject: 'Introducing Our Latest Wireless Earbuds',
+      type: 'product',
+      status: 'draft',
+      recipients: 0,
+      openRate: 0,
+      clickRate: 0,
+      revenue: 0,
+      sentDate: '',
+      template: 'product-launch'
+    }
+  ]);
+  const [emailStats, setEmailStats] = useState({
+    totalSubscribers: 15890,
+    activeSubscribers: 14523,
+    avgOpenRate: 28.4,
+    avgClickRate: 4.2,
+    monthlyRevenue: 45670
+  });
+  const [campaignForm, setCampaignForm] = useState({
+    name: '',
+    subject: '',
+    type: 'promotional',
+    template: 'basic',
+    recipients: 'all-subscribers',
+    scheduleType: 'send-now'
+  });
+  const [automationRules, setAutomationRules] = useState([
+    {
+      id: '1',
+      name: 'Welcome Series',
+      trigger: 'new-subscriber',
+      status: 'active',
+      emails: 3,
+      subscribers: 890,
+      performance: '42% open rate'
+    },
+    {
+      id: '2',
+      name: 'Abandoned Cart Recovery',
+      trigger: 'abandoned-cart',
+      status: 'active',
+      emails: 2,
+      subscribers: 456,
+      performance: '18% recovery rate'
+    },
+    {
+      id: '3',
+      name: 'Post-Purchase Follow-up',
+      trigger: 'purchase-complete',
+      status: 'active',
+      emails: 2,
+      subscribers: 234,
+      performance: '35% open rate'
+    }
+  ]);
+
   // Comprehensive Navigation Structure
   const navigationTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, color: 'blue' },
@@ -717,7 +814,7 @@ const PremiumShopifyDashboard = () => {
       {/* Main Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {metrics.map((metric, index) => (
-          <div key={index} className="glass-card p-6">
+          <div key={index} className="glass-card p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4">
               <div className={`w-12 h-12 bg-${metric.color}-100 rounded-lg flex items-center justify-center`}>
                 <metric.icon className={`w-6 h-6 text-${metric.color}-600`} />
@@ -1226,6 +1323,434 @@ const PremiumShopifyDashboard = () => {
       if (reviewFilters.verified !== 'all' && review.verified.toString() !== reviewFilters.verified) return false;
       return true;
     });
+  };
+
+  // Email Marketing handlers
+  const handleCreateCampaign = () => {
+    if (!campaignForm.name.trim() || !campaignForm.subject.trim()) {
+      alert('Please enter campaign name and subject');
+      return;
+    }
+
+    const newCampaign = {
+      id: Date.now().toString(),
+      name: campaignForm.name,
+      subject: campaignForm.subject,
+      type: campaignForm.type,
+      status: campaignForm.scheduleType === 'send-now' ? 'sent' : 'scheduled',
+      recipients: campaignForm.recipients === 'all-subscribers' ? emailStats.activeSubscribers : Math.floor(emailStats.activeSubscribers * 0.7),
+      openRate: 0,
+      clickRate: 0,
+      revenue: 0,
+      sentDate: campaignForm.scheduleType === 'send-now' ? new Date().toISOString().split('T')[0] : '',
+      template: campaignForm.template
+    };
+
+    setEmailCampaigns([newCampaign, ...emailCampaigns]);
+    setCampaignForm({
+      name: '',
+      subject: '',
+      type: 'promotional',
+      template: 'basic',
+      recipients: 'all-subscribers',
+      scheduleType: 'send-now'
+    });
+
+    if (campaignForm.scheduleType === 'send-now') {
+      // Simulate sending process
+      setTimeout(() => {
+        setEmailCampaigns(prev => prev.map(campaign => 
+          campaign.id === newCampaign.id 
+            ? { 
+                ...campaign, 
+                openRate: Math.random() * 30 + 15,
+                clickRate: Math.random() * 8 + 2,
+                revenue: Math.floor(Math.random() * 10000) + 2000
+              }
+            : campaign
+        ));
+      }, 3000);
+      alert(`✅ Campaign "${newCampaign.name}" sent to ${newCampaign.recipients} subscribers!`);
+    } else {
+      alert(`✅ Campaign "${newCampaign.name}" scheduled successfully!`);
+    }
+  };
+
+  const handleDeleteCampaign = (campaignId) => {
+    setEmailCampaigns(emailCampaigns.filter(campaign => campaign.id !== campaignId));
+    alert('✅ Campaign deleted successfully!');
+  };
+
+  const handleToggleAutomation = (ruleId) => {
+    setAutomationRules(automationRules.map(rule => 
+      rule.id === ruleId 
+        ? { ...rule, status: rule.status === 'active' ? 'paused' : 'active' }
+        : rule
+    ));
+  };
+
+  // Email Marketing render functions
+  const renderEmailCampaigns = () => (
+    <div className="space-y-8">
+      {/* Campaign Creation Form */}
+      <div className="glass-card p-4 sm:p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Create Email Campaign</h3>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Name *</label>
+              <input
+                type="text"
+                value={campaignForm.name}
+                onChange={(e) => setCampaignForm({...campaignForm, name: e.target.value})}
+                placeholder="e.g., Black Friday Sale 2024"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Subject Line *</label>
+              <input
+                type="text"
+                value={campaignForm.subject}
+                onChange={(e) => setCampaignForm({...campaignForm, subject: e.target.value})}
+                placeholder="e.g., 🔥 50% Off Everything - Limited Time!"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Type</label>
+                <select
+                  value={campaignForm.type}
+                  onChange={(e) => setCampaignForm({...campaignForm, type: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="promotional">Promotional</option>
+                  <option value="product">Product Launch</option>
+                  <option value="newsletter">Newsletter</option>
+                  <option value="automation">Automation</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Template</label>
+                <select
+                  value={campaignForm.template}
+                  onChange={(e) => setCampaignForm({...campaignForm, template: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="basic">Basic</option>
+                  <option value="sale-template">Sale Template</option>
+                  <option value="welcome-template">Welcome Template</option>
+                  <option value="product-launch">Product Launch</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Recipients</label>
+                <select
+                  value={campaignForm.recipients}
+                  onChange={(e) => setCampaignForm({...campaignForm, recipients: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="all-subscribers">All Subscribers ({emailStats.activeSubscribers.toLocaleString()})</option>
+                  <option value="engaged-subscribers">Engaged Subscribers</option>
+                  <option value="new-subscribers">New Subscribers</option>
+                  <option value="vip-customers">VIP Customers</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Schedule</label>
+                <select
+                  value={campaignForm.scheduleType}
+                  onChange={(e) => setCampaignForm({...campaignForm, scheduleType: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="send-now">Send Now</option>
+                  <option value="schedule-later">Schedule Later</option>
+                  <option value="save-draft">Save as Draft</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-center space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h5 className="font-medium text-blue-900 mb-2">Campaign Preview</h5>
+              <div className="bg-white p-3 rounded border">
+                <p className="text-sm font-medium text-gray-800">
+                  Subject: {campaignForm.subject || 'Your subject line will appear here...'}
+                </p>
+                <p className="text-xs text-gray-600 mt-1">
+                  To: {campaignForm.recipients === 'all-subscribers' ? emailStats.activeSubscribers.toLocaleString() : 'Selected'} subscribers
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Template: {campaignForm.template} | Type: {campaignForm.type}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleCreateCampaign}
+              disabled={!campaignForm.name.trim() || !campaignForm.subject.trim()}
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-6 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <AtSign className="w-5 h-5" />
+              <span className="font-medium">
+                {campaignForm.scheduleType === 'send-now' ? 'Send Campaign' : 
+                 campaignForm.scheduleType === 'schedule-later' ? 'Schedule Campaign' : 'Save Draft'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Campaigns List */}
+      <div className="glass-card p-4 sm:p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Recent Campaigns</h4>
+        
+        <div className="space-y-4">
+          {emailCampaigns.map((campaign) => (
+            <div key={campaign.id} className="border rounded-lg p-4 hover:bg-gray-50">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h6 className="font-medium text-gray-900">{campaign.name}</h6>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      campaign.status === 'sent' ? 'bg-green-100 text-green-800' :
+                      campaign.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                      campaign.status === 'scheduled' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {campaign.status}
+                    </span>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      campaign.type === 'promotional' ? 'bg-orange-100 text-orange-800' :
+                      campaign.type === 'automation' ? 'bg-purple-100 text-purple-800' :
+                      'bg-blue-100 text-blue-800'
+                    }`}>
+                      {campaign.type}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">{campaign.subject}</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm text-gray-500">
+                    <span>{campaign.recipients.toLocaleString()} recipients</span>
+                    {campaign.status === 'sent' && (
+                      <>
+                        <span>{campaign.openRate.toFixed(1)}% open rate</span>
+                        <span>{campaign.clickRate.toFixed(1)}% click rate</span>
+                        <span>${campaign.revenue.toLocaleString()} revenue</span>
+                      </>
+                    )}
+                  </div>
+                  {campaign.sentDate && (
+                    <p className="text-xs text-gray-400 mt-1">Sent {campaign.sentDate}</p>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => alert(`📊 Campaign analytics for "${campaign.name}" would be displayed here`)}
+                    className="text-blue-600 hover:text-blue-800 transition-colors p-2"
+                    title="View Analytics"
+                  >
+                    <BarChart2 className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteCampaign(campaign.id)}
+                    className="text-red-600 hover:text-red-800 transition-colors p-2"
+                    title="Delete Campaign"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderEmailAutomation = () => (
+    <div className="space-y-8">
+      {/* Automation Rules */}
+      <div className="glass-card p-4 sm:p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-6">Email Automation Rules</h3>
+        
+        <div className="space-y-4">
+          {automationRules.map((rule) => (
+            <div key={rule.id} className="border rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h6 className="font-medium text-gray-900">{rule.name}</h6>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      rule.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {rule.status}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm text-gray-600">
+                    <span>Trigger: {rule.trigger.replace('-', ' ')}</span>
+                    <span>{rule.emails} emails in sequence</span>
+                    <span>{rule.subscribers} active subscribers</span>
+                    <span>{rule.performance}</span>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button 
+                    onClick={() => handleToggleAutomation(rule.id)}
+                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+                      rule.status === 'active' 
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                    }`}
+                  >
+                    {rule.status === 'active' ? 'Pause' : 'Activate'}
+                  </button>
+                  <button 
+                    onClick={() => alert(`⚙️ Automation settings for "${rule.name}" would be displayed here`)}
+                    className="text-gray-600 hover:text-gray-800 transition-colors p-2"
+                    title="Edit Automation"
+                  >
+                    <Settings className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Create New Automation */}
+      <div className="glass-card p-4 sm:p-6">
+        <h4 className="text-lg font-semibold text-gray-900 mb-6">Create New Automation</h4>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { trigger: 'Welcome Series', description: 'Send welcome emails to new subscribers', icon: Users },
+            { trigger: 'Abandoned Cart', description: 'Recover abandoned shopping carts', icon: ShoppingBag },
+            { trigger: 'Post-Purchase', description: 'Follow up after purchases', icon: CheckCircle2 },
+            { trigger: 'Birthday Campaign', description: 'Send birthday discounts', icon: Gift },
+            { trigger: 'Win-Back Campaign', description: 'Re-engage inactive customers', icon: RefreshCw },
+            { trigger: 'Product Recommendations', description: 'Suggest related products', icon: Star }
+          ].map((automation, index) => (
+            <button
+              key={index}
+              onClick={() => alert(`🤖 Creating ${automation.trigger} automation...`)}
+              className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+            >
+              <automation.icon className="w-8 h-8 text-gray-600 mb-2" />
+              <h6 className="font-medium text-gray-900 mb-1">{automation.trigger}</h6>
+              <p className="text-sm text-gray-600">{automation.description}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderEmailAnalytics = () => (
+    <div className="space-y-8">
+      {/* Email Stats Overview */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+        {[
+          { label: 'Total Subscribers', value: emailStats.totalSubscribers.toLocaleString(), icon: Users, color: 'blue' },
+          { label: 'Active Subscribers', value: emailStats.activeSubscribers.toLocaleString(), icon: CheckCircle2, color: 'green' },
+          { label: 'Avg Open Rate', value: `${emailStats.avgOpenRate}%`, icon: Eye, color: 'yellow' },
+          { label: 'Avg Click Rate', value: `${emailStats.avgClickRate}%`, icon: MousePointer, color: 'purple' },
+          { label: 'Monthly Revenue', value: `$${emailStats.monthlyRevenue.toLocaleString()}`, icon: DollarSign, color: 'emerald' }
+        ].map((stat) => (
+          <div key={stat.label} className="glass-card p-4 sm:p-6 text-center">
+            <stat.icon className={`w-8 h-8 mx-auto mb-3 text-${stat.color}-600`} />
+            <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            <p className="text-sm text-gray-600">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Performance Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="glass-card p-4 sm:p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Campaign Performance</h4>
+          <div className="space-y-3">
+            {emailCampaigns.filter(c => c.status === 'sent').map((campaign) => (
+              <div key={campaign.id} className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">{campaign.name}</p>
+                  <p className="text-xs text-gray-500">{campaign.recipients.toLocaleString()} recipients</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-green-600">{campaign.openRate.toFixed(1)}% open</p>
+                  <p className="text-xs text-blue-600">{campaign.clickRate.toFixed(1)}% click</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="glass-card p-4 sm:p-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">Revenue by Campaign</h4>
+          <div className="space-y-3">
+            {emailCampaigns.filter(c => c.revenue > 0).map((campaign) => (
+              <div key={campaign.id} className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">{campaign.name}</p>
+                  <p className="text-xs text-gray-500">{campaign.sentDate}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-green-600">${campaign.revenue.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500">
+                    ${(campaign.revenue / campaign.recipients).toFixed(2)} per recipient
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderEmailMarketing = () => {
+    const emailTabs = [
+      { id: 'campaigns', label: 'Campaigns', icon: AtSign },
+      { id: 'automation', label: 'Automation', icon: Zap },
+      { id: 'analytics', label: 'Analytics', icon: BarChart2 }
+    ];
+
+    return (
+      <div className="space-y-8">
+        {/* Email Marketing Navigation */}
+        <div className="flex flex-wrap gap-2 border-b border-gray-200">
+          {emailTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveEmailTab(tab.id)}
+              className={`px-4 py-3 rounded-t-lg font-medium transition-colors flex items-center space-x-2 touch-manipulation ${
+                activeEmailTab === tab.id
+                  ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:block text-sm lg:text-base">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Email Marketing Content */}
+        {activeEmailTab === 'campaigns' && renderEmailCampaigns()}
+        {activeEmailTab === 'automation' && renderEmailAutomation()}
+        {activeEmailTab === 'analytics' && renderEmailAnalytics()}
+      </div>
+    );
   };
 
   // Review Management render functions
@@ -3822,7 +4347,40 @@ const PremiumShopifyDashboard = () => {
       case 'review-management':
         return renderReviewManagement();
       case 'email-marketing':
-        return renderPlaceholderSection('Email Marketing', Mail, 'Advanced email campaigns and automation');
+        console.log('🔴 EMAIL MARKETING DEBUG: Case reached, testing renderEmailMarketing...');
+        console.log('🔴 activeEmailTab:', activeEmailTab);
+        console.log('🔴 renderEmailCampaigns exists:', typeof renderEmailCampaigns);
+        console.log('🔴 renderEmailAutomation exists:', typeof renderEmailAutomation);
+        console.log('🔴 renderEmailAnalytics exists:', typeof renderEmailAnalytics);
+        
+        return (
+          <div className="space-y-8">
+            <div className="glass-card p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">🔴 EMAIL MARKETING DEBUG MODE</h2>
+              <div className="space-y-2 text-sm">
+                <p>✅ Email Marketing case reached successfully</p>
+                <p>✅ activeEmailTab: {activeEmailTab}</p>
+                <p>✅ renderEmailCampaigns: {typeof renderEmailCampaigns}</p>
+                <p>✅ renderEmailAutomation: {typeof renderEmailAutomation}</p>
+                <p>✅ renderEmailAnalytics: {typeof renderEmailAnalytics}</p>
+              </div>
+              <button 
+                onClick={() => {
+                  console.log('🔴 Testing renderEmailMarketing directly...');
+                  try {
+                    const result = renderEmailMarketing();
+                    console.log('🔴 renderEmailMarketing result:', result);
+                  } catch (e) {
+                    console.error('🔴 renderEmailMarketing error:', e);
+                  }
+                }}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Test renderEmailMarketing()
+              </button>
+            </div>
+          </div>
+        );
       case 'content-creation':
         return renderPlaceholderSection('Content Creation', PenTool, 'Content creation tools and typewriter plugins');
       case 'product-research':
@@ -3845,18 +4403,53 @@ const PremiumShopifyDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50">
       {/* Mobile Navigation Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
 
-      {/* Sidebar Navigation */}
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 lg:hidden">
+        <div className="grid grid-cols-5 gap-1">
+          {navigationTabs.slice(0, 4).map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setMobileMenuOpen(false);
+              }}
+              className={`flex flex-col items-center py-2 px-1 text-xs transition-colors ${
+                activeTab === tab.id
+                  ? 'text-indigo-600 bg-indigo-50'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <tab.icon className="w-5 h-5 mb-1" />
+              <span className="truncate">{tab.label.split(' ')[0]}</span>
+            </button>
+          ))}
+          {/* More Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`flex flex-col items-center py-2 px-1 text-xs transition-colors ${
+              mobileMenuOpen
+                ? 'text-indigo-600 bg-indigo-50'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Menu className="w-5 h-5 mb-1" />
+            <span className="truncate">More</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Sidebar Navigation */}
       <div className={`${
         sidebarCollapsed ? 'w-16' : 'w-72'
       } bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${
-        mobileMenuOpen ? 'fixed inset-y-0 left-0 z-50 lg:relative' : 'hidden lg:block'
-      }`}>
+        mobileMenuOpen ? 'fixed inset-y-0 left-0 z-50' : 'hidden'
+      } lg:block lg:relative`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
@@ -3913,27 +4506,23 @@ const PremiumShopifyDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors touch-manipulation"
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {navigationTabs.find(tab => tab.id === activeTab)?.label}
-                </h2>
-                <p className="text-sm text-gray-600">
-                  {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
-                   `Manage your ${navigationTabs.find(tab => tab.id === activeTab)?.label.toLowerCase()}`}
-                </p>
+      <div className="lg:flex lg:flex-1">
+        <div className="flex-1 flex flex-col lg:ml-0"
+             style={{ marginLeft: typeof window !== 'undefined' && window.innerWidth >= 1024 ? (sidebarCollapsed ? '64px' : '288px') : '0' }}>
+                  {/* Top Header */}
+          <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+                    {navigationTabs.find(tab => tab.id === activeTab)?.label}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">
+                    {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
+                     `Manage your ${navigationTabs.find(tab => tab.id === activeTab)?.label.toLowerCase()}`}
+                  </p>
+                </div>
               </div>
-            </div>
             
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="hidden sm:flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
@@ -3954,17 +4543,45 @@ const PremiumShopifyDashboard = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 p-4 sm:p-6 overflow-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-            </div>
-          ) : (
-            renderContent()
-          )}
+          {/* Main Content Area */}
+          <div className="flex-1 p-4 sm:p-6 overflow-auto pb-20 lg:pb-6">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
+              </div>
+            ) : (
+              renderContent()
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Mobile More Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-0 bottom-16 bg-white border-t border-gray-200 z-40 lg:hidden">
+          <div className="max-h-64 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-2 p-4">
+                             {navigationTabs.slice(4).map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-indigo-100 text-indigo-700'
+                      : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

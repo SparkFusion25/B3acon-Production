@@ -185,10 +185,23 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+@media (max-width: 768px) {
+  .glass-card {
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.8);
-  transform: translateY(-4px);
   box-shadow: var(--shadow-2xl);
+}
+
+@media (min-width: 1024px) {
+  .glass-card:hover {
+    transform: translateY(-4px);
+  }
 }
 
 .glass-card-dark {
