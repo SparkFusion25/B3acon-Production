@@ -351,64 +351,67 @@ const PremiumShopifyDashboard: React.FC = () => {
 
   // Enhanced Dashboard Overview
   const renderDashboard = () => (
-    <div className="space-y-6">
-      <div className="glass-card p-6">
-        <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
-          Dashboard Overview
-        </h2>
-        <p className="text-gray-600 mb-6">Welcome back! Here's what's happening with your store.</p>
-        
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {realtimeMetrics.map((metric, index) => (
-            <Card key={index} className="border-0 shadow-elegant">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
-                    <p className="text-2xl font-bold">{metric.value}</p>
-                    <p className={`text-sm text-${metric.color}-600 mt-1`}>{metric.change}</p>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">
+            Dashboard Overview
+          </CardTitle>
+          <CardDescription>Welcome back! Here's what's happening with your store.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {/* Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {realtimeMetrics.map((metric, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500 mb-1">{metric.label}</p>
+                      <p className="text-2xl font-bold">{metric.value}</p>
+                      <p className={`text-sm text-${metric.color}-600 mt-1`}>{metric.change}</p>
+                    </div>
+                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                      <metric.icon className="h-6 w-6 text-blue-600" />
+                    </div>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary/10">
-                    <metric.icon className="h-6 w-6 text-primary" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Active Campaigns */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-4">Active Campaigns</h3>
-          <div className="space-y-4">
-            {activeCampaigns.map((campaign) => (
-              <div key={campaign.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <div className={`w-3 h-3 rounded-full ${campaign.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                  <div>
-                    <h4 className="font-medium">{campaign.name}</h4>
-                    <p className="text-sm text-gray-600">{campaign.type}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium">${campaign.performance.revenue.toLocaleString()}</p>
-                  <p className="text-sm text-gray-600">{campaign.performance.conversions} conversions</p>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </div>
-      </div>
+
+          {/* Active Campaigns */}
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-4">Active Campaigns</h3>
+            <div className="space-y-4">
+              {activeCampaigns.map((campaign) => (
+                <div key={campaign.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-3 h-3 rounded-full ${campaign.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                    <div>
+                      <h4 className="font-medium">{campaign.name}</h4>
+                      <p className="text-sm text-gray-600">{campaign.type}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium">${campaign.performance.revenue.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600">{campaign.performance.conversions} conversions</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
   // Premium Widgets Section
   const renderPremiumWidgets = () => (
-    <div className="space-y-6">
-      <Card className="border-0 shadow-elegant">
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
         <CardHeader>
-          <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold text-blue-600">
             Premium Widgets Marketplace
           </CardTitle>
           <CardDescription>
@@ -418,19 +421,24 @@ const PremiumShopifyDashboard: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { name: "AI Smart Shopper Assistant™", price: "$29/month", description: "NLP-powered search with voice support" },
-              { name: "Dynamic Conversion Predictor™", price: "$19/month", description: "Behavioral prediction scoring" },
-              { name: "Bundle Builder + Smart Discount", price: "$25/month", description: "Gamified bundle creation" },
-              { name: "Story-Style Product Viewer™", price: "$22/month", description: "Instagram-style showcases" },
-              { name: "Live Inventory Pulse Meter™", price: "$12/month", description: "Real-time scarcity messaging" }
+              { name: "AI Smart Shopper Assistant™", price: "$29/month", description: "NLP-powered search with voice support", features: ["Natural Language Search", "Voice Support", "Upsell Logic"] },
+              { name: "Dynamic Conversion Predictor™", price: "$19/month", description: "Behavioral prediction scoring", features: ["Behavioral Analysis", "Purchase Likelihood", "Smart Badges"] },
+              { name: "Bundle Builder + Smart Discount", price: "$25/month", description: "Gamified bundle creation", features: ["Bundle Logic", "Smart Discounts", "Gamification"] },
+              { name: "Story-Style Product Viewer™", price: "$22/month", description: "Instagram-style showcases", features: ["Story Format", "Swipe Navigation", "Social Proof"] },
+              { name: "Live Inventory Pulse Meter™", price: "$12/month", description: "Real-time scarcity messaging", features: ["Live Inventory", "Scarcity Messages", "FOMO Triggers"] }
             ].map((widget, index) => (
-              <Card key={index} className="hover:shadow-premium transition-all">
+              <Card key={index} className="border shadow-md hover:shadow-lg transition-all">
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-2">{widget.name}</h3>
                   <p className="text-sm text-gray-600 mb-4">{widget.description}</p>
+                  <ul className="text-xs text-gray-500 mb-4 space-y-1">
+                    {widget.features.map((feature, i) => (
+                      <li key={i}>• {feature}</li>
+                    ))}
+                  </ul>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-primary">{widget.price}</span>
-                    <Button size="sm" className="bg-gradient-primary">Install</Button>
+                    <span className="text-lg font-bold text-blue-600">{widget.price}</span>
+                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">Install</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -441,39 +449,201 @@ const PremiumShopifyDashboard: React.FC = () => {
     </div>
   );
 
-  // Placeholder render functions for all other sections
+  // AI Tools Section
   const renderAITools = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">AI Tools</h2>
-      <p className="text-gray-600">AI-powered automation tools for your store</p>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">AI Tools</CardTitle>
+          <CardDescription>AI-powered automation tools for your store</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: "AI Popup Generator", description: "Smart popups with 4 AI characters", status: "Active", conversions: 234 },
+              { name: "AI Content Writer", description: "Blog posts and product descriptions", status: "Active", conversions: 156 },
+              { name: "AI Chat Assistant", description: "Customer support automation", status: "Paused", conversions: 89 },
+              { name: "AI Image Generator", description: "Product and marketing images", status: "Active", conversions: 312 }
+            ].map((tool, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold">{tool.name}</h3>
+                    <Badge variant={tool.status === 'Active' ? 'default' : 'secondary'}>
+                      {tool.status}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">{tool.conversions} conversions</span>
+                    <Button size="sm" variant="outline">Configure</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
   const renderSEOTools = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">SEO Tools</h2>
-      <p className="text-gray-600">Search engine optimization and ranking tools</p>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">SEO Tools</CardTitle>
+          <CardDescription>Search engine optimization and ranking tools</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { name: "SEO Analyzer", description: "Analyze your store's SEO performance", score: 85, status: "Good" },
+              { name: "Keyword Tracker", description: "Track keyword rankings", keywords: 24, rank: 3.2 },
+              { name: "Site Speed Monitor", description: "Monitor page load speeds", speed: "2.1s", score: 92 },
+              { name: "Schema Generator", description: "Generate structured data", schemas: 12, status: "Active" }
+            ].map((tool, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-2">{tool.name}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      {tool.score && `Score: ${tool.score}%`}
+                      {tool.keywords && `${tool.keywords} keywords tracked`}
+                      {tool.speed && `Load time: ${tool.speed}`}
+                      {tool.schemas && `${tool.schemas} schemas active`}
+                    </div>
+                    <Button size="sm" variant="outline">View Details</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
   const renderSocialMedia = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Social Media</h2>
-      <p className="text-gray-600">Social media management and scheduling</p>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Social Media</CardTitle>
+          <CardDescription>Social media management and scheduling</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Facebook</h3>
+                <p className="text-sm text-gray-600 mb-4">Connected • 1.2K followers</p>
+                <Button size="sm" className="w-full">Manage Posts</Button>
+              </CardContent>
+            </Card>
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Instagram</h3>
+                <p className="text-sm text-gray-600 mb-4">Connected • 2.8K followers</p>
+                <Button size="sm" className="w-full">Manage Posts</Button>
+              </CardContent>
+            </Card>
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Twitter</h3>
+                <p className="text-sm text-gray-600 mb-4">Not connected</p>
+                <Button size="sm" variant="outline" className="w-full">Connect</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
   const renderReviewManagement = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Review Management</h2>
-      <p className="text-gray-600">Manage and respond to customer reviews</p>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Review Management</CardTitle>
+          <CardDescription>Manage and respond to customer reviews</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { customer: "Sarah M.", rating: 5, comment: "Amazing product! Fast shipping.", time: "2 hours ago", responded: false },
+              { customer: "John D.", rating: 4, comment: "Good quality, would recommend.", time: "1 day ago", responded: true },
+              { customer: "Lisa K.", rating: 5, comment: "Exactly what I was looking for!", time: "3 days ago", responded: true },
+              { customer: "Mike R.", rating: 3, comment: "Decent product, could be better.", time: "1 week ago", responded: false }
+            ].map((review, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">{review.customer}</h3>
+                    <div className="flex items-center gap-1">
+                      {'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">"{review.comment}"</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">{review.time}</span>
+                    {!review.responded ? (
+                      <Button size="sm">Respond</Button>
+                    ) : (
+                      <Badge variant="secondary">Responded</Badge>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
   const renderEmailMarketing = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Email Marketing</h2>
-      <p className="text-gray-600">Email campaigns and automation with Klaviyo integration</p>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
+          <CardDescription>Email campaigns and automation with Klaviyo integration</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {emailCampaigns.map((campaign, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">{campaign.name}</h3>
+                    <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'}>
+                      {campaign.status}
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Sent</p>
+                      <p className="font-semibold">{campaign.sent.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Opened</p>
+                      <p className="font-semibold">{campaign.opened.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Clicked</p>
+                      <p className="font-semibold">{campaign.clicked.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Revenue</p>
+                      <p className="font-semibold">${campaign.revenue.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full mt-4">View Campaign</Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
@@ -545,7 +715,7 @@ const PremiumShopifyDashboard: React.FC = () => {
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground" />
                 <div>
-                  <h2 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                  <h2 className="text-xl font-bold text-blue-600">
                     {activeTab === 'dashboard' ? 'Dashboard Overview' : 
                      activeTab === 'premium-widgets' ? 'Premium Widgets' :
                      activeTab === 'ai-tools' ? 'AI Tools' :
