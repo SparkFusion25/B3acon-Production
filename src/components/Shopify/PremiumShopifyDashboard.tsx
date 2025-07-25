@@ -264,12 +264,6 @@ const PremiumShopifyDashboard: React.FC = () => {
   const { metrics, products, orders, keywordRankings, emailCampaigns, shopInfo, isLoading, error, fetchAllData, refreshProducts, refreshOrders, refreshSEO, refreshEmail } = useShopifyData();
   
   const [activeTab, setActiveTab] = useState('dashboard');
-  
-  // FORCE DEBUG: Ensure we start with dashboard
-  React.useEffect(() => {
-    console.log('🔥 FORCE DEBUG - Setting activeTab to dashboard');
-    setActiveTab('dashboard');
-  }, []);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedAITool, setSelectedAITool] = useState('popup-generator');
@@ -542,84 +536,71 @@ const PremiumShopifyDashboard: React.FC = () => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex w-full">
-        {/* Debug: Force visible sidebar */}
-        <div className="fixed left-0 top-0 h-full w-64 bg-white border-r z-50 p-4">
-          <div className="text-lg font-bold text-blue-600 mb-4">B3ACON Debug</div>
-          <div className="space-y-2">
-            <button 
-              onClick={() => setActiveTab('dashboard')}
-              className="block w-full text-left p-2 hover:bg-gray-100 rounded"
-            >
-              Dashboard
-            </button>
-            <button 
-              onClick={() => setActiveTab('premium-widgets')}
-              className="block w-full text-left p-2 hover:bg-gray-100 rounded"
-            >
-              Premium Widgets
-            </button>
-            <button 
-              onClick={() => setActiveTab('ai-tools')}
-              className="block w-full text-left p-2 hover:bg-gray-100 rounded"
-            >
-              AI Tools
-            </button>
-          </div>
-        </div>
         <AppSidebar userRole="user" activeTab={activeTab} setActiveTab={setActiveTab} />
         
-        <main className="flex-1 flex flex-col ml-64">
-          {/* EMERGENCY NAVIGATION HEADER */}
-          <header className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-40">
+        <main className="flex-1 flex flex-col">
+          {/* Premium Dashboard Header */}
+          <header className="bg-white/80 backdrop-blur border-b border-gray-200 px-4 sm:px-6 py-4 shadow-elegant sticky top-0 z-40">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
+                <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground" />
                 <div>
-                  <h2 className="text-xl font-bold text-blue-600">
-                    B3ACON Dashboard - Current: {activeTab}
+                  <h2 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                    {activeTab === 'dashboard' ? 'Dashboard Overview' : 
+                     activeTab === 'premium-widgets' ? 'Premium Widgets' :
+                     activeTab === 'ai-tools' ? 'AI Tools' :
+                     activeTab === 'seo-tools' ? 'SEO Tools' :
+                     activeTab === 'social-media' ? 'Social Media' :
+                     activeTab === 'review-management' ? 'Review Management' :
+                     activeTab === 'email-marketing' ? 'Email Marketing' :
+                     activeTab === 'content-creation' ? 'Content Creation' :
+                     activeTab === 'product-research' ? 'Product Research' :
+                     activeTab === 'analytics-reports' ? 'Analytics & Reports' :
+                     activeTab === 'creative-studio' ? 'Creative Studio' :
+                     activeTab === 'integrations' ? 'Integrations' :
+                     activeTab === 'team-management' ? 'Team Management' :
+                     activeTab === 'billing-plans' ? 'Billing & Plans' :
+                     activeTab === 'settings' ? 'Settings' : 'Dashboard'}
                   </h2>
-                  <p className="text-sm text-gray-600">Emergency navigation enabled</p>
+                  <p className="text-sm text-gray-600">
+                    {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
+                     `Manage your ${activeTab.replace('-', ' ')}`}
+                  </p>
                 </div>
               </div>
               
-              <div className="flex gap-2 flex-wrap">
-                <button 
-                  onClick={() => setActiveTab('dashboard')}
-                  className={`px-3 py-1 rounded text-sm ${activeTab === 'dashboard' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-2 bg-green-100 rounded-lg px-3 py-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm font-medium text-green-700">All Systems Operational</span>
+                </div>
+                
+                <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full" />
+                  <span className="text-sm text-gray-700">{shopInfo?.domain || 'demo-store.myshopify.com'}</span>
+                </div>
+                
+                <Button 
+                  onClick={fetchAllData}
+                  disabled={isLoading}
+                  variant="ghost"
+                  size="sm"
+                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  title="Refresh live data"
                 >
-                  Dashboard
-                </button>
-                <button 
-                  onClick={() => setActiveTab('premium-widgets')}
-                  className={`px-3 py-1 rounded text-sm ${activeTab === 'premium-widgets' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                  Widgets
-                </button>
-                <button 
-                  onClick={() => setActiveTab('ai-tools')}
-                  className={`px-3 py-1 rounded text-sm ${activeTab === 'ai-tools' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                  AI Tools
-                </button>
-                <button 
-                  onClick={() => setActiveTab('seo-tools')}
-                  className={`px-3 py-1 rounded text-sm ${activeTab === 'seo-tools' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                  SEO
-                </button>
-                <button 
-                  onClick={() => setActiveTab('email-marketing')}
-                  className={`px-3 py-1 rounded text-sm ${activeTab === 'email-marketing' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                >
-                  Email
-                </button>
+                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                  <span className="hidden md:block ml-2">Refresh</span>
+                </Button>
+                
+                <Button variant="ghost" size="sm" className="relative">
+                  <Bell className="w-4 w-4" />
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-destructive">
+                    3
+                  </Badge>
+                </Button>
               </div>
             </div>
           </header>
-          
-          {/* DEBUG INFO */}
-                     <div className="bg-yellow-100 p-2 text-sm">
-             <strong>DEBUG:</strong> activeTab = "{activeTab}" | isLoading = {isLoading ? 'true' : 'false'} | error = {error || 'none'}
-           </div>
 
           {/* Enhanced Main Content Area */}
           <div className="flex-1 p-4 sm:p-6 overflow-auto">
