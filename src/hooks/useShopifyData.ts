@@ -284,27 +284,104 @@ export const useShopifyData = () => {
     setError(null);
 
     try {
-      // Fetch data in parallel
-      const [shopData, productsData, ordersData, emailData] = await Promise.all([
-        fetchShopInfo(),
-        fetchProducts(),
-        fetchOrders(),
-        fetchEmailData(),
+      // Use fallback data for demo purposes until APIs are activated
+      setShopInfo({ domain: 'demo-store.myshopify.com', name: 'Demo Store' });
+      
+      setProducts([
+        {
+          id: 1,
+          title: 'Wireless Bluetooth Headphones',
+          handle: 'wireless-headphones',
+          status: 'active',
+          price: '99.99',
+          inventory: 25,
+          images: [],
+        },
+        {
+          id: 2,
+          title: 'Smart Fitness Watch',
+          handle: 'fitness-watch',
+          status: 'active',
+          price: '299.99',
+          inventory: 12,
+          images: [],
+        },
+        {
+          id: 3,
+          title: 'Premium Coffee Beans',
+          handle: 'premium-coffee',
+          status: 'active',
+          price: '24.99',
+          inventory: 50,
+          images: [],
+        },
       ]);
 
-      // Fetch SEO data after getting shop info
-      if (shopData?.domain) {
-        await fetchSEOData(shopData.domain);
-      }
+      setOrders([
+        {
+          id: 1001,
+          name: '#1001',
+          total_price: '99.99',
+          created_at: new Date().toISOString(),
+          customer: { first_name: 'John', last_name: 'Doe' },
+        },
+        {
+          id: 1002,
+          name: '#1002',
+          total_price: '299.99',
+          created_at: new Date(Date.now() - 86400000).toISOString(),
+          customer: { first_name: 'Jane', last_name: 'Smith' },
+        },
+      ]);
 
-      // Calculate metrics
-      calculateMetrics(ordersData, emailData);
+      setKeywordRankings([
+        { keyword: 'wireless headphones', position: 3, volume: 12000, difficulty: 'Medium', trend: 'up' },
+        { keyword: 'bluetooth earbuds', position: 7, volume: 8500, difficulty: 'High', trend: 'stable' },
+        { keyword: 'fitness tracker', position: 5, volume: 15000, difficulty: 'Low', trend: 'up' },
+      ]);
 
-      toast.success('Data refreshed successfully');
+      setEmailCampaigns([
+        {
+          id: 'camp1',
+          name: 'Welcome Series',
+          status: 'active',
+          sent: 1250,
+          opened: 875,
+          clicked: 156,
+          revenue: 2340,
+        },
+        {
+          id: 'camp2',
+          name: 'Holiday Sale',
+          status: 'paused',
+          sent: 2100,
+          opened: 1470,
+          clicked: 294,
+          revenue: 5680,
+        },
+      ]);
+
+      // Calculate demo metrics
+      const totalRevenue = 24650;
+      const totalOrders = 450;
+      const avgOrderValue = totalRevenue / totalOrders;
+      const conversionRate = 6.8;
+
+      setMetrics({
+        totalRevenue,
+        totalOrders,
+        avgOrderValue,
+        conversionRate,
+        organicTraffic: 12500,
+        emailSubscribers: 3400,
+        seoScore: 85,
+        activePopups: 4,
+      });
+
+      console.log('✅ Demo data loaded successfully');
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setError('Failed to fetch data. Please check your API configuration.');
-      toast.error('Failed to refresh data');
+      console.error('Error loading demo data:', error);
+      setError('Failed to load demo data');
     } finally {
       setIsLoading(false);
     }
