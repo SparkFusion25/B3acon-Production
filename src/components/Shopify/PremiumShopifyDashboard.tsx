@@ -536,9 +536,33 @@ const PremiumShopifyDashboard: React.FC = () => {
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex w-full">
+        {/* Debug: Force visible sidebar */}
+        <div className="fixed left-0 top-0 h-full w-64 bg-white border-r z-50 p-4">
+          <div className="text-lg font-bold text-blue-600 mb-4">B3ACON Debug</div>
+          <div className="space-y-2">
+            <button 
+              onClick={() => setActiveTab('dashboard')}
+              className="block w-full text-left p-2 hover:bg-gray-100 rounded"
+            >
+              Dashboard
+            </button>
+            <button 
+              onClick={() => setActiveTab('premium-widgets')}
+              className="block w-full text-left p-2 hover:bg-gray-100 rounded"
+            >
+              Premium Widgets
+            </button>
+            <button 
+              onClick={() => setActiveTab('ai-tools')}
+              className="block w-full text-left p-2 hover:bg-gray-100 rounded"
+            >
+              AI Tools
+            </button>
+          </div>
+        </div>
         <AppSidebar userRole="user" activeTab={activeTab} setActiveTab={setActiveTab} />
         
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col ml-64">
           {/* Enhanced Premium Top Header */}
           <header className="bg-white/80 backdrop-blur border-b border-gray-200 px-4 sm:px-6 py-4 shadow-elegant sticky top-0 z-40">
             <div className="flex items-center justify-between">
