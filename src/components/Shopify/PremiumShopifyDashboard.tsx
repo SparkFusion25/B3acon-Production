@@ -2849,14 +2849,691 @@ const PremiumShopifyDashboard = () => {
     );
   };
 
-  // Placeholder sections for other tabs (will be implemented in subsequent steps)
-  const renderPlaceholderSection = (title: string, icon: React.ComponentType<any>, description: string) => (
+  // Email Marketing Implementation
+  const renderEmailMarketing = () => (
     <div className="space-y-6">
-      <div className="text-center py-12">
-        {React.createElement(icon, { className: "w-16 h-16 text-gray-400 mx-auto mb-4" })}
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
-        <p className="text-gray-600 mb-6">{description}</p>
-        <p className="text-sm text-blue-600">Coming in next implementation phase...</p>
+      {/* Email Marketing Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Email Marketing</h2>
+          <p className="text-gray-600">Manage campaigns and email automation with Klaviyo integration</p>
+        </div>
+        <button 
+          onClick={refreshEmail}
+          className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+        >
+          <Plus className="w-4 h-4 mr-2 inline" />
+          New Campaign
+        </button>
+      </div>
+
+      {/* Email Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="glass-card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Total Subscribers</p>
+              <p className="text-2xl font-bold text-gray-900">{liveMetrics.emailSubscribers.toLocaleString()}</p>
+            </div>
+            <Mail className="w-8 h-8 text-blue-600" />
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Active Campaigns</p>
+              <p className="text-2xl font-bold text-gray-900">{emailCampaigns.length}</p>
+            </div>
+            <Send className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Open Rate</p>
+              <p className="text-2xl font-bold text-gray-900">24.5%</p>
+            </div>
+            <Eye className="w-8 h-8 text-purple-600" />
+          </div>
+        </div>
+        <div className="glass-card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">Revenue</p>
+              <p className="text-2xl font-bold text-gray-900">${emailCampaigns.reduce((sum, c) => sum + c.revenue, 0).toLocaleString()}</p>
+            </div>
+            <DollarSign className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+      </div>
+
+      {/* Campaign List */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Campaigns</h3>
+        <div className="space-y-4">
+          {emailCampaigns.map((campaign) => (
+            <div key={campaign.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className={`w-3 h-3 rounded-full ${campaign.status === 'sent' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                <div>
+                  <h4 className="font-medium text-gray-900">{campaign.name}</h4>
+                  <p className="text-sm text-gray-600">Sent: {campaign.sent.toLocaleString()} | Opened: {campaign.opened.toLocaleString()} | Clicked: {campaign.clicked.toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-medium text-gray-900">${campaign.revenue.toLocaleString()}</p>
+                <p className="text-sm text-gray-600">{((campaign.opened / campaign.sent) * 100).toFixed(1)}% open rate</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Product Research Implementation
+  const renderProductResearch = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Product Research</h2>
+          <p className="text-gray-600">Analyze market trends and competitor insights</p>
+        </div>
+        <button 
+          onClick={refreshProducts}
+          className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+        >
+          <RefreshCw className="w-4 h-4 mr-2 inline" />
+          Refresh Data
+        </button>
+      </div>
+
+      {/* Product Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Products</h3>
+          <p className="text-3xl font-bold text-blue-600">{products.length}</p>
+        </div>
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Average Price</h3>
+          <p className="text-3xl font-bold text-green-600">
+            ${products.length > 0 ? (products.reduce((sum, p) => sum + parseFloat(p.price), 0) / products.length).toFixed(2) : '0.00'}
+          </p>
+        </div>
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Low Stock Items</h3>
+          <p className="text-3xl font-bold text-red-600">{products.filter(p => p.inventory < 10).length}</p>
+        </div>
+      </div>
+
+      {/* Product List */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Products</h3>
+        <div className="space-y-4">
+          {products.slice(0, 10).map((product) => (
+            <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <ShoppingBag className="w-6 h-6 text-gray-500" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">{product.title}</h4>
+                  <p className="text-sm text-gray-600">Status: {product.status} | Stock: {product.inventory}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-medium text-gray-900">${product.price}</p>
+                <p className={`text-sm ${product.inventory < 10 ? 'text-red-600' : 'text-green-600'}`}>
+                  {product.inventory < 10 ? 'Low Stock' : 'In Stock'}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Analytics & Reports Implementation
+  const renderAnalyticsReports = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Analytics & Reports</h2>
+          <p className="text-gray-600">Comprehensive performance insights and reporting</p>
+        </div>
+        <button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <Download className="w-4 h-4 mr-2 inline" />
+          Export Report
+        </button>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {metrics.map((metric, index) => (
+          <div key={index} className="glass-card p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">{metric.description}</p>
+                <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+                <p className={`text-sm ${metric.trend === 'up' ? 'text-green-600' : 'text-red-600'} flex items-center`}>
+                  {metric.trend === 'up' ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
+                  {metric.change}
+                </p>
+              </div>
+              <metric.icon className={`w-8 h-8 ${metric.color}`} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* SEO Rankings */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">SEO Rankings</h3>
+        <div className="space-y-4">
+          {keywordRankings.slice(0, 5).map((keyword, index) => (
+            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <h4 className="font-medium text-gray-900">{keyword.keyword}</h4>
+                <p className="text-sm text-gray-600">Volume: {keyword.volume.toLocaleString()} | Difficulty: {keyword.difficulty}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-blue-600">#{keyword.position}</p>
+                <p className={`text-sm ${keyword.trend === 'up' ? 'text-green-600' : keyword.trend === 'down' ? 'text-red-600' : 'text-gray-600'}`}>
+                  {keyword.trend === 'up' ? '↗' : keyword.trend === 'down' ? '↘' : '→'} {keyword.trend}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Content Creation Implementation
+  const renderContentCreation = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Content Creation</h2>
+          <p className="text-gray-600">AI-powered content generation and optimization tools</p>
+        </div>
+        <button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <PenTool className="w-4 h-4 mr-2 inline" />
+          New Content
+        </button>
+      </div>
+
+      {/* Content Types */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+          <div className="text-center">
+            <PenTool className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Blog Posts</h3>
+            <p className="text-gray-600 mb-4">Generate SEO-optimized blog content</p>
+            <button className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+              Create Blog Post
+            </button>
+          </div>
+        </div>
+        <div className="glass-card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+          <div className="text-center">
+            <ShoppingBag className="w-12 h-12 text-green-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Product Descriptions</h3>
+            <p className="text-gray-600 mb-4">AI-generated product descriptions</p>
+            <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
+              Generate Description
+            </button>
+          </div>
+        </div>
+        <div className="glass-card p-6 hover:shadow-lg transition-shadow cursor-pointer">
+          <div className="text-center">
+            <Mail className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Email Templates</h3>
+            <p className="text-gray-600 mb-4">Marketing email templates</p>
+            <button className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors">
+              Create Template
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Content */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Content</h3>
+        <div className="space-y-4">
+          {contentProjects.map((project) => (
+            <div key={project.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className={`w-3 h-3 rounded-full ${project.status === 'completed' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                <div>
+                  <h4 className="font-medium text-gray-900">{project.title}</h4>
+                  <p className="text-sm text-gray-600">{project.type} | {project.wordCount} words | SEO Score: {project.seoScore}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button className="text-blue-600 hover:text-blue-700">
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button className="text-gray-600 hover:text-gray-700">
+                  <Download className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Creative Studio Implementation
+  const renderCreativeStudio = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Creative Studio</h2>
+          <p className="text-gray-600">Asset management and design tools</p>
+        </div>
+        <button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <Plus className="w-4 h-4 mr-2 inline" />
+          Upload Asset
+        </button>
+      </div>
+
+      {/* Asset Categories */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="glass-card p-4 text-center">
+          <Image className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+          <h3 className="font-medium text-gray-900">Images</h3>
+          <p className="text-sm text-gray-600">124 files</p>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <Palette className="w-8 h-8 text-green-600 mx-auto mb-2" />
+          <h3 className="font-medium text-gray-900">Graphics</h3>
+          <p className="text-sm text-gray-600">56 files</p>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <PenTool className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+          <h3 className="font-medium text-gray-900">Templates</h3>
+          <p className="text-sm text-gray-600">32 files</p>
+        </div>
+        <div className="glass-card p-4 text-center">
+          <Star className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
+          <h3 className="font-medium text-gray-900">Favorites</h3>
+          <p className="text-sm text-gray-600">18 files</p>
+        </div>
+      </div>
+
+      {/* Asset Grid */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Assets</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {Array.from({ length: 12 }, (_, i) => (
+            <div key={i} className="aspect-square bg-gray-100 rounded-lg p-4 hover:bg-gray-200 cursor-pointer transition-colors">
+              <div className="w-full h-full flex items-center justify-center">
+                <Image className="w-8 h-8 text-gray-400" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Integrations Implementation
+  const renderIntegrations = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Integrations</h2>
+          <p className="text-gray-600">Connect with third-party services and APIs</p>
+        </div>
+        <button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <Plus className="w-4 h-4 mr-2 inline" />
+          Add Integration
+        </button>
+      </div>
+
+      {/* Connected Integrations */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Connected Services</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900">Shopify Store</h4>
+                <p className="text-sm text-gray-600">Connected to {shopInfo?.name || 'Tech Store'}</p>
+              </div>
+            </div>
+            <div className="text-green-600 font-medium">Connected</div>
+          </div>
+          <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Mail className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900">Klaviyo</h4>
+                <p className="text-sm text-gray-600">Email marketing automation</p>
+              </div>
+            </div>
+            <div className="text-blue-600 font-medium">Connected</div>
+          </div>
+          <div className="flex items-center justify-between p-4 bg-purple-50 border border-purple-200 rounded-lg">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                <Search className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900">SerpAPI</h4>
+                <p className="text-sm text-gray-600">SEO and keyword research</p>
+              </div>
+            </div>
+            <div className="text-purple-600 font-medium">Connected</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Available Integrations */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Available Integrations</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { name: 'Google Analytics', icon: TrendingUp, description: 'Website traffic analytics' },
+            { name: 'Meta Ads', icon: Facebook, description: 'Facebook & Instagram advertising' },
+            { name: 'Google Ads', icon: Globe, description: 'Search and display advertising' },
+            { name: 'Mailchimp', icon: Mail, description: 'Email marketing platform' },
+            { name: 'Amazon', icon: ShoppingBag, description: 'Amazon marketplace integration' },
+            { name: 'Zapier', icon: PlugZap, description: 'Connect 1000+ apps' }
+          ].map((integration, index) => (
+            <div key={index} className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+              <div className="flex items-center space-x-3 mb-3">
+                <integration.icon className="w-8 h-8 text-gray-600" />
+                <h4 className="font-medium text-gray-900">{integration.name}</h4>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
+              <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg transition-colors">
+                Connect
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Team Management Implementation
+  const renderTeamManagement = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Team Management</h2>
+          <p className="text-gray-600">Manage team members and permissions</p>
+        </div>
+        <button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <Plus className="w-4 h-4 mr-2 inline" />
+          Invite Member
+        </button>
+      </div>
+
+      {/* Team Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Total Members</h3>
+          <p className="text-3xl font-bold text-blue-600">5</p>
+        </div>
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Active Users</h3>
+          <p className="text-3xl font-bold text-green-600">4</p>
+        </div>
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Pending Invites</h3>
+          <p className="text-3xl font-bold text-yellow-600">1</p>
+        </div>
+      </div>
+
+      {/* Team Members */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Team Members</h3>
+        <div className="space-y-4">
+          {[
+            { name: 'Sarah Chen', email: 'sarah@techstore.com', role: 'Owner', status: 'Active' },
+            { name: 'Mike Johnson', email: 'mike@techstore.com', role: 'Admin', status: 'Active' },
+            { name: 'Lisa Wong', email: 'lisa@techstore.com', role: 'Editor', status: 'Active' },
+            { name: 'Tom Brown', email: 'tom@techstore.com', role: 'Viewer', status: 'Active' },
+            { name: 'Jane Smith', email: 'jane@techstore.com', role: 'Editor', status: 'Pending' }
+          ].map((member, index) => (
+            <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                  <User className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900">{member.name}</h4>
+                  <p className="text-sm text-gray-600">{member.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">{member.role}</span>
+                <span className={`px-3 py-1 text-sm rounded-full ${
+                  member.status === 'Active' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {member.status}
+                </span>
+                <button className="text-gray-600 hover:text-gray-700">
+                  <Edit className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Billing & Plans Implementation
+  const renderBillingPlans = () => (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Billing & Plans</h2>
+          <p className="text-gray-600">Manage your subscription and billing information</p>
+        </div>
+        <button className="mt-4 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <CreditCard className="w-4 h-4 mr-2 inline" />
+          Update Payment
+        </button>
+      </div>
+
+      {/* Current Plan */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Plan</h3>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h4 className="text-xl font-bold text-blue-600">Growth Plan</h4>
+            <p className="text-gray-600">$29/month - Perfect for growing stores</p>
+            <p className="text-sm text-gray-500 mt-2">Next billing date: March 15, 2024</p>
+          </div>
+          <div className="mt-4 md:mt-0">
+            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg mr-2 transition-colors">
+              Change Plan
+            </button>
+            <button className="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg transition-colors">
+              Cancel Plan
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Usage Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Pages Analyzed</h3>
+          <p className="text-2xl font-bold text-blue-600">247</p>
+          <p className="text-sm text-gray-600">of 500 limit</p>
+        </div>
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">API Calls</h3>
+          <p className="text-2xl font-bold text-green-600">1,543</p>
+          <p className="text-sm text-gray-600">of 10,000 limit</p>
+        </div>
+        <div className="glass-card p-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Storage Used</h3>
+          <p className="text-2xl font-bold text-purple-600">2.1 GB</p>
+          <p className="text-sm text-gray-600">of 5 GB limit</p>
+        </div>
+      </div>
+
+      {/* Available Plans */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Available Plans</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            {
+              name: 'Starter',
+              price: 'Free',
+              description: '14-day trial',
+              features: ['50 pages analysis', 'Basic linking', 'Email support']
+            },
+            {
+              name: 'Growth',
+              price: '$29/month',
+              description: 'Most popular',
+              features: ['500 pages analysis', 'Advanced linking', 'Amazon sync', 'Priority support'],
+              current: true
+            },
+            {
+              name: 'Pro Agency',
+              price: '$99/month',
+              description: 'For agencies',
+              features: ['Unlimited analysis', 'White-label', 'Multi-store', 'API access']
+            }
+          ].map((plan, index) => (
+            <div key={index} className={`p-6 border rounded-lg ${plan.current ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+              <div className="text-center">
+                <h4 className="text-xl font-bold text-gray-900">{plan.name}</h4>
+                <p className="text-2xl font-bold text-blue-600 my-2">{plan.price}</p>
+                <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                <ul className="text-left space-y-2 mb-6">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center">
+                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <span className="text-sm text-gray-600">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button className={`w-full py-2 rounded-lg transition-colors ${
+                  plan.current 
+                    ? 'bg-gray-100 text-gray-500 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}>
+                  {plan.current ? 'Current Plan' : 'Upgrade'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Settings Implementation
+  const renderSettings = () => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+        <p className="text-gray-600">App configuration and preferences</p>
+      </div>
+
+      {/* Account Settings */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Settings</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+              value={shopInfo?.name || 'Tech Store'} 
+              readOnly
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Store Domain</label>
+            <input 
+              type="text" 
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+              value={shopInfo?.domain || 'techstore.myshopify.com'} 
+              readOnly
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input 
+              type="email" 
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
+              value={shopInfo?.email || 'admin@techstore.com'} 
+              readOnly
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* API Configuration */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">API Configuration</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div>
+              <h4 className="font-medium text-gray-900">Shopify API</h4>
+              <p className="text-sm text-gray-600">Connected and active</p>
+            </div>
+            <CheckCircle className="w-6 h-6 text-green-500" />
+          </div>
+          <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div>
+              <h4 className="font-medium text-gray-900">SerpAPI</h4>
+              <p className="text-sm text-gray-600">Connected and active</p>
+            </div>
+            <CheckCircle className="w-6 h-6 text-green-500" />
+          </div>
+          <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div>
+              <h4 className="font-medium text-gray-900">Klaviyo API</h4>
+              <p className="text-sm text-gray-600">Connected and active</p>
+            </div>
+            <CheckCircle className="w-6 h-6 text-green-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* Notification Settings */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Notifications</h3>
+        <div className="space-y-4">
+          {[
+            { label: 'Email notifications', description: 'Receive email updates about your campaigns' },
+            { label: 'SEO alerts', description: 'Get notified about ranking changes' },
+            { label: 'Weekly reports', description: 'Receive weekly performance summaries' },
+            { label: 'Product alerts', description: 'Notifications about low stock items' }
+          ].map((setting, index) => (
+            <div key={index} className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-900">{setting.label}</h4>
+                <p className="text-sm text-gray-600">{setting.description}</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" defaultChecked />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -3945,23 +4622,23 @@ const PremiumShopifyDashboard = () => {
       case 'review-management':
         return renderReviewManagement();
       case 'email-marketing':
-        return renderPlaceholderSection('Email Marketing', Mail, 'Advanced email campaigns and automation');
+        return renderEmailMarketing();
       case 'content-creation':
-        return renderPlaceholderSection('Content Creation', PenTool, 'Content creation tools and typewriter plugins');
+        return renderContentCreation();
       case 'product-research':
-        return renderPlaceholderSection('Product Research', ShoppingBag, 'Market analysis and competitor research');
+        return renderProductResearch();
       case 'analytics-reports':
-        return renderPlaceholderSection('Analytics & Reports', TrendingUp, 'Comprehensive analytics and reporting');
+        return renderAnalyticsReports();
       case 'creative-studio':
-        return renderPlaceholderSection('Creative Studio', Palette, 'Asset management and design tools');
+        return renderCreativeStudio();
       case 'integrations':
-        return renderPlaceholderSection('Integrations', PlugZap, 'Third-party integrations and APIs');
+        return renderIntegrations();
       case 'team-management':
-        return renderPlaceholderSection('Team Management', Users, 'Team collaboration and user management');
+        return renderTeamManagement();
       case 'billing-plans':
-        return renderPlaceholderSection('Billing & Plans', CreditCard, 'Subscription and payment management');
+        return renderBillingPlans();
       case 'settings':
-        return renderPlaceholderSection('Settings', Settings, 'App configuration and preferences');
+        return renderSettings();
       default:
         return renderDashboard();
     }
