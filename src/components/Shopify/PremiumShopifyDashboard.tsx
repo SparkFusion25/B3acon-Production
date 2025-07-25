@@ -649,3 +649,5 @@ const PremiumShopifyDashboard: React.FC = () => {
     </SidebarProvider>
   );
 };
+
+export default PremiumShopifyDashboard;

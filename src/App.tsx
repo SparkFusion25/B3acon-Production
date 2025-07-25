@@ -5,7 +5,7 @@ import ShopifyLanding from './components/Shopify/ShopifyLanding';
 import ShopifyInstallation from './components/Shopify/ShopifyInstallation';
 import ShopifyAdmin from './components/Shopify/ShopifyAdmin';
 import PremiumShopifyLanding from './components/Shopify/PremiumShopifyLanding';
-import EnhancedPremiumDashboard from './components/Shopify/EnhancedPremiumDashboard';
+import PremiumShopifyDashboard from './components/Shopify/PremiumShopifyDashboard';
 import PremiumShopifyInstallation from './components/Shopify/PremiumShopifyInstallation';
 
 // Main Shopify App Routes
@@ -15,7 +15,7 @@ const AppRoutes: React.FC = () => {
       {/* Premium Shopify App Routes - Main Implementation */}
       <Route path="/shopify" element={<PremiumShopifyLanding />} />
       <Route path="/shopify/install" element={<PremiumShopifyInstallation />} />
-      <Route path="/shopify/dashboard" element={<EnhancedPremiumDashboard />} />
+      <Route path="/shopify/dashboard" element={<PremiumShopifyDashboard />} />
       <Route path="/shopify/admin" element={<ShopifyAdmin />} />
       
       {/* Legacy Routes for Testing/Comparison */}
