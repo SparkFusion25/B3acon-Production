@@ -311,5 +311,323 @@ const PremiumShopifyDashboard: React.FC = () => {
     { id: '5', type: 'sale', message: 'Bulk order #3846 from TechCorp Inc.', time: '15 min ago', amount: '$2,340.00' }
   ]);
 
-  // ... rest of the component code will continue with the proper sidebar structure
-}
+  // Simple render functions for all sections - preserving existing functionality
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return renderDashboard();
+      case 'premium-widgets':
+        return renderPremiumWidgets();
+      case 'ai-tools':
+        return renderAITools();
+      case 'seo-tools':
+        return renderSEOTools();
+      case 'social-media':
+        return renderSocialMedia();
+      case 'review-management':
+        return renderReviewManagement();
+      case 'email-marketing':
+        return renderEmailMarketing();
+      case 'content-creation':
+        return renderContentCreation();
+      case 'product-research':
+        return renderProductResearch();
+      case 'analytics-reports':
+        return renderAnalyticsReports();
+      case 'creative-studio':
+        return renderCreativeStudio();
+      case 'integrations':
+        return renderIntegrations();
+      case 'team-management':
+        return renderTeamManagement();
+      case 'billing-plans':
+        return renderBillingPlans();
+      case 'settings':
+        return renderSettings();
+      default:
+        return renderDashboard();
+    }
+  };
+
+  // Enhanced Dashboard Overview
+  const renderDashboard = () => (
+    <div className="space-y-6">
+      <div className="glass-card p-6">
+        <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-4">
+          Dashboard Overview
+        </h2>
+        <p className="text-gray-600 mb-6">Welcome back! Here's what's happening with your store.</p>
+        
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {realtimeMetrics.map((metric, index) => (
+            <Card key={index} className="border-0 shadow-elegant">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
+                    <p className="text-2xl font-bold">{metric.value}</p>
+                    <p className={`text-sm text-${metric.color}-600 mt-1`}>{metric.change}</p>
+                  </div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary/10">
+                    <metric.icon className="h-6 w-6 text-primary" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Active Campaigns */}
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-4">Active Campaigns</h3>
+          <div className="space-y-4">
+            {activeCampaigns.map((campaign) => (
+              <div key={campaign.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-4">
+                  <div className={`w-3 h-3 rounded-full ${campaign.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                  <div>
+                    <h4 className="font-medium">{campaign.name}</h4>
+                    <p className="text-sm text-gray-600">{campaign.type}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium">${campaign.performance.revenue.toLocaleString()}</p>
+                  <p className="text-sm text-gray-600">{campaign.performance.conversions} conversions</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Premium Widgets Section
+  const renderPremiumWidgets = () => (
+    <div className="space-y-6">
+      <Card className="border-0 shadow-elegant">
+        <CardHeader>
+          <CardTitle className="bg-gradient-primary bg-clip-text text-transparent">
+            Premium Widgets Marketplace
+          </CardTitle>
+          <CardDescription>
+            AI-powered widgets to supercharge your store conversions
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: "AI Smart Shopper Assistant™", price: "$29/month", description: "NLP-powered search with voice support" },
+              { name: "Dynamic Conversion Predictor™", price: "$19/month", description: "Behavioral prediction scoring" },
+              { name: "Bundle Builder + Smart Discount", price: "$25/month", description: "Gamified bundle creation" },
+              { name: "Story-Style Product Viewer™", price: "$22/month", description: "Instagram-style showcases" },
+              { name: "Live Inventory Pulse Meter™", price: "$12/month", description: "Real-time scarcity messaging" }
+            ].map((widget, index) => (
+              <Card key={index} className="hover:shadow-premium transition-all">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-2">{widget.name}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{widget.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-bold text-primary">{widget.price}</span>
+                    <Button size="sm" className="bg-gradient-primary">Install</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Placeholder render functions for all other sections
+  const renderAITools = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">AI Tools</h2>
+      <p className="text-gray-600">AI-powered automation tools for your store</p>
+    </div>
+  );
+
+  const renderSEOTools = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">SEO Tools</h2>
+      <p className="text-gray-600">Search engine optimization and ranking tools</p>
+    </div>
+  );
+
+  const renderSocialMedia = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Social Media</h2>
+      <p className="text-gray-600">Social media management and scheduling</p>
+    </div>
+  );
+
+  const renderReviewManagement = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Review Management</h2>
+      <p className="text-gray-600">Manage and respond to customer reviews</p>
+    </div>
+  );
+
+  const renderEmailMarketing = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Email Marketing</h2>
+      <p className="text-gray-600">Email campaigns and automation with Klaviyo integration</p>
+    </div>
+  );
+
+  const renderContentCreation = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Content Creation</h2>
+      <p className="text-gray-600">AI-powered content generation tools</p>
+    </div>
+  );
+
+  const renderProductResearch = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Product Research</h2>
+      <p className="text-gray-600">Market analysis and product insights</p>
+    </div>
+  );
+
+  const renderAnalyticsReports = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Analytics & Reports</h2>
+      <p className="text-gray-600">Performance tracking and detailed reporting</p>
+    </div>
+  );
+
+  const renderCreativeStudio = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Creative Studio</h2>
+      <p className="text-gray-600">Asset management and design tools</p>
+    </div>
+  );
+
+  const renderIntegrations = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Integrations</h2>
+      <p className="text-gray-600">Connect with third-party services and APIs</p>
+    </div>
+  );
+
+  const renderTeamManagement = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Team Management</h2>
+      <p className="text-gray-600">Manage team members and permissions</p>
+    </div>
+  );
+
+  const renderBillingPlans = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Billing & Plans</h2>
+      <p className="text-gray-600">Subscription management and billing information</p>
+    </div>
+  );
+
+  const renderSettings = () => (
+    <div className="glass-card p-6">
+      <h2 className="text-2xl font-bold mb-4">Settings</h2>
+      <p className="text-gray-600">App configuration and preferences</p>
+    </div>
+  );
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex w-full">
+        <AppSidebar userRole="user" activeTab={activeTab} setActiveTab={setActiveTab} />
+        
+        <main className="flex-1 flex flex-col">
+          {/* Enhanced Premium Top Header */}
+          <header className="bg-white/80 backdrop-blur border-b border-gray-200 px-4 sm:px-6 py-4 shadow-elegant sticky top-0 z-40">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground" />
+                <div>
+                  <h2 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                    {activeTab === 'dashboard' ? 'Dashboard Overview' : 
+                     activeTab === 'premium-widgets' ? 'Premium Widgets' :
+                     activeTab === 'ai-tools' ? 'AI Tools' :
+                     activeTab === 'seo-tools' ? 'SEO Tools' :
+                     activeTab === 'social-media' ? 'Social Media' :
+                     activeTab === 'review-management' ? 'Review Management' :
+                     activeTab === 'email-marketing' ? 'Email Marketing' :
+                     activeTab === 'content-creation' ? 'Content Creation' :
+                     activeTab === 'product-research' ? 'Product Research' :
+                     activeTab === 'analytics-reports' ? 'Analytics & Reports' :
+                     activeTab === 'creative-studio' ? 'Creative Studio' :
+                     activeTab === 'integrations' ? 'Integrations' :
+                     activeTab === 'team-management' ? 'Team Management' :
+                     activeTab === 'billing-plans' ? 'Billing & Plans' :
+                     activeTab === 'settings' ? 'Settings' : 'Dashboard'}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
+                     `Manage your ${activeTab.replace('-', ' ')}`}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-2 bg-green-100 rounded-lg px-3 py-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-sm font-medium text-green-700">All Systems Operational</span>
+                </div>
+                
+                <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full" />
+                  <span className="text-sm text-gray-700">{shopInfo?.domain || 'demo-store.myshopify.com'}</span>
+                </div>
+                
+                {/* Live Data Refresh Button */}
+                <Button 
+                  onClick={fetchAllData}
+                  disabled={isLoading}
+                  variant="ghost"
+                  size="sm"
+                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                  title="Refresh live data"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                  <span className="hidden md:block ml-2">Refresh</span>
+                </Button>
+                
+                <Button variant="ghost" size="sm" className="relative">
+                  <Bell className="w-4 h-4" />
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-destructive">
+                    3
+                  </Badge>
+                </Button>
+              </div>
+            </div>
+          </header>
+
+          {/* Enhanced Main Content Area */}
+          <div className="flex-1 p-4 sm:p-6 overflow-auto">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
+                <span className="ml-3 text-gray-600">Loading dashboard data...</span>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                  <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">⚠️ Error Loading Data</h3>
+                  <p className="text-gray-600 mb-4">{error}</p>
+                  <Button onClick={fetchAllData} className="bg-blue-600 hover:bg-blue-700">
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Try Again
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              renderContent()
+            )}
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
+  );
+};
