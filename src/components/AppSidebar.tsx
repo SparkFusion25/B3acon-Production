@@ -51,33 +51,33 @@ export function AppSidebar({ userRole = "user", activeTab, setActiveTab }: AppSi
       id: "main",
       label: "Main",
       items: [
-        { title: "Overview", tabId: "dashboard", icon: Home },
-        { title: "Premium Widgets", tabId: "premium-widgets", icon: Zap },
-        { title: "AI Tools", tabId: "ai-tools", icon: Bot },
-        { title: "Analytics", tabId: "analytics-reports", icon: BarChart3 },
-        { title: "Reviews", tabId: "review-management", icon: MessageSquare },
+        { title: "Overview", tabId: "overview", icon: Home },
+        { title: "Premium Widgets", tabId: "widgets", icon: Zap },
+        { title: "Analytics", tabId: "analytics", icon: BarChart3 },
+        { title: "Marketplace", tabId: "marketplace", icon: MessageSquare },
+        { title: "Settings", tabId: "settings", icon: Settings },
       ]
     },
     {
       id: "plugins",
-      label: "Plugins & Widgets",
+      label: "Plugins & Tools",
       items: [
+        { title: "AI Tools", tabId: "ai-tools", icon: Bot },
         { title: "SEO Tools", tabId: "seo-tools", icon: Search },
         { title: "Social Media", tabId: "social-media", icon: MessageSquare },
         { title: "Email Marketing", tabId: "email-marketing", icon: Mail },
         { title: "Content Creation", tabId: "content-creation", icon: PenTool },
-        { title: "Product Research", tabId: "product-research", icon: ShoppingBag },
       ]
     },
     {
       id: "tools",
-      label: "Tools",
+      label: "Advanced Tools",
       items: [
+        { title: "Product Research", tabId: "product-research", icon: ShoppingBag },
         { title: "Creative Studio", tabId: "creative-studio", icon: Palette },
         { title: "Integrations", tabId: "integrations", icon: PlugZap },
         { title: "Team Management", tabId: "team-management", icon: Users },
         { title: "Billing", tabId: "billing-plans", icon: CreditCard },
-        { title: "Settings", tabId: "settings", icon: Settings },
       ]
     }
   ];

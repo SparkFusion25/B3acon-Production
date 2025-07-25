@@ -776,18 +776,331 @@ const PremiumShopifyDashboard: React.FC = () => {
     </div>
   );
 
-  // Simple content switching for sidebar navigation
+  // Individual render functions for each section
+  const renderAITools = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">AI Tools</CardTitle>
+          <CardDescription>AI-powered automation tools for your store</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: "AI Popup Generator", description: "Smart popups with 4 AI characters", status: "Active", conversions: 234 },
+              { name: "AI Content Writer", description: "Blog posts and product descriptions", status: "Active", conversions: 156 },
+              { name: "AI Chat Assistant", description: "Customer support automation", status: "Paused", conversions: 89 },
+              { name: "AI Image Generator", description: "Product and marketing images", status: "Active", conversions: 312 }
+            ].map((tool, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold">{tool.name}</h3>
+                    <Badge variant={tool.status === 'Active' ? 'default' : 'secondary'}>
+                      {tool.status}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-500">{tool.conversions} conversions</span>
+                    <Button size="sm" variant="outline">Configure</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderSEOTools = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">SEO Tools</CardTitle>
+          <CardDescription>Search engine optimization and ranking tools</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { name: "SEO Analyzer", description: "Analyze your store's SEO performance", score: 85, status: "Good" },
+              { name: "Keyword Tracker", description: "Track keyword rankings", keywords: 24, rank: 3.2 },
+              { name: "Site Speed Monitor", description: "Monitor page load speeds", speed: "2.1s", score: 92 },
+              { name: "Schema Generator", description: "Generate structured data", schemas: 12, status: "Active" }
+            ].map((tool, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-2">{tool.name}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      {tool.score && `Score: ${tool.score}%`}
+                      {tool.keywords && `${tool.keywords} keywords tracked`}
+                      {tool.speed && `Load time: ${tool.speed}`}
+                      {tool.schemas && `${tool.schemas} schemas active`}
+                    </div>
+                    <Button size="sm" variant="outline">View Details</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderSocialMedia = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Social Media</CardTitle>
+          <CardDescription>Social media management and scheduling</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Facebook</h3>
+                <p className="text-sm text-gray-600 mb-4">Connected • 1.2K followers</p>
+                <Button size="sm" className="w-full">Manage Posts</Button>
+              </CardContent>
+            </Card>
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Instagram</h3>
+                <p className="text-sm text-gray-600 mb-4">Connected • 2.8K followers</p>
+                <Button size="sm" className="w-full">Manage Posts</Button>
+              </CardContent>
+            </Card>
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Twitter</h3>
+                <p className="text-sm text-gray-600 mb-4">Not connected</p>
+                <Button size="sm" variant="outline" className="w-full">Connect</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderEmailMarketing = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
+          <CardDescription>Email campaigns and automation with Klaviyo integration</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {emailCampaigns.map((campaign, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">{campaign.name}</h3>
+                    <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'}>
+                      {campaign.status}
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Sent</p>
+                      <p className="font-semibold">{campaign.sent.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Opened</p>
+                      <p className="font-semibold">{campaign.opened.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Clicked</p>
+                      <p className="font-semibold">{campaign.clicked.toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Revenue</p>
+                      <p className="font-semibold">${campaign.revenue.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full mt-4">View Campaign</Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderContentCreation = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Content Creation</CardTitle>
+          <CardDescription>AI-powered content generation tools</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Blog Post Generator</h3>
+                <p className="text-sm text-gray-600 mb-4">Create SEO-optimized blog posts</p>
+                <Button size="sm" className="w-full">Generate Post</Button>
+              </CardContent>
+            </Card>
+            <Card className="border shadow-md">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Product Descriptions</h3>
+                <p className="text-sm text-gray-600 mb-4">AI-generated product descriptions</p>
+                <Button size="sm" className="w-full">Create Description</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderProductResearch = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Product Research</CardTitle>
+          <CardDescription>Market analysis and product insights</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <ShoppingBag className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Product Research Tools</h2>
+            <p className="text-gray-600 mb-6">Analyze market trends and discover winning products</p>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Start Research</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderCreativeStudio = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Creative Studio</CardTitle>
+          <CardDescription>Asset management and design tools</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <Palette className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Creative Studio</h2>
+            <p className="text-gray-600 mb-6">Manage your creative assets and design templates</p>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Open Studio</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderIntegrations = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Integrations</CardTitle>
+          <CardDescription>Connect with third-party services and APIs</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { name: "Shopify", status: "Connected", description: "Store data and products" },
+              { name: "Klaviyo", status: "Connected", description: "Email marketing automation" },
+              { name: "Google Analytics", status: "Pending", description: "Track website performance" }
+            ].map((integration, index) => (
+              <Card key={index} className="border shadow-md">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-2">{integration.name}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
+                  <Badge variant={integration.status === 'Connected' ? 'default' : 'secondary'}>
+                    {integration.status}
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderTeamManagement = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Team Management</CardTitle>
+          <CardDescription>Manage team members and permissions</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <Users className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Team Management</h2>
+            <p className="text-gray-600 mb-6">Invite team members and manage their access</p>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Invite Team Member</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const renderBillingPlans = () => (
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-blue-600">Billing & Plans</CardTitle>
+          <CardDescription>Subscription management and billing information</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-12">
+            <CreditCard className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+            <h2 className="text-xl font-bold mb-2">Current Plan: Pro</h2>
+            <p className="text-gray-600 mb-6">Manage your subscription and billing information</p>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Manage Billing</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  // Content switching for sidebar navigation
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard':
       case 'overview':
-      case 'widgets':
-      case 'analytics':
-      case 'marketplace':
-      case 'settings':
         return renderMainDashboard();
-      case 'premium-widgets':
+      case 'widgets':
         return renderMainDashboard(); // Will show widgets tab
+      case 'analytics':
+        return renderMainDashboard(); // Will show analytics tab
+      case 'marketplace':
+        return renderMainDashboard(); // Will show marketplace tab
+      case 'settings':
+        return renderMainDashboard(); // Will show settings tab
+      case 'ai-tools':
+        return renderAITools();
+      case 'seo-tools':
+        return renderSEOTools();
+      case 'social-media':
+        return renderSocialMedia();
+      case 'email-marketing':
+        return renderEmailMarketing();
+      case 'content-creation':
+        return renderContentCreation();
+      case 'product-research':
+        return renderProductResearch();
+      case 'creative-studio':
+        return renderCreativeStudio();
+      case 'integrations':
+        return renderIntegrations();
+      case 'team-management':
+        return renderTeamManagement();
+      case 'billing-plans':
+        return renderBillingPlans();
       default:
         return renderMainDashboard();
     }
@@ -836,351 +1149,64 @@ const PremiumShopifyDashboard: React.FC = () => {
     </div>
   );
 
-  // AI Tools Section
-  const renderAITools = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <Card className="border-0 shadow-lg bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">AI Tools</CardTitle>
-          <CardDescription>AI-powered automation tools for your store</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { name: "AI Popup Generator", description: "Smart popups with 4 AI characters", status: "Active", conversions: 234 },
-              { name: "AI Content Writer", description: "Blog posts and product descriptions", status: "Active", conversions: 156 },
-              { name: "AI Chat Assistant", description: "Customer support automation", status: "Paused", conversions: 89 },
-              { name: "AI Image Generator", description: "Product and marketing images", status: "Active", conversions: 312 }
-            ].map((tool, index) => (
-              <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold">{tool.name}</h3>
-                    <Badge variant={tool.status === 'Active' ? 'default' : 'secondary'}>
-                      {tool.status}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{tool.conversions} conversions</span>
-                    <Button size="sm" variant="outline">Configure</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderSEOTools = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <Card className="border-0 shadow-lg bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">SEO Tools</CardTitle>
-          <CardDescription>Search engine optimization and ranking tools</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { name: "SEO Analyzer", description: "Analyze your store's SEO performance", score: 85, status: "Good" },
-              { name: "Keyword Tracker", description: "Track keyword rankings", keywords: 24, rank: 3.2 },
-              { name: "Site Speed Monitor", description: "Monitor page load speeds", speed: "2.1s", score: 92 },
-              { name: "Schema Generator", description: "Generate structured data", schemas: 12, status: "Active" }
-            ].map((tool, index) => (
-              <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-2">{tool.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      {tool.score && `Score: ${tool.score}%`}
-                      {tool.keywords && `${tool.keywords} keywords tracked`}
-                      {tool.speed && `Load time: ${tool.speed}`}
-                      {tool.schemas && `${tool.schemas} schemas active`}
-                    </div>
-                    <Button size="sm" variant="outline">View Details</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderSocialMedia = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <Card className="border-0 shadow-lg bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Social Media</CardTitle>
-          <CardDescription>Social media management and scheduling</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Facebook</h3>
-                <p className="text-sm text-gray-600 mb-4">Connected • 1.2K followers</p>
-                <Button size="sm" className="w-full">Manage Posts</Button>
-              </CardContent>
-            </Card>
-            <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Instagram</h3>
-                <p className="text-sm text-gray-600 mb-4">Connected • 2.8K followers</p>
-                <Button size="sm" className="w-full">Manage Posts</Button>
-              </CardContent>
-            </Card>
-            <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Twitter</h3>
-                <p className="text-sm text-gray-600 mb-4">Not connected</p>
-                <Button size="sm" variant="outline" className="w-full">Connect</Button>
-              </CardContent>
-            </Card>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderReviewManagement = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <Card className="border-0 shadow-lg bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Review Management</CardTitle>
-          <CardDescription>Manage and respond to customer reviews</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { customer: "Sarah M.", rating: 5, comment: "Amazing product! Fast shipping.", time: "2 hours ago", responded: false },
-              { customer: "John D.", rating: 4, comment: "Good quality, would recommend.", time: "1 day ago", responded: true },
-              { customer: "Lisa K.", rating: 5, comment: "Exactly what I was looking for!", time: "3 days ago", responded: true },
-              { customer: "Mike R.", rating: 3, comment: "Decent product, could be better.", time: "1 week ago", responded: false }
-            ].map((review, index) => (
-              <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">{review.customer}</h3>
-                    <div className="flex items-center gap-1">
-                      {'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-4">"{review.comment}"</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">{review.time}</span>
-                    {!review.responded ? (
-                      <Button size="sm">Respond</Button>
-                    ) : (
-                      <Badge variant="secondary">Responded</Badge>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderEmailMarketing = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <Card className="border-0 shadow-lg bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
-          <CardDescription>Email campaigns and automation with Klaviyo integration</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {emailCampaigns.map((campaign, index) => (
-              <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">{campaign.name}</h3>
-                    <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'}>
-                      {campaign.status}
-                    </Badge>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Sent</p>
-                      <p className="font-semibold">{campaign.sent.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Opened</p>
-                      <p className="font-semibold">{campaign.opened.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Clicked</p>
-                      <p className="font-semibold">{campaign.clicked.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Revenue</p>
-                      <p className="font-semibold">${campaign.revenue.toLocaleString()}</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="outline" className="w-full mt-4">View Campaign</Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderContentCreation = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Content Creation</h2>
-      <p className="text-gray-600">AI-powered content generation tools</p>
-    </div>
-  );
-
-  const renderProductResearch = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Product Research</h2>
-      <p className="text-gray-600">Market analysis and product insights</p>
-    </div>
-  );
-
-  const renderAnalyticsReports = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Analytics & Reports</h2>
-      <p className="text-gray-600">Performance tracking and detailed reporting</p>
-    </div>
-  );
-
-  const renderCreativeStudio = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Creative Studio</h2>
-      <p className="text-gray-600">Asset management and design tools</p>
-    </div>
-  );
-
-  const renderIntegrations = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Integrations</h2>
-      <p className="text-gray-600">Connect with third-party services and APIs</p>
-    </div>
-  );
-
-  const renderTeamManagement = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Team Management</h2>
-      <p className="text-gray-600">Manage team members and permissions</p>
-    </div>
-  );
-
-  const renderBillingPlans = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Billing & Plans</h2>
-      <p className="text-gray-600">Subscription management and billing information</p>
-    </div>
-  );
-
-  const renderSettings = () => (
-    <div className="glass-card p-6">
-      <h2 className="text-2xl font-bold mb-4">Settings</h2>
-      <p className="text-gray-600">App configuration and preferences</p>
-    </div>
-  );
-
+  // Main Dashboard Content Area
   return (
-    <SidebarProvider defaultOpen={true}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex w-full">
-        <AppSidebar userRole="user" activeTab={activeTab} setActiveTab={setActiveTab} />
-        
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        <AppSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         <main className="flex-1 flex flex-col">
-          {/* Premium Dashboard Header */}
-          <header className="bg-white/80 backdrop-blur border-b border-gray-200 px-4 sm:px-6 py-4 shadow-elegant sticky top-0 z-40">
-            <div className="flex items-center justify-between">
+          {/* Header */}
+          <header className="bg-white/80 backdrop-blur border-b border-gray-200 sticky top-0 z-40 shadow-elegant">
+            <div className="flex items-center justify-between px-6 py-4">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground" />
                 <div>
                   <h2 className="text-xl font-bold text-blue-600">
-                    {activeTab === 'dashboard' ? 'Dashboard Overview' : 
-                     activeTab === 'premium-widgets' ? 'Premium Widgets' :
+                    {activeTab === 'overview' ? 'Dashboard Overview' :
+                     activeTab === 'widgets' ? 'Premium Widgets' :
+                     activeTab === 'analytics' ? 'Analytics' :
+                     activeTab === 'marketplace' ? 'Marketplace' :
+                     activeTab === 'settings' ? 'Settings' :
                      activeTab === 'ai-tools' ? 'AI Tools' :
                      activeTab === 'seo-tools' ? 'SEO Tools' :
                      activeTab === 'social-media' ? 'Social Media' :
-                     activeTab === 'review-management' ? 'Review Management' :
                      activeTab === 'email-marketing' ? 'Email Marketing' :
                      activeTab === 'content-creation' ? 'Content Creation' :
                      activeTab === 'product-research' ? 'Product Research' :
-                     activeTab === 'analytics-reports' ? 'Analytics & Reports' :
                      activeTab === 'creative-studio' ? 'Creative Studio' :
                      activeTab === 'integrations' ? 'Integrations' :
                      activeTab === 'team-management' ? 'Team Management' :
                      activeTab === 'billing-plans' ? 'Billing & Plans' :
-                     activeTab === 'settings' ? 'Settings' : 'Dashboard'}
+                     'Dashboard'}
                   </h2>
                   <p className="text-sm text-gray-600">
-                    {activeTab === 'dashboard' ? 'Store performance overview and metrics' : 
-                     `Manage your ${activeTab.replace('-', ' ')}`}
+                    {shopInfo?.domain || 'Loading store information...'}
                   </p>
                 </div>
               </div>
-              
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-2 bg-green-100 rounded-lg px-3 py-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm font-medium text-green-700">All Systems Operational</span>
-                </div>
-                
-                <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full" />
-                  <span className="text-sm text-gray-700">{shopInfo?.domain || 'demo-store.myshopify.com'}</span>
-                </div>
-                
-                <Button 
-                  onClick={fetchAllData}
-                  disabled={isLoading}
-                  variant="ghost"
-                  size="sm"
-                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                  title="Refresh live data"
-                >
-                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                  <span className="hidden md:block ml-2">Refresh</span>
-                </Button>
-                
-                <Button variant="ghost" size="sm" className="relative">
-                  <Bell className="w-4 w-4" />
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-destructive">
-                    3
-                  </Badge>
+                <Badge variant="secondary" className="bg-green-100 text-green-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                  All Systems Operational
+                </Badge>
+                <Button variant="outline" size="icon">
+                  <Bell className="h-4 w-4" />
                 </Button>
               </div>
             </div>
           </header>
 
-          {/* Enhanced Main Content Area */}
-          <div className="flex-1 p-4 sm:p-6 overflow-auto">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-64">
-                <RefreshCw className="w-8 h-8 text-blue-500 animate-spin" />
-                <span className="ml-3 text-gray-600">Loading dashboard data...</span>
-              </div>
-            ) : error ? (
-              <div className="flex items-center justify-center h-64">
-                <div className="text-center">
-                  <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">⚠️ Error Loading Data</h3>
-                  <p className="text-gray-600 mb-4">{error}</p>
-                  <Button onClick={fetchAllData} className="bg-blue-600 hover:bg-blue-700">
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Try Again
-                  </Button>
+          {/* Content */}
+          <div className="flex-1 overflow-auto">
+            {error && (
+              <div className="max-w-7xl mx-auto p-6">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h3 className="text-red-800 font-medium">⚠️ Error Loading Data</h3>
+                  <p className="text-red-600 text-sm mt-1">{error}</p>
                 </div>
               </div>
-            ) : (
-              renderContent()
             )}
+            {renderContent()}
           </div>
         </main>
       </div>
