@@ -74,9 +74,28 @@ export const useShopifyData = () => {
   const [shopInfo, setShopInfo] = useState<any>(null);
 
   // API instances
-  const shopifyAPI = createShopifyAPI(getShopifyConfig());
-  const serpAPI = createSerpAPI(getSerpAPIConfig());
-  const klaviyoAPI = createKlaviyoAPI(getKlaviyoConfig());
+  // API instances with error handling
+  let shopifyAPI: any = null;
+  let serpAPI: any = null;
+  let klaviyoAPI: any = null;
+
+  try {
+    shopifyAPI = createShopifyAPI(getShopifyConfig());
+  } catch (error) {
+    console.warn('Shopify API not configured, using fallback data');
+  }
+
+  try {
+    serpAPI = createSerpAPI(getSerpAPIConfig());
+  } catch (error) {
+    console.warn('SerpAPI not configured, using fallback data');
+  }
+
+  try {
+    klaviyoAPI = createKlaviyoAPI(getKlaviyoConfig());
+  } catch (error) {
+    console.warn('Klaviyo API not configured, using fallback data');
+  }
 
   // Fetch shop information
   const fetchShopInfo = async () => {
