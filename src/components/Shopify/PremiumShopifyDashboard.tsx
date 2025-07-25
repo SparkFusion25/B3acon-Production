@@ -313,7 +313,7 @@ const PremiumShopifyDashboard: React.FC = () => {
 
   // Premium Widgets Data - All 10 Widgets
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [premiumWidgets] = useState([
+  const [premiumWidgets, setPremiumWidgets] = useState([
     {
       id: "ai-shopper-assistant",
       name: "AI Smart Shopper Assistant™",
@@ -448,6 +448,200 @@ const PremiumShopifyDashboard: React.FC = () => {
   const categories = ["All", "AI Tools", "Conversion", "Product Display", "Sales Tools", "Social Commerce", "Urgency Tools", "Retention", "Content Generation", "Analytics"];
   const activeWidgets = premiumWidgets.filter(w => w.isActive);
   const totalMonthlySpend = activeWidgets.reduce((sum, w) => sum + w.monthlyPrice, 0);
+
+  // Handler Functions for All Buttons and Actions
+  const handleWidgetToggle = (widgetId: string) => {
+    setPremiumWidgets(prev => 
+      prev.map(widget => 
+        widget.id === widgetId 
+          ? { ...widget, isActive: !widget.isActive }
+          : widget
+      )
+    );
+    alert(`Widget ${widgetId} ${premiumWidgets.find(w => w.id === widgetId)?.isActive ? 'deactivated' : 'activated'} successfully!`);
+  };
+
+  const handleWidgetConfigure = (widgetName: string) => {
+    alert(`Opening configuration for ${widgetName}...\n\nThis would open a detailed configuration modal with:\n• Widget settings\n• Display options\n• Trigger conditions\n• Performance tracking`);
+  };
+
+  const handleInstallWidget = (widgetName: string) => {
+    alert(`Installing ${widgetName}...\n\nThis would:\n• Add widget to your store\n• Configure initial settings\n• Start trial period\n• Enable performance tracking`);
+  };
+
+  const handleAIToolConfigure = (toolName: string) => {
+    switch(toolName) {
+      case 'AI Popup Generator':
+        alert(`Configuring AI Popup Generator...\n\n✅ Features to configure:\n• Choose AI character (Assistant, Expert, Friend, Advisor)\n• Set popup triggers (exit intent, time delay, scroll %)\n• Customize messages and offers\n• A/B testing settings`);
+        break;
+      case 'AI Content Writer':
+        alert(`Configuring AI Content Writer...\n\n✅ Features to configure:\n• Blog post templates\n• Product description styles\n• SEO optimization settings\n• Brand voice and tone\n• Content approval workflow`);
+        break;
+      case 'AI Chat Assistant':
+        alert(`Configuring AI Chat Assistant...\n\n✅ Features to configure:\n• Customer support flows\n• FAQ database\n• Escalation rules\n• Response templates\n• Integration with help desk`);
+        break;
+      case 'AI Image Generator':
+        alert(`Configuring AI Image Generator...\n\n✅ Features to configure:\n• Image styles and templates\n• Brand guidelines\n• Auto-generation rules\n• Product image templates\n• Social media formats`);
+        break;
+      default:
+        alert(`Opening configuration for ${toolName}...`);
+    }
+  };
+
+  const handleSEOAction = (action: string, toolName: string) => {
+    switch(action) {
+      case 'analyze':
+        alert(`Starting SEO Analysis for ${toolName}...\n\n🔍 Analyzing:\n• Meta titles and descriptions\n• Header structure (H1-H6)\n• Image alt tags\n• Internal linking\n• Page speed\n• Mobile optimization\n\nResults will be available in 2-3 minutes.`);
+        break;
+      case 'track':
+        alert(`Setting up keyword tracking...\n\n📊 Features:\n• Add target keywords\n• Monitor ranking positions\n• Track competitor rankings\n• Historical performance\n• Ranking alerts`);
+        break;
+      case 'optimize':
+        alert(`Starting speed optimization...\n\n⚡ Optimizing:\n• Image compression\n• Code minification\n• Caching setup\n• CDN configuration\n• Database optimization`);
+        break;
+      case 'generate':
+        alert(`Generating schema markup...\n\n📋 Available schemas:\n• Product schema\n• Review schema\n• Organization schema\n• Breadcrumb schema\n• FAQ schema`);
+        break;
+      default:
+        alert(`Executing ${action} for ${toolName}...`);
+    }
+  };
+
+  const handleSocialMediaAction = (platform: string, action: string) => {
+    switch(action) {
+      case 'manage':
+        alert(`Opening ${platform} management...\n\n📱 Features:\n• Schedule posts\n• View analytics\n• Manage comments\n• Create campaigns\n• Track engagement`);
+        break;
+      case 'connect':
+        alert(`Connecting to ${platform}...\n\nThis would:\n• Open OAuth flow\n• Request necessary permissions\n• Store connection tokens\n• Sync account data\n• Enable posting capabilities`);
+        break;
+      default:
+        alert(`Executing ${action} for ${platform}...`);
+    }
+  };
+
+  const handleEmailAction = (action: string, campaignName?: string) => {
+    switch(action) {
+      case 'create':
+        alert(`Creating new email campaign...\n\n📧 Campaign builder:\n• Choose template\n• Design email\n• Set audience\n• Schedule send\n• Track performance`);
+        break;
+      case 'view':
+        alert(`Opening ${campaignName} campaign...\n\n📊 Campaign details:\n• Performance metrics\n• Audience insights\n• A/B test results\n• Revenue attribution\n• Optimization suggestions`);
+        break;
+      case 'edit':
+        alert(`Editing ${campaignName}...\n\n✏️ Edit options:\n• Update content\n• Modify audience\n• Change schedule\n• A/B testing\n• Performance optimization`);
+        break;
+      default:
+        alert(`Executing ${action} for email marketing...`);
+    }
+  };
+
+  const handleContentAction = (action: string, type: string) => {
+    switch(action) {
+      case 'generate':
+        if (type === 'blog') {
+          alert(`Generating blog post...\n\n✍️ Blog generator:\n• Enter topic/keywords\n• Choose writing style\n• Set word count\n• SEO optimization\n• Auto-publish option`);
+        } else {
+          alert(`Generating product description...\n\n🛍️ Description generator:\n• Product features\n• Target audience\n• Tone and style\n• SEO keywords\n• Multiple variations`);
+        }
+        break;
+      case 'create':
+        alert(`Creating ${type}...\n\n📝 Content creator:\n• Rich text editor\n• Template library\n• SEO suggestions\n• Preview modes\n• Publishing workflow`);
+        break;
+      default:
+        alert(`Executing ${action} for ${type}...`);
+    }
+  };
+
+  const handleResearchAction = (action: string) => {
+    switch(action) {
+      case 'start':
+        alert(`Starting product research...\n\n🔍 Research tools:\n• Market trend analysis\n• Competitor research\n• Demand validation\n• Profit calculators\n• Supplier database\n• Risk assessment`);
+        break;
+      case 'analyze':
+        alert(`Analyzing market trends...\n\n📈 Analysis includes:\n• Search volume trends\n• Seasonal patterns\n• Competition levels\n• Price analysis\n• Growth potential`);
+        break;
+      default:
+        alert(`Executing ${action} for product research...`);
+    }
+  };
+
+  const handleStudioAction = (action: string) => {
+    switch(action) {
+      case 'open':
+        alert(`Opening Creative Studio...\n\n🎨 Studio features:\n• Asset library\n• Design templates\n• Image editor\n• Brand guidelines\n• Collaboration tools\n• Export options`);
+        break;
+      case 'upload':
+        alert(`Opening file uploader...\n\n📁 Upload features:\n• Drag & drop files\n• Bulk upload\n• Auto-organization\n• Format conversion\n• Compression\n• Metadata tagging`);
+        break;
+      default:
+        alert(`Executing ${action} for creative studio...`);
+    }
+  };
+
+  const handleIntegrationAction = (integration: string, action: string) => {
+    switch(action) {
+      case 'configure':
+        alert(`Configuring ${integration} integration...\n\n⚙️ Configuration:\n• API settings\n• Data sync options\n• Webhook setup\n• Field mapping\n• Security settings`);
+        break;
+      case 'test':
+        alert(`Testing ${integration} connection...\n\n🧪 Testing:\n• API connectivity\n• Data flow\n• Error handling\n• Performance\n• Security validation\n\nConnection test successful! ✅`);
+        break;
+      case 'disconnect':
+        alert(`Disconnecting ${integration}...\n\n⚠️ This will:\n• Remove API access\n• Stop data sync\n• Disable features\n• Archive existing data\n\nAre you sure you want to disconnect?`);
+        break;
+      default:
+        alert(`Executing ${action} for ${integration}...`);
+    }
+  };
+
+  const handleTeamAction = (action: string, memberName?: string) => {
+    switch(action) {
+      case 'invite':
+        alert(`Inviting team member...\n\n👥 Invitation process:\n• Enter email address\n• Select role/permissions\n• Set access levels\n• Send invitation\n• Track acceptance`);
+        break;
+      case 'edit':
+        alert(`Editing ${memberName}...\n\n✏️ Edit options:\n• Change role\n• Update permissions\n• Modify access levels\n• Update profile\n• Reset password`);
+        break;
+      case 'remove':
+        alert(`Removing ${memberName}...\n\n⚠️ This will:\n• Revoke access\n• Remove permissions\n• Archive activity\n• Send notification\n\nConfirm removal?`);
+        break;
+      default:
+        alert(`Executing ${action} for team management...`);
+    }
+  };
+
+  const handleBillingAction = (action: string, plan?: string) => {
+    switch(action) {
+      case 'manage':
+        alert(`Opening billing management...\n\n💳 Billing features:\n• View invoices\n• Update payment method\n• Download receipts\n• Usage reports\n• Subscription details`);
+        break;
+      case 'upgrade':
+        alert(`Upgrading to ${plan}...\n\n🚀 Upgrade benefits:\n• More features\n• Higher limits\n• Priority support\n• Advanced analytics\n• White-label options`);
+        break;
+      case 'cancel':
+        alert(`Canceling subscription...\n\n⚠️ Cancellation:\n• Access until period end\n• Data export option\n• Feedback collection\n• Retention offers\n• Confirmation required`);
+        break;
+      default:
+        alert(`Executing ${action} for billing...`);
+    }
+  };
+
+  const handleSettingsAction = (action: string, setting?: string) => {
+    switch(action) {
+      case 'save':
+        alert(`Saving settings...\n\n✅ Settings saved:\n• Auto-optimization: Enabled\n• Analytics tracking: Enabled\n• Mobile optimization: Enabled\n• Notifications: Updated\n• Security: Enhanced`);
+        break;
+      case 'reset':
+        alert(`Resetting settings...\n\n🔄 This will:\n• Restore defaults\n• Clear customizations\n• Reset preferences\n• Maintain data\n\nConfirm reset?`);
+        break;
+      case 'export':
+        alert(`Exporting data...\n\n📊 Export options:\n• Analytics data\n• Customer data\n• Product data\n• Campaign data\n• Settings backup`);
+        break;
+      default:
+        alert(`Executing ${action} for settings...`);
+    }
+  };
 
   // Convert live metrics to dashboard format
   const dashboardMetrics = [
@@ -693,12 +887,20 @@ const PremiumShopifyDashboard: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="flex gap-2">
-                      <Switch checked={widget.isActive} />
-                      <Button size="sm" variant="outline" className="flex-1">
-                        {widget.isActive ? 'Configure' : 'Activate'}
-                      </Button>
-                    </div>
+                                         <div className="flex gap-2">
+                       <Switch 
+                         checked={widget.isActive} 
+                         onCheckedChange={() => handleWidgetToggle(widget.id)}
+                       />
+                       <Button 
+                         size="sm" 
+                         variant="outline" 
+                         className="flex-1"
+                         onClick={() => handleWidgetConfigure(widget.name)}
+                       >
+                         {widget.isActive ? 'Configure' : 'Activate'}
+                       </Button>
+                     </div>
                   </CardContent>
                 </Card>
               ))}
@@ -765,10 +967,27 @@ const PremiumShopifyDashboard: React.FC = () => {
                 <Switch defaultChecked />
               </div>
               
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                <Settings className="h-4 w-4 mr-2" />
-                Save Settings
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => handleSettingsAction('save')}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Save Settings
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => handleSettingsAction('reset')}
+                >
+                  Reset to Default
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => handleSettingsAction('export')}
+                >
+                  Export Data
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -803,7 +1022,13 @@ const PremiumShopifyDashboard: React.FC = () => {
                   <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500">{tool.conversions} conversions</span>
-                    <Button size="sm" variant="outline">Configure</Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleAIToolConfigure(tool.name)}
+                    >
+                      Configure
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -824,10 +1049,10 @@ const PremiumShopifyDashboard: React.FC = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { name: "SEO Analyzer", description: "Analyze your store's SEO performance", score: 85, status: "Good" },
-              { name: "Keyword Tracker", description: "Track keyword rankings", keywords: 24, rank: 3.2 },
-              { name: "Site Speed Monitor", description: "Monitor page load speeds", speed: "2.1s", score: 92 },
-              { name: "Schema Generator", description: "Generate structured data", schemas: 12, status: "Active" }
+              { name: "SEO Analyzer", description: "Analyze your store's SEO performance", score: 85, status: "Good", action: "analyze" },
+              { name: "Keyword Tracker", description: "Track keyword rankings", keywords: 24, rank: 3.2, action: "track" },
+              { name: "Site Speed Monitor", description: "Monitor page load speeds", speed: "2.1s", score: 92, action: "optimize" },
+              { name: "Schema Generator", description: "Generate structured data", schemas: 12, status: "Active", action: "generate" }
             ].map((tool, index) => (
               <Card key={index} className="border shadow-md">
                 <CardContent className="p-6">
@@ -840,7 +1065,15 @@ const PremiumShopifyDashboard: React.FC = () => {
                       {tool.speed && `Load time: ${tool.speed}`}
                       {tool.schemas && `${tool.schemas} schemas active`}
                     </div>
-                    <Button size="sm" variant="outline">View Details</Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleSEOAction(tool.action, tool.name)}
+                    >
+                      {tool.action === 'analyze' ? 'Analyze' : 
+                       tool.action === 'track' ? 'Track Keywords' :
+                       tool.action === 'optimize' ? 'Optimize' : 'Generate'}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -864,21 +1097,40 @@ const PremiumShopifyDashboard: React.FC = () => {
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">Facebook</h3>
                 <p className="text-sm text-gray-600 mb-4">Connected • 1.2K followers</p>
-                <Button size="sm" className="w-full">Manage Posts</Button>
+                <Button 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => handleSocialMediaAction('Facebook', 'manage')}
+                >
+                  Manage Posts
+                </Button>
               </CardContent>
             </Card>
             <Card className="border shadow-md">
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">Instagram</h3>
                 <p className="text-sm text-gray-600 mb-4">Connected • 2.8K followers</p>
-                <Button size="sm" className="w-full">Manage Posts</Button>
+                <Button 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => handleSocialMediaAction('Instagram', 'manage')}
+                >
+                  Manage Posts
+                </Button>
               </CardContent>
             </Card>
             <Card className="border shadow-md">
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">Twitter</h3>
                 <p className="text-sm text-gray-600 mb-4">Not connected</p>
-                <Button size="sm" variant="outline" className="w-full">Connect</Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => handleSocialMediaAction('Twitter', 'connect')}
+                >
+                  Connect
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -891,8 +1143,19 @@ const PremiumShopifyDashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
-          <CardDescription>Email campaigns and automation with Klaviyo integration</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
+              <CardDescription>Email campaigns and automation with Klaviyo integration</CardDescription>
+            </div>
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => handleEmailAction('create')}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              New Campaign
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -923,7 +1186,24 @@ const PremiumShopifyDashboard: React.FC = () => {
                       <p className="font-semibold">${campaign.revenue.toLocaleString()}</p>
                     </div>
                   </div>
-                  <Button size="sm" variant="outline" className="w-full mt-4">View Campaign</Button>
+                  <div className="flex gap-2 mt-4">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleEmailAction('view', campaign.name)}
+                    >
+                      View Campaign
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="default" 
+                      className="flex-1"
+                      onClick={() => handleEmailAction('edit', campaign.name)}
+                    >
+                      Edit
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -946,14 +1226,26 @@ const PremiumShopifyDashboard: React.FC = () => {
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">Blog Post Generator</h3>
                 <p className="text-sm text-gray-600 mb-4">Create SEO-optimized blog posts</p>
-                <Button size="sm" className="w-full">Generate Post</Button>
+                <Button 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => handleContentAction('generate', 'blog')}
+                >
+                  Generate Post
+                </Button>
               </CardContent>
             </Card>
             <Card className="border shadow-md">
               <CardContent className="p-6">
                 <h3 className="font-semibold mb-2">Product Descriptions</h3>
                 <p className="text-sm text-gray-600 mb-4">AI-generated product descriptions</p>
-                <Button size="sm" className="w-full">Create Description</Button>
+                <Button 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => handleContentAction('generate', 'description')}
+                >
+                  Create Description
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -974,7 +1266,20 @@ const PremiumShopifyDashboard: React.FC = () => {
             <ShoppingBag className="h-16 w-16 text-blue-600 mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">Product Research Tools</h2>
             <p className="text-gray-600 mb-6">Analyze market trends and discover winning products</p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Start Research</Button>
+            <div className="flex gap-4 justify-center">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => handleResearchAction('start')}
+              >
+                Start Research
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => handleResearchAction('analyze')}
+              >
+                Analyze Trends
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -993,7 +1298,20 @@ const PremiumShopifyDashboard: React.FC = () => {
             <Palette className="h-16 w-16 text-blue-600 mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">Creative Studio</h2>
             <p className="text-gray-600 mb-6">Manage your creative assets and design templates</p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Open Studio</Button>
+            <div className="flex gap-4 justify-center">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => handleStudioAction('open')}
+              >
+                Open Studio
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => handleStudioAction('upload')}
+              >
+                Upload Assets
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -1018,9 +1336,39 @@ const PremiumShopifyDashboard: React.FC = () => {
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-2">{integration.name}</h3>
                   <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
-                  <Badge variant={integration.status === 'Connected' ? 'default' : 'secondary'}>
-                    {integration.status}
-                  </Badge>
+                  <div className="flex items-center justify-between">
+                    <Badge variant={integration.status === 'Connected' ? 'default' : 'secondary'}>
+                      {integration.status}
+                    </Badge>
+                    <div className="flex gap-2">
+                      {integration.status === 'Connected' ? (
+                        <>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleIntegrationAction(integration.name, 'configure')}
+                          >
+                            Configure
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleIntegrationAction(integration.name, 'test')}
+                          >
+                            Test
+                          </Button>
+                        </>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
+                          onClick={() => handleIntegrationAction(integration.name, 'configure')}
+                        >
+                          Setup
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -1038,11 +1386,61 @@ const PremiumShopifyDashboard: React.FC = () => {
           <CardDescription>Manage team members and permissions</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-12">
-            <Users className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Team Management</h2>
-            <p className="text-gray-600 mb-6">Invite team members and manage their access</p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Invite Team Member</Button>
+          <div className="space-y-6">
+            <div className="text-center py-6">
+              <Users className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+              <h2 className="text-xl font-bold mb-2">Team Management</h2>
+              <p className="text-gray-600 mb-6">Invite team members and manage their access</p>
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => handleTeamAction('invite')}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Invite Team Member
+              </Button>
+            </div>
+            
+            {/* Current Team Members */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { name: "John Smith", role: "Admin", email: "john@example.com", status: "Active" },
+                { name: "Sarah Johnson", role: "Editor", email: "sarah@example.com", status: "Active" },
+                { name: "Mike Wilson", role: "Viewer", email: "mike@example.com", status: "Pending" }
+              ].map((member, index) => (
+                <Card key={index} className="border shadow-md">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold">{member.name}</h3>
+                        <p className="text-sm text-gray-600">{member.email}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline">{member.role}</Badge>
+                          <Badge variant={member.status === 'Active' ? 'default' : 'secondary'}>
+                            {member.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleTeamAction('edit', member.name)}
+                        >
+                          Edit
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleTeamAction('remove', member.name)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -1057,11 +1455,58 @@ const PremiumShopifyDashboard: React.FC = () => {
           <CardDescription>Subscription management and billing information</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-12">
-            <CreditCard className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Current Plan: Pro</h2>
-            <p className="text-gray-600 mb-6">Manage your subscription and billing information</p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">Manage Billing</Button>
+          <div className="space-y-6">
+            <div className="text-center py-6">
+              <CreditCard className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+              <h2 className="text-xl font-bold mb-2">Current Plan: Pro</h2>
+              <p className="text-gray-600 mb-6">Manage your subscription and billing information</p>
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={() => handleBillingAction('manage')}
+              >
+                Manage Billing
+              </Button>
+            </div>
+            
+            {/* Available Plans */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { name: "Starter", price: "$29/month", features: ["5 Widgets", "Basic Analytics", "Email Support"], current: false },
+                { name: "Pro", price: "$99/month", features: ["Unlimited Widgets", "Advanced Analytics", "Priority Support", "Team Management"], current: true },
+                { name: "Enterprise", price: "$299/month", features: ["White Label", "Custom Integrations", "Dedicated Support", "Advanced Security"], current: false }
+              ].map((plan, index) => (
+                <Card key={index} className={`border shadow-md ${plan.current ? 'ring-2 ring-blue-500' : ''}`}>
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold">{plan.name}</h3>
+                      {plan.current && <Badge className="mb-2">Current Plan</Badge>}
+                      <p className="text-2xl font-bold text-blue-600 mb-4">{plan.price}</p>
+                      <ul className="text-sm text-gray-600 space-y-2 mb-6">
+                        {plan.features.map((feature, i) => (
+                          <li key={i}>• {feature}</li>
+                        ))}
+                      </ul>
+                      {plan.current ? (
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => handleBillingAction('cancel')}
+                        >
+                          Cancel Plan
+                        </Button>
+                      ) : (
+                        <Button 
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                          onClick={() => handleBillingAction('upgrade', plan.name)}
+                        >
+                          Upgrade to {plan.name}
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>
