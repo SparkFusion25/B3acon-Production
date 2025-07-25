@@ -61,6 +61,14 @@ import {
 import '../../styles/premium-design-system.css';
 import useShopifyData from '../../hooks/useShopifyData';
 
+// Enhanced UI Components
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+
 interface MetricData {
   value: string;
   change: string;
@@ -627,6 +635,7 @@ const PremiumShopifyDashboard = () => {
   // Comprehensive Navigation Structure
   const navigationTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, color: 'blue' },
+    { id: 'premium-widgets', label: 'Premium Widgets', icon: Zap, color: 'gradient' },
     { id: 'ai-tools', label: 'AI Tools', icon: Bot, color: 'purple' },
     { id: 'seo-tools', label: 'SEO Tools', icon: Search, color: 'green' },
     { id: 'social-media', label: 'Social Media', icon: MessageSquare, color: 'pink' },
@@ -1349,6 +1358,258 @@ const PremiumShopifyDashboard = () => {
       if (reviewFilters.verified !== 'all' && review.verified.toString() !== reviewFilters.verified) return false;
       return true;
     });
+  };
+
+  // Premium Widgets Management - Enhanced Marketplace
+  const renderPremiumWidgets = () => {
+    // Premium widgets data from the enhanced dashboard
+    const premiumWidgets = [
+      {
+        id: "ai-shopper-assistant",
+        name: "AI Smart Shopper Assistant™",
+        description: "NLP-powered search with voice support",
+        longDescription: "Live, embedded product assistant powered by natural language search. NLP-powered search tied to store catalog. Triggers upsell, bundle logic, and FAQs. Optionally supports voice search.",
+        icon: Bot,
+        category: "AI Tools",
+        pricing: "$29/month",
+        monthlyPrice: 29,
+        features: ["Natural Language Search", "Voice Search Support", "Upsell & Bundle Logic", "FAQ Integration", "Custom Avatar & Tone"],
+        isActive: false,
+        isNew: true,
+        isPro: true,
+        performance: { conversions: 156, revenue: 4680, impressions: 12400, ctr: 8.4 }
+      },
+      {
+        id: "conversion-predictor",
+        name: "Dynamic Conversion Predictor™ Badge",
+        description: "Behavioral prediction scoring",
+        longDescription: "Floating AI badge shows predicted purchase likelihood based on user behavior. Example text: '🔥 92% Match – People like you buy this'. Pulls user session behavior to calculate in-session score.",
+        icon: Target,
+        category: "Conversion",
+        pricing: "$19/month",
+        monthlyPrice: 19,
+        features: ["Real-time Behavior Analysis", "Personalized Match Scoring", "Customizable Badge Design", "A/B Testing", "Performance Analytics"],
+        isActive: true,
+        isPro: true,
+        performance: { conversions: 234, revenue: 7020, impressions: 18600, ctr: 12.6 }
+      },
+      {
+        id: "bundle-builder",
+        name: "Bundle Builder + Smart Discount Flow",
+        description: "Gamified bundle creation",
+        longDescription: "Gamified 'build your bundle' interface with auto-discount logic. Drag and drop bundles from selected SKUs. Automatically calculates discounted price. Shows 'you saved $X' and progress bar to free gift.",
+        icon: Package,
+        category: "Sales Tools",
+        pricing: "$25/month",
+        monthlyPrice: 25,
+        features: ["Drag & Drop Interface", "Auto-discount Logic", "Savings Calculator", "Progress Indicators", "Free Gift Triggers"],
+        isActive: true,
+        isPro: true,
+        performance: { conversions: 312, revenue: 9360, impressions: 15600, ctr: 15.8 }
+      },
+      {
+        id: "story-viewer",
+        name: "Story-Style Product Viewer™",
+        description: "Instagram-style product showcases",
+        longDescription: "Instagram-style story viewer to showcase product benefits visually. Tap-through cards showing key product features, reviews, or use cases. Live CTAs inside each story.",
+        icon: Play,
+        category: "Social Commerce",
+        pricing: "$22/month",
+        monthlyPrice: 22,
+        features: ["Instagram-style Interface", "Feature Showcases", "Review Integration", "Live CTAs", "Mobile-first Design"],
+        isActive: false,
+        isNew: true,
+        performance: { conversions: 178, revenue: 5340, impressions: 11200, ctr: 9.2 }
+      },
+      {
+        id: "inventory-pulse",
+        name: "Live Inventory Pulse Meter™",
+        description: "Real-time scarcity messaging",
+        longDescription: "Visual inventory urgency bar with scarcity language. Animated progress bar with scarcity language. Text examples: 'Only 3 left!' or 'Selling fast: 22 bought today'. Auto-pulls inventory data from Shopify.",
+        icon: BarChart3,
+        category: "Urgency Tools",
+        pricing: "$12/month",
+        monthlyPrice: 12,
+        features: ["Real-time Inventory Sync", "Animated Progress Bars", "Scarcity Messaging", "Purchase Analytics", "Auto-updates"],
+        isActive: true,
+        performance: { conversions: 445, revenue: 13350, impressions: 22300, ctr: 18.9 }
+      }
+    ];
+
+    const activeWidgets = premiumWidgets.filter(w => w.isActive);
+    const totalMonthlySpend = activeWidgets.reduce((sum, widget) => sum + widget.monthlyPrice, 0);
+    const categories = ["All", "AI Tools", "Conversion", "Sales Tools", "Social Commerce", "Urgency Tools"];
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    
+    const filteredWidgets = selectedCategory === "All" 
+      ? premiumWidgets 
+      : premiumWidgets.filter(widget => widget.category === selectedCategory);
+
+    const toggleWidget = (widgetId) => {
+      alert(`Widget ${widgetId} ${premiumWidgets.find(w => w.id === widgetId)?.isActive ? 'deactivated' : 'activated'}!`);
+    };
+
+    return (
+      <div className="space-y-6">
+        {/* Premium Widgets Header */}
+        <div className="glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">Premium Widgets Marketplace</h2>
+              <p className="text-gray-600">AI-powered widgets to supercharge your store conversions</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-gradient-primary text-white shadow-glow">
+                {activeWidgets.length} Active
+              </Badge>
+              <Badge variant="outline">
+                ${totalMonthlySpend}/month
+              </Badge>
+            </div>
+          </div>
+
+          {/* Revenue Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 rounded-lg bg-gradient-to-r from-green-50 to-blue-50">
+              <p className="text-2xl font-bold text-green-600">
+                ${activeWidgets.reduce((sum, w) => sum + (w.performance?.revenue || 0), 0).toLocaleString()}
+              </p>
+              <p className="text-sm text-gray-600">Widget Revenue</p>
+            </div>
+            <div className="text-center p-4 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
+              <p className="text-2xl font-bold text-blue-600">
+                {activeWidgets.reduce((sum, w) => sum + (w.performance?.conversions || 0), 0)}
+              </p>
+              <p className="text-sm text-gray-600">Conversions</p>
+            </div>
+            <div className="text-center p-4 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50">
+              <p className="text-2xl font-bold text-purple-600">
+                {activeWidgets.reduce((sum, w) => sum + (w.performance?.impressions || 0), 0).toLocaleString()}
+              </p>
+              <p className="text-sm text-gray-600">Impressions</p>
+            </div>
+            <div className="text-center p-4 rounded-lg bg-gradient-to-r from-orange-50 to-red-50">
+              <p className="text-2xl font-bold text-orange-600">
+                {Math.round((activeWidgets.reduce((sum, w) => sum + (w.performance?.revenue || 0), 0) / Math.max(totalMonthlySpend, 1)) * 100)}%
+              </p>
+              <p className="text-sm text-gray-600">ROI</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-lg transition-all ${
+                selectedCategory === category
+                  ? 'bg-gradient-primary text-white shadow-glow'
+                  : 'bg-white text-gray-600 hover:bg-gray-50 border'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Widgets Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredWidgets.map((widget) => {
+            const IconComponent = widget.icon;
+            return (
+              <div key={widget.id} className="glass-card p-6 hover:shadow-premium transition-all duration-300 relative group">
+                {widget.isNew && (
+                  <div className="absolute -top-2 -right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow-glow">
+                    NEW
+                  </div>
+                )}
+                
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-primary/10">
+                      <IconComponent className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{widget.name}</h3>
+                      <p className="text-sm text-gray-500">{widget.category}</p>
+                    </div>
+                  </div>
+                  <Switch 
+                    checked={widget.isActive}
+                    onCheckedChange={() => toggleWidget(widget.id)}
+                  />
+                </div>
+
+                <p className="text-sm text-gray-600 mb-3">{widget.description}</p>
+                <p className="text-xs text-gray-500 mb-4">{widget.longDescription}</p>
+
+                {widget.isActive && widget.performance && (
+                  <div className="mb-4 p-3 rounded-lg bg-gradient-to-r from-green-50 to-blue-50 border">
+                    <h4 className="text-sm font-medium mb-2">Performance This Month:</h4>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-gray-500">Revenue:</span>
+                        <span className="font-medium text-green-600 ml-1">${widget.performance.revenue.toLocaleString()}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Conversions:</span>
+                        <span className="font-medium ml-1">{widget.performance.conversions}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">CTR:</span>
+                        <span className="font-medium text-primary ml-1">{widget.performance.ctr}%</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Impressions:</span>
+                        <span className="font-medium ml-1">{widget.performance.impressions.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2 mb-4">
+                  <h4 className="text-sm font-medium">Key Features:</h4>
+                  <ul className="text-xs text-gray-500 space-y-1">
+                    {widget.features.slice(0, 3).map((feature, index) => (
+                      <li key={index} className="flex items-center gap-1">
+                        <span className="w-1 h-1 bg-primary rounded-full"></span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-bold text-primary">{widget.pricing}</span>
+                  <div className="flex gap-2">
+                    <button className="px-3 py-1 text-sm border rounded hover:bg-gray-50">
+                      Configure
+                    </button>
+                    {widget.isActive ? (
+                      <button 
+                        onClick={() => toggleWidget(widget.id)}
+                        className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
+                      >
+                        Deactivate
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => toggleWidget(widget.id)}
+                        className="px-3 py-1 text-sm bg-gradient-primary text-white rounded hover:opacity-90"
+                      >
+                        Install
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
   };
 
   // Review Management render functions
@@ -4878,6 +5139,8 @@ const PremiumShopifyDashboard = () => {
     switch (activeTab) {
       case 'dashboard':
         return renderDashboard();
+      case 'premium-widgets':
+        return renderPremiumWidgets();
       case 'ai-tools':
         return renderAITools();
       case 'seo-tools':
@@ -4910,28 +5173,28 @@ const PremiumShopifyDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex">
       {/* Mobile Navigation Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
 
-      {/* Sidebar Navigation */}
+      {/* Enhanced Premium Sidebar Navigation */}
       <div className={`${
         sidebarCollapsed ? 'w-16' : 'w-72'
-      } bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0 ${
+      } bg-white/80 backdrop-blur border-r border-gray-200 transition-all duration-300 flex-shrink-0 shadow-elegant ${
         mobileMenuOpen ? 'fixed inset-y-0 left-0 z-50 lg:relative' : 'hidden lg:block'
       }`}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
+                <span className="text-white font-bold text-sm">B3</span>
               </div>
               {!sidebarCollapsed && (
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">B3ACON</h1>
-                  <p className="text-sm text-gray-500">Shopify Dashboard</p>
+                  <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">B3ACON</h1>
+                  <p className="text-sm text-gray-500">Premium Dashboard</p>
                 </div>
               )}
             </div>
@@ -4960,8 +5223,8 @@ const PremiumShopifyDashboard = () => {
                 }}
                 className={`w-full flex items-center space-x-3 px-4 py-4 rounded-lg transition-all touch-manipulation ${
                   activeTab === tab.id
-                    ? 'bg-indigo-100 text-indigo-700 border border-indigo-200'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-gradient-primary/10 text-primary border border-primary/20 shadow-glow'
+                    : 'text-gray-600 hover:bg-white/60 hover:text-gray-900 hover:shadow-elegant'
                 }`}
               >
                 <tab.icon className="w-5 h-5 flex-shrink-0" />
@@ -4980,7 +5243,7 @@ const PremiumShopifyDashboard = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="bg-white/80 backdrop-blur border-b border-gray-200 px-6 py-4 shadow-elegant">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button 
@@ -5030,7 +5293,7 @@ const PremiumShopifyDashboard = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
+        {/* Enhanced Main Content Area */}
         <div className="flex-1 p-4 sm:p-6 overflow-auto">
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
