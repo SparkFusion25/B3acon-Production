@@ -263,7 +263,7 @@ interface Campaign {
 const PremiumShopifyDashboard: React.FC = () => {
   const { metrics, products, orders, keywordRankings, emailCampaigns, shopInfo, isLoading, error, fetchAllData, refreshProducts, refreshOrders, refreshSEO, refreshEmail } = useShopifyData();
   
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedAITool, setSelectedAITool] = useState('popup-generator');
@@ -311,102 +311,489 @@ const PremiumShopifyDashboard: React.FC = () => {
     { id: '5', type: 'sale', message: 'Bulk order #3846 from TechCorp Inc.', time: '15 min ago', amount: '$2,340.00' }
   ]);
 
-  // Simple render functions for all sections - preserving existing functionality
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return renderDashboard();
-      case 'premium-widgets':
-        return renderPremiumWidgets();
-      case 'ai-tools':
-        return renderAITools();
-      case 'seo-tools':
-        return renderSEOTools();
-      case 'social-media':
-        return renderSocialMedia();
-      case 'review-management':
-        return renderReviewManagement();
-      case 'email-marketing':
-        return renderEmailMarketing();
-      case 'content-creation':
-        return renderContentCreation();
-      case 'product-research':
-        return renderProductResearch();
-      case 'analytics-reports':
-        return renderAnalyticsReports();
-      case 'creative-studio':
-        return renderCreativeStudio();
-      case 'integrations':
-        return renderIntegrations();
-      case 'team-management':
-        return renderTeamManagement();
-      case 'billing-plans':
-        return renderBillingPlans();
-      case 'settings':
-        return renderSettings();
-      default:
-        return renderDashboard();
+  // Premium Widgets Data - All 10 Widgets
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [premiumWidgets] = useState([
+    {
+      id: "ai-shopper-assistant",
+      name: "AI Smart Shopper Assistant™",
+      description: "NLP-powered search with voice support",
+      icon: Bot,
+      category: "AI Tools",
+      pricing: "$29/month",
+      monthlyPrice: 29,
+      features: ["Natural Language Search", "Voice Search Support", "Upsell & Bundle Logic", "FAQ Integration", "Custom Avatar & Tone"],
+      isActive: false,
+      isNew: true,
+      isPro: true,
+      performance: { conversions: 156, revenue: 4680, impressions: 12400, ctr: 8.4 }
+    },
+    {
+      id: "conversion-predictor",
+      name: "Dynamic Conversion Predictor™ Badge",
+      description: "Behavioral prediction scoring",
+      icon: Target,
+      category: "Conversion",
+      pricing: "$19/month",
+      monthlyPrice: 19,
+      features: ["Real-time Behavior Analysis", "Personalized Match Scoring", "Customizable Badge Design", "A/B Testing", "Performance Analytics"],
+      isActive: true,
+      isPro: true,
+      performance: { conversions: 234, revenue: 7020, impressions: 18600, ctr: 12.6 }
+    },
+    {
+      id: "product-explainer",
+      name: "Interactive Product Explainer Widget",
+      description: "3D views and animated callouts",
+      icon: Eye,
+      category: "Product Display",
+      pricing: "$15/month",
+      monthlyPrice: 15,
+      features: ["3D Product Views", "Animated Callouts", "Media Integration", "Hover & Click Triggers", "Mobile Optimized"],
+      isActive: false,
+      performance: { conversions: 89, revenue: 2670, impressions: 8900, ctr: 6.7 }
+    },
+    {
+      id: "bundle-builder",
+      name: "Bundle Builder + Smart Discount Flow",
+      description: "Gamified bundle creation",
+      icon: Package,
+      category: "Sales Tools",
+      pricing: "$25/month",
+      monthlyPrice: 25,
+      features: ["Drag & Drop Interface", "Auto-discount Logic", "Savings Calculator", "Progress Indicators", "Free Gift Triggers"],
+      isActive: true,
+      isPro: true,
+      performance: { conversions: 312, revenue: 9360, impressions: 15600, ctr: 15.8 }
+    },
+    {
+      id: "story-viewer",
+      name: "Story-Style Product Viewer™",
+      description: "Instagram-style product showcases",
+      icon: Play,
+      category: "Social Commerce",
+      pricing: "$22/month",
+      monthlyPrice: 22,
+      features: ["Instagram-style Interface", "Feature Showcases", "Review Integration", "Live CTAs", "Mobile-first Design"],
+      isActive: false,
+      isNew: true,
+      performance: { conversions: 178, revenue: 5340, impressions: 11200, ctr: 9.2 }
+    },
+    {
+      id: "inventory-pulse",
+      name: "Live Inventory Pulse Meter™",
+      description: "Real-time scarcity messaging",
+      icon: BarChart3,
+      category: "Urgency Tools",
+      pricing: "$12/month",
+      monthlyPrice: 12,
+      features: ["Real-time Inventory Sync", "Animated Progress Bars", "Scarcity Messaging", "Purchase Analytics", "Auto-updates"],
+      isActive: true,
+      performance: { conversions: 445, revenue: 13350, impressions: 22300, ctr: 18.9 }
+    },
+    {
+      id: "exit-intent",
+      name: "Intent-Aware Exit Flow™",
+      description: "Personalized exit-intent popups",
+      icon: MousePointer,
+      category: "Retention",
+      pricing: "$18/month",
+      monthlyPrice: 18,
+      features: ["Exit Intent Detection", "Personalized Offers", "Product History Analysis", "Smart Triggers", "Conversion Tracking"],
+      isActive: false,
+      isPro: true,
+      performance: { conversions: 267, revenue: 8010, impressions: 16800, ctr: 13.4 }
+    },
+    {
+      id: "ugc-collector",
+      name: "1-Click UGC Collector™",
+      description: "Post-purchase content collection",
+      icon: Camera,
+      category: "Content Generation",
+      pricing: "$20/month",
+      monthlyPrice: 20,
+      features: ["Auto-trigger System", "Incentive Management", "UGC Dashboard", "Photo & Video Support", "Store Credit Integration"],
+      isActive: true,
+      isNew: true,
+      performance: { conversions: 189, revenue: 5670, impressions: 9450, ctr: 14.7 }
+    },
+    {
+      id: "heatmap-trail",
+      name: "Smart Heatmap Shopper Trail",
+      description: "Click/scroll behavior analytics",
+      icon: Activity,
+      category: "Analytics",
+      pricing: "$35/month",
+      monthlyPrice: 35,
+      features: ["Click Tracking", "Scroll Behavior", "Device Filtering", "Visitor Segmentation", "Optimization Insights"],
+      isActive: false,
+      isPro: true,
+      performance: { conversions: 0, revenue: 0, impressions: 45600, ctr: 0 }
+    },
+    {
+      id: "cart-booster",
+      name: "AI Cart Booster Prompt™",
+      description: "NLP-powered cart suggestions",
+      icon: ShoppingCart,
+      category: "AI Tools",
+      pricing: "$24/month",
+      monthlyPrice: 24,
+      features: ["NLP-powered Suggestions", "Cart Analysis", "Bundle Recommendations", "Behavioral Targeting", "Smart Prompts"],
+      isActive: true,
+      isPro: true,
+      performance: { conversions: 398, revenue: 11940, impressions: 19900, ctr: 16.8 }
     }
-  };
+  ]);
 
-  // Enhanced Dashboard Overview
-  const renderDashboard = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <Card className="border-0 shadow-lg bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">
-            Dashboard Overview
-          </CardTitle>
-          <CardDescription>Welcome back! Here's what's happening with your store.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {/* Key Metrics */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {realtimeMetrics.map((metric, index) => (
-              <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500 mb-1">{metric.label}</p>
-                      <p className="text-2xl font-bold">{metric.value}</p>
-                      <p className={`text-sm text-${metric.color}-600 mt-1`}>{metric.change}</p>
+  const categories = ["All", "AI Tools", "Conversion", "Product Display", "Sales Tools", "Social Commerce", "Urgency Tools", "Retention", "Content Generation", "Analytics"];
+  const activeWidgets = premiumWidgets.filter(w => w.isActive);
+  const totalMonthlySpend = activeWidgets.reduce((sum, w) => sum + w.monthlyPrice, 0);
+
+  // Convert live metrics to dashboard format
+  const dashboardMetrics = [
+    {
+      title: "Total Revenue",
+      value: `$${(metrics?.totalRevenue || 24650).toLocaleString()}`,
+      change: '+12.5%',
+      trend: 'up' as const,
+      icon: DollarSign,
+    },
+    {
+      title: "Active Widgets",
+      value: activeWidgets.length.toString(),
+      change: `$${totalMonthlySpend}/month`,
+      trend: 'up' as const,
+      icon: Zap,
+    },
+    {
+      title: "Conversion Rate",
+      value: `${(metrics?.conversionRate || 6.8).toFixed(1)}%`,
+      change: '+0.4%',
+      trend: 'up' as const,
+      icon: Target,
+    },
+    {
+      title: "Monthly Revenue",
+      value: `$${Math.round((metrics?.totalRevenue || 24650) / 12).toLocaleString()}`,
+      change: '+18.2%',
+      trend: 'up' as const,
+      icon: TrendingUp,
+    }
+  ];
+
+  // Main Dashboard Render - Restored Original Structure
+  const renderMainDashboard = () => (
+    <div className="space-y-6">
+      {/* Store Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-xl">B3</span>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-blue-600">
+                B3ACON Premium Dashboard
+              </h1>
+              <p className="text-gray-600">
+                Store: {shopInfo?.domain || 'Loading...'} • {activeWidgets.length} Active Widgets • ${totalMonthlySpend}/month
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="bg-green-100 text-green-700">
+            All Systems Operational
+          </Badge>
+          <Button variant="outline" size="sm" onClick={fetchAllData} disabled={isLoading}>
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh Data
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Widget
+          </Button>
+        </div>
+      </div>
+
+      {/* Enhanced Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {dashboardMetrics.map((metric, index) => (
+          <Card key={index} className="border-0 shadow-lg bg-white/80 backdrop-blur">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">{metric.title}</p>
+                  <p className="text-3xl font-bold">{metric.value}</p>
+                  <div className="flex items-center gap-1 mt-2">
+                    <span className="text-sm text-green-600">{metric.change}</span>
+                    <ArrowUpRight className="w-3 h-3 text-green-600" />
+                    <span className="text-xs text-gray-500">vs last month</span>
+                  </div>
+                </div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
+                  <metric.icon className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Enhanced Tabs - Original System */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur shadow-lg">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="widgets">Premium Widgets</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          {/* Quick Stats & Active Widgets Overview */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-blue-600" />
+                    Active Premium Widgets
+                  </CardTitle>
+                  <CardDescription>
+                    Widgets currently generating revenue for your store
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {activeWidgets.slice(0, 5).map((widget) => (
+                      <div key={widget.id} className="flex items-center justify-between p-4 rounded-lg border bg-white/50">
+                        <div className="flex items-center gap-4">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                            <widget.icon className="h-5 w-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{widget.name}</p>
+                            <div className="flex items-center gap-2">
+                              <Badge className="bg-green-100 text-green-700">Active</Badge>
+                              <span className="text-sm text-gray-500">{widget.category}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold">${widget.performance.revenue.toLocaleString()}</p>
+                          <p className="text-sm text-gray-500">{widget.performance.conversions} conversions</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Performance Summary */}
+            <div className="space-y-6">
+              <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+                <CardHeader>
+                  <CardTitle>Performance Summary</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Total Widgets:</span>
+                      <span className="font-medium">{premiumWidgets.length}</span>
                     </div>
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                      <metric.icon className="h-6 w-6 text-blue-600" />
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Active:</span>
+                      <span className="font-medium text-green-600">{activeWidgets.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Monthly Spend:</span>
+                      <span className="font-medium">${totalMonthlySpend}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">ROI:</span>
+                      <span className="font-medium text-blue-600">
+                        {Math.round((activeWidgets.reduce((sum, w) => sum + (w.performance?.revenue || 0), 0) / Math.max(totalMonthlySpend, 1)) * 100)}%
+                      </span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="widgets" className="space-y-6">
+          {/* Category Filter */}
+          <div className="flex gap-2 flex-wrap">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category)}
+                className={selectedCategory === category ? "bg-blue-600 text-white" : ""}
+              >
+                {category}
+              </Button>
             ))}
           </div>
 
-          {/* Active Campaigns */}
-          <div className="mt-8">
-            <h3 className="text-lg font-semibold mb-4">Active Campaigns</h3>
-            <div className="space-y-4">
-              {activeCampaigns.map((campaign) => (
-                <div key={campaign.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-3 h-3 rounded-full ${campaign.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                    <div>
-                      <h4 className="font-medium">{campaign.name}</h4>
-                      <p className="text-sm text-gray-600">{campaign.type}</p>
+          {/* All 10 Premium Widgets */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {premiumWidgets
+              .filter(widget => selectedCategory === 'All' || widget.category === selectedCategory)
+              .map((widget) => (
+                <Card key={widget.id} className="border-0 shadow-lg bg-white/80 backdrop-blur">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-blue-100">
+                          <widget.icon className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{widget.name}</h3>
+                          <div className="flex items-center gap-2">
+                            {widget.isNew && <Badge variant="secondary" className="bg-blue-100 text-blue-700">New</Badge>}
+                            {widget.isPro && <Badge variant="secondary" className="bg-purple-100 text-purple-700">Pro</Badge>}
+                            <Badge variant={widget.isActive ? 'default' : 'secondary'} className="bg-green-100 text-green-700">
+                              {widget.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-blue-600">{widget.pricing}</p>
+                        <p className="text-xs text-gray-500">{widget.category}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">${campaign.performance.revenue.toLocaleString()}</p>
-                    <p className="text-sm text-gray-600">{campaign.performance.conversions} conversions</p>
-                  </div>
-                </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4">{widget.description}</p>
+                    
+                    <div className="space-y-2 mb-4">
+                      {widget.features.slice(0, 3).map((feature, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <CheckCircle className="h-3 w-3 text-green-500" />
+                          <span className="text-xs text-gray-600">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {widget.performance && widget.isActive && (
+                      <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="text-xs text-gray-500">Conversions</p>
+                          <p className="font-semibold">{widget.performance.conversions}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Revenue</p>
+                          <p className="font-semibold">${widget.performance.revenue.toLocaleString()}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex gap-2">
+                      <Switch checked={widget.isActive} />
+                      <Button size="sm" variant="outline" className="flex-1">
+                        {widget.isActive ? 'Configure' : 'Activate'}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
-            </div>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+
+        <TabsContent value="analytics" className="space-y-6">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+            <CardHeader>
+              <CardTitle>Analytics Dashboard</CardTitle>
+              <CardDescription>Performance insights and widget analytics</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="text-center">
+                  <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">Analytics charts coming soon</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="marketplace" className="space-y-6">
+          <div className="text-center py-12">
+            <Bot className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold mb-2">Widget Marketplace</h2>
+            <p className="text-gray-600 mb-6">Discover more AI-powered widgets to boost your store performance</p>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Plus className="h-4 w-4 mr-2" />
+              Browse Marketplace
+            </Button>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-6">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
+            <CardHeader>
+              <CardTitle>Widget Settings</CardTitle>
+              <CardDescription>Configure global settings for all widgets</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Auto-optimization</label>
+                  <p className="text-sm text-gray-500">Automatically optimize widget performance</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Analytics Tracking</label>
+                  <p className="text-sm text-gray-500">Track detailed widget analytics</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <label className="text-sm font-medium">Mobile Optimization</label>
+                  <p className="text-sm text-gray-500">Optimize widgets for mobile devices</p>
+                </div>
+                <Switch defaultChecked />
+              </div>
+              
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Settings className="h-4 w-4 mr-2" />
+                Save Settings
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 
-  // Premium Widgets Section
+  // Simple content switching for sidebar navigation
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+      case 'overview':
+      case 'widgets':
+      case 'analytics':
+      case 'marketplace':
+      case 'settings':
+        return renderMainDashboard();
+      case 'premium-widgets':
+        return renderMainDashboard(); // Will show widgets tab
+      default:
+        return renderMainDashboard();
+    }
+  };
+
+  // Removed all the old placeholder sections
   const renderPremiumWidgets = () => (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       <Card className="border-0 shadow-lg bg-white">
