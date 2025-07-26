@@ -997,14 +997,14 @@ const PremiumShopifyDashboard: React.FC = () => {
 
   // Individual render functions for each section
   const renderAITools = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">AI Tools</CardTitle>
-          <CardDescription>AI-powered automation tools for your store</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">AI Tools</CardTitle>
+          <CardDescription className="text-sm sm:text-base">AI-powered automation tools for your store</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
               { name: "AI Popup Generator", description: "Smart popups with 4 AI characters", status: "Active", conversions: 234 },
               { name: "AI Content Writer", description: "Blog posts and product descriptions", status: "Active", conversions: 156 },
@@ -1012,20 +1012,21 @@ const PremiumShopifyDashboard: React.FC = () => {
               { name: "AI Image Generator", description: "Product and marketing images", status: "Active", conversions: 312 }
             ].map((tool, index) => (
               <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold">{tool.name}</h3>
-                    <Badge variant={tool.status === 'Active' ? 'default' : 'secondary'}>
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2">
+                    <h3 className="font-semibold text-sm sm:text-base">{tool.name}</h3>
+                    <Badge variant={tool.status === 'Active' ? 'default' : 'secondary'} className="text-xs self-start sm:self-auto">
                       {tool.status}
                     </Badge>
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{tool.conversions} conversions</span>
+                  <p className="text-sm text-gray-600 mb-3 sm:mb-4 leading-relaxed">{tool.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <span className="text-xs sm:text-sm text-gray-500">{tool.conversions} conversions</span>
                     <Button 
                       size="sm" 
                       variant="outline"
                       onClick={() => handleAIToolConfigure(tool.name)}
+                      className="text-xs sm:text-sm w-full sm:w-auto"
                     >
                       Configure
                     </Button>
@@ -1040,14 +1041,14 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderSEOTools = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">SEO Tools</CardTitle>
-          <CardDescription>Search engine optimization and ranking tools</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">SEO Tools</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Search engine optimization and ranking tools</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {[
               { name: "SEO Analyzer", description: "Analyze your store's SEO performance", score: 85, status: "Good", action: "analyze" },
               { name: "Keyword Tracker", description: "Track keyword rankings", keywords: 24, rank: 3.2, action: "track" },
@@ -1055,11 +1056,11 @@ const PremiumShopifyDashboard: React.FC = () => {
               { name: "Schema Generator", description: "Generate structured data", schemas: 12, status: "Active", action: "generate" }
             ].map((tool, index) => (
               <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-2">{tool.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
+                <CardContent className="p-4 sm:p-6">
+                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{tool.name}</h3>
+                  <p className="text-sm text-gray-600 mb-3 sm:mb-4 leading-relaxed">{tool.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-2">
+                    <div className="text-xs sm:text-sm text-gray-500">
                       {tool.score && `Score: ${tool.score}%`}
                       {tool.keywords && `${tool.keywords} keywords tracked`}
                       {tool.speed && `Load time: ${tool.speed}`}
@@ -1069,6 +1070,7 @@ const PremiumShopifyDashboard: React.FC = () => {
                       size="sm" 
                       variant="outline"
                       onClick={() => handleSEOAction(tool.action, tool.name)}
+                      className="text-xs sm:text-sm w-full sm:w-auto"
                     >
                       {tool.action === 'analyze' ? 'Analyze' : 
                        tool.action === 'track' ? 'Track Keywords' :
@@ -1085,21 +1087,21 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderSocialMedia = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Social Media</CardTitle>
-          <CardDescription>Social media management and scheduling</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Social Media</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Social media management and scheduling</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Facebook</h3>
-                <p className="text-sm text-gray-600 mb-4">Connected • 1.2K followers</p>
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">Facebook</h3>
+                <p className="text-sm text-gray-600 mb-3 sm:mb-4">Connected • 1.2K followers</p>
                 <Button 
                   size="sm" 
-                  className="w-full"
+                  className="w-full text-xs sm:text-sm"
                   onClick={() => handleSocialMediaAction('Facebook', 'manage')}
                 >
                   Manage Posts
@@ -1107,12 +1109,12 @@ const PremiumShopifyDashboard: React.FC = () => {
               </CardContent>
             </Card>
             <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Instagram</h3>
-                <p className="text-sm text-gray-600 mb-4">Connected • 2.8K followers</p>
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">Instagram</h3>
+                <p className="text-sm text-gray-600 mb-3 sm:mb-4">Connected • 2.8K followers</p>
                 <Button 
                   size="sm" 
-                  className="w-full"
+                  className="w-full text-xs sm:text-sm"
                   onClick={() => handleSocialMediaAction('Instagram', 'manage')}
                 >
                   Manage Posts
@@ -1120,12 +1122,13 @@ const PremiumShopifyDashboard: React.FC = () => {
               </CardContent>
             </Card>
             <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Twitter</h3>
-                <p className="text-sm text-gray-600 mb-4">Not connected</p>
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">Twitter</h3>
+                <p className="text-sm text-gray-600 mb-3 sm:mb-4">Not connected</p>
                 <Button 
                   size="sm" 
-                  variant="outline" 
+                  variant="outline"
+                  className="w-full text-xs sm:text-sm" 
                   className="w-full"
                   onClick={() => handleSocialMediaAction('Twitter', 'connect')}
                 >
@@ -1140,57 +1143,57 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderEmailMarketing = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <div className="flex items-center justify-between">
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <CardTitle className="text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
-              <CardDescription>Email campaigns and automation with Klaviyo integration</CardDescription>
+              <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Email Marketing</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Email campaigns and automation with Klaviyo integration</CardDescription>
             </div>
             <Button 
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
               onClick={() => handleEmailAction('create')}
             >
               <Plus className="h-4 w-4 mr-2" />
-              New Campaign
+              <span className="text-sm">New Campaign</span>
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {emailCampaigns.map((campaign, index) => (
               <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">{campaign.name}</h3>
-                    <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'}>
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2">
+                    <h3 className="font-semibold text-sm sm:text-base">{campaign.name}</h3>
+                    <Badge variant={campaign.status === 'active' ? 'default' : 'secondary'} className="text-xs self-start sm:self-auto">
                       {campaign.status}
                     </Badge>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
                     <div>
-                      <p className="text-sm text-gray-500">Sent</p>
-                      <p className="font-semibold">{campaign.sent.toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Sent</p>
+                      <p className="font-semibold text-sm sm:text-base">{campaign.sent.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Opened</p>
-                      <p className="font-semibold">{campaign.opened.toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Opened</p>
+                      <p className="font-semibold text-sm sm:text-base">{campaign.opened.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Clicked</p>
-                      <p className="font-semibold">{campaign.clicked.toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Clicked</p>
+                      <p className="font-semibold text-sm sm:text-base">{campaign.clicked.toLocaleString()}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">Revenue</p>
-                      <p className="font-semibold">${campaign.revenue.toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">Revenue</p>
+                      <p className="font-semibold text-sm sm:text-base">${campaign.revenue.toLocaleString()}</p>
                     </div>
                   </div>
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 mt-3 sm:mt-4">
                     <Button 
                       size="sm" 
                       variant="outline" 
-                      className="flex-1"
+                      className="flex-1 text-xs sm:text-sm"
                       onClick={() => handleEmailAction('view', campaign.name)}
                     >
                       View Campaign
