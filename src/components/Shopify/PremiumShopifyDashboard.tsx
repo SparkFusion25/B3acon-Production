@@ -734,49 +734,54 @@ const PremiumShopifyDashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Enhanced Tabs - Original System */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur shadow-lg">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="widgets">Premium Widgets</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+      {/* Mobile Optimized Tabs - Original System */}
+      <div className="px-3 sm:px-0">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <div className="overflow-x-auto">
+            <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-5 bg-white/80 backdrop-blur shadow-lg">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">Overview</TabsTrigger>
+              <TabsTrigger value="widgets" className="text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">Premium Widgets</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">Analytics</TabsTrigger>
+              <TabsTrigger value="marketplace" className="text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">Marketplace</TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">Settings</TabsTrigger>
+            </TabsList>
+          </div>
 
-        <TabsContent value="overview" className="space-y-6">
-          {/* Quick Stats & Active Widgets Overview */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <TabsContent value="overview" className="space-y-4 sm:space-y-6">
+          {/* Mobile Optimized Active Widgets Overview */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="lg:col-span-2">
               <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-blue-600" />
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                     Active Premium Widgets
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-sm">
                     Widgets currently generating revenue for your store
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="space-y-3 sm:space-y-4">
                     {activeWidgets.slice(0, 5).map((widget) => (
-                      <div key={widget.id} className="flex items-center justify-between p-4 rounded-lg border bg-white/50">
-                        <div className="flex items-center gap-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
-                            <widget.icon className="h-5 w-5 text-blue-600" />
+                      <div key={widget.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 rounded-lg border bg-white/50 gap-3 sm:gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                          <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-blue-100 flex-shrink-0">
+                            <widget.icon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                           </div>
-                          <div>
-                            <p className="font-medium">{widget.name}</p>
-                            <div className="flex items-center gap-2">
-                              <Badge className="bg-green-100 text-green-700">Active</Badge>
-                              <span className="text-sm text-gray-500">{widget.category}</span>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm sm:text-base truncate">{widget.name}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge className="bg-green-100 text-green-700 text-xs">Active</Badge>
+                              <span className="text-xs sm:text-sm text-gray-500 truncate">{widget.category}</span>
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-semibold">${widget.performance.revenue.toLocaleString()}</p>
-                          <p className="text-sm text-gray-500">{widget.performance.conversions} conversions</p>
+                        <div className="text-left sm:text-right flex sm:block justify-between sm:justify-start">
+                          <div>
+                            <p className="font-semibold text-sm sm:text-base">${widget.performance.revenue.toLocaleString()}</p>
+                            <p className="text-xs sm:text-sm text-gray-500">{widget.performance.conversions} conversions</p>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -785,29 +790,29 @@ const PremiumShopifyDashboard: React.FC = () => {
               </Card>
             </div>
             
-            {/* Performance Summary */}
-            <div className="space-y-6">
+            {/* Mobile Optimized Performance Summary */}
+            <div className="space-y-4 sm:space-y-6">
               <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-                <CardHeader>
-                  <CardTitle>Performance Summary</CardTitle>
+                <CardHeader className="p-4 sm:p-6">
+                  <CardTitle className="text-lg sm:text-xl">Performance Summary</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
+                <CardContent className="p-4 sm:p-6 pt-0">
+                  <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Total Widgets:</span>
-                      <span className="font-medium">{premiumWidgets.length}</span>
+                      <span className="text-xs sm:text-sm">Total Widgets:</span>
+                      <span className="font-medium text-sm sm:text-base">{premiumWidgets.length}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Active:</span>
-                      <span className="font-medium text-green-600">{activeWidgets.length}</span>
+                      <span className="text-xs sm:text-sm">Active:</span>
+                      <span className="font-medium text-green-600 text-sm sm:text-base">{activeWidgets.length}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Monthly Spend:</span>
-                      <span className="font-medium">${totalMonthlySpend}</span>
+                      <span className="text-xs sm:text-sm">Monthly Spend:</span>
+                      <span className="font-medium text-sm sm:text-base">${totalMonthlySpend}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">ROI:</span>
-                      <span className="font-medium text-blue-600">
+                      <span className="text-xs sm:text-sm">ROI:</span>
+                      <span className="font-medium text-blue-600 text-sm sm:text-base">
                         {Math.round((activeWidgets.reduce((sum, w) => sum + (w.performance?.revenue || 0), 0) / Math.max(totalMonthlySpend, 1)) * 100)}%
                       </span>
                     </div>
@@ -818,24 +823,26 @@ const PremiumShopifyDashboard: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="widgets" className="space-y-6">
-          {/* Category Filter */}
-          <div className="flex gap-2 flex-wrap">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
-                className={selectedCategory === category ? "bg-blue-600 text-white" : ""}
-              >
-                {category}
-              </Button>
-            ))}
+        <TabsContent value="widgets" className="space-y-4 sm:space-y-6">
+          {/* Mobile Optimized Category Filter */}
+          <div className="overflow-x-auto pb-2">
+            <div className="flex gap-2 min-w-max">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className={`text-xs sm:text-sm whitespace-nowrap ${selectedCategory === category ? "bg-blue-600 text-white" : ""}`}
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
           </div>
 
-          {/* All 10 Premium Widgets */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Mobile Optimized Premium Widgets Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {premiumWidgets
               .filter(widget => selectedCategory === 'All' || widget.category === selectedCategory)
               .map((widget) => (
@@ -907,83 +914,85 @@ const PremiumShopifyDashboard: React.FC = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="analytics" className="space-y-6">
+        <TabsContent value="analytics" className="space-y-4 sm:space-y-6">
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-            <CardHeader>
-              <CardTitle>Analytics Dashboard</CardTitle>
-              <CardDescription>Performance insights and widget analytics</CardDescription>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-xl">Analytics Dashboard</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Performance insights and widget analytics</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+            <CardContent className="p-4 sm:p-6 pt-0">
+              <div className="h-48 sm:h-64 bg-gray-100 rounded-lg flex items-center justify-center">
                 <div className="text-center">
-                  <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Analytics charts coming soon</p>
+                  <BarChart3 className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                  <p className="text-gray-500 text-sm sm:text-base">Analytics charts coming soon</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
-        <TabsContent value="marketplace" className="space-y-6">
-          <div className="text-center py-12">
-            <Bot className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Widget Marketplace</h2>
-            <p className="text-gray-600 mb-6">Discover more AI-powered widgets to boost your store performance</p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <TabsContent value="marketplace" className="space-y-4 sm:space-y-6">
+          <div className="text-center py-8 sm:py-12 px-4">
+            <Bot className="h-12 w-12 sm:h-16 sm:w-16 text-blue-600 mx-auto mb-3 sm:mb-4" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">Widget Marketplace</h2>
+            <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">Discover more AI-powered widgets to boost your store performance</p>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
-              Browse Marketplace
+              <span className="text-sm sm:text-base">Browse Marketplace</span>
             </Button>
           </div>
         </TabsContent>
 
-        <TabsContent value="settings" className="space-y-6">
+        <TabsContent value="settings" className="space-y-4 sm:space-y-6">
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-            <CardHeader>
-              <CardTitle>Widget Settings</CardTitle>
-              <CardDescription>Configure global settings for all widgets</CardDescription>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-lg sm:text-xl">Widget Settings</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Configure global settings for all widgets</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between">
+            <CardContent className="p-4 sm:p-6 pt-0 space-y-4 sm:space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="space-y-0.5">
                   <label className="text-sm font-medium">Auto-optimization</label>
-                  <p className="text-sm text-gray-500">Automatically optimize widget performance</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Automatically optimize widget performance</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="space-y-0.5">
                   <label className="text-sm font-medium">Analytics Tracking</label>
-                  <p className="text-sm text-gray-500">Track detailed widget analytics</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Track detailed widget analytics</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="space-y-0.5">
                   <label className="text-sm font-medium">Mobile Optimization</label>
-                  <p className="text-sm text-gray-500">Optimize widgets for mobile devices</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Optimize widgets for mobile devices</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm"
                   onClick={() => handleSettingsAction('save')}
                 >
-                  <Settings className="h-4 w-4 mr-2" />
+                  <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                   Save Settings
                 </Button>
                 <Button 
                   variant="outline"
                   onClick={() => handleSettingsAction('reset')}
+                  className="text-xs sm:text-sm"
                 >
                   Reset to Default
                 </Button>
                 <Button 
                   variant="outline"
                   onClick={() => handleSettingsAction('export')}
+                  className="text-xs sm:text-sm"
                 >
                   Export Data
                 </Button>
@@ -992,6 +1001,7 @@ const PremiumShopifyDashboard: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 
