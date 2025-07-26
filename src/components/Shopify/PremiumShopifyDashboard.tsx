@@ -1125,11 +1125,10 @@ const PremiumShopifyDashboard: React.FC = () => {
               <CardContent className="p-4 sm:p-6">
                 <h3 className="font-semibold mb-2 text-sm sm:text-base">Twitter</h3>
                 <p className="text-sm text-gray-600 mb-3 sm:mb-4">Not connected</p>
-                <Button 
+                                <Button 
                   size="sm" 
                   variant="outline"
-                  className="w-full text-xs sm:text-sm" 
-                  className="w-full"
+                  className="w-full text-xs sm:text-sm"
                   onClick={() => handleSocialMediaAction('Twitter', 'connect')}
                 >
                   Connect
@@ -1216,41 +1215,39 @@ const PremiumShopifyDashboard: React.FC = () => {
     </div>
   );
 
+  // MOBILE OPTIMIZED RENDER FUNCTIONS
+  
   const renderContentCreation = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Content Creation</CardTitle>
-          <CardDescription>AI-powered content generation tools</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Content Creation</CardTitle>
+          <CardDescription className="text-sm sm:text-base">AI-powered content generation tools</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Blog Post Generator</h3>
-                <p className="text-sm text-gray-600 mb-4">Create SEO-optimized blog posts</p>
-                <Button 
-                  size="sm" 
-                  className="w-full"
-                  onClick={() => handleContentAction('generate', 'blog')}
-                >
-                  Generate Post
-                </Button>
-              </CardContent>
-            </Card>
-            <Card className="border shadow-md">
-              <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Product Descriptions</h3>
-                <p className="text-sm text-gray-600 mb-4">AI-generated product descriptions</p>
-                <Button 
-                  size="sm" 
-                  className="w-full"
-                  onClick={() => handleContentAction('generate', 'description')}
-                >
-                  Create Description
-                </Button>
-              </CardContent>
-            </Card>
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <Button 
+              className="h-24 sm:h-32 flex flex-col items-center justify-center space-y-2 sm:space-y-3"
+              variant="outline"
+              onClick={() => handleContentAction('blog')}
+            >
+              <Edit className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <div className="text-center">
+                <h3 className="font-semibold text-sm sm:text-base">Generate Blog Post</h3>
+                <p className="text-xs sm:text-sm text-gray-500">AI-powered blog content</p>
+              </div>
+            </Button>
+            <Button 
+              className="h-24 sm:h-32 flex flex-col items-center justify-center space-y-2 sm:space-y-3"
+              variant="outline"
+              onClick={() => handleContentAction('product')}
+            >
+              <Package className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <div className="text-center">
+                <h3 className="font-semibold text-sm sm:text-base">Product Descriptions</h3>
+                <p className="text-xs sm:text-sm text-gray-500">SEO-optimized descriptions</p>
+              </div>
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -1258,31 +1255,36 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderProductResearch = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Product Research</CardTitle>
-          <CardDescription>Market analysis and product insights</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Product Research</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Market research and product analysis tools</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-12">
-            <ShoppingBag className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Product Research Tools</h2>
-            <p className="text-gray-600 mb-6">Analyze market trends and discover winning products</p>
-            <div className="flex gap-4 justify-center">
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => handleResearchAction('start')}
-              >
-                Start Research
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => handleResearchAction('analyze')}
-              >
-                Analyze Trends
-              </Button>
-            </div>
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <Button 
+              className="h-24 sm:h-32 flex flex-col items-center justify-center space-y-2 sm:space-y-3"
+              variant="outline"
+              onClick={() => handleResearchAction('market')}
+            >
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <div className="text-center">
+                <h3 className="font-semibold text-sm sm:text-base">Market Research</h3>
+                <p className="text-xs sm:text-sm text-gray-500">Trend analysis & insights</p>
+              </div>
+            </Button>
+            <Button 
+              className="h-24 sm:h-32 flex flex-col items-center justify-center space-y-2 sm:space-y-3"
+              variant="outline"
+              onClick={() => handleResearchAction('products')}
+            >
+              <Search className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <div className="text-center">
+                <h3 className="font-semibold text-sm sm:text-base">Product Analysis</h3>
+                <p className="text-xs sm:text-sm text-gray-500">Competitor research</p>
+              </div>
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -1290,31 +1292,36 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderCreativeStudio = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Creative Studio</CardTitle>
-          <CardDescription>Asset management and design tools</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Creative Studio</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Design and media management tools</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-12">
-            <Palette className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Creative Studio</h2>
-            <p className="text-gray-600 mb-6">Manage your creative assets and design templates</p>
-            <div className="flex gap-4 justify-center">
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => handleStudioAction('open')}
-              >
-                Open Studio
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => handleStudioAction('upload')}
-              >
-                Upload Assets
-              </Button>
-            </div>
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <Button 
+              className="h-24 sm:h-32 flex flex-col items-center justify-center space-y-2 sm:space-y-3"
+              variant="outline"
+              onClick={() => handleStudioAction('upload')}
+            >
+              <Upload className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <div className="text-center">
+                <h3 className="font-semibold text-sm sm:text-base">Upload Assets</h3>
+                <p className="text-xs sm:text-sm text-gray-500">Images, videos & files</p>
+              </div>
+            </Button>
+            <Button 
+              className="h-24 sm:h-32 flex flex-col items-center justify-center space-y-2 sm:space-y-3"
+              variant="outline"
+              onClick={() => handleStudioAction('studio')}
+            >
+              <Palette className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+              <div className="text-center">
+                <h3 className="font-semibold text-sm sm:text-base">Design Studio</h3>
+                <p className="text-xs sm:text-sm text-gray-500">Create & edit graphics</p>
+              </div>
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -1322,55 +1329,40 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderIntegrations = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Integrations</CardTitle>
-          <CardDescription>Connect with third-party services and APIs</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Integrations</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Connect and manage third-party services</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[
-              { name: "Shopify", status: "Connected", description: "Store data and products" },
-              { name: "Klaviyo", status: "Connected", description: "Email marketing automation" },
-              { name: "Google Analytics", status: "Pending", description: "Track website performance" }
+              { name: "Shopify", status: "Connected", icon: "🛍️", action: "configure" },
+              { name: "Klaviyo", status: "Connected", icon: "📧", action: "configure" },
+              { name: "Google Analytics", status: "Connected", icon: "📊", action: "configure" },
+              { name: "Facebook Pixel", status: "Not Connected", icon: "📱", action: "connect" },
+              { name: "TikTok Pixel", status: "Not Connected", icon: "🎵", action: "connect" },
+              { name: "Amazon SP-API", status: "Connected", icon: "📦", action: "configure" }
             ].map((integration, index) => (
               <Card key={index} className="border shadow-md">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-2">{integration.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
-                  <div className="flex items-center justify-between">
-                    <Badge variant={integration.status === 'Connected' ? 'default' : 'secondary'}>
-                      {integration.status}
-                    </Badge>
-                    <div className="flex gap-2">
-                      {integration.status === 'Connected' ? (
-                        <>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleIntegrationAction(integration.name, 'configure')}
-                          >
-                            Configure
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleIntegrationAction(integration.name, 'test')}
-                          >
-                            Test
-                          </Button>
-                        </>
-                      ) : (
-                        <Button 
-                          size="sm" 
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                          onClick={() => handleIntegrationAction(integration.name, 'configure')}
-                        >
-                          Setup
-                        </Button>
-                      )}
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col items-center text-center space-y-3">
+                    <div className="text-2xl sm:text-3xl">{integration.icon}</div>
+                    <div>
+                      <h3 className="font-semibold text-sm sm:text-base">{integration.name}</h3>
+                      <Badge variant={integration.status === 'Connected' ? 'default' : 'secondary'} className="mt-1 text-xs">
+                        {integration.status}
+                      </Badge>
                     </div>
+                    <Button 
+                      size="sm"
+                      variant={integration.status === 'Connected' ? 'outline' : 'default'}
+                      onClick={() => handleIntegrationAction(integration.action, integration.name)}
+                      className="w-full text-xs sm:text-sm"
+                    >
+                      {integration.action === 'configure' ? 'Configure' : 'Connect'}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1382,52 +1374,53 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderTeamManagement = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Team Management</CardTitle>
-          <CardDescription>Manage team members and permissions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div className="text-center py-6">
-              <Users className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-xl font-bold mb-2">Team Management</h2>
-              <p className="text-gray-600 mb-6">Invite team members and manage their access</p>
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => handleTeamAction('invite')}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Invite Team Member
-              </Button>
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Team Management</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Manage team members and permissions</CardDescription>
             </div>
-            
-            {/* Current Team Members */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { name: "John Smith", role: "Admin", email: "john@example.com", status: "Active" },
-                { name: "Sarah Johnson", role: "Editor", email: "sarah@example.com", status: "Active" },
-                { name: "Mike Wilson", role: "Viewer", email: "mike@example.com", status: "Pending" }
-              ].map((member, index) => (
-                <Card key={index} className="border shadow-md">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-semibold">{member.name}</h3>
-                        <p className="text-sm text-gray-600">{member.email}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline">{member.role}</Badge>
-                          <Badge variant={member.status === 'Active' ? 'default' : 'secondary'}>
-                            {member.status}
-                          </Badge>
-                        </div>
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
+              onClick={() => handleTeamAction('invite')}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              <span className="text-sm">Invite Member</span>
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="space-y-4">
+            {[
+              { name: "John Smith", email: "john@example.com", role: "Admin", status: "Active" },
+              { name: "Sarah Johnson", email: "sarah@example.com", role: "Editor", status: "Active" },
+              { name: "Mike Chen", email: "mike@example.com", role: "Viewer", status: "Pending" }
+            ].map((member, index) => (
+              <Card key={index} className="border shadow-sm">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-semibold text-sm">{member.name.split(' ').map(n => n[0]).join('')}</span>
                       </div>
+                      <div>
+                        <h3 className="font-semibold text-sm sm:text-base">{member.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-500">{member.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      <Badge variant={member.status === 'Active' ? 'default' : 'secondary'} className="text-xs">
+                        {member.status}
+                      </Badge>
+                      <span className="text-xs sm:text-sm text-gray-500">{member.role}</span>
                       <div className="flex gap-2">
                         <Button 
                           size="sm" 
                           variant="outline"
                           onClick={() => handleTeamAction('edit', member.name)}
+                          className="text-xs"
                         >
                           Edit
                         </Button>
@@ -1435,15 +1428,16 @@ const PremiumShopifyDashboard: React.FC = () => {
                           size="sm" 
                           variant="outline"
                           onClick={() => handleTeamAction('remove', member.name)}
+                          className="text-xs text-red-600 hover:text-red-700"
                         >
                           Remove
                         </Button>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -1451,65 +1445,63 @@ const PremiumShopifyDashboard: React.FC = () => {
   );
 
   const renderBillingPlans = () => (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       <Card className="border-0 shadow-lg bg-white/80 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-blue-600">Billing & Plans</CardTitle>
-          <CardDescription>Subscription management and billing information</CardDescription>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-blue-600">Billing & Plans</CardTitle>
+          <CardDescription className="text-sm sm:text-base">Manage your subscription and billing information</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div className="text-center py-6">
-              <CreditCard className="h-16 w-16 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-xl font-bold mb-2">Current Plan: Pro</h2>
-              <p className="text-gray-600 mb-6">Manage your subscription and billing information</p>
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => handleBillingAction('manage')}
-              >
-                Manage Billing
-              </Button>
-            </div>
-            
-            {/* Available Plans */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { name: "Starter", price: "$29/month", features: ["5 Widgets", "Basic Analytics", "Email Support"], current: false },
-                { name: "Pro", price: "$99/month", features: ["Unlimited Widgets", "Advanced Analytics", "Priority Support", "Team Management"], current: true },
-                { name: "Enterprise", price: "$299/month", features: ["White Label", "Custom Integrations", "Dedicated Support", "Advanced Security"], current: false }
-              ].map((plan, index) => (
-                <Card key={index} className={`border shadow-md ${plan.current ? 'ring-2 ring-blue-500' : ''}`}>
-                  <CardContent className="p-6">
-                    <div className="text-center">
-                      <h3 className="text-xl font-bold">{plan.name}</h3>
-                      {plan.current && <Badge className="mb-2">Current Plan</Badge>}
-                      <p className="text-2xl font-bold text-blue-600 mb-4">{plan.price}</p>
-                      <ul className="text-sm text-gray-600 space-y-2 mb-6">
-                        {plan.features.map((feature, i) => (
-                          <li key={i}>• {feature}</li>
-                        ))}
-                      </ul>
-                      {plan.current ? (
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
-                          onClick={() => handleBillingAction('cancel')}
-                        >
-                          Cancel Plan
-                        </Button>
-                      ) : (
-                        <Button 
-                          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                          onClick={() => handleBillingAction('upgrade', plan.name)}
-                        >
-                          Upgrade to {plan.name}
-                        </Button>
-                      )}
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[
+              { 
+                name: "Starter", 
+                price: "$29", 
+                features: ["5 AI Tools", "Basic SEO", "Email Support"], 
+                current: false,
+                action: "upgrade"
+              },
+              { 
+                name: "Pro", 
+                price: "$99", 
+                features: ["All AI Tools", "Advanced SEO", "Priority Support", "Team Management"], 
+                current: true,
+                action: "current"
+              },
+              { 
+                name: "Enterprise", 
+                price: "$299", 
+                features: ["Everything in Pro", "White Label", "Custom Integrations", "Dedicated Manager"], 
+                current: false,
+                action: "upgrade"
+              }
+            ].map((plan, index) => (
+              <Card key={index} className={`border-2 ${plan.current ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+                <CardContent className="p-4 sm:p-6">
+                  <div className="text-center space-y-3 sm:space-y-4">
+                    <div>
+                      <h3 className="font-bold text-lg sm:text-xl">{plan.name}</h3>
+                      <p className="text-2xl sm:text-3xl font-bold text-blue-600">{plan.price}<span className="text-sm text-gray-500">/month</span></p>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <div className="space-y-2">
+                      {plan.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs sm:text-sm">
+                          <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <Button 
+                      className={`w-full text-xs sm:text-sm ${plan.current ? 'bg-gray-200 text-gray-700' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+                      onClick={() => handleBillingAction(plan.action, plan.name)}
+                      disabled={plan.current}
+                    >
+                      {plan.current ? 'Current Plan' : 'Upgrade'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </CardContent>
       </Card>
