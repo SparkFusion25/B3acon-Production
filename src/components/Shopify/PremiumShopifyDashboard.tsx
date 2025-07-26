@@ -710,23 +710,23 @@ const PremiumShopifyDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Enhanced Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Mobile Optimized Metrics Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 px-3 sm:px-0">
         {dashboardMetrics.map((metric, index) => (
           <Card key={index} className="border-0 shadow-lg bg-white/80 backdrop-blur">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">{metric.title}</p>
-                  <p className="text-3xl font-bold">{metric.value}</p>
-                  <div className="flex items-center gap-1 mt-2">
-                    <span className="text-sm text-green-600">{metric.change}</span>
-                    <ArrowUpRight className="w-3 h-3 text-green-600" />
-                    <span className="text-xs text-gray-500">vs last month</span>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-500 mb-1 truncate">{metric.title}</p>
+                  <p className="text-lg sm:text-2xl lg:text-3xl font-bold truncate">{metric.value}</p>
+                  <div className="flex items-center gap-1 mt-1 sm:mt-2">
+                    <span className="text-xs sm:text-sm text-green-600">{metric.change}</span>
+                    <ArrowUpRight className="w-2 h-2 sm:w-3 sm:h-3 text-green-600" />
+                    <span className="text-xs text-gray-500 hidden sm:inline">vs last month</span>
                   </div>
                 </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
-                  <metric.icon className="h-6 w-6 text-blue-600" />
+                <div className="flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-blue-100 mt-2 sm:mt-0 self-end sm:self-auto">
+                  <metric.icon className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
@@ -1600,13 +1600,13 @@ const PremiumShopifyDashboard: React.FC = () => {
       <div className="min-h-screen flex w-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
         <AppSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         <main className="flex-1 flex flex-col">
-          {/* Header */}
+          {/* Mobile Optimized Header */}
           <header className="bg-white/80 backdrop-blur border-b border-gray-200 sticky top-0 z-40 shadow-elegant">
-            <div className="flex items-center justify-between px-6 py-4">
-              <div className="flex items-center gap-4">
-                <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground" />
-                <div>
-                  <h2 className="text-xl font-bold text-blue-600">
+            <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4">
+              <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
+                <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-lg sm:text-xl font-bold text-blue-600 truncate">
                     {activeTab === 'overview' ? 'Dashboard Overview' :
                      activeTab === 'widgets' ? 'Premium Widgets' :
                      activeTab === 'analytics' ? 'Analytics' :
@@ -1624,18 +1624,20 @@ const PremiumShopifyDashboard: React.FC = () => {
                      activeTab === 'billing-plans' ? 'Billing & Plans' :
                      'Dashboard'}
                   </h2>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">
                     {shopInfo?.domain || 'Loading store information...'}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <Badge variant="secondary" className="bg-green-100 text-green-700">
+              <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <Badge variant="secondary" className="bg-green-100 text-green-700 hidden sm:flex">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                  All Systems Operational
+                  <span className="hidden md:inline">All Systems Operational</span>
+                  <span className="md:hidden">Online</span>
                 </Badge>
-                <Button variant="outline" size="icon">
-                  <Bell className="h-4 w-4" />
+                <div className="w-2 h-2 bg-green-500 rounded-full sm:hidden"></div>
+                <Button variant="outline" size="icon" className="h-8 w-8 sm:h-10 sm:w-10">
+                  <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
               </div>
             </div>
@@ -1644,10 +1646,10 @@ const PremiumShopifyDashboard: React.FC = () => {
           {/* Content */}
           <div className="flex-1 overflow-auto">
             {error && (
-              <div className="max-w-7xl mx-auto p-6">
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <h3 className="text-red-800 font-medium">⚠️ Error Loading Data</h3>
-                  <p className="text-red-600 text-sm mt-1">{error}</p>
+              <div className="max-w-7xl mx-auto p-3 sm:p-6">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4">
+                  <h3 className="text-red-800 font-medium text-sm sm:text-base">⚠️ Error Loading Data</h3>
+                  <p className="text-red-600 text-xs sm:text-sm mt-1">{error}</p>
                 </div>
               </div>
             )}

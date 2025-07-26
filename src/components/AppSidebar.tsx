@@ -120,14 +120,14 @@ export function AppSidebar({ userRole = "user", activeTab, setActiveTab }: AppSi
 
   return (
     <Sidebar className="border-sidebar-border bg-sidebar">
-      <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary shadow-glow">
-            <span className="text-sm font-bold text-white">B3</span>
+      <SidebarHeader className="border-b border-sidebar-border p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-primary shadow-glow">
+            <span className="text-xs sm:text-sm font-bold text-white">B3</span>
           </div>
           {state === "expanded" && (
             <div>
-              <h2 className="text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">B3ACON</h2>
+              <h2 className="text-base sm:text-lg font-bold bg-gradient-primary bg-clip-text text-transparent">B3ACON</h2>
               <p className="text-xs text-sidebar-foreground/60">
                 {userRole === "admin" ? "Admin Dashboard" : "Marketing Platform"}
               </p>
@@ -145,8 +145,8 @@ export function AppSidebar({ userRole = "user", activeTab, setActiveTab }: AppSi
                 onOpenChange={() => toggleGroup(group.id)}
               >
                 <CollapsibleTrigger asChild>
-                  <SidebarGroupLabel className="flex items-center justify-between hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                    <span>{group.label}</span>
+                  <SidebarGroupLabel className="flex items-center justify-between hover:bg-sidebar-accent hover:text-sidebar-accent-foreground min-h-[44px] py-2">
+                    <span className="text-sm sm:text-base">{group.label}</span>
                     {expandedGroups.includes(group.id) ? (
                       <ChevronDown className="h-4 w-4" />
                     ) : (
@@ -161,14 +161,14 @@ export function AppSidebar({ userRole = "user", activeTab, setActiveTab }: AppSi
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton
                             onClick={() => handleNavigation(item.url || '#', item.tabId)}
-                            className={`w-full ${
+                            className={`w-full min-h-[44px] py-2 ${
                               isActive(item.url || '#', item.tabId)
                                 ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-glow'
                                 : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                             }`}
                           >
-                            <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
+                            <item.icon className="h-4 w-4 flex-shrink-0" />
+                            <span className="text-sm sm:text-base truncate">{item.title}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       ))}
